@@ -7,13 +7,14 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 import { Avatar } from "@components/visual/avatar";
-import { Colors } from "@/constants/ui";
+import { Colors } from "@constants/ui";
 import { HorizontalDivider } from "@components/shapes/divider";
 import profilePic from "@assets/images/profile_pic.png";
 import { CustomButton } from "@components/elements/button";
 
 import { styles } from "../styles/driverCard";
-import { PLATFORM_FILTERS } from "./quickFilters";
+import { PLATFORM_FILTERS } from "../utils/constants";
+import { Platforms } from "./platforms";
 
 const ICON_SIZE = 16;
 
@@ -65,31 +66,7 @@ export const DriverCard = () => {
       </View>
 
       <HorizontalDivider color="#ededed" />
-
-      <ScrollView
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        snapToAlignment="end"
-        contentContainerStyle={styles.platformTags}
-      >
-        {["bike", "uber_eats", "checkers"].map((platform) => {
-          const def = PLATFORM_FILTERS.find(({ value }) => value === platform);
-
-          if (def) {
-            return (
-              <View style={[styles.platform, { backgroundColor: def.bgColor }]}>
-                {def.icon && def.icon}
-                {def.slug && (
-                  <Text style={[{ color: def.color }]}>{def.slug}</Text>
-                )}
-              </View>
-            );
-          }
-
-          return null;
-        })}
-      </ScrollView>
-
+      <Platforms platforms={PLATFORM_FILTERS} />
       <HorizontalDivider color="#ededed" />
 
       <CustomButton

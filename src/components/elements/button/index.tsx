@@ -6,8 +6,8 @@ import {
 } from "react-native";
 import * as Haptics from "expo-haptics";
 
-import type { Colors as ColorsType } from "@/src/types/ui";
-import { Colors } from "@/constants/ui";
+import type { Colors as ColorsType } from "@src/types/ui";
+import { Colors } from "@constants/ui";
 
 import { styles } from "./styles";
 

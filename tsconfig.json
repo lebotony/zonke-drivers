@@ -3,9 +3,10 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      "@/*": [
-        "./*"
-      ],
+      // "@*": [
+      //   "./*"
+      // ],
+      "@constants/*": ["./constants/*"],
       "@components/*": ["./src/components/*"],
       "@screens/*": ["./src/screens/*"],
       "@assets/*": ["./assets/*"]
@@ -15,6 +16,8 @@
     "**/*.ts",
     "**/*.tsx",
     ".expo/types/**/*.ts",
-    "expo-env.d.ts"
+    "expo-env.d.ts",
+    "src",
+    "images.d.ts"
   ]
 }

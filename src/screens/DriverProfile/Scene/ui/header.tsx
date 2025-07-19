@@ -3,9 +3,9 @@ import { router } from "expo-router";
 
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-import { CustomButton } from "@/src/components/elements/button";
+import { CustomButton } from "@components/elements/button";
 import { styles } from "../styles/header";
-import { Colors } from "@/constants/ui";
+import { Colors } from "@constants/ui";
 
 export const Header = () => {
   return (
@@ -17,7 +17,6 @@ export const Header = () => {
           color={Colors.mrDBlue}
         />
       </CustomButton>
-      <Text style={styles.name}>Romeo makota</Text>
     </View>
   );
 };

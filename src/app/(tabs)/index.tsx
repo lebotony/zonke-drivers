@@ -1,4 +1,4 @@
-import { DriversScreen } from "@/src/screens/Drivers";
+import { DriversScreen } from "@screens/Drivers";
 
 export default function Drivers() {
   return <DriversScreen />;

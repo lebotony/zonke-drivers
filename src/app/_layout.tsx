@@ -12,7 +12,7 @@ import "react-native-reanimated";
 import { View } from "react-native";
 
 import { useColorScheme } from "@components/useColorScheme";
-import { Colors } from "@/constants/ui";
+import { Colors } from "@constants/ui";
 
 export {
   // Catch any errors thrown by the Layout component.

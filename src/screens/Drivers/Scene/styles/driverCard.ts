@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "@/constants/ui";
+import { Colors } from "@constants/ui";
 
 export const styles = StyleSheet.create({
   container: {
@@ -70,16 +70,5 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     maxWidth: "85%"
   },
-  save: { position: "absolute", right: 5 },
-  platformTags: {
-    gap: 5,
-    flexDirection: "row",
-    flex: 1
-  },
-  platform: {
-    paddingVertical: 4,
-    paddingHorizontal: 5,
-    justifyContent: "center",
-    borderRadius: 10
-  }
+  save: { position: "absolute", right: 5 }
 });

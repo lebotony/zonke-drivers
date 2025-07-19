@@ -1,8 +1,8 @@
 import { View, Text, Pressable } from "react-native";
 
 import { styles } from "./styles";
-// import type { Colors } from "@/src/types/ui";
-import { Colors } from "@/constants/ui";
+// import type { Colors } from "@src/types/ui";
+import { Colors } from "@constants/ui";
 
 type Item = {
   slug: string;
