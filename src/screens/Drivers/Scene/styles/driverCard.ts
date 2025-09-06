@@ -17,6 +17,7 @@ export const styles = StyleSheet.create({
     // paddingTop: 10,
     // borderBottomColor: Colors.skyLight,
 
+    marginHorizontal: 14,
     shadowColor: "#888888",
     shadowOffset: {
       width: 0,
@@ -25,29 +26,37 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.16,
     shadowRadius: 1.51,
     elevation: 2,
-    borderRadius: 25,
-    // borderColor: Colors.lightGrey,
-    // borderWidth: 1,
-    // height: 150,
+    borderRadius: 10,
     padding: 12,
-    gap: 10
+    gap: 10,
   },
   row: {
     flexDirection: "row",
     gap: 10
   },
   name: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "700",
-    color: "rgba(0, 0, 0, 0.69)"
+    color: Colors.darkCharcoalGrey,
+    lineHeight: 14,
   },
   age: {
     fontWeight: "400",
-    fontSize: 16,
-    color: Colors.mediumGrey
+    fontSize: 12,
+    color: Colors.mediumGrey,
+    position: 'absolute',
+    top: 0
   },
   details: {
-    justifyContent: "space-evenly"
+    justifyContent: "space-evenly",
+    gap: 4,
+  },
+  detailIcon: {
+    width: 15,
+    height: 15,
+    alignItems: "center",
+    justifyContent: 'center',
+    marginRight: 3
   },
   ratingRow: {
     gap: 4,
@@ -55,20 +64,25 @@ export const styles = StyleSheet.create({
     alignItems: "center"
   },
   ratingText: {
-    fontSize: 16,
-    fontWeight: 500,
+    fontSize: 13,
+    fontWeight: 700,
     textAlignVertical: "center",
     color: "rgba(0, 0, 0, 0.69)"
   },
   ratingCreteria: {
-    fontSize: 13,
+    width: 120,
+    fontSize: 11,
+    fontWeight: 400,
     color: Colors.mediumGrey,
-    textAlignVertical: "center"
+    textAlignVertical: "center",
+    position: 'absolute',
+    top: 2.1,
   },
   address: {
     color: Colors.mediumGrey,
-    fontSize: 15,
-    maxWidth: "85%"
+    fontSize: 13,
+    maxWidth: "85%",
+    fontWeight: 400
   },
-  save: { position: "absolute", right: 5 }
+  save: { position: "absolute", right: 10, top: 8 }
 });

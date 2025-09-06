@@ -1,10 +1,13 @@
+import { shadowStyles } from "@components/shadowStyles";
 import { Colors } from "@constants/ui";
 import { StyleSheet } from "react-native";
+import { isIOS } from "../../../../helpers/platform";
 
 const VERTIAL_MARGIN = 10;
 
 export const styles = StyleSheet.create({
   body: {
+    paddingTop: isIOS ? 25 : 0,
     margin: 15
   },
   profilePic: {
@@ -13,16 +16,24 @@ export const styles = StyleSheet.create({
   },
   name: {
     fontWeight: "700",
-    fontSize: 18
+    fontSize: 20
   },
   age: {
+    width: "100%",
     fontWeight: "400",
-    fontSize: 16,
-    color: Colors.mediumGrey
+    fontSize: 14,
+    color: Colors.mediumGrey,
+    position: 'absolute',
+    bottom: 2
   },
   description: {
+    marginHorizontal: 'auto',
+    width: '80%',
+    padding: 10,
+    backgroundColor: Colors.softGrey,
+    borderRadius: 15,
     color: Colors.mediumDarkGrey,
-    fontSize: 15,
+    fontSize: 15.5,
     textAlign: "center",
     marginVertical: VERTIAL_MARGIN
   },
@@ -32,25 +43,33 @@ export const styles = StyleSheet.create({
   },
   location: {
     color: Colors.black,
-    fontSize: 13
+    fontSize: 14,
+  },
+  headerLocation: {
+    flexDirection: 'row',
+    gap: 4,
+    alignItems: 'center',
   },
   pill: {
-    borderRadius: 100,
-    backgroundColor: Colors.lightGrey,
-    paddingVertical: 5,
-    paddingHorizontal: 8
+    backgroundColor: Colors.white,
+    borderRadius: 7,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    alignItems: 'center',
+    gap: 4,
+
+    ...shadowStyles
   },
   heading: {
-    fontSize: 14,
+    fontSize: 15.5,
     fontWeight: 500,
     textAlign: "center",
     marginVertical: 8,
-    textDecorationLine: "underline",
-    fontStyle: "italic"
+    fontStyle: "italic",
   },
   row: {
     flexDirection: "row",
-    gap: 5,
+    gap: 10,
     justifyContent: "center",
     marginBottom: VERTIAL_MARGIN
   },
@@ -59,42 +78,52 @@ export const styles = StyleSheet.create({
     color: Colors.mediumDarkGrey
   },
   stats: {
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: Colors.lightGrey,
-    marginVertical: 12
+    marginBottom: 60
   },
   statsRow: {
-    padding: 9,
     flexDirection: "row",
-    justifyContent: "space-between"
+    justifyContent: 'center',
+    gap: 10,
+    marginBottom: 10
   },
   stat: {
     width: 75,
-    height: 90,
+    height: 100,
     backgroundColor: Colors.white,
     borderRadius: 9,
     alignItems: "center",
     justifyContent: "space-between",
-    padding: 5
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+
+    ...shadowStyles
   },
   statType: {
     fontSize: 12,
-    fontStyle: "italic",
-    color: Colors.mediumDarkGrey,
+    color: Colors.black,
+    fontWeight: 500,
     textAlign: "center"
   },
   statValue: {
     fontWeight: 500
   },
-  actions: {
-    position: "absolute",
-    bottom: 0,
-    right: 0,
-    left: 0
-  },
   buttonText: {
     color: Colors.white,
     marginLeft: 6
-  }
+  },
+  footer: {
+    height: 70,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.white,
+    flexDirection: 'row',
+    gap: 12,
+    alignItems: 'center',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingBottom: isIOS ? 12 : 0,
+
+    ...shadowStyles
+  },
 });

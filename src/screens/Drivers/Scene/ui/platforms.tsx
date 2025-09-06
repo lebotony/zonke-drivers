@@ -4,7 +4,7 @@ import {
   View,
   Text,
   ScrollViewProps,
-  ViewStyle
+  ViewStyle,
 } from "react-native";
 
 import { styles } from "../styles/platforms";
@@ -15,6 +15,7 @@ type Platform = {
   bgColor: string;
   icon?: React.ReactNode;
   slug?: string;
+  justIcon?: true;
 };
 
 type Platforms = {
@@ -30,12 +31,19 @@ export const Platforms = ({ platforms, customContainerStyle }: Platforms) => {
       snapToAlignment="end"
       contentContainerStyle={[styles.platformTags, customContainerStyle]}
     >
-      {["bike", "uber_eats", "checkers"].map((platform) => {
+      {["bike", "taxi", "uber_eats", "checkers"].map((platform, idx) => {
         const def = platforms.find(({ value }) => value === platform);
 
         if (def) {
           return (
-            <View style={[styles.platform, { backgroundColor: def.bgColor }]}>
+            <View
+              key={`${platform} - ${idx}`}
+              style={[
+                styles.platform,
+                def.justIcon && styles.justIconPlatform,
+                { backgroundColor: def.bgColor },
+              ]}
+            >
               {def.icon && def.icon}
               {def.slug && (
                 <Text style={[{ color: def.color }]}>{def.slug}</Text>

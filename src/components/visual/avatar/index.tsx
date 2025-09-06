@@ -11,7 +11,7 @@ type AvatarProps = {
 export const Avatar = ({ round, width = 74, ...imageProps }: AvatarProps) => {
   return (
     <Image
-      style={[{ width, aspectRatio: 1 }, round && styles.round]}
+      style={[{ width, height: width, aspectRatio: 1 }, round && styles.round]}
       {...imageProps}
     />
   );

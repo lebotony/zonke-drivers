@@ -10,6 +10,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIc
 
 import { Colors } from "@constants/ui";
 import { useClientOnlyValue } from "@components/useClientOnlyValue";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   return (
@@ -22,12 +23,8 @@ export default function TabLayout() {
         headerShown: useClientOnlyValue(false, true),
         tabBarStyle: {
           backgroundColor: Colors.white,
-          paddingVertical: 8
+          paddingVertical: 8,
         },
-        tabBarLabelStyle: {
-          fontSize: 9,
-          marginTop: 2
-        }
       }}
     >
       <Tabs.Screen
@@ -36,8 +33,8 @@ export default function TabLayout() {
           headerShown: false,
           title: "Drivers",
           tabBarIcon: ({ color, size }) => (
-            <Feather name="users" size={20} color={color} />
-          )
+            <MaterialIcons name="people" size={28} color={color} />
+          ),
         }}
       />
 
@@ -48,8 +45,12 @@ export default function TabLayout() {
           title: "Manage",
           tabBarIcon: ({ color, size }) => (
             // <MaterialCommunityIcons name="motorbike" size={30} color={color} />
-            <MaterialCommunityIcons name="steering" size={24} color={color} />
-          )
+            <MaterialCommunityIcons
+              name="steering"
+              size={27}
+              color={Colors.darkCharcoalGrey}
+            />
+          ),
         }}
       />
 
@@ -62,7 +63,7 @@ export default function TabLayout() {
             <View style={{ alignItems: "center", paddingVertical: 4 }}>
               <AntDesign name="pluscircle" size={40} color={Colors.mrDBlue} />
             </View>
-          )
+          ),
         }}
       />
 
@@ -71,10 +72,13 @@ export default function TabLayout() {
         options={{
           headerShown: false,
           title: "Verify Driver",
-
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="verified" size={20} color={color} />
-          )
+            <MaterialIcons
+              name="verified"
+              size={25}
+              color={Colors.darkCharcoalGrey}
+            />
+          ),
         }}
       />
 
@@ -84,8 +88,12 @@ export default function TabLayout() {
           headerShown: false,
           title: "Messages",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome6 name="message" size={20} color={color} />
-          )
+            <Ionicons
+              name="chatbubble-outline"
+              size={23}
+              color={Colors.darkCharcoalGrey}
+            />
+          ),
         }}
       />
     </Tabs>
