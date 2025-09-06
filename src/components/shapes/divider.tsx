@@ -3,7 +3,7 @@ import { DimensionValue, View } from "react-native";
 
 export const HorizontalDivider = ({
   color,
-  space = 0
+  space = 0,
 }: {
   color: string;
   space?: number;
@@ -15,7 +15,7 @@ export const HorizontalDivider = ({
 
 export const VerticalDivider = ({
   color,
-  height = 16
+  height = 16,
 }: {
   color: string;
   height: DimensionValue;

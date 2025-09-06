@@ -1,3 +1,4 @@
+import { shadowStyles } from "@components/shadowStyles";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
@@ -10,6 +11,14 @@ export const styles = StyleSheet.create({
     paddingVertical: 4,
     paddingHorizontal: 5,
     justifyContent: "center",
-    borderRadius: 10
+    borderRadius: 7,
+    ...shadowStyles,
+    shadowOpacity: 0.3
+  },
+  justIconPlatform: {
+    width: 35,
+    justifyContent: "center",
+    flexDirection: "row",
+    alignItems: "center",
   }
 });

@@ -1,11 +1,15 @@
 import { StyleSheet } from "react-native";
 
 import { Colors } from "@constants/ui";
+import { shadowStyles } from "@components/shadowStyles";
 
 export const styles = StyleSheet.create({
   container: {
-    marginTop: 15,
-    gap: 10
+    paddingVertical: 8,
+    // backgroundColor: Colors.bg,
+    // borderColor: 'red',
+    // borderWidth: 1,
+    // ...shadowStyles
   },
   titleWrapper: {
     flexDirection: "row",
@@ -13,32 +17,26 @@ export const styles = StyleSheet.create({
     alignItems: "center"
   },
   heading: {
-    fontSize: 15,
-    fontWeight: "600",
+    fontSize: 11,
+    fontWeight: 600,
     paddingHorizontal: 15,
-    paddingVertical: 4
   },
   clearButton: {
     paddingVertical: 0
   },
   platformFilter: {
-    backgroundColor: Colors.white,
-    shadowColor: Colors.darkGrey,
-    shadowOffset: {
-      width: 0,
-      height: 3
-    },
-    shadowOpacity: 0.19,
-    shadowRadius: 5.62,
-    elevation: 6,
-    paddingBottom: 11,
-    borderBottomColor: Colors.skyLight,
-    borderBottomWidth: 1,
-    padding: 10,
+    marginTop: 7,
+    paddingHorizontal: 10,
     gap: 8,
-    minWidth: "100%"
+    minWidth: "100%",
+    ...shadowStyles,
   },
-  platform: {},
+  platformButton: {
+    borderRadius: 5,
+    paddingVertical: 5,
+    ...shadowStyles,
+    shadowOpacity: 0.4,
+  },
   platformText: {
     color: Colors.white
   },

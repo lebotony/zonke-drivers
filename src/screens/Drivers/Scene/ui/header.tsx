@@ -1,4 +1,4 @@
-import { View, TextInput, Platform } from "react-native";
+import { View, TextInput } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -12,9 +12,7 @@ import { styles } from "../styles/header";
 
 export const Header = () => {
   return (
-    <View
-      style={[styles.container, Platform.OS === "ios" && { paddingTop: 0 }]}
-    >
+    <View style={styles.container}>
       <StatusBar style="dark" />
       <SafeAreaView edges={["top"]} style={{ backgroundColor: Colors.white }}>
         <View style={styles.items}>

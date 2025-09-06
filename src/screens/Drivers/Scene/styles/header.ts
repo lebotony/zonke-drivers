@@ -1,9 +1,11 @@
 import { StyleSheet } from "react-native";
 
 import { Colors } from "@constants/ui";
+import { isIOS } from "../../../../helpers/platform";
 
 export const styles = StyleSheet.create({
   container: {
+    paddingTop: isIOS ? 37 : 10,
     backgroundColor: Colors.white,
     shadowColor: Colors.darkGrey,
     shadowOffset: {
@@ -12,11 +14,8 @@ export const styles = StyleSheet.create({
     },
     shadowOpacity: 0.19,
     shadowRadius: 5.62,
-    elevation: 6,
+    elevation: 3,
     paddingBottom: 11,
-    paddingTop: 10,
-    borderBottomColor: Colors.skyLight,
-    borderBottomWidth: 1
   },
   items: {
     flexDirection: "row",
