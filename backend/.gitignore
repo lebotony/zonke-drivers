@@ -1,0 +1,33 @@
+# Elixir build artifacts
+/_build/
+ebin/
+
+# Dependencies
+/deps/
+
+# Generated docs
+/doc/
+
+# Testing artifacts
+/cover/
+*.coverdata
+
+# Dialyzer
+.plt
+.plt*
+
+# Elixir Language Server (VSCode / IntelliJ / etc.)
+.elixir_ls/
+
+# Nix
+.result
+
+# Erlang crash dumps
+erl_crash.dump
+
+# If using Phoenix
+/node_modules/
+npm-debug.log
+yarn-debug.log*
+yarn-error.log*
+/priv/static/assets/
