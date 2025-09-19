@@ -1,6 +1,6 @@
-defmodule Backend.Services.Services do
+defmodule Backend.Drivers.Drivers do
   alias Backend.Repo
-  alias Backend.Services.{Service, Policy, Queries.ServiceBy}
+  alias Backend.Drivers.{Driver, Policy, Queries.DriverBy}
 
   import Ecto.Query
 
@@ -12,64 +12,55 @@ defmodule Backend.Services.Services do
       |> Map.put(:user_id, user_id)
       |> Map.put(:draft, true)
 
-    %Service{}
-    |> Service.changeset(params)
+    %Driver{}
+    |> Driver.changeset(params)
     |> Repo.insert()
   end
 
-  def update(%Service{} = service, params) do
-    service
-    |> Service.changeset(params)
+  def update(%Driver{} = driver, params) do
+    driver
+    |> Driver.changeset(params)
     |> Repo.update()
   end
 
-  def delete(%Service{id: id} = service) do
+  def delete(%Driver{id: id} = driver) do
     # check if there's pending accepted booking
     # allow delete if 0 otherwise reject delete
-    Repo.delete(service)
+    Repo.delete(driver)
   end
 
-  def get_service(id) do
-    Repo.get_by(Service, id: id)
-    |> format_service()
+  def get_driver(id) do
+    Repo.get_by(Driver, id: id)
+    |> format_driver()
   end
 
-  def get_service(id, :public) do
-    ServiceBy.base_query()
-    |> ServiceBy.by_id(id)
-    |> ServiceBy.by_active_status()
+  def get_driver(id, :public) do
+    DriverBy.base_query()
+    |> DriverBy.by_id(id)
+    |> DriverBy.by_active_status()
     |> Repo.one()
-    |> format_service()
+    |> format_driver()
   end
 
-  def get_services(params) do
-    ServiceBy.base_query()
-    |> ServiceBy.by_business_profile(params.business_profile_id)
-    |> Repo.all()
+  def get_drivers(params) do
+    data =
+      DriverBy.base_query()
+      |> DriverBy.by_business_profile(params.business_profile_id)
+      |> Repo.all()
+      |> Repo.paginate(PaginateHelper.prep_params(params))
+
+    {:ok, data, PaginateHelper.prep_paginate(data)}
   end
 
-  def get_services(:public, params) do
-    %{entries: data, metadata: pagination} =
-      ServiceBy.base_query()
-      |> ServiceBy.by_active_status()
+  def get_drivers(:public, params) do
+    data =
+      DriverBy.base_query()
+      |> DriverBy.by_active_status()
       |> build_search(params)
       |> build_sort(params)
-      |> Repo.cursor_paginate(
-        fetch_cursor_value_fun: fn
-          # Here we build the rank_value for each returned row
-          schema, {:rank_value, _} ->
-            schema.rank_value
+      |> Repo.paginate(PaginateHelper.prep_params(params))
 
-          schema, field ->
-            Paginator.default_fetch_cursor_value(schema, field)
-        end,
-        cursor_fields: [
-          {:rank_value, fn -> dynamic([s], s.rank_value) end},
-          :id
-        ]
-      )
-
-    {:ok, %{data: data, pagination: pagination}}
+    {:ok, data, PaginateHelper.prep_paginate(data)}
   end
 
   defp build_search(query, params) do
@@ -112,6 +103,6 @@ defmodule Backend.Services.Services do
     end
   end
 
-  defp format_service(%Service{} = service), do: {:ok, service}
-  defp format_service(nil), do: {:error, :not_found}
+  defp format_driver(%Driver{} = driver), do: {:ok, driver}
+  defp format_driver(nil), do: {:error, :not_found}
 end

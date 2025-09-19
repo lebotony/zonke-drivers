@@ -3,9 +3,10 @@ defmodule Backend.Accounts.BusinessProfile do
 
   alias Backend.Accounts.User
   alias Backend.Services.Service
+  alias Backend.Vehicles.Vehicle
 
   @required_fields [:name, :description, :location, :user_id]
-  @optional_fields [:tags, :email, :phone, :active]
+  @optional_fields [:email, :phone, :active]
   @all_fields @required_fields ++ @optional_fields
 
   schema "business_profiles" do
@@ -14,15 +15,17 @@ defmodule Backend.Accounts.BusinessProfile do
     field(:phone, :string)
     field(:description, :string)
     field(:location, :map)
-    field(:tags, :string)
+    # field(:tags, :string)
     field(:active, :boolean)
     field(:disabled, :boolean, default: false)
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
 
     field(:rank_value, :decimal, virtual: true)
 
-    has_many(:services, Service)
     belongs_to(:user, User)
+
+    has_many(:drivers, Drivers)
+    has_many(:vehicles, Vehicle)
 
     timestamps()
   end

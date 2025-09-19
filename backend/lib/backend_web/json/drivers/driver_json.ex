@@ -1,0 +1,32 @@
+defmodule BackendWeb.Drivers.DriverJSON do
+  def index(%{drivers: drivers, paginate: paginate}) do
+    %{
+      paginate: paginate,
+      data: for(driver <- drivers, do: show(%{driver: driver}))
+    }
+  end
+
+  def index(%{drivers: drivers}) do
+    for(driver <- drivers, do: show(%{driver: driver}))
+  end
+
+  def show(%{driver: driver}) do
+    Map.take(driver, [
+      :id,
+      :description,
+      :location,
+      :location_options,
+      :draft,
+      :paused_at,
+      :price_range,
+      :price_fixed,
+      :age,
+      :experience,
+      :rating,
+      :booking_count,
+      :inserted_at,
+      :updated_at
+    ])
+    |> Map.merge(%{rating: (:rand.uniform(39) + 10) / 10})
+  end
+end
