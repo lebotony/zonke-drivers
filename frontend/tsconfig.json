@@ -6,9 +6,9 @@
       // "@*": [
       //   "./*"
       // ],
-      "@constants/*": ["frontend/constants/*"],
-      "@components/*": ["frontend/src/components/*"],
-      "@screens/*": ["frontend/src/screens/*"],
+      "@constants/*": ["./frontend/constants/*"],
+      "@components/*": ["./frontend/src/components/*"],
+      "@screens/*": ["./frontend/src/screens/*"],
       "@assets/*": ["./assets/*"]
     }
   },

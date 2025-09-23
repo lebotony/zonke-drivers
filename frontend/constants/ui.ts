@@ -46,7 +46,7 @@ export const Colors = {
   lightYellow: '#FACC15',
   lightGreen: '#22C55E',
   charcoalBlue: "#1A1F36",
-  navyBlue: "#0B0C10"
+  navyBlue: "#0B0C10",
 };
 
 // 120161
