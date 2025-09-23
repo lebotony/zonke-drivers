@@ -27,6 +27,16 @@ config :backend, BackendWeb.Endpoint,
   secret_key_base: "FdMkqljggbQATVowkn4cuXVIjMiQuaE/ZxK8LWjhWlwrvBtodc6wN6Ddpafk5T9q",
   watchers: []
 
+config :ex_aws,
+  access_key_id: "test",
+  secret_access_key: "test",
+  region: "us-east-1",
+  s3: [
+    scheme: "http://",
+    host: "localhost",
+    port: 4566
+  ]
+
 # ## SSL Support
 #
 # In order to use HTTPS in development, a self-signed

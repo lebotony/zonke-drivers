@@ -9,6 +9,9 @@ defmodule Backend.Factory do
   use Backend.ThreadFactory
   use Backend.MessageFactory
   use Backend.ParticipantFactory
+  use Backend.VehicleFactory
+  use Backend.PaymentFactory
+  use Backend.DriverFactory
 
   def uuid(), do: Ecto.UUID.generate()
 end

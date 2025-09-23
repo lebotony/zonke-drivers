@@ -57,7 +57,11 @@ defmodule Backend.MixProject do
       {:mox, "~> 1.0", only: :test},
       {:cors_plug, "~> 3.0"},
       {:timex, "~> 3.7"},
-      {:scrivener_ecto, "~> 2.0"}
+      {:scrivener_ecto, "~> 2.0"},
+      {:ex_aws, "~> 2.4"},
+      {:ex_aws_s3, "~> 2.5"},
+      {:hackney, "~> 1.18"},
+      {:sweet_xml, "~> 0.7"}
     ]
   end
 

@@ -15,6 +15,7 @@ defmodule Backend.Drivers.Driver do
     :paused_at,
     :experience,
     :age,
+    :licences
   ]
   @embeds [:price_range, :price_fixed]
   @all_fields @required_fields ++ @optional_fields ++ @embeds
@@ -23,10 +24,11 @@ defmodule Backend.Drivers.Driver do
     field(:description, :string)
     field(:location, :map)
     field(:location_options, {:array, :string})
+    field(:licences, {:array, :string})
     field(:draft, :boolean)
     field(:paused_at, :naive_datetime)
     field(:experience, :string)
-    field(:age, :string)
+    field(:age, :integer)
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
 
     embeds_one(:price_range, PriceRangeEmbed, on_replace: :delete)
@@ -37,6 +39,7 @@ defmodule Backend.Drivers.Driver do
     field(:rank_value, :decimal, virtual: true)
 
     belongs_to(:business_profile, BusinessProfile)
+    belongs_to(:user, User)
 
     # has_many(:reviews, Review)
     has_many(:bookings, Booking)
@@ -50,6 +53,8 @@ defmodule Backend.Drivers.Driver do
     |> cast(params, @all_fields -- @embeds)
     |> cast_embed(:price_range, required: false)
     |> cast_embed(:price_fixed, required: false)
+    |> assoc_constraint(:user)
+    |> assoc_constraint(:business_profile)
     |> validate_required(@required_fields)
   end
 end

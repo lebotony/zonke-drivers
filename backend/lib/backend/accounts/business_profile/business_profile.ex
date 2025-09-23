@@ -2,11 +2,11 @@ defmodule Backend.Accounts.BusinessProfile do
   use Backend, :model
 
   alias Backend.Accounts.User
-  alias Backend.Services.Service
   alias Backend.Vehicles.Vehicle
+  alias Backend.Assets.Asset
 
   @required_fields [:name, :description, :location, :user_id]
-  @optional_fields [:email, :phone, :active]
+  @optional_fields [:email, :phone, :active, :settings]
   @all_fields @required_fields ++ @optional_fields
 
   schema "business_profiles" do
@@ -15,7 +15,7 @@ defmodule Backend.Accounts.BusinessProfile do
     field(:phone, :string)
     field(:description, :string)
     field(:location, :map)
-    # field(:tags, :string)
+    field(:settings, :map)
     field(:active, :boolean)
     field(:disabled, :boolean, default: false)
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
@@ -24,6 +24,7 @@ defmodule Backend.Accounts.BusinessProfile do
 
     belongs_to(:user, User)
 
+    has_one(:asset, Asset)
     has_many(:drivers, Drivers)
     has_many(:vehicles, Vehicle)
 

@@ -5,8 +5,9 @@ defmodule Backend.Vehicles.Vehicle do
   alias Backend.Vehicles.VehicleDriver
   alias Backend.Drivers.Driver
   alias Backend.Ecto.Embeds.{PriceRangeEmbed, PriceFixed}
+  alias Backend.Assets.Asset
 
-  @required_fields [:name, :owner_id, :price_fixed]
+  @required_fields [:name, :business_profile_id, :price_fixed]
   @optional_fields [:make, :model, :description, :mileage, :price_range, :active]
   @embeds [:price_range, :price_fixed]
   @all_fields @required_fields ++ @optional_fields ++ @embeds
@@ -16,7 +17,7 @@ defmodule Backend.Vehicles.Vehicle do
     field(:make, :string)
     field(:model, :string)
     field(:description, :string)
-    field(:mileage, :number)
+    field(:mileage, :integer)
     field(:active, :boolean, default: false)
 
     embeds_one(:price_range, PriceRangeEmbed, on_replace: :delete)
@@ -25,7 +26,7 @@ defmodule Backend.Vehicles.Vehicle do
     belongs_to(:business_profile, BusinessProfile)
 
     many_to_many(:drivers, Driver, join_through: VehicleDriver)
-    # has_many(:assets, Asset)
+    has_many(:assets, Asset)
 
     timestamps()
   end
