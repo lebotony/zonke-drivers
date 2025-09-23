@@ -5,18 +5,6 @@ import { Colors } from "../../../../../constants/ui";
 export const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.white,
-    // shadowColor: Colors.darkGrey,
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 3
-    // },
-    // shadowOpacity: 0.19,
-    // shadowRadius: 5.62,
-    // elevation: 6,
-    // paddingBottom: 11,
-    // paddingTop: 10,
-    // borderBottomColor: Colors.skyLight,
-
     marginHorizontal: 14,
     shadowColor: "#888888",
     shadowOffset: {

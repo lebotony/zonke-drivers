@@ -1,5 +1,5 @@
-import { Manage as ManageScreen } from "../../screens/ManageVehicles";
+import { ManageVehicles } from "../../screens/ManageVehicles";
 
 export default function Manage() {
-  return <ManageScreen />;
+  return <ManageVehicles />;
 }
