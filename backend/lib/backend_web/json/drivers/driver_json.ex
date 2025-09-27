@@ -16,7 +16,6 @@ defmodule BackendWeb.Drivers.DriverJSON do
       :description,
       :location,
       :location_options,
-      :draft,
       :paused_at,
       :price_range,
       :price_fixed,
@@ -27,6 +26,5 @@ defmodule BackendWeb.Drivers.DriverJSON do
       :inserted_at,
       :updated_at
     ])
-    |> Map.merge(%{rating: (:rand.uniform(39) + 10) / 10})
   end
 end

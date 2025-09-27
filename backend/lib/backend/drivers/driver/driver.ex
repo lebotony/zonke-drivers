@@ -27,7 +27,7 @@ defmodule Backend.Drivers.Driver do
     field(:licences, {:array, :string})
     field(:active, :boolean, default: false)
     field(:paused_at, :naive_datetime)
-    field(:experience, :string)
+    field(:experience, :integer)
     field(:age, :integer)
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
 

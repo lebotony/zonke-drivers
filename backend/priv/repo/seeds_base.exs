@@ -5,11 +5,15 @@ alias Backend.Accounts.{User, BusinessProfile, Membership}
 alias Faker.{Person, Company, Internet, Address}
 alias Backend.Messenger.Schemas.{ThreadParticipant, Message}
 alias Backend.Messenger.Threads
-alias Backend.Services.Service
 alias Backend.Bookings.Booking
 alias Backend.Reviews.Review
 alias Backend.Tags.Tag
 alias Backend.TestExample.Participant
+alias Backend.Vehicles.{Vehicle, VehicleDriver, Payment}
+alias Backend.Drivers.Driver
+alias Backend.Bookings.{VehicleBooking, DriverBooking}
+alias Backend.Assets.Assets
+alias Backend.Posts.Post
 alias Backend.Ecto.EctoEnums
 
 # Script for populating the database. You can run it as:
@@ -24,7 +28,12 @@ alias Backend.Ecto.EctoEnums
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+ExAws.S3.put_bucket("zonke-drivers-bucket", "us-east-1")
+|> ExAws.request!()
+
 # Create client users without business profiles
+#####################################################################################################
+
 Logger.info("Creating users with profiles")
 
 users =
@@ -45,36 +54,14 @@ users =
     user
   end)
 
-{service_providers, customers} = Enum.split(users, 20)
+{drivers_users, owners_users} = Enum.split(users, 20)
+
+#####################################################################################################
 
 Logger.info("Creating business profiles")
 
-professions_with_tags = [
-  {"Hair Dresser", "hair, saloon, haircut, makeup, nails, beauty"},
-  {"Plumber", "plumbing, pipes, drainage, installation, repair, maintenance"},
-  {"Electrician", "wiring, electrical, installation, repair, circuits, safety"},
-  {"Carpenter", "woodworking, furniture, construction, repair, custom, installation"},
-  {"Personal Trainer", "fitness, workout, nutrition, coaching, health, motivation"},
-  {"Photographer", "photography, portraits, events, editing, creative, sessions"},
-  {"Graphic Designer", "design, branding, digital, print, creative, logos"},
-  {"Web Developer", "coding, websites, apps, programming, responsive, SEO"},
-  {"Tutor", "education, homework, teaching, academic, test prep, learning"},
-  {"Massage Therapist", "massage, relaxation, therapy, wellness, spa, recovery"},
-  {"Landscaper", "gardening, lawn care, design, maintenance, planting, irrigation"},
-  {"Chef/Caterer", "cooking, meals, catering, events, recipes, gourmet"},
-  {"House Cleaner", "cleaning, organizing, deep clean, sanitizing, maintenance"},
-  {"Pet Groomer", "grooming, pets, bathing, trimming, care, styling"},
-  {"Mechanic", "auto repair, maintenance, diagnostics, oil change, brakes"},
-  {"Interior Designer", "decor, space planning, furniture, color schemes, renovation"},
-  {"Yoga Instructor", "yoga, meditation, flexibility, wellness, breathing, classes"},
-  {"Accountant", "taxes, bookkeeping, financial, consulting, payroll, advice"},
-  {"Event Planner", "events, coordination, weddings, parties, logistics, decor"},
-  {"Makeup Artist", "makeup, beauty, bridal, special effects, glam, application"},
-  {"Personal Assistant", "organization, scheduling, errands, administrative, support"}
-]
-
 business_profiles =
-  Enum.map(Enum.zip(service_providers, professions_with_tags), fn {user, {_, services}} ->
+  Enum.map(users, fn user ->
     {:ok, profile} =
       %BusinessProfile{
         user_id: user.id,
@@ -87,7 +74,6 @@ business_profiles =
           lat: Address.latitude(),
           lng: Address.longitude()
         },
-        tags: services,
         phone: Faker.Phone.EnUs.phone()
       }
       |> Repo.insert()
@@ -101,126 +87,236 @@ business_profiles =
     }
     |> Repo.insert()
 
+    # CREATE PROFILE ASSET
+    asset_params = %{
+      file_path: Path.expand("priv/person-test.jpg"),
+      filename: "uploads/person-test.jpg",
+      business_profile_id: profile.id
+    }
+
+    Assets.upload_and_save(asset_params)
+
     profile
   end)
 
-# Create services
-Logger.info("Creating services")
+######################################################################################################
 
-services =
-  Enum.flat_map(Enum.zip(service_providers, professions_with_tags), fn {user, {_, services}} ->
+Logger.info("Creating vehicles")
+
+vehicles =
+  Enum.map(owners_users, fn user ->
     profile = Enum.find(business_profiles, fn bp -> bp.user_id == user.id end)
-    services_list = services |> String.split(", ") |> Enum.map(&String.trim/1)
 
-    Enum.map(services_list, fn service ->
-      capitalized_service =
-        service |> String.split() |> Enum.map(&String.capitalize/1) |> Enum.join(" ")
-
-      {:ok, service} =
-        %Service{
-          name: capitalized_service,
-          user_id: user.id, # Service owner
-          location: %{"lat" => 0.0, "lng" => 0.0},
-          business_profile_id: profile.id,
-          description: "I love #{capitalized_service}",
-          location_options: ["Nketa, Magwegwe, Selbourne, Killarny"],
+      {:ok, vehicle} =
+        %Vehicle{
+          name: "Mercedes Benz G40",
+          make: "SUV",
+          model: "T21",
+          description: "Has suspension problems",
+          active: true,
+          mileage: 60000,
           price_range: %{currency: "dollars", min: 20, max: 25},
           price_fixed: %{currency: "dollars", value: 25},
-        }
-        |> Repo.insert()
-
-      service
-    end)
-  end)
-
-# Create bookings
-Logger.info("Creating bookings")
-
-services_chunks = Enum.chunk_every(services, 6)
-
-bookings =
-  Enum.flat_map(customers, fn user ->
-    Enum.map(services_chunks, fn service_chunk ->
-      [service | _rest] = service_chunk
-
-      {:ok, booking} =
-        %Booking{
-          status: "pending",
-          booked_date: Date.utc_today(),
-          booked_time: Time.utc_now() |> Time.truncate(:second),
-          # User who booked service
           user_id: user.id,
-          service_id: service.id
+          business_profile_id: profile.id,
         }
         |> Repo.insert()
 
-      booking
-    end)
-  end)
-
-# Create reviews
-Logger.info("Creating reviews")
-
-first_three_customers = Enum.take(customers, 3)
-
-reviews =
-  Enum.flat_map(first_three_customers, fn user ->
-    Enum.map(services, fn service ->
-      {:ok, review} =
-        %Review{
-          comment: "Great service from #{service.name}",
-          user_id: user.id,
-          service_id: service.id
-        }
-        |> Repo.insert()
-
-      review
-    end)
-  end)
-
-# Create tags between users
-Logger.info("Creating tags")
-
-tags =
-  Enum.map(Enum.zip(customers, service_providers), fn {customer, provider} ->
-    {:ok, tag} =
-      %Tag{
-        tagged_id: customer.id,
-        tagger_id: provider.id
+      # CREATE VEHICLE ASSET
+      asset_params = %{
+        file_path: Path.expand("priv/car-test.jpg"),
+        filename: "uploads/car-test.jpg",
+        vehicle_id: vehicle.id
       }
-      |> Repo.insert()
 
-    tag
+      Assets.upload_and_save(asset_params)
+
+      vehicle
+    end)
+
+######################################################################################################
+
+Logger.info("Creating drivers")
+
+driver_previous_companies = [
+  {"", "hair, saloon, haircut, makeup, nails, beauty"},
+  {"Plumber", "plumbing, pipes, drainage, installation, repair, maintenance"},
+]
+
+drivers =
+  Enum.map(drivers_users, fn user ->
+    profile = Enum.find(business_profiles, fn bp -> bp.user_id == user.id end)
+
+      {:ok, driver} =
+        %Driver{
+          location: %{"lat" => 0.0, "lng" => 0.0},
+          description: "i drive trucks",
+          licences: ["General", "Class 2", "Class 4"],
+          active: true,
+          experience: 12,
+          age: 42,
+          price_range: %{currency: "dollars", min: 20, max: 25},
+          price_fixed: %{currency: "dollars", value: 25},
+          user_id: user.id,
+          business_profile_id: profile.id,
+        }
+        |> Repo.insert()
+
+      driver
+    end)
+
+######################################################################################################
+
+Logger.info("Creating posts")
+
+posts =
+  Enum.map(owners_users, fn user ->
+    profile = Enum.find(business_profiles, fn bp -> bp.user_id == user.id end)
+
+      {:ok, post} =
+        %Post{
+          location: %{"lat" => 0.0, "lng" => 0.0},
+          description: "I am looking for a scooter driver",
+          licences: ["General", "Class 2", "Class 4"],
+          location_options: ["Pretoria", "Jozi", "Soweto"],
+          business_profile_id: profile.id,
+        }
+        |> Repo.insert()
+
+      # CREATE POST ASSET
+      asset_params = %{
+        file_path: Path.expand("priv/car-test.jpg"),
+        filename: "uploads/car-test.jpg",
+        post_id: post.id
+      }
+
+      Assets.upload_and_save(asset_params)
+
+      post
+    end)
+
+######################################################################################################
+
+Logger.info("Creating vehicle_bookings")
+
+vehicle_bookings =
+  Enum.map(Enum.zip(drivers_users, vehicles), fn {user, vehicle} ->
+      {:ok, vehicle_booking} =
+        %VehicleBooking{
+          # booked_date: ,
+          note: "can i book this car for the afternoon?",
+          price_fixed: %{currency: "dollars", value: 25},
+          user_id: user.id,
+          vehicle_id: vehicle.id,
+        }
+        |> Repo.insert()
+
+      vehicle_booking
+    end)
+
+######################################################################################################
+
+Logger.info("Creating driver_bookings")
+
+driver_bookings =
+  Enum.map(Enum.zip(owners_users, drivers), fn {user, driver} ->
+      {:ok, driver_booking} =
+        %DriverBooking{
+          # booked_date: ,
+          note: "can you drive this truck?",
+          price_fixed: %{currency: "dollars", value: 25},
+          user_id: user.id,
+          driver_id: driver.id,
+        }
+        |> Repo.insert()
+
+      driver_booking
+    end)
+
+######################################################################################################
+
+Logger.info("Creating vehicle_drivers")
+
+vehicle_drivers =
+  Enum.map(Enum.zip(drivers, vehicles), fn {driver, vehicle} ->
+      {:ok, vehicle_driver} =
+        %VehicleDriver{
+          vehicle_id: vehicle.id,
+          driver_id: driver.id,
+        }
+        |> Repo.insert()
+
+      vehicle_driver
+    end)
+
+######################################################################################################
+
+Logger.info("Creating payments")
+
+payments =
+  Enum.flat_map(Enum.zip(vehicle_drivers, 1..20), fn {vehicle_driver, price} ->
+    Enum.map(1..10, fn v ->
+      {:ok, payment} =
+        %Payment{
+          price_fixed: %{currency: "dollars", value: price * v},
+          vehicle_driver_id: vehicle_driver.id,
+        }
+        |> Repo.insert()
+
+      payment
+    end)
   end)
 
-# Create participants
-# participants =
-#   Enum.map(users, fn user ->
-#     {:ok, participant} =
-#       %Participant{
-#         id: user.id,  # Using same ID as user
-#         first_name: user.first_name,
-#         last_name: user.last_name,
-#         email: user.email,
-#         username: user.username,
-#         location: user.location
+######################################################################################################
+
+# Logger.info("Creating reviews")
+
+# first_three_customers = Enum.take(vehicle_owners, 3)
+
+# reviews =
+#   Enum.flat_map(first_three_customers, fn user ->
+#     Enum.map(services, fn service ->
+#       {:ok, review} =
+#         %Review{
+#           comment: "Great service from #{service.name}",
+#           user_id: user.id,
+#           service_id: service.id
+#         }
+#         |> Repo.insert()
+
+#       review
+#     end)
+#   end)
+
+######################################################################################################
+
+# Logger.info("Creating tags")
+
+# tags =
+#   Enum.map(Enum.zip(vehicle_owners, drivers_users), fn {customer, provider} ->
+#     {:ok, tag} =
+#       %Tag{
+#         tagged_id: customer.id,
+#         tagger_id: provider.id
 #       }
 #       |> Repo.insert()
 
-#     participant
+#     tag
 #   end)
 
-# Create threads
+######################################################################################################
+
 Logger.info("Creating threads")
 
 threads =
-  Enum.map(customers, fn customer ->
-    {:ok, thread} = Threads.initialize_thread(customer.id, List.first(service_providers).id)
+  Enum.map(owners_users, fn user ->
+    {:ok, thread} = Threads.initialize_thread(user.id, List.first(drivers_users).id)
 
     thread
   end)
 
-# Create messages
+######################################################################################################
+
 Logger.info("Creating messages")
 
 preloads = [:messages, [thread_participants: :participant]]
@@ -258,7 +354,13 @@ messages =
 
 Logger.info("Seed data population completed successfully!")
 Logger.info("Created: #{length(users)} users, #{length(business_profiles)} business profiles")
-Logger.info("Created: #{length(services)} services, #{length(bookings)} bookings")
-Logger.info("Created: #{length(reviews)} reviews, #{length(tags)} tags")
-Logger.info("Created: #{length(threads)} threads")
+Logger.info("Created: #{length(vehicle_bookings)} vehicle_bookings")
+Logger.info("Created: #{length(driver_bookings)} driver_bookings")
+Logger.info("Created: #{length(posts)} posts")
+Logger.info("Created: #{length(vehicles)} vehicles")
+Logger.info("Created: #{length(drivers)} drivers")
+Logger.info("Created: #{length(vehicle_drivers)} vehicle_drivers")
+Logger.info("Created: #{length(payments)} payments")
+
+# Logger.info("Created: #{length(reviews)} reviews, #{length(tags)} tags")
 Logger.info("Created: #{length(threads)} threads, #{length(messages)} messages")
