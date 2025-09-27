@@ -1,5 +1,5 @@
 defmodule Backend.Drivers.Drivers do
-  alias Backend.Repo
+  alias Backend.{Repo, PaginateHelper}
   alias Backend.Drivers.{Driver, Policy, Queries.DriverBy}
 
   import Ecto.Query
@@ -46,13 +46,12 @@ defmodule Backend.Drivers.Drivers do
     data =
       DriverBy.base_query()
       |> DriverBy.by_business_profile(params.business_profile_id)
-      |> Repo.all()
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
   end
 
-  def get_drivers(:public, params) do
+  def get_drivers(params, :public) do
     data =
       DriverBy.base_query()
       |> DriverBy.by_active_status()

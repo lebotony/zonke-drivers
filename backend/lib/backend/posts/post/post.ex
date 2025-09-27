@@ -4,8 +4,8 @@ defmodule Backend.Posts.Post do
   alias Backend.Accounts.{BusinessProfile, User}
   alias Backend.Assets.Asset
 
-  @required_fields [:location, :business_profile_id, :user_id]
-  @optional_fields [:description, :location_options, :licences]
+  @required_fields [:description, :business_profile_id]
+  @optional_fields [:location, :location_options, :licences]
   @all_fields @required_fields ++ @optional_fields
 
   schema "posts" do
@@ -19,7 +19,7 @@ defmodule Backend.Posts.Post do
 
     belongs_to(:business_profile, BusinessProfile)
 
-    has_many(:assets, Asset)
+    has_one(:asset, Asset)
 
     timestamps()
   end

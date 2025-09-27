@@ -4,6 +4,7 @@ defmodule Backend.Accounts.BusinessProfile do
   alias Backend.Accounts.User
   alias Backend.Vehicles.Vehicle
   alias Backend.Assets.Asset
+  alias Backend.Drivers.Driver
 
   @required_fields [:name, :description, :location, :user_id]
   @optional_fields [:email, :phone, :active, :settings]
@@ -25,7 +26,7 @@ defmodule Backend.Accounts.BusinessProfile do
     belongs_to(:user, User)
 
     has_one(:asset, Asset)
-    has_many(:drivers, Drivers)
+    has_many(:drivers, Driver)
     has_many(:vehicles, Vehicle)
 
     timestamps()

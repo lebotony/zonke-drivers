@@ -5,13 +5,13 @@ defmodule Backend.Drivers.Driver do
   alias Backend.Ecto.Embeds.{Duration, PriceRangeEmbed, PriceFixed}
   # alias Backend.Reviews.Review
   alias Backend.Vehicles.Vehicle
-  alias Backend.Bookings.Booking
+  alias Backend.Bookings.DriverBooking
 
-  @required_fields [:name, :location, :business_profile_id, :user_id]
+  @required_fields [:location, :business_profile_id, :user_id]
   @optional_fields [
     :description,
     :location_options,
-    :draft,
+    :active,
     :paused_at,
     :experience,
     :age,
@@ -25,14 +25,14 @@ defmodule Backend.Drivers.Driver do
     field(:location, :map)
     field(:location_options, {:array, :string})
     field(:licences, {:array, :string})
-    field(:draft, :boolean)
+    field(:active, :boolean, default: false)
     field(:paused_at, :naive_datetime)
     field(:experience, :string)
     field(:age, :integer)
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
 
-    embeds_one(:price_range, PriceRangeEmbed, on_replace: :delete)
-    embeds_one(:price_fixed, PriceFixed)
+    embeds_one(:price_range, PriceRangeEmbed, on_replace: :update)
+    embeds_one(:price_fixed, PriceFixed, on_replace: :update)
 
     field(:rating, :float, virtual: true)
     field(:booking_count, :float, virtual: true)
@@ -42,7 +42,7 @@ defmodule Backend.Drivers.Driver do
     belongs_to(:user, User)
 
     # has_many(:reviews, Review)
-    has_many(:bookings, Booking)
+    has_many(:driver_bookings, DriverBooking)
     many_to_many(:vehicles, Vehicle, join_through: VehicleDriver)
 
     timestamps()
@@ -51,8 +51,8 @@ defmodule Backend.Drivers.Driver do
   def changeset(struct, params) do
     struct
     |> cast(params, @all_fields -- @embeds)
-    |> cast_embed(:price_range, required: false)
-    |> cast_embed(:price_fixed, required: false)
+    |> cast_embed(:price_range, required: false, with: &PriceRangeEmbed.changeset/2)
+    |> cast_embed(:price_fixed, required: false, with: &PriceFixed.changeset/2)
     |> assoc_constraint(:user)
     |> assoc_constraint(:business_profile)
     |> validate_required(@required_fields)

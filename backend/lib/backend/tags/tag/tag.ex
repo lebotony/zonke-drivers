@@ -17,7 +17,7 @@ defmodule Backend.Tags.Tag do
     belongs_to(:tagger, User)
     belongs_to(:tagged, User)
 
-    # has_many(:assets, Asset)
+    # has_one(:asset, Asset)
 
     timestamps()
   end

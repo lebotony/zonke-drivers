@@ -15,16 +15,16 @@ defmodule Backend.Assets.Assets do
         {:error, reason} -> {:error, {:ex_aws_s3_upload_failed, reason}}
       end
     end)
-    |> Multi.on_rollback(:s3_upload_cleanup, fn _repo, %{s3_upload: s3_upload}, _error ->
-      if s3_upload do
-        case delete_object(s3_upload) do
-          {:ok, _} -> :ok
-          {:error, reason} -> Logger.error("Failed to delete S3 file on rollback: #{inspect(reason)}")
-        end
-      end
-      :ok
-    end)
-    |> Multi.run(:db_insert, fn _repo, _changes ->
+    # |> Multi.on_rollback(:s3_upload_cleanup, fn _repo, %{s3_upload: s3_upload}, _error ->
+    #   if s3_upload do
+    #     case delete_object(s3_upload) do
+    #       {:ok, _} -> :ok
+    #       {:error, reason} -> Logger.error("Failed to delete S3 file on rollback: #{inspect(reason)}")
+    #     end
+    #   end
+    #   :ok
+    # end)
+    |> Multi.run(:asset, fn _repo, _changes ->
       with {:ok, url} <- presigned_url(filename) do
         params
         |> Map.merge(%{url: url})
@@ -36,13 +36,13 @@ defmodule Backend.Assets.Assets do
     end)
     |> Repo.transaction()
     |> case do
-      {:ok, result} ->
-        {:ok, result}
+      {:ok, %{asset: asset}} ->
+        {:ok, asset}
 
       {:error, :s3_upload, {:error, reason}, _changes} ->
         {:error, "Failed to upload file: #{inspect(reason)}"}
 
-      {:error, :db_insert, {:error, reason}, _changes} ->
+      {:error, :asset, {:error, reason}, _changes} ->
         {:error, "Failed to save file record: #{inspect(reason)}"}
     end
   end
@@ -54,9 +54,10 @@ defmodule Backend.Assets.Assets do
   end
 
   def put_object(file_path, filename) do
-    file_path
-    |> S3.upload(@bucket, filename)
-    |> ExAws.request()
+    body = File.read!(file_path)
+
+    ExAws.S3.put_object(@bucket, filename, body)
+    |> ExAws.request(config: s3_config())
   end
 
   def delete_object(filename) do
@@ -71,7 +72,7 @@ defmodule Backend.Assets.Assets do
     end
   end
 
-  defp s3_config() do
+  def s3_config() do
     if System.get_env("MIX_ENV") == "dev" do
       ExAws.Config.new(:s3, [
         scheme: "http://",

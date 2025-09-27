@@ -7,7 +7,7 @@ defmodule BackendWeb.Drivers.DriverController do
   # TODO: add rate limiting
 
   def index_public(conn, params, _session) do
-    with {:ok, drivers, paginate} <- Drivers.get_drivers(:public, params) do
+    with {:ok, drivers, paginate} <- Drivers.get_drivers(params, :public) do
       render(conn, :index, %{drivers: drivers, paginate: paginate})
     end
   end

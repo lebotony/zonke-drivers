@@ -10,9 +10,9 @@ defmodule Backend.Ecto.EctoEnums do
   )
 
   defenum(BookingStatusEnum, :booking_status_enum, [
-    :pending,
-    :active,
-    :delivered
+    :accepted,
+    :rejected,
+    :pending
   ])
 
   defenum(NotificationsEnum, :notifications_enum, [

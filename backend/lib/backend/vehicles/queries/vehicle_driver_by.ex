@@ -14,7 +14,6 @@ defmodule Backend.Vehicles.Queries.VehicleDriverBy do
 
   def by_vehicle_owner(query, id) do
     query
-    |> join(:inner, [vehicle_driver: vd], v in assoc(vd, :vehicle))
     |> where([vehicle: v], v.business_profile_id == ^id)
   end
 

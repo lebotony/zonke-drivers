@@ -1,17 +1,40 @@
 defmodule Backend.Vehicles.Vehicles do
-  alias Backend.Repo
+  alias Backend.{Repo, PaginateHelper}
   alias Backend.Vehicles.{Vehicle, Queries.VehicleBy}
+  alias Backend.Assets.Assets
+  alias Ecto.Multi
 
   import Ecto.Query
 
   # defdelegate authorize(action, params, session), to: Policy
 
   def create(params, %{user_id: user_id}) do
-    params = Map.put(params, :user_id, user_id)
+    vehicle_params =
+      params
+      |> Map.delete(:asset)
+      |> Map.put(:user_id, user_id)
 
-    %Vehicle{}
-    |> Vehicle.changeset(params)
-    |> Repo.insert()
+    Multi.new()
+    |> Multi.insert(
+      :vehicle,
+      Vehicle.changeset(%Vehicle{}, vehicle_params)
+    )
+    |> Multi.run(:asset, fn _repo, %{vehicle: vehicle} ->
+        asset_params =
+          params
+          |> Map.get(:asset, %{})
+          |> Map.put(:vehicle_id, vehicle.id)
+
+        Assets.upload_and_save(asset_params)
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{vehicle: vehicle}} ->
+        {:ok, vehicle}
+
+      {:error, step, reason, changes_so_far} ->
+        {:error, step, reason}
+    end
   end
 
   def update(%Vehicle{} = vehicle, params) do
@@ -41,13 +64,12 @@ defmodule Backend.Vehicles.Vehicles do
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_business_profile(params.business_profile_id)
-      |> Repo.all()
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
   end
 
-  def get_vehicles(:public, params) do
+  def get_vehicles(params, :public) do
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()

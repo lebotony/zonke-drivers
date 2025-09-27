@@ -4,12 +4,12 @@ defmodule Backend.Vehicles.Payment do
   alias Backend.Vehicles.VehicleDriver
   alias Backend.Ecto.Embeds.PriceFixed
 
-
-  @params [:vehicle_driver_id]
+  @required_fields [:vehicle_driver_id]
   @embeds [:price_fixed]
+  @all_fields @required_fields ++ @embeds
 
-  schema "payment" do
-    embeds_one(:price_fixed, PriceFixed)
+  schema "payments" do
+    embeds_one(:price_fixed, PriceFixed, on_replace: :update)
 
     belongs_to(:vehicle_driver, VehicleDriver)
 
@@ -18,9 +18,9 @@ defmodule Backend.Vehicles.Payment do
 
   def changeset(struct, attrs) do
     struct
-    |> cast(attrs, @params -- @embeds)
-    |> cast_embed(:price_fixed, required: true)
+    |> cast(attrs, @all_fields -- @embeds)
+    |> cast_embed(:price_fixed, required: true, with: &PriceFixed.changeset/2)
     |> assoc_constraint(:vehicle_driver)
-    |> validate_required(@params)
+    |> validate_required(@required_fields)
   end
 end

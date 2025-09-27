@@ -24,7 +24,7 @@ defmodule Backend.Notifications.Notifications do
       type: :booking,
       metadata: %{action: action},
       read: false,
-      recipient_id: recipient_id(booking),
+      recipient_id: booking.user_id,
       notifier_id: notifier_id
     }
 
@@ -46,7 +46,7 @@ defmodule Backend.Notifications.Notifications do
     params = %{
       type: :review,
       read: false,
-      recipient_id: recipient_id(review),
+      recipient_id: review.user_id,
       notifier_id: notifier_id
     }
 
@@ -104,15 +104,6 @@ defmodule Backend.Notifications.Notifications do
       true -> Repo.delete(notification)
       false -> {:ok, :notification_unread}
     end
-  end
-
-  def recipient_id(record) do
-    from(bp in BusinessProfile,
-      join: s in assoc(bp, :services),
-      where: s.id == ^record.service_id,
-      select: bp.user_id
-    )
-    |> Repo.one()
   end
 
   defp format_notification(%Notification{} = notification), do: {:ok, notification}

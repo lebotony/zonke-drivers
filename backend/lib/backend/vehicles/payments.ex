@@ -1,14 +1,13 @@
 defmodule Backend.Vehicles.Payments do
-  alias Backend.Repo
+  alias Backend.{Repo, PaginateHelper}
   alias Backend.Vehicles.{Payment, VehicleDriver}
+  alias Backend.Vehicles.Queries.PaymentBy
 
   import Ecto.Query
 
   # defdelegate authorize(action, params, session), to: Policy
 
-  def create(params, %{user_id: user_id}) do
-    params = Map.put(params, :user_id, user_id)
-
+  def create(params) do
     %Payment{}
     |> Payment.changeset(params)
     |> Repo.insert()
@@ -31,9 +30,8 @@ defmodule Backend.Vehicles.Payments do
 
   def get_payments(params, :vehicle_owner) do
     data =
-      VehicleDriverBy.base_query()
-      |> VehicleDriverBy.by_vehicle_owner(params.business_profile_id)
-      |> Repo.all()
+      PaymentBy.base_query()
+      |> PaymentBy.by_vehicle_driver(params.vehicle_driver_id)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
@@ -41,9 +39,8 @@ defmodule Backend.Vehicles.Payments do
 
   def get_payments(params, :driver) do
     data =
-      VehicleDriverBy.base_query()
-      |> VehicleDriverBy.by_driver(params.business_profile_id)
-      |> Repo.all()
+      PaymentBy.base_query()
+      |> PaymentBy.by_driver(params.business_profile_id)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}

@@ -1,7 +1,7 @@
 defmodule Backend.Vehicles.VehicleDriver do
   use Backend, :model
 
-  alias Backend.Vehicles.Vehicle
+  alias Backend.Vehicles.{Vehicle, Payment}
   alias Backend.Drivers.Driver
 
   @params [:driver_id, :vehicle_id]
