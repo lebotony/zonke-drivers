@@ -27,8 +27,8 @@ defmodule Backend.Messenger.Threads do
       from(m in Message,
         where:
           m.seen == false and
-          m.author_id != ^participant_id and
-          m.thread_id == parent_as(:thread).id,
+            m.author_id != ^participant_id and
+            m.thread_id == parent_as(:thread).id,
         select: %{count: count(m.id)}
       )
 
@@ -46,14 +46,14 @@ defmodule Backend.Messenger.Threads do
       |> join(:left_lateral, [t], umc in subquery(unseen_messages_count_subquery), on: true)
       |> join(:left_lateral, [t], lm in subquery(last_message_subquery), as: :lm, on: true)
       |> select_merge([t, _tp, umc, lm], %{
-          t |
-          last_message: lm,
-          unseen_msg_count: coalesce(umc.count, 0),
-        })
+        t
+        | last_message: lm,
+          unseen_msg_count: coalesce(umc.count, 0)
+      })
       |> order_by([t, _tp, _umc, lm], desc: lm.inserted_at)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
-    threads = Repo.preload(data.entries, [thread_participants: :participant])
+    threads = Repo.preload(data.entries, thread_participants: :participant)
 
     {:ok, threads, PaginateHelper.prep_paginate(data)}
   end

@@ -26,7 +26,11 @@ defmodule Backend.Accounts.BusinessProfileTest do
   end
 
   describe "create/2" do
-    test "successfully creates a business_profile", %{user: user, params: params, session: session} do
+    test "successfully creates a business_profile", %{
+      user: user,
+      params: params,
+      session: session
+    } do
       assert {:ok, %BusinessProfile{} = business_profile} =
                BusinessProfiles.create(params, session)
 
@@ -40,15 +44,17 @@ defmodule Backend.Accounts.BusinessProfileTest do
     test "returns error for invalid params", %{user: user, session: session} do
       params = %{name: nil, location: nil}
 
-      assert {:error, _reason, %Ecto.Changeset{}} =
-               BusinessProfiles.create(params, session)
+      assert {:error, _reason, %Ecto.Changeset{}} = BusinessProfiles.create(params, session)
     end
   end
 
   describe "update/2" do
-    test "successfully updates a business_profile", %{user: user, params: params, session: session} do
-      {:ok, %BusinessProfile{} = business_profile} =
-        BusinessProfiles.create(params, session)
+    test "successfully updates a business_profile", %{
+      user: user,
+      params: params,
+      session: session
+    } do
+      {:ok, %BusinessProfile{} = business_profile} = BusinessProfiles.create(params, session)
 
       assert {:ok, %BusinessProfile{} = updated} =
                BusinessProfiles.update(business_profile, %{active: true})
@@ -59,8 +65,7 @@ defmodule Backend.Accounts.BusinessProfileTest do
 
   describe "get_business_profiles/1" do
     test "returns business_profile if found", %{user: user, params: params, session: session} do
-      {:ok, %BusinessProfile{} = business_profile} =
-        BusinessProfiles.create(params, session)
+      {:ok, %BusinessProfile{} = business_profile} = BusinessProfiles.create(params, session)
 
       {:ok, %BusinessProfile{} = business_profile} =
         BusinessProfiles.get_business_profile(business_profile.id)

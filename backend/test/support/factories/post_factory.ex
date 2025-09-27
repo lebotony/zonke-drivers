@@ -9,7 +9,7 @@ defmodule Backend.PostFactory do
         %Post{
           id: Ecto.UUID.generate(),
           location: %{lat: "123", lon: "987"},
-          business_profile: build(:business_profile),
+          business_profile: build(:business_profile)
         }
       end
     end

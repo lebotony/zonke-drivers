@@ -4,7 +4,7 @@ defmodule Backend.Drivers.Queries.DriverBy do
 
   def base_query do
     from(d in Driver,
-      as: :driver,
+      as: :driver
     )
   end
 

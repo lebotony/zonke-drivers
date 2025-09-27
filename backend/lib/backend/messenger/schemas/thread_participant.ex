@@ -8,8 +8,8 @@ defmodule Backend.Messenger.Schemas.ThreadParticipant do
   @params [:thread_id, :participant_id]
 
   schema "thread_participants" do
-    belongs_to :thread, Thread
-    belongs_to :participant, Participant
+    belongs_to(:thread, Thread)
+    belongs_to(:participant, Participant)
 
     timestamps()
   end

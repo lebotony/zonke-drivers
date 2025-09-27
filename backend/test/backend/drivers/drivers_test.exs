@@ -64,7 +64,11 @@ defmodule Backend.Drivers.DriversTest do
   end
 
   describe "get_drivers/1" do
-    test "returns business_profile drivers if found", %{params: params, business_profile: business_profile, session: session} do
+    test "returns business_profile drivers if found", %{
+      params: params,
+      business_profile: business_profile,
+      session: session
+    } do
       insert_list(10, :driver, active: true)
 
       {:ok, _driver_1} = Drivers.create(params, session)

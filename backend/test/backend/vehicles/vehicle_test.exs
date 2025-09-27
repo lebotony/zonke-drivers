@@ -33,7 +33,11 @@ defmodule Backend.Vehicles.VehiclesTest do
   end
 
   describe "create/2" do
-    test "successfully creates a vehicle", %{params: params, business_profile: business_profile, session: session} do
+    test "successfully creates a vehicle", %{
+      params: params,
+      business_profile: business_profile,
+      session: session
+    } do
       assert {:ok, %Vehicle{} = vehicle} = Vehicles.create(params, session)
 
       preloaded_vehicle = Repo.preload(vehicle, :asset)
@@ -79,7 +83,11 @@ defmodule Backend.Vehicles.VehiclesTest do
   end
 
   describe "get_vehicles/1" do
-    test "returns business_profile vehicles if found", %{params: params, business_profile: business_profile, session: session} do
+    test "returns business_profile vehicles if found", %{
+      params: params,
+      business_profile: business_profile,
+      session: session
+    } do
       insert_list(10, :vehicle, active: true)
 
       {:ok, _vehicle_1} = Vehicles.create(params, session)

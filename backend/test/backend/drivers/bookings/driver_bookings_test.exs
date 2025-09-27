@@ -47,7 +47,9 @@ defmodule Backend.Bookings.DriverBookingsTest do
 
       {:ok, driver_booking} = DriverBookings.create(params, session)
 
-      assert {:ok, %DriverBooking{} = updated} = DriverBookings.update(driver_booking, %{status: :accepted})
+      assert {:ok, %DriverBooking{} = updated} =
+               DriverBookings.update(driver_booking, %{status: :accepted})
+
       assert updated.status == :accepted
     end
   end
@@ -75,7 +77,9 @@ defmodule Backend.Bookings.DriverBookingsTest do
 
       {:ok, driver_booking} = DriverBookings.create(params, session)
 
-      {:ok, %DriverBooking{} = driver_booking} = DriverBookings.get_driver_booking(driver_booking.id)
+      {:ok, %DriverBooking{} = driver_booking} =
+        DriverBookings.get_driver_booking(driver_booking.id)
+
       assert driver_booking.user_id == user.id
     end
 
@@ -85,7 +89,11 @@ defmodule Backend.Bookings.DriverBookingsTest do
   end
 
   describe "get_driver_bookings/3" do
-    test "returns driver vehicle_bookings if found", %{user: user, params: params, session: session} do
+    test "returns driver vehicle_bookings if found", %{
+      user: user,
+      params: params,
+      session: session
+    } do
       driver = insert(:driver, user: user)
 
       insert_list(10, :driver_booking, driver: driver)

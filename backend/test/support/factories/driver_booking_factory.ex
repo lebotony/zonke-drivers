@@ -9,7 +9,7 @@ defmodule Backend.DriverBookingFactory do
         %DriverBooking{
           id: Ecto.UUID.generate(),
           user: build(:user),
-          driver: build(:driver),
+          driver: build(:driver)
         }
       end
     end

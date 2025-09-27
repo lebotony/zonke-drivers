@@ -35,7 +35,11 @@ defmodule Backend.Assets.Asset do
     post_id = get_field(changeset, :post_id)
 
     if is_nil(vehicle_id) and is_nil(business_profile_id) and is_nil(post_id) do
-      add_error(changeset, :base, "Either vehicle_id, post_id or business_profile_id must be present")
+      add_error(
+        changeset,
+        :base,
+        "Either vehicle_id, post_id or business_profile_id must be present"
+      )
     else
       changeset
     end

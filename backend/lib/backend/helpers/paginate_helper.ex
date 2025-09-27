@@ -15,6 +15,7 @@ defmodule Backend.PaginateHelper do
       page: Map.get(params, :page, Map.get(params, "page", 1)),
       page_size: Kernel.min(final_per_page, 100)
     }
+
     # |> params_to_i()
   end
 

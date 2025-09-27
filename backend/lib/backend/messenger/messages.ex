@@ -71,6 +71,7 @@ defmodule Backend.Messenger.Messages do
 
   def update(%Message{} = message, params) do
     IO.puts("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+
     updated_message =
       message
       |> Message.changeset(params)
@@ -92,11 +93,12 @@ defmodule Backend.Messenger.Messages do
 
   def unseen_messages_count(thread_id, participant_id) do
     Repo.one(
-      from m in Message,
+      from(m in Message,
         where: m.thread_id == ^thread_id,
         where: m.author_id != ^participant_id,
         where: m.seen == true,
         select: count(m.id)
+      )
     )
   end
 

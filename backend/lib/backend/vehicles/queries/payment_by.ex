@@ -4,7 +4,7 @@ defmodule Backend.Vehicles.Queries.PaymentBy do
 
   def base_query do
     from(p in Payment,
-      as: :payment,
+      as: :payment
     )
   end
 

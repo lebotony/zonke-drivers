@@ -32,7 +32,7 @@ defmodule BackendWeb.BusinessProfiles.BusinessProfilesJSON do
       rank_value: business_profile.rank_value,
       inserted_at: business_profile.inserted_at,
       updated_at: business_profile.updated_at,
-      services: services,
+      services: services
     }
   end
 end

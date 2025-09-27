@@ -4,7 +4,7 @@ defmodule Backend.Vehicles.Queries.VehicleDriverBy do
 
   def base_query do
     from(vd in VehicleDriver,
-      as: :vehicle_driver,
+      as: :vehicle_driver
     )
   end
 

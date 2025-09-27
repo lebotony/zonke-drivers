@@ -6,11 +6,11 @@ defmodule Backend.Messenger.Schemas.Thread do
   # @derive {Jason.Encoder, only: [:id]}
 
   schema "threads" do
-    field :last_message, :map, virtual: true
-    field :unseen_msg_count, :integer, virtual: true
+    field(:last_message, :map, virtual: true)
+    field(:unseen_msg_count, :integer, virtual: true)
 
-    has_many :thread_participants, ThreadParticipant
-    has_many :messages, Message
+    has_many(:thread_participants, ThreadParticipant)
+    has_many(:messages, Message)
 
     timestamps()
   end

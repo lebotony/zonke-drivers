@@ -20,12 +20,12 @@ defmodule Backend.Vehicles.Vehicles do
       Vehicle.changeset(%Vehicle{}, vehicle_params)
     )
     |> Multi.run(:asset, fn _repo, %{vehicle: vehicle} ->
-        asset_params =
-          params
-          |> Map.get(:asset, %{})
-          |> Map.put(:vehicle_id, vehicle.id)
+      asset_params =
+        params
+        |> Map.get(:asset, %{})
+        |> Map.put(:vehicle_id, vehicle.id)
 
-        Assets.upload_and_save(asset_params)
+      Assets.upload_and_save(asset_params)
     end)
     |> Repo.transaction()
     |> case do

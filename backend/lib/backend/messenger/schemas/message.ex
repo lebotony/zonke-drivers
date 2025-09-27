@@ -10,12 +10,12 @@ defmodule Backend.Messenger.Schemas.Message do
   @all_params @params ++ @required_params
 
   schema "messages" do
-    field :content, :string
-    field :seen, :boolean, default: false
-    field :visible, :boolean
-    field :sent_at, :naive_datetime
-    field :created_at, :naive_datetime
-    field :metadata, :map
+    field(:content, :string)
+    field(:seen, :boolean, default: false)
+    field(:visible, :boolean)
+    field(:sent_at, :naive_datetime)
+    field(:created_at, :naive_datetime)
+    field(:metadata, :map)
 
     belongs_to(:thread, Thread)
     belongs_to(:author, Participant)

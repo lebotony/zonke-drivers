@@ -9,7 +9,7 @@ defmodule Backend.VehicleBookingFactory do
         %VehicleBooking{
           id: Ecto.UUID.generate(),
           user: build(:user),
-          vehicle: build(:vehicle),
+          vehicle: build(:vehicle)
         }
       end
     end

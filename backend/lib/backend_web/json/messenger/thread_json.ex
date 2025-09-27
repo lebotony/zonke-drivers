@@ -19,7 +19,8 @@ defmodule BackendWeb.Messenger.ThreadJSON do
     %{
       id: thread.id,
       messages: messages,
-      thread_participants: ThreadParticipantJSON.index(%{thread_participants: thread.thread_participants}),
+      thread_participants:
+        ThreadParticipantJSON.index(%{thread_participants: thread.thread_participants}),
       last_message: MessageJSON.show(%{message: thread.last_message}),
       unseen_msg_count: thread.unseen_msg_count
     }

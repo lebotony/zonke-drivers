@@ -9,7 +9,7 @@ defmodule Backend.PaymentFactory do
         %Payment{
           id: Ecto.UUID.generate(),
           vehicle_driver: build(:vehicle_driver),
-          price_fixed: %{currency: "ZIG", value: 200},
+          price_fixed: %{currency: "ZIG", value: 200}
         }
       end
     end

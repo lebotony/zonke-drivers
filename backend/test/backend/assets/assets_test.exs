@@ -21,7 +21,10 @@ defmodule Backend.Assets.AssetsTest do
   end
 
   describe "upload_and_save/1" do
-    test "create Asset when picture is successfully uploaded in aws", %{params: params, vehicle: vehicle} do
+    test "create Asset when picture is successfully uploaded in aws", %{
+      params: params,
+      vehicle: vehicle
+    } do
       assert {:ok, %Asset{} = asset} = Assets.upload_and_save(params)
 
       assert asset.vehicle_id == vehicle.id

@@ -65,7 +65,7 @@ defmodule Backend.Messenger.ThreadTest do
       inserted_at: Timex.shift(NaiveDateTime.utc_now(), minutes: -10),
       thread: thread_2,
       author: p1,
-      recipient: p3,
+      recipient: p3
     )
 
     insert(:message,
@@ -78,7 +78,12 @@ defmodule Backend.Messenger.ThreadTest do
     )
 
     assert [
-             %Thread{thread_participants: thread_participants, id: thread_2_id, last_message: th_message_2, unseen_msg_count: unseen_msg_count_2},
+             %Thread{
+               thread_participants: thread_participants,
+               id: thread_2_id,
+               last_message: th_message_2,
+               unseen_msg_count: unseen_msg_count_2
+             },
              %Thread{last_message: th_message_1, unseen_msg_count: unseen_msg_count_1}
            ] = Threads.get_participant_threads(%{user_id: p1.id})
 

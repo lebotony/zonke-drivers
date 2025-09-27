@@ -24,12 +24,12 @@ defmodule Backend.Accounts.BusinessProfiles do
       Memberships.create(:owner, user_id, profile.id)
     end)
     |> Multi.run(:asset, fn _repo, %{business_profile: business_profile} ->
-        asset_params =
-          params
-          |> Map.get(:asset, %{})
-          |> Map.put(:business_profile_id, business_profile.id)
+      asset_params =
+        params
+        |> Map.get(:asset, %{})
+        |> Map.put(:business_profile_id, business_profile.id)
 
-        Assets.upload_and_save(asset_params)
+      Assets.upload_and_save(asset_params)
     end)
     |> Repo.transaction()
     |> case do

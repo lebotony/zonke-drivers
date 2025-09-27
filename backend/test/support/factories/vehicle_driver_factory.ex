@@ -9,7 +9,7 @@ defmodule Backend.VehicleDriverFactory do
         %VehicleDriver{
           id: Ecto.UUID.generate(),
           driver: build(:driver),
-          vehicle: build(:vehicle),
+          vehicle: build(:vehicle)
         }
       end
     end

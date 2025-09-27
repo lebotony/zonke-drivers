@@ -39,6 +39,7 @@ defmodule BackendWeb.MessengerChannel do
 
   def handle_in("broadcast_to_my_chats", %{"event" => event} = params, socket) do
     user_id = socket.assigns.user_id
+
     payload =
       Map.get(params, "payload", %{})
       |> Map.put(:participant_id, user_id)

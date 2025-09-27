@@ -18,7 +18,7 @@ defmodule Backend.Vehicles.PaymentsTest do
 
     params = %{
       vehicle_driver_id: vehicle_driver.id,
-      price_fixed: %{currency: "ZIG", value: 200},
+      price_fixed: %{currency: "ZIG", value: 200}
     }
 
     %{
@@ -33,7 +33,11 @@ defmodule Backend.Vehicles.PaymentsTest do
   end
 
   describe "create/2" do
-    test "successfully creates a payment", %{user: user, params: params, vehicle_driver: vehicle_driver} do
+    test "successfully creates a payment", %{
+      user: user,
+      params: params,
+      vehicle_driver: vehicle_driver
+    } do
       # BroadcastMock
       # |> Mox.expect(:broadcast_from!, fn _pid, topic, event, payload ->
       #   assert payload.type == :payment
@@ -41,7 +45,7 @@ defmodule Backend.Vehicles.PaymentsTest do
 
       assert {:ok, %Payment{} = payment} = Payments.create(params)
 
-      preloaded_payment = Repo.preload(payment, [vehicle_driver: [driver: :user]])
+      preloaded_payment = Repo.preload(payment, vehicle_driver: [driver: :user])
 
       assert user.first_name == preloaded_payment.vehicle_driver.driver.user.first_name
       assert payment.vehicle_driver_id == vehicle_driver.id
@@ -94,7 +98,7 @@ defmodule Backend.Vehicles.PaymentsTest do
       {:ok, payment} = Payments.create(params)
       {:ok, %Payment{} = payment} = Payments.get_payment(payment.id)
 
-      preloaded_payment = Repo.preload(payment, [vehicle_driver: [driver: :user]])
+      preloaded_payment = Repo.preload(payment, vehicle_driver: [driver: :user])
 
       assert user.id == preloaded_payment.vehicle_driver.driver.user.id
     end
@@ -115,10 +119,11 @@ defmodule Backend.Vehicles.PaymentsTest do
       end)
 
       params = %{
-        vehicle_driver_id: vehicle_driver.id,
+        vehicle_driver_id: vehicle_driver.id
       }
 
-      {:ok, _payments, %{total_count: total_count}} = Payments.get_payments(params, :vehicle_owner)
+      {:ok, _payments, %{total_count: total_count}} =
+        Payments.get_payments(params, :vehicle_owner)
 
       assert total_count == 40
     end

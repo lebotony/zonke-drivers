@@ -5,7 +5,7 @@ defmodule Backend.Messenger.Queries.ThreadBy do
 
   def base_query() do
     from(t in Thread,
-      as: :thread,
+      as: :thread
     )
   end
 

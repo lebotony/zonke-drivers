@@ -5,7 +5,8 @@ defmodule Backend.Assets.Assets do
   alias Ecto.Multi
 
   @bucket "zonke-drivers-bucket"
-  @expires_in 3600  # 1 hour in seconds
+  # 1 hour in seconds
+  @expires_in 3600
 
   def upload_and_save(%{file_path: file_path, filename: filename} = params) do
     Multi.new()
@@ -74,11 +75,11 @@ defmodule Backend.Assets.Assets do
 
   def s3_config() do
     if System.get_env("MIX_ENV") == "dev" do
-      ExAws.Config.new(:s3, [
+      ExAws.Config.new(:s3,
         scheme: "http://",
         host: "localhost",
         port: 4566
-      ])
+      )
     else
       ExAws.Config.new(:s3)
     end

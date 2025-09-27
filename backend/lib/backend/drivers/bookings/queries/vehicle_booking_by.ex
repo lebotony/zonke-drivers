@@ -4,7 +4,7 @@ defmodule Backend.Bookings.Queries.VehicleBookingBy do
 
   def base_query do
     from(vb in VehicleBooking,
-      as: :vehicle_booking,
+      as: :vehicle_booking
     )
   end
 

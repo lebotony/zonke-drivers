@@ -4,9 +4,9 @@ defmodule BackendWeb.UserSocket do
   alias Backend.Guardian
 
   ## Channels
-  channel "users:*", BackendWeb.UserChannel
-  channel "chats:*", BackendWeb.MessengerChannel
-  channel "reviews:*", BackendWeb.ReviewChannel
+  channel("users:*", BackendWeb.UserChannel)
+  channel("chats:*", BackendWeb.MessengerChannel)
+  channel("reviews:*", BackendWeb.ReviewChannel)
 
   # Transport configuration
   # transport(:websocket, Phoenix.Transports.WebSocket)
