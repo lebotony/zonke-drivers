@@ -1,6 +1,6 @@
 import { FontAwesome5 } from "@expo/vector-icons";
 
-import { Colors } from "../../../../../constants/ui";
+import { Colors } from "@/constants/ui";
 
 export const PLATFORM_FILTERS = [
   {

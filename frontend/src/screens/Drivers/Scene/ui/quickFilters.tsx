@@ -4,9 +4,9 @@ import { View, Text, ScrollView } from "react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
-import { CustomButton } from "../../../../components/elements/button";
-import { Colors } from "../../../../../constants/ui";
-import { Shadow } from "../../../../components/shadow";
+import { CustomButton } from "@/src/components/elements/button";
+import { Colors } from "@/constants/ui";
+import { Shadow } from "@/src/components/shadow";
 
 import { styles } from "../styles/quickFilters";
 import { PLATFORM_FILTERS } from "../utils/constants";

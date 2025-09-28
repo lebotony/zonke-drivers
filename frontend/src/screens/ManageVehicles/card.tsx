@@ -1,19 +1,22 @@
 import { View, Text } from "react-native";
-import { Avatar } from "../../components/visual/avatar";
+
 import {
   AntDesign,
   Feather,
   MaterialCommunityIcons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import profilePic from "@assets/images/profile_pic.png";
-import carPic from "@assets/images/car.jpg";
-import { HorizontalDivider } from "../../components/shapes/divider";
 import { Image } from "expo-image";
-import { styles } from "./styles/card";
-import { Colors } from "../../../constants/ui";
-import { CustomButton } from "../../components/elements/button";
 import { router } from "expo-router";
+
+import { Avatar } from "@/src/components/visual/avatar";
+import profilePic from "@/assets/images/profile_pic.png";
+import carPic from "@/assets/images/car.jpg";
+import { HorizontalDivider } from "@/src/components/shapes/divider";
+import { Colors } from "@/constants/ui";
+import { CustomButton } from "@/src/components/elements/button";
+
+import { styles } from "./styles/card";
 
 const ICON_SIZE = 14;
 

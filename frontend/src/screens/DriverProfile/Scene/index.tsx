@@ -1,14 +1,6 @@
 import { Platform, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { Avatar } from "../../../components/visual/avatar";
-import profilePic from "@assets/images/profile_pic.png";
-import { PLATFORM_FILTERS } from "../../Drivers/Scene/utils/constants";
-import { Platforms } from "../../Drivers/Scene/ui/platforms";
-
-import { styles } from "./styles";
-import { Header } from "./ui/header";
-import { Colors } from "../../../../constants/ui";
 import {
   AntDesign,
   Feather,
@@ -17,7 +9,16 @@ import {
   Ionicons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { CustomButton } from "../../../components/elements/button";
+
+import { Avatar } from "@/src/components/visual/avatar";
+import profilePic from "@/assets/images/profile_pic.png";
+import { PLATFORM_FILTERS } from "../../Drivers/Scene/utils/constants";
+import { Platforms } from "../../Drivers/Scene/ui/platforms";
+import { Colors } from "@/constants/ui";
+import { CustomButton } from "@/src/components/elements/button";
+
+import { styles } from "./styles";
+import { Header } from "./ui/header";
 
 export const Scene = () => {
   return (

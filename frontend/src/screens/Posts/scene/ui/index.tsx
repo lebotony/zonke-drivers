@@ -3,9 +3,9 @@ import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { Colors } from "../../../../../constants/ui";
-import { Avatar } from "../../../../components/visual/avatar";
-import profilePic from "@assets/images/profile_pic.png";
+import { Colors } from "@/constants/ui";
+import profilePic from "@/assets/images/profile_pic.png";
+import { Avatar } from "@/src/components/visual/avatar";
 
 import { Form } from "./form";
 import { PostSettings } from "./settings";

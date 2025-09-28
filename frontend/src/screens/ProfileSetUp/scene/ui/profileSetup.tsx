@@ -8,11 +8,11 @@ import z from "zod";
 import { MaterialIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 
-import { Colors } from "../../../../../constants/ui";
-import { Avatar } from "../../../../components/visual/avatar";
-import profilePic from "@assets/images/profile_pic.png";
-import { Fieldset } from "../../../../components/form/fieldset/input";
-import { CustomButton } from "../../../../components/elements/button";
+import { Colors } from "@/constants/ui";
+import profilePic from "@/assets/images/profile_pic.png";
+import { Fieldset } from "@/src/components/form/fieldset/input";
+import { CustomButton } from "@/src/components/elements/button";
+import { Avatar } from "@/src/components/visual/avatar";
 
 import { styles } from "../styles/profileSetup";
 import { SetUpOneSchema } from "../schema";

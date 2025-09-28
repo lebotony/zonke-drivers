@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "../../../../../constants/ui";
+import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   title: {

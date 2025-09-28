@@ -3,8 +3,8 @@ import { Text, View, TouchableOpacity } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { Colors } from "../../../../../constants/ui";
-import { CustomButton } from "../../../../components/elements/button";
+import { Colors } from "@/constants/ui";
+import { CustomButton } from "@/src/components/elements/button";
 
 import { styles } from "../styles/settings";
 import { settingsData } from "../utils/settingsData";

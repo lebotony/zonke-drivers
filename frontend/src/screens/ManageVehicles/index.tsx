@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, FlatList, SafeAreaView } from "react-native";
+
 import { Card } from "./card";
 import { styles } from "./styles";
 

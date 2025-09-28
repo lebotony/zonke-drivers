@@ -12,7 +12,7 @@ import "react-native-reanimated";
 import { View } from "react-native";
 
 import { useColorScheme } from "../components/useColorScheme";
-import { Colors } from "../../constants/ui";
+import { Colors } from "@/constants/ui";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -29,7 +29,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require("@assets/fonts/SpaceMono-Regular.ttf"),
+    SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
     CinzelDecorativeBold: require("../../assets/fonts/CinzelDecorative-Bold.ttf"),
     Cinzel: require("../../assets/fonts/Cinzel-VariableFont_wght.ttf"),
     ...FontAwesome.font,

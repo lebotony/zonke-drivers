@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "../../../../../constants/ui";
-import { shadowStyles } from "../../../../components/shadowStyles";
+import { Colors } from "@/constants/ui";
+import { shadowStyles } from "@/src/components/shadowStyles";
 
 export const styles = StyleSheet.create({
   container: {

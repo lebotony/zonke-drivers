@@ -4,9 +4,9 @@ import EvilIcons from "@expo/vector-icons/EvilIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { StatusBar } from "expo-status-bar";
 
-import { TextLogo } from "../../../../components/misc/textLogo";
-import { Colors } from "../../../../../constants/ui";
-import { Circle } from "../../../../components/shapes/circle";
+import { TextLogo } from "@/src/components/misc/textLogo";
+import { Colors } from "@/constants/ui";
+import { Circle } from "@/src/components/shapes/circle";
 
 import { styles } from "../styles/header";
 

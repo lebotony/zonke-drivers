@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
-import { Colors } from "../../../../../constants/ui";
-import { isIOS } from "../../../../helpers/platform";
+import { Colors } from "@/constants/ui";
+import { isIOS } from "@/src/helpers/platform";
 
 export const styles = StyleSheet.create({
   container: {
