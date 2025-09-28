@@ -2,7 +2,8 @@ defmodule BackendWeb.Bookings.VehicleBookingJSON do
   def index(%{vehicle_bookings: vehicle_bookings, paginate: paginate}) do
     %{
       paginate: paginate,
-      data: for(vehicle_booking <- vehicle_bookings, do: show(%{vehicle_booking: vehicle_booking}))
+      data:
+        for(vehicle_booking <- vehicle_bookings, do: show(%{vehicle_booking: vehicle_booking}))
     }
   end
 
