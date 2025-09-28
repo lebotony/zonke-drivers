@@ -65,6 +65,7 @@ function RootLayoutNav() {
         <Stack.Screen name="profileSetup" options={{ headerShown: false }} />
         <Stack.Screen name="posts" options={{ headerShown: false }} />
         <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+        <Stack.Screen name="chats" options={{ headerShown: false }} />
       </Stack>
       {/* </ThemeProvider> */}
     </View>

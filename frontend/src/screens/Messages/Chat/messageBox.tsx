@@ -1,18 +1,19 @@
-import React from 'react';
-import { View, TextInput, TouchableOpacity } from 'react-native';
+import React from "react";
+import { View, TextInput, TouchableOpacity } from "react-native";
 
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons } from "@expo/vector-icons";
 
-import { Controller, useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import z from 'zod';
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation } from "@tanstack/react-query";
 
-import { styles } from './styles/messageBox';
-import { MessageSchema } from './schema';
-import { sendMessage } from '../actions';
-import { usePaginatedCache } from '@/src/updateCacheProvider';
+import { usePaginatedCache } from "@/src/updateCacheProvider";
+
+import { styles } from "./styles/messageBox";
+import { MessageSchema } from "./schema";
+import { sendMessage } from "../actions";
 
 type MessageFormValues = z.infer<typeof MessageSchema>;
 
@@ -24,28 +25,30 @@ type MessageBoxProps = {
 export const MessageBox = (props: MessageBoxProps) => {
   const { recipientId, threadId } = props;
 
-  const { updateAndMoveObjectToTop, getUpdatedObjectSnapshot } = usePaginatedCache();
+  const { updateAndMoveObjectToTop, getUpdatedObjectSnapshot } =
+    usePaginatedCache();
 
   const { control, handleSubmit } = useForm<MessageFormValues>({
     resolver: zodResolver(MessageSchema),
   });
 
-  const thread = getUpdatedObjectSnapshot('threads', threadId as string);
+  const thread = getUpdatedObjectSnapshot("threads", threadId as string);
 
   const addMessageMutation = useMutation({
     mutationFn: sendMessage,
     onSuccess: (data) =>
-      updateAndMoveObjectToTop('threads', threadId as string, {
+      updateAndMoveObjectToTop("threads", threadId as string, {
         last_message: data,
         messages: [...thread?.messages, data],
       }),
 
     onError: (err) => {
-      console.error('Sending Message failed:', err);
+      console.error("Sending Message failed:", err);
       return err;
     },
   });
-  const onAddMessage = (params: MessageParams) => addMessageMutation.mutate(params);
+  const onAddMessage = (params: MessageParams) =>
+    addMessageMutation.mutate(params);
 
   const onSubmit = (data: MessageFormValues) => {
     const params = {
@@ -71,13 +74,16 @@ export const MessageBox = (props: MessageBoxProps) => {
               textAlignVertical="top"
               placeholder="Type your message..."
               placeholderTextColor="#888"
-              value={value || ''}
+              value={value || ""}
               onChangeText={onChange}
             />
           );
         }}
       />
-      <TouchableOpacity style={styles.sendButton} onPress={handleSubmit(onSubmit)}>
+      <TouchableOpacity
+        style={styles.sendButton}
+        onPress={handleSubmit(onSubmit)}
+      >
         <Ionicons name="send" size={20} color="white" />
       </TouchableOpacity>
     </View>

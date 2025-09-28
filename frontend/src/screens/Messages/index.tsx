@@ -1,26 +1,31 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { View, Text, Pressable, FlatList } from 'react-native';
+import React, { useEffect, useRef, useState } from "react";
+import { View, Text, Pressable, FlatList } from "react-native";
 
-import { useSegments } from 'expo-router';
+import { useSegments } from "expo-router";
 
-import { Channel, Socket } from 'phoenix';
-import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
+import { Channel, Socket } from "phoenix";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
-import { initializeSocket } from '@/src/socket';
-import { SearchComponent } from '@/src/components/searchBar';
-import { Spinner } from '@/src/components/elements/Spinner';
-import { useCustomQuery } from '@/src/useQueryContext';
-import { usePaginatedCache } from '@/src/updateCacheProvider';
+import { initializeSocket } from "@/src/socket";
+import { SearchComponent } from "@/src/components/searchBar";
+import { Spinner } from "@/src/components/elements/Spinner";
 
-import { Message } from './message';
-import { fetchUserThreads } from './actions';
-import { styles } from './styles/index';
-import { messageSeen, newMessage, participantJoined, participantLeft } from './utils/channels';
+import { Message } from "./message";
+import { fetchUserThreads } from "./actions";
+import { styles } from "./styles/index";
+import {
+  messageSeen,
+  newMessage,
+  participantJoined,
+  participantLeft,
+} from "./utils/channels";
+import { useCustomQuery } from "@/src/useQueryContext";
+import { usePaginatedCache } from "@/src/updateCacheProvider";
 
-const TABS = ['All', 'Unread', 'Archived', 'Starred'];
+const TABS = ["All", "Unread", "Archived", "Starred"];
 
 export const MessagesScreen = () => {
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState(1);
   const [socket, setSocket] = useState<Socket | null>(null);
 
@@ -30,21 +35,26 @@ export const MessagesScreen = () => {
 
   const queryClient = useQueryClient();
   const { getCachedData } = useCustomQuery();
-  const { user } = getCachedData(['user']);
+  const { user } = getCachedData(["user"]);
 
   const segments = useSegments();
-  const { updatePaginatedObject, updateAndMoveObjectToTop, getUpdatedObjectSnapshot } =
-    usePaginatedCache();
+  const {
+    updatePaginatedObject,
+    updateAndMoveObjectToTop,
+    getUpdatedObjectSnapshot,
+  } = usePaginatedCache();
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfiniteQuery({
-    queryKey: ['threads'],
-    queryFn: fetchUserThreads,
-    getNextPageParam: (lastPage) => {
-      const { page, max_page }: { page: number; max_page: number } = lastPage.paginate;
-      return page < max_page ? page + 1 : undefined;
-    },
-    initialPageParam: 1,
-  });
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["threads"],
+      queryFn: fetchUserThreads,
+      getNextPageParam: (lastPage) => {
+        const { page, max_page }: { page: number; max_page: number } =
+          lastPage.paginate;
+        return page < max_page ? page + 1 : undefined;
+      },
+      initialPageParam: 1,
+    });
 
   const threads = data?.pages.flatMap((page) => page.data) ?? [];
 
@@ -73,18 +83,18 @@ export const MessagesScreen = () => {
 
       channel
         .join()
-        .receive('ok', () => {
+        .receive("ok", () => {
           // console.log(`Joined chats:${thread.id} successfully`);
-          channel.push('broadcast_to_my_chats', {
-            event: 'participant_joined',
+          channel.push("broadcast_to_my_chats", {
+            event: "participant_joined",
           });
         })
-        .receive('error', (err: Error) => console.log('Unable to join', err));
+        .receive("error", (err: Error) => console.log("Unable to join", err));
 
       baseChannelRef.current = channel;
       threadChannelsRef.current[thread.id] = channel;
 
-      queryClient.setQueryData(['threadChannels'], threadChannelsRef?.current);
+      queryClient.setQueryData(["threadChannels"], threadChannelsRef?.current);
       setupChannelHandlers(channel);
     });
   };
@@ -94,32 +104,32 @@ export const MessagesScreen = () => {
   };
 
   const setupChannelHandlers = (channel: Channel) => {
-    channel.on('participant_joined', (payload: { participant_id: string }) =>
-      participantJoined(updatePaginatedObject, payload, queryClient, user?.id),
+    channel.on("participant_joined", (payload: { participant_id: string }) =>
+      participantJoined(updatePaginatedObject, payload, queryClient, user?.id)
     );
 
-    channel.on('participant_left', (payload: { participant_id: string }) =>
-      participantLeft(updatePaginatedObject, payload, queryClient, user?.id),
+    channel.on("participant_left", (payload: { participant_id: string }) =>
+      participantLeft(updatePaginatedObject, payload, queryClient, user?.id)
     );
 
-    channel.on('new_message', (payload: Message) =>
+    channel.on("new_message", (payload: Message) =>
       newMessage(
         updateAndMoveObjectToTop,
         getUpdatedObjectSnapshot,
         channel,
         payload,
         user?.id,
-        activeThreadIdRef.current,
-      ),
+        activeThreadIdRef.current
+      )
     );
 
-    channel.on('message_seen', (payload: { thread_id: string }) =>
-      messageSeen(updatePaginatedObject, getUpdatedObjectSnapshot, payload),
+    channel.on("message_seen", (payload: { thread_id: string }) =>
+      messageSeen(updatePaginatedObject, getUpdatedObjectSnapshot, payload)
     );
   };
 
   useEffect(() => {
-    if (segments[0] === '(tabs)' && activeThreadIdRef.current) {
+    if (segments[0] === "(tabs)" && activeThreadIdRef.current) {
       activeThreadIdRef.current = undefined;
     }
   }, [segments]);
@@ -127,18 +137,18 @@ export const MessagesScreen = () => {
   useEffect(() => {
     if (!user || !socket) return;
 
-    queryClient.setQueryData(['socket'], socket);
+    queryClient.setQueryData(["socket"], socket);
     const userChannel = socket.channel(`users:${user.id}`);
 
     userChannel
       .join()
-      .receive('ok', () => console.log(`Joined user:${user.id} successfully`))
-      .receive('error', (err: Error) => console.log('Unable to join', err));
+      .receive("ok", () => console.log(`Joined user:${user.id} successfully`))
+      .receive("error", (err: Error) => console.log("Unable to join", err));
 
-    userChannel.on('new_thread', (payload: { thread: Thread }) => {
-      console.log('New thread received: ', payload.thread);
+    userChannel.on("new_thread", (payload: { thread: Thread }) => {
+      console.log("New thread received: ", payload.thread);
 
-      queryClient.setQueryData(['threads'], (threads: Thread[]) => [
+      queryClient.setQueryData(["threads"], (threads: Thread[]) => [
         payload.thread,
         ...(threads || []),
       ]);
@@ -147,8 +157,8 @@ export const MessagesScreen = () => {
     return () => {
       userChannel.leave();
 
-      baseChannelRef.current?.push('broadcast_to_my_chats', {
-        event: 'participant_joined',
+      baseChannelRef.current?.push("broadcast_to_my_chats", {
+        event: "participant_joined",
       });
       baseChannelRef.current = undefined;
 
@@ -173,8 +183,16 @@ export const MessagesScreen = () => {
       />
       <View style={styles.tabsRow}>
         {TABS.map((tab, idx) => (
-          <Pressable key={tab} style={styles.tabItem} onPress={() => setActiveTab(idx)}>
-            <Text style={[styles.tabText, activeTab === idx && styles.tabActive]}>{tab}</Text>
+          <Pressable
+            key={tab}
+            style={styles.tabItem}
+            onPress={() => setActiveTab(idx)}
+          >
+            <Text
+              style={[styles.tabText, activeTab === idx && styles.tabActive]}
+            >
+              {tab}
+            </Text>
           </Pressable>
         ))}
       </View>

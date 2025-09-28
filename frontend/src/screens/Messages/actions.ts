@@ -1,6 +1,7 @@
+import axios from "axios";
+
 import { API_URL } from "@/constants/srcConstants";
 import { httpGet, httpPost } from "@/src/requests";
-import axios from "axios";
 
 export const fetchUserThreads = async ({ pageParam = 1 }) =>
   axios
