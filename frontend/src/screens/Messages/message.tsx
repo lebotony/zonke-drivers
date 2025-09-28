@@ -1,0 +1,82 @@
+import React from "react";
+import { View, Text, Image, TouchableOpacity } from "react-native";
+
+import { router } from "expo-router";
+
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Colors } from "@/constants/ui";
+
+import { styles } from "./styles/message";
+
+const userAvatar = require("@/assets/images/person_1.jpg");
+
+type MessageProps = {
+  activeThreadId?: string;
+  thread?: Thread;
+  user?: { id: string };
+  setActiveThreadIdRef: (threadId: string) => void;
+};
+
+export const Message = (props: MessageProps) => {
+  const { thread, user, setActiveThreadIdRef } = props;
+
+  const isOnline = true;
+  const isAuthor = thread?.last_message?.author_id === user?.id;
+  const thd_participants = thread?.thread_participants;
+  const recipient = thd_participants?.filter(
+    (thd_part) => thd_part.participant_id != user?.id
+  )[0].participant;
+  const tickColor = thread?.last_message?.seen
+    ? Colors.blueTicksColor
+    : Colors.mediumDarkGrey;
+
+  const handlePressChat = () => {
+    if (thread?.id) {
+      router.push(`/chats/${thread.id}`);
+      setActiveThreadIdRef(thread.id);
+    }
+  };
+
+  if (!thread) return;
+
+  return (
+    <TouchableOpacity style={[styles.messageItem]} onPress={handlePressChat}>
+      <View style={{ position: "relative" }}>
+        <Image source={userAvatar} style={styles.avatar} resizeMode="contain" />
+        <View
+          style={[
+            styles.avatarStatus,
+            { backgroundColor: isOnline ? "#4CAF50" : "#B0B0B0" },
+          ]}
+        />
+      </View>
+      <View style={styles.messageContent}>
+        <View style={styles.messageNameRow}>
+          <Text style={styles.messageName}>
+            {recipient?.first_name} {recipient?.last_name}
+          </Text>
+          <Text style={styles.messageTime}>{thread.last_message.sent_at}</Text>
+        </View>
+        <View style={styles.messageTextRow}>
+          <Text style={styles.messageText} numberOfLines={1}>
+            {thread.last_message.content}
+          </Text>
+          {thread.unseen_msg_count > 0 && (
+            <View style={styles.unreadBadge}>
+              <Text style={styles.unreadBadgeText}>
+                {thread.unseen_msg_count}
+              </Text>
+            </View>
+          )}
+          {isAuthor && (
+            <MaterialCommunityIcons
+              name="check-all"
+              size={16}
+              color={tickColor}
+            />
+          )}
+        </View>
+      </View>
+    </TouchableOpacity>
+  );
+};
