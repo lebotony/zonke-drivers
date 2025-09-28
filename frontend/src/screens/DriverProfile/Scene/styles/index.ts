@@ -1,7 +1,7 @@
-import { shadowStyles } from "../../../../components/shadowStyles";
-import { Colors } from "../../../../../constants/ui";
+import { shadowStyles } from "@/src/components/shadowStyles";
+import { Colors } from "@/constants/ui";
 import { StyleSheet } from "react-native";
-import { isIOS } from "../../../../helpers/platform";
+import { isIOS } from "@/src/helpers/platform";
 
 const VERTIAL_MARGIN = 10;
 

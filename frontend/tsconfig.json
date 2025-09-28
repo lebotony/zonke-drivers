@@ -3,13 +3,7 @@
   "compilerOptions": {
     "strict": true,
     "paths": {
-      // "@*": [
-      //   "./*"
-      // ],
-      "@constants/*": ["./frontend/constants/*"],
-      "@components/*": ["./frontend/src/components/*"],
-      "@screens/*": ["./frontend/src/screens/*"],
-      "@assets/*": ["./assets/*"]
+      "@/*": ["./*"]
     }
   },
   "include": [

@@ -8,7 +8,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
 
-import { Colors } from "../../../constants/ui";
+import { Colors } from "@/constants/ui";
 import { useClientOnlyValue } from "../../components/useClientOnlyValue";
 import { Ionicons } from "@expo/vector-icons";
 

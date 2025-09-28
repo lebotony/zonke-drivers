@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { Fieldset } from "../../../../components/form/fieldset/input";
+import { Fieldset } from "@/src/components/form/fieldset/input";
 
 import { CreatePostSchema } from "../schema";
 

@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { Colors } from "../../../../../constants/ui";
+import { Colors } from "@/constants/ui";
 
 import { styles } from "../styles/service";
 

@@ -1,5 +1,6 @@
-import { shadowStyles } from "../../../../components/shadowStyles";
 import { StyleSheet } from "react-native";
+
+import { shadowStyles } from "@/src/components/shadowStyles";
 
 export const styles = StyleSheet.create({
   platformTags: {

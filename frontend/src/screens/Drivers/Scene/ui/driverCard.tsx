@@ -5,11 +5,11 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { Avatar } from "../../../../components/visual/avatar";
-import { Colors } from "../../../../../constants/ui";
-import { HorizontalDivider } from "../../../../components/shapes/divider";
-import profilePic from "@assets/images/profile_pic.png";
-import { CustomButton } from "../../../../components/elements/button";
+import { Avatar } from "@/src/components/visual/avatar";
+import { Colors } from "@/constants/ui";
+import { HorizontalDivider } from "@/src/components/shapes/divider";
+import profilePic from "@/assets/images/profile_pic.png";
+import { CustomButton } from "@/src/components/elements/button";
 
 import { styles } from "../styles/driverCard";
 import { PLATFORM_FILTERS } from "../utils/constants";

@@ -1,6 +1,6 @@
 import { StyleSheet } from "react-native";
-import { shadowStyles } from "../../../components/shadowStyles";
-import { Colors } from "../../../../constants/ui";
+import { shadowStyles } from "@/src/components/shadowStyles";
+import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   card: {
