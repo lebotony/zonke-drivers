@@ -53,7 +53,7 @@ export const Colors = {
 
 // 120161
 
-export default {
+export const ThemeColors = {
   light: {
     text: Colors.black,
     background: Colors.white,
