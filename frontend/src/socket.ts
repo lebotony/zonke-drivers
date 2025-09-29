@@ -2,8 +2,8 @@ import { Socket } from "phoenix";
 import { Platform } from "react-native";
 import * as SecureStore from 'expo-secure-store';
 
-import { TOKEN_KEY } from "./app/authContext";
 import { SOCKET_URL } from "@/constants/srcConstants";
+import { TOKEN_KEY } from "./authContext";
 
 export let socketInstance: Socket | null = null;
 let token: string | null = null;

@@ -14,12 +14,12 @@ export const styles = StyleSheet.create({
   titleWrapper: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center"
+    alignItems: "center",
+    paddingHorizontal: 15,
   },
   heading: {
     fontSize: 11,
     fontWeight: 600,
-    paddingHorizontal: 15,
   },
   clearButton: {
     paddingVertical: 0

@@ -10,9 +10,11 @@ import { Shadow } from "@/src/components/shadow";
 
 import { styles } from "../styles/quickFilters";
 import { PLATFORM_FILTERS } from "../utils/constants";
+import { useAuth } from "@/src/authContext";
 
 export const QuickFilters = () => {
   const [selected, setSelected] = useState<string[]>([]);
+  const { onLogout } = useAuth();
 
   const onSelect = (value: string) => {
     if (selected?.includes(value)) {
@@ -37,6 +39,12 @@ export const QuickFilters = () => {
               <MaterialIcons name="clear" size={24} color={Colors.black} />
             </CustomButton>
           ) : null}
+          <Text
+            style={{ color: Colors.lightRed, fontWeight: 600 }}
+            onPress={onLogout}
+          >
+            Logout
+          </Text>
         </View>
         <ScrollView
           horizontal

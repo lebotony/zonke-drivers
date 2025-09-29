@@ -94,7 +94,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (token) {
         setAuthState({ token, authenticated: true });
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        fetchUser();
+        // fetchUser();
       }
     };
     loadToken();
@@ -102,7 +102,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const fetchUser = async () =>
     httpGet("/session/current_user")
-      .then((response) => queryClient.setQueryData(["user"], response))
+      .then((response) => {
+        queryClient.setQueryData(["user"], response);
+      })
       .catch((err) => err);
 
   const register = async (params: SignUp) =>
@@ -118,6 +120,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .then(async (response: Session) => {
         setAuthState({ token: response.jwt, authenticated: true });
         await setToken(response.jwt);
+
+        console.log("SSSSSSSSSSSSSSSSSSSSSSSSSS", response.user);
 
         axios.defaults.headers.common["Authorization"] =
           `Bearer ${response.jwt}`;
