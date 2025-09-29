@@ -1,5 +1,6 @@
 export const Colors = {
   tintColorLight: "#2f95dc",
+  blueTicksColor: '#34B7F1',
   tintColorDark: "#fff",
   black: "#000",
   darkCharcoalGrey: "#1C1B1F",
@@ -47,11 +48,12 @@ export const Colors = {
   lightGreen: '#22C55E',
   charcoalBlue: "#1A1F36",
   navyBlue: "#0B0C10",
+  whatsAppGreen: '#006644',
 };
 
 // 120161
 
-export default {
+export const ThemeColors = {
   light: {
     text: Colors.black,
     background: Colors.white,

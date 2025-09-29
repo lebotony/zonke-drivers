@@ -5,11 +5,10 @@ defmodule Backend.Messenger.Messages do
   alias Backend.Repo
   alias Backend.Messenger.Threads
   alias Backend.Messenger.Schemas.Message
-  alias BackendWeb.MessengerChannel
 
   require Logger
 
-  def create(params, %{user_id: user_id}) do
+  def create(params, user_id) do
     new_params = Map.put(params, :author_id, user_id)
 
     case new_params do
@@ -21,7 +20,6 @@ defmodule Backend.Messenger.Messages do
 
         case message do
           {:ok, message} ->
-            MessengerChannel.push_out!(message)
             {:ok, message}
 
           {:error, error} ->
@@ -48,7 +46,6 @@ defmodule Backend.Messenger.Messages do
     |> Repo.transaction()
     |> case do
       {:ok, %{message: message}} ->
-        MessengerChannel.push_out!(message)
         format_message(message)
 
       {:error, reason, failed_value, _changes} ->
@@ -70,8 +67,6 @@ defmodule Backend.Messenger.Messages do
   end
 
   def update(%Message{} = message, params) do
-    IO.puts("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-
     updated_message =
       message
       |> Message.changeset(params)

@@ -2,8 +2,9 @@ defmodule BackendWeb.MessengerChannel do
   use Phoenix.Channel
 
   alias BackendWeb.Messenger.{MessageJSON, ThreadJSON}
-  alias Backend.Messenger.Threads
+  alias Backend.Messenger.{Threads, Messages}
   alias Backend.ConnectionTracker
+  alias Backend.AtomKeysHelper
 
   require Logger
 
@@ -57,8 +58,7 @@ defmodule BackendWeb.MessengerChannel do
   def handle_in("msg_seen_status_changed", %{"thread_id" => thread_id}, socket) do
     broadcast_module = Application.get_env(:backend, :broadcast_module)
 
-    broadcast_module.broadcast_from!(
-      self(),
+    broadcast_module.broadcast(
       "chats:" <> thread_id,
       "message_seen",
       %{"thread_id" => thread_id}
@@ -68,7 +68,11 @@ defmodule BackendWeb.MessengerChannel do
     {:noreply, socket}
   end
 
-  def push_out!(message) do
+  def handle_in("send_message", %{"params" => params}, socket) do
+    user_id = socket.assigns.user_id
+    atomized_params = AtomKeysHelper.string_keys_to_atoms(params)
+
+    {:ok, message} = Messages.create(atomized_params, user_id)
     payload = MessageJSON.show(%{message: message})
 
     broadcast_module = Application.get_env(:backend, :broadcast_module)
@@ -79,5 +83,8 @@ defmodule BackendWeb.MessengerChannel do
       "new_message",
       payload
     )
+
+    Logger.info("Messages sent to thread_id: #{inspect(message.thread_id)}")
+    {:reply, {:ok, %{message: payload}},  socket}
   end
 end
