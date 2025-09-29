@@ -24,7 +24,7 @@ export const participantJoined = (
     )
   );
 
-  if (!parti_thread.id) return;
+  if (!parti_thread?.id) return;
 
   updatePaginatedObject('threads', parti_thread.id, {
     thread_participants: parti_thread.thread_participants.map(
@@ -80,7 +80,6 @@ export const newMessage = (
   userId: string,
   activeThreadId?: string,
 ) => {
-  if (payload.recipient_id !== userId) return; // Remove this line when you find a way to avoid sending event to self()
   console.log('New message received: ', payload, userId, payload.recipient_id);
 
   const isMessageFromActiveThread = payload?.thread_id === activeThreadId;

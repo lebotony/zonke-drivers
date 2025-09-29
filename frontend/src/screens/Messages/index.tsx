@@ -85,9 +85,9 @@ export const MessagesScreen = () => {
         .join()
         .receive("ok", () => {
           // console.log(`Joined chats:${thread.id} successfully`);
-          channel.push("broadcast_to_my_chats", {
-            event: "participant_joined",
-          });
+          // channel.push("broadcast_to_my_chats", {
+          //   event: "participant_joined",
+          // });
         })
         .receive("error", (err: Error) => console.log("Unable to join", err));
 
@@ -157,9 +157,9 @@ export const MessagesScreen = () => {
     return () => {
       userChannel.leave();
 
-      baseChannelRef.current?.push("broadcast_to_my_chats", {
-        event: "participant_joined",
-      });
+      // baseChannelRef.current?.push("broadcast_to_my_chats", {
+      //   event: "participant_left",
+      // });
       baseChannelRef.current = undefined;
 
       Object.values(threadChannelsRef.current).forEach((channel: Channel) => {

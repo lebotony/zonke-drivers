@@ -31,12 +31,6 @@ defmodule BackendWeb.Router do
         except: @except_path_actions
       )
 
-      scope("/services") do
-        get("/public", Services.ServiceController, :index_public)
-      end
-
-      resources("/services", Services.ServiceController, except: @except_path_actions)
-
       scope("/threads") do
         get("/user_threads", Messenger.ThreadController, :get_participant_threads)
         post("/messages_seen", Messenger.ThreadController, :set_seen_true)

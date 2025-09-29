@@ -1,11 +1,11 @@
-import React from 'react';
-import { View, Text, ViewStyle } from 'react-native';
+import React from "react";
+import { View, Text, ViewStyle } from "react-native";
 
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { Colors } from '@/constants/ui';
+import { Colors } from "@/constants/ui";
 
-import { styles } from './styles/chatMessage';
+import { styles } from "./styles/chatMessage";
 
 type ChatProps = {
   message?: Message;
@@ -17,10 +17,12 @@ type ChatProps = {
 export const ChatMessage = (props: ChatProps) => {
   const { message, user } = props;
   const isAuthor = message?.author_id === user?.id;
-  const tickColor = message?.seen ? Colors.blueTicksColor : Colors.mediumDarkGrey;
+  const tickColor = message?.seen
+    ? Colors.blueTicksColor
+    : Colors.mediumDarkGrey;
 
   const customStyle = {
-    alignSelf: `${isAuthor ? 'flex-end' : 'flex-start'}`,
+    alignSelf: `${isAuthor ? "flex-end" : "flex-start"}`,
   } as ViewStyle;
 
   return (
@@ -36,7 +38,13 @@ export const ChatMessage = (props: ChatProps) => {
         <Text style={styles.messageText}>{message?.content}</Text>
         <View style={styles.messageMetaRow}>
           <Text style={styles.messageTime}>{message?.sent_at}</Text>
-          {isAuthor && <MaterialCommunityIcons name="check-all" size={16} color={tickColor} />}
+          {isAuthor && (
+            <MaterialCommunityIcons
+              name="check-all"
+              size={16}
+              color={tickColor}
+            />
+          )}
         </View>
       </View>
     </View>

@@ -7,13 +7,11 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
-import { useMutation } from "@tanstack/react-query";
-
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 
 import { styles } from "./styles/messageBox";
 import { MessageSchema } from "./schema";
-import { sendMessage } from "../actions";
+import { useCustomQuery } from "@/src/useQueryContext";
 
 type MessageFormValues = z.infer<typeof MessageSchema>;
 
@@ -32,23 +30,29 @@ export const MessageBox = (props: MessageBoxProps) => {
     resolver: zodResolver(MessageSchema),
   });
 
+  const { getCachedData } = useCustomQuery();
+  const { threadChannels } = getCachedData(["threadChannels"]);
+
   const thread = getUpdatedObjectSnapshot("threads", threadId as string);
 
-  const addMessageMutation = useMutation({
-    mutationFn: sendMessage,
-    onSuccess: (data) =>
-      updateAndMoveObjectToTop("threads", threadId as string, {
-        last_message: data,
-        messages: [...thread?.messages, data],
-      }),
-
-    onError: (err) => {
-      console.error("Sending Message failed:", err);
-      return err;
-    },
-  });
-  const onAddMessage = (params: MessageParams) =>
-    addMessageMutation.mutate(params);
+  const sendMessage = (params: Partial<Message>) => {
+    threadChannels[threadId as string]
+      .push("send_message", {
+        params: params,
+      })
+      .receive("ok", (payload: { message: Partial<Message> }) => {
+        updateAndMoveObjectToTop("threads", threadId as string, {
+          last_message: payload.message,
+          messages: [...(thread?.messages ?? []), payload.message],
+        });
+      })
+      .receive("error", (err: Error) => {
+        console.error("Failed to send message:", err);
+      })
+      .receive("timeout", () => {
+        console.warn("Message push timed out");
+      });
+  };
 
   const onSubmit = (data: MessageFormValues) => {
     const params = {
@@ -58,7 +62,7 @@ export const MessageBox = (props: MessageBoxProps) => {
       thread_id: threadId,
     };
 
-    onAddMessage(params);
+    sendMessage(params);
   };
 
   return (

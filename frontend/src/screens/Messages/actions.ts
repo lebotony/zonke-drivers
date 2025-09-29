@@ -15,8 +15,6 @@ export const fetchUserThreads = async ({ pageParam = 1 }) =>
 
 export const fetchThreadMessages = async (threadId: string) => httpGet('/messages', { thread_id: threadId })
 
-export const sendMessage = async (params: MessageParams) => httpPost('/messages', params)
-
 export const setSeenTrue = async (threadId: string) => httpPost('/threads/messages_seen', {thread_id: threadId})
 
 export const initializeThread = async (userId: string) => httpPost("/initialize_thread", { user_id: userId })

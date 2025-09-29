@@ -52,6 +52,8 @@ export const ChatScreen = () => {
     (thd_part) => thd_part.participant_id !== user?.id
   )?.participant;
 
+  console.log(user?.id, recipient?.id);
+
   const loadThreadMessages = (messages: Message[]) => {
     if (Array.isArray(messages) && !isEmpty(messages)) {
       updatePaginatedObject("threads", messages[0].thread_id, { messages });
