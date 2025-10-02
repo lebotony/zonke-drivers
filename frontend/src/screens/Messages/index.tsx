@@ -9,6 +9,8 @@ import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { initializeSocket } from "@/src/socket";
 import { SearchComponent } from "@/src/components/searchBar";
 import { Spinner } from "@/src/components/elements/Spinner";
+import { useCustomQuery } from "@/src/useQueryContext";
+import { usePaginatedCache } from "@/src/updateCacheProvider";
 
 import { Message } from "./message";
 import { fetchUserThreads } from "./actions";
@@ -19,8 +21,6 @@ import {
   participantJoined,
   participantLeft,
 } from "./utils/channels";
-import { useCustomQuery } from "@/src/useQueryContext";
-import { usePaginatedCache } from "@/src/updateCacheProvider";
 
 const TABS = ["All", "Unread", "Archived", "Starred"];
 

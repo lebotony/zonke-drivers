@@ -38,6 +38,7 @@ defmodule Backend.Drivers.Drivers do
     DriverBy.base_query()
     |> DriverBy.by_id(id)
     |> DriverBy.by_active_status()
+    |> add_user_fields()
     |> Repo.one()
     |> format_driver()
   end
@@ -46,6 +47,7 @@ defmodule Backend.Drivers.Drivers do
     data =
       DriverBy.base_query()
       |> DriverBy.by_business_profile(params.business_profile_id)
+      |> add_user_fields()
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
@@ -55,6 +57,7 @@ defmodule Backend.Drivers.Drivers do
     data =
       DriverBy.base_query()
       |> DriverBy.by_active_status()
+      |> add_user_fields()
       |> build_search(params)
       |> build_sort(params)
       |> Repo.paginate(PaginateHelper.prep_params(params))
@@ -100,6 +103,19 @@ defmodule Backend.Drivers.Drivers do
       _ ->
         query
     end
+  end
+
+  def add_user_fields(query) do
+    query
+    |> join(:inner, [driver: d], u in assoc(d, :user), as: :user)
+    |> select_merge([driver: d, user: u], %{
+      d
+      | email: u.email,
+        first_name: u.first_name,
+        last_name: u.last_name,
+        username: u.username,
+        location: u.location
+    })
   end
 
   defp format_driver(%Driver{} = driver), do: {:ok, driver}

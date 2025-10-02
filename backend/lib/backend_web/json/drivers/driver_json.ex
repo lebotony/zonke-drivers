@@ -21,10 +21,15 @@ defmodule BackendWeb.Drivers.DriverJSON do
       :price_fixed,
       :age,
       :experience,
-      :rating,
       :booking_count,
+      :email,
+      :first_name,
+      :last_name,
+      :username,
+      :location,
       :inserted_at,
       :updated_at
     ])
+    |> Map.merge(%{rating: (:rand.uniform(39) + 10) / 10})
   end
 end

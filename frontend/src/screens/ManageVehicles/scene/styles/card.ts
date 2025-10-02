@@ -1,66 +1,55 @@
 import { StyleSheet } from "react-native";
+
 import { shadowStyles } from "@/src/components/shadowStyles";
 import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   card: {
     paddingHorizontal: 13,
-    paddingTop: 10,
     marginHorizontal: 14,
     marginBottom: 20,
     borderRadius: 7,
     backgroundColor: Colors.white,
     ...shadowStyles,
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    borderBottomColor: Colors.greyLighter,
-    marginBottom: 7,
-  },
-  headerName: {
-    color: Colors.black,
-    fontSize: 15,
-    marginLeft: 10,
-    fontWeight: 700,
-  },
-  dateWrapper: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "flex-end",
-  },
-  time: {
-    color: Colors.dimGrey,
-    fontSize: 14,
-    marginLeft: 5,
-  },
   body: {
     paddingVertical: 10,
+    paddingBottom: 13,
     flexDirection: "row",
     gap: 13,
     alignItems: "center"
   },
   image: {
-    width: 80,
-    height: 80,
+    width: 100,
+    height: 100,
     resizeMode: "contain",
     backgroundColor: Colors.verylightBlue,
     borderRadius: 7,
     ...shadowStyles,
   },
   payments: {
-    gap: 8
+    paddingTop: 10,
+    gap: 8,
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  paymentCard: {
+    width: "48%",
+    paddingVertical: 7,
+    borderRadius: 7,
+    backgroundColor: Colors.bg,
+    ...shadowStyles
   },
   paymentText: {
     color: Colors.lightGreen,
-    fontSize: 13,
+    fontSize: 15,
+    fontWeight: 700,
     textAlign: "center"
   },
   amountText: {
-    // color: Colors.lightGreen,
     textAlign: "center",
-    fontSize: 13
+    fontWeight: 700,
+    fontSize: 16
   },
   name: {
     fontSize: 16,
@@ -76,9 +65,8 @@ export const styles = StyleSheet.create({
     top: 0
   },
   details: {
-    justifyContent: "space-evenly",
-    gap: 4,
-    maxWidth: "40%",
+    justifyContent: "space-between",
+    gap: 10,
   },
   detailIcon: {
     width: 15,

@@ -5,16 +5,15 @@ defmodule BackendWeb.Drivers.DriverController do
   alias Backend.Drivers.Drivers
 
   # TODO: add rate limiting
-
-  def index_public(conn, params, _session) do
-    with {:ok, drivers, paginate} <- Drivers.get_drivers(params, :public) do
+  def index(conn, %{business_profile_id: profile_id} = params, session) do
+    # with :ok <- Bodyguard.permit(Drivers, :get_drivers, %{id: profile_id}, session),
+    with {:ok, drivers, paginate} <- Drivers.get_drivers(params) do
       render(conn, :index, %{drivers: drivers, paginate: paginate})
     end
   end
 
-  def index(conn, %{business_profile_id: profile_id} = params, session) do
-    # with :ok <- Bodyguard.permit(Drivers, :get_drivers, %{id: profile_id}, session),
-    with {:ok, drivers, paginate} <- Drivers.get_drivers(params) do
+  def public_index(conn, params, _session) do
+    with {:ok, drivers, paginate} <- Drivers.get_drivers(params, :public) do
       render(conn, :index, %{drivers: drivers, paginate: paginate})
     end
   end

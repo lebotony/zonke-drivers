@@ -31,6 +31,22 @@ defmodule BackendWeb.Router do
         except: @except_path_actions
       )
 
+      scope("/drivers") do
+        get("/public", Drivers.DriverController, :public_index)
+      end
+
+      resources("/drivers", Drivers.DriverController,
+        except: @except_path_actions
+      )
+
+      scope("/vehicles") do
+        get("/vehicle_drivers", Vehicles.VehicleController, :index_management_vehicle)
+      end
+
+      resources("/vehicle_payments", Vehicles.PaymentController,
+        except: @except_path_actions
+      )
+
       scope("/threads") do
         get("/user_threads", Messenger.ThreadController, :get_participant_threads)
         post("/messages_seen", Messenger.ThreadController, :set_seen_true)
