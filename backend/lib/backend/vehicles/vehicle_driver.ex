@@ -10,6 +10,10 @@ defmodule Backend.Vehicles.VehicleDriver do
     belongs_to(:driver, Driver)
     belongs_to(:vehicle, Vehicle)
 
+    field(:asset_url, :string, virtual: true)
+    field(:first_name, :string, virtual: true)
+    field(:last_name, :string, virtual: true)
+
     has_many(:payments, Payment)
 
     timestamps()

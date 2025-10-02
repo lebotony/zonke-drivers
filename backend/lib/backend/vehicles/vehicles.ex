@@ -1,6 +1,7 @@
 defmodule Backend.Vehicles.Vehicles do
   alias Backend.{Repo, PaginateHelper}
-  alias Backend.Vehicles.{Vehicle, Queries.VehicleBy}
+  alias Backend.Vehicles.Vehicle
+  alias Backend.Vehicles.Queries.{VehicleDriverBy, VehicleBy}
   alias Backend.Assets.Assets
   alias Ecto.Multi
 
@@ -118,6 +119,42 @@ defmodule Backend.Vehicles.Vehicles do
       _ ->
         query
     end
+  end
+
+  def get_management_vehicles(params, %{user_id: user_id}, :owner) do
+    data =
+      VehicleDriverBy.base_query()
+      |> VehicleDriverBy.by_vehicle_owner(user_id)
+      |> add_extra_field()
+      |> Repo.paginate(PaginateHelper.prep_params(params))
+
+    vehicle_drivers = Repo.preload(data.entries, [:driver, :vehicle])
+
+    {:ok, vehicle_drivers, PaginateHelper.prep_paginate(data)}
+  end
+
+  def get_management_vehicles(params, %{user_id: user_id}, :driver) do
+    data =
+      VehicleDriverBy.base_query()
+      |> VehicleDriverBy.by_driver(user_id)
+      |> add_extra_field()
+      |> Repo.paginate(PaginateHelper.prep_params(params))
+
+    vehicle_drivers = Repo.preload(data.entries, [:driver, :vehicle])
+
+    {:ok, vehicle_drivers, PaginateHelper.prep_paginate(data)}
+  end
+
+  def add_extra_field(query) do
+    query
+    |> join(:inner, [vehicle: v], a in assoc(v, :asset), as: :asset)
+    |> join(:inner, [driver: d], u in assoc(d, :user), as: :user)
+    |> select_merge([vehicle_driver: vd, asset: a, user: u], %{
+      vd
+      | asset_url: a.url,
+        first_name: u.first_name,
+        last_name: u.last_name,
+    })
   end
 
   defp format_vehicle(%Vehicle{} = vehicle), do: {:ok, vehicle}

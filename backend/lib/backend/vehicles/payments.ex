@@ -1,6 +1,6 @@
 defmodule Backend.Vehicles.Payments do
   alias Backend.{Repo, PaginateHelper}
-  alias Backend.Vehicles.{Payment, VehicleDriver}
+  alias Backend.Vehicles.Payment
   alias Backend.Vehicles.Queries.PaymentBy
 
   import Ecto.Query
@@ -28,19 +28,10 @@ defmodule Backend.Vehicles.Payments do
     |> format_payment()
   end
 
-  def get_payments(params, :vehicle_owner) do
+  def get_payments(params) do
     data =
       PaymentBy.base_query()
       |> PaymentBy.by_vehicle_driver(params.vehicle_driver_id)
-      |> Repo.paginate(PaginateHelper.prep_params(params))
-
-    {:ok, data, PaginateHelper.prep_paginate(data)}
-  end
-
-  def get_payments(params, :driver) do
-    data =
-      PaymentBy.base_query()
-      |> PaymentBy.by_driver(params.business_profile_id)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}

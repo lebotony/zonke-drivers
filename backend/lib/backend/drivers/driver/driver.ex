@@ -37,6 +37,10 @@ defmodule Backend.Drivers.Driver do
     field(:rating, :float, virtual: true)
     field(:booking_count, :float, virtual: true)
     field(:rank_value, :decimal, virtual: true)
+    field(:email, :string, virtual: true)
+    field(:first_name, :string, virtual: true)
+    field(:last_name, :string, virtual: true)
+    field(:username, :string, virtual: true)
 
     belongs_to(:business_profile, BusinessProfile)
     belongs_to(:user, User)

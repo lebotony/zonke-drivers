@@ -1,4 +1,6 @@
-defmodule BackendWeb.Vheicles.PaymentJSON do
+defmodule BackendWeb.Vehicles.PaymentJSON do
+  alias Backend.DateTimeHelper
+
   def index(%{payments: payments, paginate: paginate}) do
     %{
       paginate: paginate,
@@ -6,16 +8,12 @@ defmodule BackendWeb.Vheicles.PaymentJSON do
     }
   end
 
-  def index(%{payments: payments}) do
-    for(payment <- payments, do: show(%{payment: payment}))
-  end
-
   def show(%{payment: payment}) do
     Map.take(payment, [
       :id,
       :price_fixed,
-      :inserted_at,
       :updated_at
     ])
+    |> Map.merge(%{paid_at: DateTimeHelper.date_time(payment.inserted_at)})
   end
 end

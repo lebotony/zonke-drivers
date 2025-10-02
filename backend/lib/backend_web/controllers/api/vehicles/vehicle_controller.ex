@@ -3,8 +3,17 @@ defmodule BackendWeb.Vehicles.VehicleController do
   use BackendWeb.AuthenticatedController
 
   alias Backend.Vehicles.Vehicles
+  alias BackendWeb.Vehicles.VehicleDriverJSON
 
   # TODO: add rate limiting
+  def index_management_vehicle(conn, params, session) do
+    with {:ok, vehicle_drivers, paginate} <- Vehicles.get_management_vehicles(params, session, :owner) do
+      render(conn, VehicleDriverJSON, :index, %{
+        vehicle_drivers: vehicle_drivers,
+        paginate: paginate
+      })
+    end
+  end
 
   def index_public(conn, params, _session) do
     with {:ok, vehicles, paginate} <- Vehicles.get_vehicles(params, :public) do

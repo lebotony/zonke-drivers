@@ -1,4 +1,6 @@
 defmodule BackendWeb.Messenger.MessageJSON do
+  alias Backend.DateTimeHelper
+
   def index(%{messages: messages}) do
     for(message <- messages, do: show(%{message: message}))
   end
@@ -18,22 +20,6 @@ defmodule BackendWeb.Messenger.MessageJSON do
       :created_at,
       :metadata
     ])
-    |> Map.merge(%{sent_at: date_time(message.inserted_at)})
-  end
-
-  defp date_time(date) do
-    current_date = Date.utc_today()
-
-    case current_date == NaiveDateTime.to_date(date) do
-      true ->
-        date
-        |> NaiveDateTime.to_time()
-        |> Time.to_string()
-        |> String.slice(0, 5)
-
-      false ->
-        date
-        |> Calendar.strftime("%-d %b")
-    end
+    |> Map.merge(%{sent_at: DateTimeHelper.date_time(message.inserted_at)})
   end
 end

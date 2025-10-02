@@ -14,18 +14,25 @@ import { CustomButton } from "@/src/components/elements/button";
 import { styles } from "../styles/driverCard";
 import { PLATFORM_FILTERS } from "../utils/constants";
 import { Platforms } from "./platforms";
+import { Driver } from "../../types";
 
 const ICON_SIZE = 14;
 
-export const DriverCard = () => {
+type DriverProps = {
+  driver: Driver;
+};
+
+export const DriverCard = (props: DriverProps) => {
+  const { driver } = props;
+
   return (
     <View style={styles.container}>
       <View style={styles.row}>
         <Avatar source={profilePic} round />
         <View style={styles.details}>
           <Text style={styles.name}>
-            Romeo Makota
-            <Text style={styles.age}> (54 yrs)</Text>
+            {driver.first_name} {driver.last_name}
+            <Text style={styles.age}> {`(${driver.age})`}</Text>
           </Text>
 
           <View style={styles.ratingRow}>
@@ -33,7 +40,8 @@ export const DriverCard = () => {
               <AntDesign name="star" size={ICON_SIZE} color={Colors.yellow} />
             </View>
             <Text style={styles.ratingText}>
-              4.9 <Text style={styles.ratingCreteria}>(200 payments)</Text>
+              {driver.rating}{" "}
+              <Text style={styles.ratingCreteria}>(200 payments)</Text>
             </Text>
           </View>
 
@@ -43,7 +51,7 @@ export const DriverCard = () => {
             </View>
 
             <Text style={styles.address} numberOfLines={1}>
-              4 years, 5 months
+              {driver.experience} years
             </Text>
           </View>
 

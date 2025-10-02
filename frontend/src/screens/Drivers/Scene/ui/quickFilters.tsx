@@ -40,7 +40,7 @@ export const QuickFilters = () => {
             </CustomButton>
           ) : null}
           <Text
-            style={{ color: Colors.lightRed, fontWeight: 600 }}
+            style={{ color: Colors.lightRed, fontWeight: 700 }}
             onPress={onLogout}
           >
             Logout

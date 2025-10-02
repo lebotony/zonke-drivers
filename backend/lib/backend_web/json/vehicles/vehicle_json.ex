@@ -21,6 +21,7 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
       :price_range,
       :price_fixed,
       :active,
+      :user_id,
       # :rating,
       :inserted_at,
       :updated_at

@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     color: Colors.darkCharcoalGrey,
-    lineHeight: 14,
+    lineHeight: 19,
   },
   age: {
     fontWeight: "400",

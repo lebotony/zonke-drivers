@@ -103,6 +103,7 @@ const Layout = (props: LayoutProps) => {
             <Stack.Screen name="posts" options={{ headerShown: false }} />
             <Stack.Screen name="modal" options={{ presentation: "modal" }} />
             <Stack.Screen name="chats" options={{ headerShown: false }} />
+            <Stack.Screen name="payments" options={{ headerShown: false }} />
           </Stack>
         </PaginatedCacheProvider>
       )}

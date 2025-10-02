@@ -28,7 +28,8 @@ defmodule Backend.Vehicles.VehiclesTest do
     %{
       params: params,
       business_profile: business_profile,
-      session: session
+      session: session,
+      user: user
     }
   end
 
@@ -79,6 +80,25 @@ defmodule Backend.Vehicles.VehiclesTest do
       {:ok, %{id: id}} = Vehicles.get_vehicle(vehicle.id, :public)
 
       assert id == vehicle.id
+    end
+  end
+
+  describe "get_management_vehicles/3" do
+    test "returns business_profile vehicles if found", %{
+      params: params,
+      business_profile: business_profile,
+      session: session,
+      user: user
+    } do
+      vehicle = insert(:vehicle, user: user,  active: true)
+      driver = insert(:driver)
+      vehicle_driver = insert(:vehicle_driver, vehicle: vehicle, driver: driver)
+      insert_list(10, :vehicle, active: true)
+
+      {:ok, drivers, %{total_count: total_count}} = Vehicles.get_management_vehicles(%{}, session, :owner)
+      IO.inspect(drivers)
+
+      assert total_count == 1
     end
   end
 

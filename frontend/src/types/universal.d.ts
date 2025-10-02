@@ -22,3 +22,19 @@ type Paginate = {
   max_page: number;
   total_count: number;
 };
+
+type LocationType = {
+  lat: string,
+  lon: string
+}
+
+type PriceRange = {
+  currency: string,
+  min: number,
+  max: number
+}
+
+type PriceFixed = {
+  currency: string,
+  value: number
+}
