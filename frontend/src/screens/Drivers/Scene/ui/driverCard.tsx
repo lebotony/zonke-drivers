@@ -14,7 +14,6 @@ import { CustomButton } from "@/src/components/elements/button";
 import { styles } from "../styles/driverCard";
 import { PLATFORM_FILTERS } from "../utils/constants";
 import { Platforms } from "./platforms";
-import { Driver } from "../../types";
 
 const ICON_SIZE = 14;
 
@@ -28,7 +27,7 @@ export const DriverCard = (props: DriverProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <Avatar source={profilePic} round />
+        <Avatar source={profilePic} round width={84} />
         <View style={styles.details}>
           <Text style={styles.name}>
             {driver.first_name} {driver.last_name}

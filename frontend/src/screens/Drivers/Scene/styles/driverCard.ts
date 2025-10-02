@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
   },
   details: {
     justifyContent: "space-evenly",
-    gap: 4,
+    gap: 2,
   },
   detailIcon: {
     width: 15,
