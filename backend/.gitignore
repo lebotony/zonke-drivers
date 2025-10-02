@@ -25,6 +25,8 @@ ebin/
 # Erlang crash dumps
 erl_crash.dump
 
+.tool-versions
+
 # If using Phoenix
 /node_modules/
 npm-debug.log

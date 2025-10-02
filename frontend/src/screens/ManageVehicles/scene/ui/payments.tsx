@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { FlatList, SafeAreaView, Text, View } from "react-native";
 
 import { useLocalSearchParams } from "expo-router";
@@ -7,6 +7,8 @@ import { useQueryClient } from "@tanstack/react-query";
 
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { useCustomQuery } from "@/src/useQueryContext";
+import { Comments } from "@/src/screens/ViewSection/scene/ui/comments";
+import { CommentModal } from "@/src/screens/ViewSection/scene/ui/commentModal";
 
 import { PaymentCard } from "./paymentCard";
 import { fetchPayments } from "../../actions";
@@ -20,6 +22,8 @@ type PaymentsResponse = {
 export const PaymentsScreen = () => {
   const { id } = useLocalSearchParams();
   const vehicleDriverId = Array.isArray(id) ? id[0] : id;
+
+  const [showCommentModal, setShowCommentModal] = useState(false);
 
   const { getCachedData } = useCustomQuery();
   const { vehicleDrivers, fetchedVehicleDriverIds, paymentsPagination } =
@@ -77,6 +81,7 @@ export const PaymentsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.headerText}>Payments</Text>
+
       <View
         style={{
           alignItems: "flex-end",
@@ -85,6 +90,7 @@ export const PaymentsScreen = () => {
       >
         <Text style={styles.addText}>+ Add</Text>
       </View>
+
       <FlatList
         data={vehicleDriver.payments}
         onEndReached={() => {
@@ -99,6 +105,12 @@ export const PaymentsScreen = () => {
         contentContainerStyle={{ paddingVertical: 5 }}
         showsVerticalScrollIndicator={false}
       />
+
+      <Comments setShowCommentModal={() => setShowCommentModal(true)} />
+
+      {showCommentModal && (
+        <CommentModal setShowCommentModal={() => setShowCommentModal(false)} />
+      )}
     </SafeAreaView>
   );
 };
