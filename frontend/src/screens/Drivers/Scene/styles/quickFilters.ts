@@ -6,10 +6,6 @@ import { shadowStyles } from "@/src/components/shadowStyles";
 export const styles = StyleSheet.create({
   container: {
     paddingVertical: 8,
-    // backgroundColor: Colors.bg,
-    // borderColor: 'red',
-    // borderWidth: 1,
-    // ...shadowStyles
   },
   titleWrapper: {
     flexDirection: "row",
@@ -18,8 +14,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   heading: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: 600,
+    fontFamily: "Cinzel",
   },
   clearButton: {
     paddingVertical: 0

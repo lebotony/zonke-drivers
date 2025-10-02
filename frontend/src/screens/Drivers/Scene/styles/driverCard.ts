@@ -36,6 +36,7 @@ export const styles = StyleSheet.create({
     top: 0
   },
   details: {
+    marginLeft: 4,
     justifyContent: "space-evenly",
     gap: 2,
   },
