@@ -1,6 +1,7 @@
 import axios from "axios";
 
 import { API_URL } from "@/constants/srcConstants";
+import { httpPost } from "@/src/requests";
 
 export const fetchManagementVehicles = ({ pageParam = 1 }) =>
   axios
@@ -28,3 +29,4 @@ export const fetchPayments = ({ pageParam = 1, vehicleDriverId }: FetchPaymentsP
     })
     .catch((err) => err);
 
+export const addPayment = (params) => httpPost('/vehicle_payments', params)

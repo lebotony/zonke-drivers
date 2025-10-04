@@ -25,7 +25,7 @@ export const Scene = () => {
       queryKey: ["drivers"],
       queryFn: fetchDrivers,
       getNextPageParam: (lastPage) => {
-        const { page, max_page } = lastPage.paginate;
+        const { page, max_page } = lastPage?.paginate;
         return page < max_page ? page + 1 : undefined;
       },
       initialPageParam: 1,

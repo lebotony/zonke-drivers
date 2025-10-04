@@ -11,7 +11,6 @@ export const styles = StyleSheet.create({
     bottom: 0,
     flex: 1,
     flexDirection: 'column',
-    justifyContent: 'flex-end',
   },
   modalWrapper: {
     borderTopLeftRadius: 15,
@@ -19,4 +18,9 @@ export const styles = StyleSheet.create({
     width: '100%',
     backgroundColor: Colors.white,
   },
+  centerModal: {
+    padding: 20,
+    backgroundColor: Colors.white,
+    borderRadius: 15
+  }
 });
