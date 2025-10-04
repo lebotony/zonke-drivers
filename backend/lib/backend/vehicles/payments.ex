@@ -32,6 +32,7 @@ defmodule Backend.Vehicles.Payments do
     data =
       PaymentBy.base_query()
       |> PaymentBy.by_vehicle_driver(params.vehicle_driver_id)
+      |> order_by([payment: p], desc: p.inserted_at)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}

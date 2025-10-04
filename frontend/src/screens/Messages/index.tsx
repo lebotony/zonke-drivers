@@ -50,7 +50,7 @@ export const MessagesScreen = () => {
       queryFn: fetchUserThreads,
       getNextPageParam: (lastPage) => {
         const { page, max_page }: { page: number; max_page: number } =
-          lastPage.paginate;
+          lastPage?.paginate;
         return page < max_page ? page + 1 : undefined;
       },
       initialPageParam: 1,

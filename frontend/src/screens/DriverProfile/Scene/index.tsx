@@ -23,7 +23,11 @@ import { Header } from "./ui/header";
 export const Scene = () => {
   return (
     <SafeAreaView>
-      <ScrollView style={{ position: "relative" }}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        showsHorizontalScrollIndicator={false}
+        style={{ position: "relative" }}
+      >
         <View style={styles.body}>
           {Platform.OS !== "web" && <Header customStyles={{ top: -10 }} />}
           <View style={styles.profilePic}>

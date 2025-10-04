@@ -34,7 +34,7 @@ export const PaymentCard = (props: PaymentCardProps) => {
           Paid
         </Text>
         <Text style={styles.amountText}>
-          + {`R${payment.price_fixed.value}`}
+          + {`R${payment.price_fixed?.value}`}
         </Text>
       </View>
     </View>

@@ -1,17 +1,20 @@
-import React, { ReactNode, useRef } from 'react';
-import { Animated, PanResponder } from 'react-native';
-import { BlurView } from 'expo-blur';
+import React, { ReactNode, useRef } from "react";
+import { Animated, PanResponder, View } from "react-native";
+import { BlurView } from "expo-blur";
 
-import { styles } from './styles';
-import { BarLine } from './bar';
+import { styles } from "./styles";
+import { BarLine } from "./bar";
+import { OnClickOutside } from "../../OnClickOutside";
 
 type ModalProps = {
   children?: ReactNode;
   onDismiss?: () => void;
+  sliding?: boolean;
+  fn?: VoidCallback;
 };
 
 export const Modal = (props: ModalProps) => {
-  const { children, onDismiss } = props;
+  const { children, onDismiss, sliding, fn } = props;
 
   // Animated value for Y position
   const pan = useRef(new Animated.ValueXY()).current;
@@ -23,7 +26,9 @@ export const Modal = (props: ModalProps) => {
         // Only respond to vertical drags
         return Math.abs(gestureState.dy) > 5;
       },
-      onPanResponderMove: Animated.event([null, { dy: pan.y }], { useNativeDriver: false }),
+      onPanResponderMove: Animated.event([null, { dy: pan.y }], {
+        useNativeDriver: false,
+      }),
       onPanResponderRelease: (_, gesture) => {
         // If dragged down far enough, dismiss
         if (gesture.dy > 80) {
@@ -44,18 +49,33 @@ export const Modal = (props: ModalProps) => {
           }).start();
         }
       },
-    }),
+    })
   ).current;
 
   return (
-    <BlurView intensity={60} tint="dark" style={styles.container}>
-      <Animated.View
-        style={[styles.modalWrapper, { transform: [{ translateY: pan.y }] }]}
-        {...panResponder.panHandlers}
-      >
-        <BarLine />
-        {children}
-      </Animated.View>
+    <BlurView
+      intensity={60}
+      tint="dark"
+      style={[
+        styles.container,
+        sliding
+          ? { justifyContent: "flex-end" }
+          : { justifyContent: "center", alignItems: "center" },
+      ]}
+    >
+      {sliding ? (
+        <Animated.View
+          style={[styles.modalWrapper, { transform: [{ translateY: pan.y }] }]}
+          {...panResponder.panHandlers}
+        >
+          <BarLine />
+          {children}
+        </Animated.View>
+      ) : (
+        <OnClickOutside onClickOutsideFn={fn}>
+          <View style={styles.centerModal}>{children}</View>
+        </OnClickOutside>
+      )}
     </BlurView>
   );
 };

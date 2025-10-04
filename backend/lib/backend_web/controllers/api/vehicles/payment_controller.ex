@@ -13,9 +13,9 @@ defmodule BackendWeb.Vehicles.PaymentController do
     end
   end
 
-  def create(conn, params, session) do
+  def create(conn, params, _session) do
     # with :ok <- Bodyguard.permit(Payments, :create, %{id: profile_id}, session),
-    with {:ok, payment} <- Payments.create(params, session) do
+    with {:ok, payment} <- Payments.create(params) do
       render(conn, :show, payment: payment)
     end
   end
