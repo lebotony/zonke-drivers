@@ -9,7 +9,7 @@ import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIc
 
 import { Colors } from "@/constants/ui";
 import { useClientOnlyValue } from "../../components/useClientOnlyValue";
-import { Ionicons } from "@expo/vector-icons";
+import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   return (
@@ -44,11 +44,7 @@ export default function TabLayout() {
           title: "Manage",
           tabBarIcon: ({ color, size }) => (
             // <MaterialCommunityIcons name="motorbike" size={30} color={color} />
-            <MaterialCommunityIcons
-              name="steering"
-              size={27}
-              color={Colors.darkCharcoalGrey}
-            />
+            <MaterialCommunityIcons name="steering" size={27} color={color} />
           ),
         }}
       />
@@ -65,16 +61,12 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="verify"
+        name="vehicle"
         options={{
           headerShown: false,
-          title: "Verify Driver",
+          title: "Vehicle",
           tabBarIcon: ({ color, size }) => (
-            <MaterialIcons
-              name="verified"
-              size={25}
-              color={Colors.darkCharcoalGrey}
-            />
+            <FontAwesome5 name="car" size={25} color={color} />
           ),
         }}
       />
@@ -85,11 +77,7 @@ export default function TabLayout() {
           headerShown: false,
           title: "Messages",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons
-              name="chatbubble-outline"
-              size={23}
-              color={Colors.darkCharcoalGrey}
-            />
+            <Ionicons name="chatbubble-outline" size={23} color={color} />
           ),
         }}
       />

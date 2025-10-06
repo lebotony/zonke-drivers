@@ -7,19 +7,25 @@ defmodule Backend.Vehicles.Vehicle do
   alias Backend.Ecto.Embeds.{PriceRangeEmbed, PriceFixed}
   alias Backend.Assets.Asset
   alias Backend.Bookings.VehicleBooking
+  alias Backend.Ecto.EctoEnums.VehicleTypeEnum
 
-  @required_fields [:name, :business_profile_id, :user_id]
-  @optional_fields [:make, :model, :description, :mileage, :active]
+  @required_fields [:name, :business_profile_id, :user_id, :type, :brand, :diesel, :manual]
+  @optional_fields [:model, :description, :mileage, :active, :engine_capacity, :passengers]
   @embeds [:price_range, :price_fixed]
   @all_fields @required_fields ++ @optional_fields ++ @embeds
 
   schema "vehicles" do
-    field(:name, :string)
-    field(:make, :string)
     field(:model, :string)
     field(:description, :string)
     field(:mileage, :integer)
     field(:active, :boolean, default: false)
+
+    field(:type, VehicleTypeEnum)
+    field(:brand, :string)
+    field(:manual, :boolean)
+    field(:diesel, :boolean)
+    field(:engine_capacity, :float)
+    field(:passengers, :integer)
 
     embeds_one(:price_range, PriceRangeEmbed, on_replace: :update)
     embeds_one(:price_fixed, PriceFixed, on_replace: :update)

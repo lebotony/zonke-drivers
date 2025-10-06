@@ -1,4 +1,5 @@
-import { View, Text, ScrollView } from "react-native";
+import { View, ScrollView } from "react-native";
+import { Text } from "react-native-paper";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -25,7 +26,7 @@ export const QuickFilters = (props: QuickFiltersProps) => {
     <Shadow>
       <View style={styles.container}>
         <View style={styles.titleWrapper}>
-          <Text style={styles.heading}>FIND BY PLATFORM</Text>
+          <Text style={styles.heading}>Find by platform</Text>
           {selectedPlatforms.length ? (
             <CustomButton onPress={onClear} customStyle={styles.clearButton}>
               <MaterialIcons name="clear" size={24} color={Colors.black} />

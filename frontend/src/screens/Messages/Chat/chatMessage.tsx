@@ -1,5 +1,6 @@
 import React from "react";
-import { View, Text, ViewStyle } from "react-native";
+import { View, ViewStyle } from "react-native";
+import { Text } from "react-native-paper";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 

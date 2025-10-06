@@ -1,4 +1,6 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
+
 import { router } from "expo-router";
 
 import AntDesign from "@expo/vector-icons/AntDesign";

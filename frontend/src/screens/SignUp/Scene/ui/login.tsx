@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, TouchableOpacity, ScrollView } from "react-native";
+import { Text } from "react-native-paper";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Image } from "expo-image";

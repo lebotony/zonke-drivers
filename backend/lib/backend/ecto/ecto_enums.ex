@@ -23,4 +23,12 @@ defmodule Backend.Ecto.EctoEnums do
     :payments,
     :system
   ])
+
+  defenum(VehicleTypeEnum, :vehicle_type_enum, [
+    :bike,
+    :passenger,
+    :taxi,
+    :truck,
+    :lorry
+  ])
 end
