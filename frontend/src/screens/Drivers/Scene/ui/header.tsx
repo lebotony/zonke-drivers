@@ -10,7 +10,13 @@ import { Circle } from "@/src/components/shapes/circle";
 
 import { styles } from "../styles/header";
 
-export const Header = () => {
+type HeaderProps = {
+  setSearchTerm: (value: string) => void;
+};
+
+export const Header = (props: HeaderProps) => {
+  const { setSearchTerm } = props;
+
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
@@ -20,7 +26,7 @@ export const Header = () => {
           <View style={styles.inputWrapper}>
             <EvilIcons name="search" size={20} color="black" />
             <TextInput
-              onChangeText={() => {}}
+              onChangeText={setSearchTerm}
               style={styles.textInput}
               placeholder="Search drivers..."
               placeholderTextColor={Colors.mediumGrey}

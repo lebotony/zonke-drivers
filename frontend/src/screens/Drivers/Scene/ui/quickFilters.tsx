@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { View, Text, ScrollView } from "react-native";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -7,34 +6,27 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CustomButton } from "@/src/components/elements/button";
 import { Colors } from "@/constants/ui";
 import { Shadow } from "@/src/components/shadow";
+import { useAuth } from "@/src/authContext";
 
 import { styles } from "../styles/quickFilters";
 import { PLATFORM_FILTERS } from "../utils/constants";
-import { useAuth } from "@/src/authContext";
 
-export const QuickFilters = () => {
-  const [selected, setSelected] = useState<string[]>([]);
+type QuickFiltersProps = {
+  onSetSelectedPlatforms: (value: string) => void;
+  selectedPlatforms: string[];
+  onClear: VoidCallback;
+};
+
+export const QuickFilters = (props: QuickFiltersProps) => {
+  const { onSetSelectedPlatforms, selectedPlatforms, onClear } = props;
   const { onLogout } = useAuth();
-
-  const onSelect = (value: string) => {
-    if (selected?.includes(value)) {
-      const updatedSelected = selected.filter((item) => item !== value);
-      setSelected(updatedSelected);
-    } else {
-      setSelected((selected) => [...selected, value]);
-    }
-  };
-
-  const onClear = () => {
-    setSelected([]);
-  };
 
   return (
     <Shadow>
       <View style={styles.container}>
         <View style={styles.titleWrapper}>
           <Text style={styles.heading}>FIND BY PLATFORM</Text>
-          {selected.length ? (
+          {selectedPlatforms.length ? (
             <CustomButton onPress={onClear} customStyle={styles.clearButton}>
               <MaterialIcons name="clear" size={24} color={Colors.black} />
             </CustomButton>
@@ -59,13 +51,13 @@ export const QuickFilters = () => {
                 key={value}
                 haptics="light"
                 color={bgColor}
-                onPress={() => onSelect(value)}
+                onPress={() => onSetSelectedPlatforms(value)}
                 customStyle={{
                   ...styles.platformButton,
                   width: justIcon ? 40 : "auto",
                 }}
               >
-                {selected.includes(value) && (
+                {selectedPlatforms.includes(value) && (
                   <View style={{ position: "absolute", top: -9, right: -10 }}>
                     <Ionicons
                       name="checkmark-circle"

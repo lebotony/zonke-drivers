@@ -85,6 +85,6 @@ defmodule BackendWeb.MessengerChannel do
     )
 
     Logger.info("Messages sent to thread_id: #{inspect(message.thread_id)}")
-    {:reply, {:ok, %{message: payload}},  socket}
+    {:reply, {:ok, %{message: payload}}, socket}
   end
 end

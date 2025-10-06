@@ -12,7 +12,6 @@ import profilePic from "@/assets/images/profile_pic.png";
 import { CustomButton } from "@/src/components/elements/button";
 
 import { styles } from "../styles/driverCard";
-import { PLATFORM_FILTERS } from "../utils/constants";
 import { Platforms } from "./platforms";
 
 const ICON_SIZE = 14;
@@ -73,7 +72,7 @@ export const DriverCard = (props: DriverProps) => {
       </View>
 
       <HorizontalDivider color="#ededed" />
-      <Platforms platforms={PLATFORM_FILTERS} />
+      <Platforms platforms={driver.platforms} />
       <HorizontalDivider color="#ededed" />
 
       <CustomButton

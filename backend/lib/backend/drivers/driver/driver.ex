@@ -15,7 +15,8 @@ defmodule Backend.Drivers.Driver do
     :paused_at,
     :experience,
     :age,
-    :licences
+    :licences,
+    :platforms
   ]
   @embeds [:price_range, :price_fixed]
   @all_fields @required_fields ++ @optional_fields ++ @embeds
@@ -29,6 +30,7 @@ defmodule Backend.Drivers.Driver do
     field(:paused_at, :naive_datetime)
     field(:experience, :integer)
     field(:age, :integer)
+    field(:platforms, {:array, :string})
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
 
     embeds_one(:price_range, PriceRangeEmbed, on_replace: :update)

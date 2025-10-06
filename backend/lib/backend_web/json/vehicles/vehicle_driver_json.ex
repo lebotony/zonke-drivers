@@ -18,7 +18,7 @@ defmodule BackendWeb.Vehicles.VehicleDriverJSON do
       inserted_at: vehicle_driver.inserted_at,
       updated_at: vehicle_driver.updated_at,
       first_name: vehicle_driver.first_name,
-      last_name: vehicle_driver.last_name,
+      last_name: vehicle_driver.last_name
     }
     |> Map.merge(%{rating: (:rand.uniform(39) + 10) / 10})
   end

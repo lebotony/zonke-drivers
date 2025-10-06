@@ -1,6 +1,9 @@
+import { useState } from "react";
 import { FlatList, View } from "react-native";
 
 import { router } from "expo-router";
+
+import { useDebounce } from "use-debounce";
 import { useInfiniteQuery } from "@tanstack/react-query";
 
 import { fetchDrivers } from "../actions";
@@ -12,18 +15,23 @@ import { styles } from "./styles/index";
 {
   /* {router.push("/profileSetup")} */
 }
-{
-  /* {router.push("/drivers/1")} */
-}
-{
-  /* {router.push("/posts")} */
-}
 
 export const Scene = () => {
+  const [searchTerm, setSearchTerm] = useState<string>();
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["drivers"],
-      queryFn: fetchDrivers,
+      queryKey: ["drivers", debouncedSearchTerm, selectedPlatforms],
+      queryFn: ({ pageParam = 1 }) => {
+        const filters = {
+          search_term: debouncedSearchTerm,
+          platforms: selectedPlatforms,
+        };
+
+        return fetchDrivers({ pageParam }, filters);
+      },
       getNextPageParam: (lastPage) => {
         const { page, max_page } = lastPage?.paginate;
         return page < max_page ? page + 1 : undefined;
@@ -33,10 +41,25 @@ export const Scene = () => {
 
   const drivers = data?.pages.flatMap((page) => page.data) ?? [];
 
+  const handleSetSelected = (value: string) => {
+    if (selectedPlatforms.includes(value)) {
+      const newPlatforms = selectedPlatforms.filter(
+        (platform) => platform !== value
+      );
+
+      return setSelectedPlatforms(newPlatforms);
+    }
+    return setSelectedPlatforms((prev) => [...(prev || []), value]);
+  };
+
   return (
     <View style={{ flex: 1 }}>
-      <Header />
-      <QuickFilters />
+      <Header setSearchTerm={(value: string) => setSearchTerm(value)} />
+      <QuickFilters
+        onSetSelectedPlatforms={(value: string) => handleSetSelected(value)}
+        selectedPlatforms={selectedPlatforms}
+        onClear={() => setSelectedPlatforms([])}
+      />
       <View style={styles.drivers}>
         <FlatList
           data={drivers}

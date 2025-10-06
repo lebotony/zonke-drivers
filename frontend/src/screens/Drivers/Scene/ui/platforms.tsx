@@ -7,6 +7,8 @@ import {
   ViewStyle,
 } from "react-native";
 
+import { PLATFORM_FILTERS } from "../utils/constants";
+
 import { styles } from "../styles/platforms";
 
 type Platform = {
@@ -19,11 +21,13 @@ type Platform = {
 };
 
 type Platforms = {
-  platforms: Platform[];
+  platforms: string[];
   customContainerStyle?: ViewStyle;
 } & ScrollViewProps;
 
-export const Platforms = ({ platforms, customContainerStyle }: Platforms) => {
+export const Platforms = (props: Platforms) => {
+  const { platforms, customContainerStyle } = props;
+
   return (
     <ScrollView
       horizontal
@@ -31,8 +35,8 @@ export const Platforms = ({ platforms, customContainerStyle }: Platforms) => {
       snapToAlignment="end"
       contentContainerStyle={[styles.platformTags, customContainerStyle]}
     >
-      {["bike", "taxi", "uber_eats", "checkers"].map((platform, idx) => {
-        const def = platforms.find(({ value }) => value === platform);
+      {platforms.map((platform, idx) => {
+        const def = PLATFORM_FILTERS.find(({ value }) => value === platform);
 
         if (def) {
           return (

@@ -1,13 +1,18 @@
 import axios from "axios";
+import qs from "qs";
 
 import { API_URL } from "@/constants/srcConstants";
 
-export const fetchDrivers = ({ pageParam = 1 }) =>
-  axios
-    .get(`${API_URL}/drivers/public`, {
-    params: { page: pageParam, per_page: 5 }
+export const fetchDrivers = ({ pageParam = 1 }, filters: Filters) =>
+{
+  return axios
+  .get(`${API_URL}/drivers/public`, {
+    params: { page: pageParam, per_page: 5, filters},
+    paramsSerializer: (params) =>
+      qs.stringify(params, { arrayFormat: "brackets" }),
   })
     .then((response) => {
       return response.data
     })
     .catch((err) => err);
+  }

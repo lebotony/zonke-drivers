@@ -125,7 +125,7 @@ defmodule Backend.Vehicles.Vehicles do
     data =
       VehicleDriverBy.base_query()
       |> VehicleDriverBy.by_vehicle_owner(user_id)
-      |> add_extra_field()
+      |> add_extra_fields()
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     vehicle_drivers = Repo.preload(data.entries, [:driver, :vehicle])
@@ -137,7 +137,7 @@ defmodule Backend.Vehicles.Vehicles do
     data =
       VehicleDriverBy.base_query()
       |> VehicleDriverBy.by_driver(user_id)
-      |> add_extra_field()
+      |> add_extra_fields()
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     vehicle_drivers = Repo.preload(data.entries, [:driver, :vehicle])
@@ -145,7 +145,7 @@ defmodule Backend.Vehicles.Vehicles do
     {:ok, vehicle_drivers, PaginateHelper.prep_paginate(data)}
   end
 
-  def add_extra_field(query) do
+  def add_extra_fields(query) do
     query
     |> join(:inner, [vehicle: v], a in assoc(v, :asset), as: :asset)
     |> join(:inner, [driver: d], u in assoc(d, :user), as: :user)
@@ -153,7 +153,7 @@ defmodule Backend.Vehicles.Vehicles do
       vd
       | asset_url: a.url,
         first_name: u.first_name,
-        last_name: u.last_name,
+        last_name: u.last_name
     })
   end
 

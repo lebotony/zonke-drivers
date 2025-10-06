@@ -9,6 +9,7 @@ type Driver = {
   experience: number,
   rating: number,
   booking_count: number,
+  platforms: string[],
   inserted_at: string,
   updated_at: string,
   email: string,
@@ -16,4 +17,9 @@ type Driver = {
   last_name: string,
   username: string,
   location: string
+}
+
+type Filters = {
+  search_term: string,
+  platforms: string[]
 }

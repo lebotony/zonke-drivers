@@ -7,7 +7,8 @@ defmodule BackendWeb.Vehicles.VehicleController do
 
   # TODO: add rate limiting
   def index_management_vehicle(conn, params, session) do
-    with {:ok, vehicle_drivers, paginate} <- Vehicles.get_management_vehicles(params, session, :owner) do
+    with {:ok, vehicle_drivers, paginate} <-
+           Vehicles.get_management_vehicles(params, session, :owner) do
       render(conn, VehicleDriverJSON, :index, %{
         vehicle_drivers: vehicle_drivers,
         paginate: paginate

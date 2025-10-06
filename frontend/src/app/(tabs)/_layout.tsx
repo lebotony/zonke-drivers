@@ -1,6 +1,5 @@
 import React from "react";
 import { Tabs } from "expo-router";
-import { View } from "react-native";
 
 import Feather from "@expo/vector-icons/Feather";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -58,11 +57,9 @@ export default function TabLayout() {
         name="post"
         options={{
           headerShown: false,
-          title: "Post",
-          tabBarButton: () => (
-            <View style={{ alignItems: "center", paddingVertical: 4 }}>
-              <AntDesign name="pluscircle" size={40} color={Colors.mrDBlue} />
-            </View>
+          title: "Posts",
+          tabBarIcon: (props) => (
+            <AntDesign name="pluscircle" size={26} color={Colors.mrDBlue} />
           ),
         }}
       />

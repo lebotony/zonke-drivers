@@ -29,7 +29,7 @@ defmodule BackendWeb.Vehicles.PaymentController do
 
   def update(conn, %{id: id} = params, session) do
     with {:ok, payment} <- Payments.get_payment(id),
-        #  :ok <- Bodyguard.permit(Payments, :update, payment, session),
+         #  :ok <- Bodyguard.permit(Payments, :update, payment, session),
          {:ok, payment} <- Payments.update(payment, params) do
       render(conn, :show, payment: payment)
     end
@@ -37,7 +37,7 @@ defmodule BackendWeb.Vehicles.PaymentController do
 
   def delete(conn, %{id: id}, session) do
     with {:ok, payment} <- Payments.get_payment(id),
-        #  :ok <- Bodyguard.permit(Payments, :delete, payment, session),
+         #  :ok <- Bodyguard.permit(Payments, :delete, payment, session),
          {:ok, _payment} <- Payments.delete(payment) do
       json(conn, :ok)
     end
