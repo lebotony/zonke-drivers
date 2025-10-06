@@ -90,12 +90,14 @@ defmodule Backend.Vehicles.VehiclesTest do
       session: session,
       user: user
     } do
-      vehicle = insert(:vehicle, user: user,  active: true)
+      vehicle = insert(:vehicle, user: user, active: true)
       driver = insert(:driver)
       vehicle_driver = insert(:vehicle_driver, vehicle: vehicle, driver: driver)
       insert_list(10, :vehicle, active: true)
 
-      {:ok, drivers, %{total_count: total_count}} = Vehicles.get_management_vehicles(%{}, session, :owner)
+      {:ok, drivers, %{total_count: total_count}} =
+        Vehicles.get_management_vehicles(%{}, session, :owner)
+
       IO.inspect(drivers)
 
       assert total_count == 1

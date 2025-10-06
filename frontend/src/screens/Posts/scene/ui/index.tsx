@@ -8,7 +8,6 @@ import profilePic from "@/assets/images/profile_pic.png";
 import { Avatar } from "@/src/components/visual/avatar";
 
 import { Form } from "./form";
-import { PostSettings } from "./settings";
 import { styles } from "../styles";
 
 export const CreatePost = () => {
@@ -43,8 +42,6 @@ export const CreatePost = () => {
       </View>
 
       <Form />
-
-      <PostSettings />
     </ScrollView>
   );
 };

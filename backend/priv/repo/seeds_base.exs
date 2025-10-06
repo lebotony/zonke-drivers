@@ -138,10 +138,25 @@ vehicles =
 
 Logger.info("Creating drivers")
 
-driver_previous_companies = [
-  {"", "hair, saloon, haircut, makeup, nails, beauty"},
-  {"Plumber", "plumbing, pipes, drainage, installation, repair, maintenance"},
+driver_platforms = ["bike", "passenger", "taxi", "truck", "uber", "bolt", "uber_eats", "checkers", "mr_d_food"]
+
+descriptions = [
+  "I drive trucks all over the city",
+  "Experienced Uber driver",
+  "Delivering food quickly and safely",
+  "Car and motorbike driver available",
+  "Professional bus driver with 10+ years experience",
+  "Licensed for trucks and cars",
+  "Fast and reliable deliveries"
 ]
+
+random_platforms = fn platforms ->
+  rand_num_of_items = Enum.random(1..length(platforms))
+
+  platforms
+  |> Enum.shuffle()
+  |> Enum.take(rand_num_of_items)
+end
 
 drivers =
   Enum.map(drivers_users, fn user ->
@@ -150,11 +165,12 @@ drivers =
       {:ok, driver} =
         %Driver{
           location: %{"lat" => 0.0, "lng" => 0.0},
-          description: "i drive trucks",
+          description: Enum.random(descriptions),
           licences: ["General", "Class 2", "Class 4"],
           active: true,
           experience: 12,
           age: 42,
+          platforms: random_platforms.(driver_platforms),
           price_range: %{currency: "dollars", min: 20, max: 25},
           price_fixed: %{currency: "dollars", value: 25},
           user_id: user.id,
@@ -266,28 +282,6 @@ payments =
       payment
     end)
   end)
-
-######################################################################################################
-
-# Logger.info("Creating reviews")
-
-# first_three_customers = Enum.take(vehicle_owners, 3)
-
-# reviews =
-#   Enum.flat_map(first_three_customers, fn user ->
-#     Enum.map(services, fn service ->
-#       {:ok, review} =
-#         %Review{
-#           comment: "Great service from #{service.name}",
-#           user_id: user.id,
-#           service_id: service.id
-#         }
-#         |> Repo.insert()
-
-#       review
-#     end)
-#   end)
-
 ######################################################################################################
 
 # Logger.info("Creating tags")

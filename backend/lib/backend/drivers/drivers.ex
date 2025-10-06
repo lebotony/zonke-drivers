@@ -84,6 +84,18 @@ defmodule Backend.Drivers.Drivers do
           fragment("? @@ websearch_to_tsquery(?)", s.searchable_document, ^value)
         )
 
+      {:age_range, %{min: min, max: max}}, query ->
+        where(query, [driver: d], d.age >= ^min and d.age <= ^max)
+
+      {:experience_range, %{min: min, max: max}}, query ->
+        where(query, [driver: d], d.experience >= ^min and d.experience <= ^max)
+
+      {:rating_range, %{min: min, max: max}}, query ->
+        where(query, [driver: d], d.experience >= ^min and d.experience <= ^max)
+
+      {:platforms, val}, query when is_list(val) ->
+        where(query, [driver: d], fragment("? && ?", d.platforms, ^val))
+
       _, query ->
         query
     end)
