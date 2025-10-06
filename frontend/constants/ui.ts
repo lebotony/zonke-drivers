@@ -49,6 +49,7 @@ export const Colors = {
   charcoalBlue: "#1A1F36",
   navyBlue: "#0B0C10",
   whatsAppGreen: '#006644',
+  tealGreen: '#48C9B0'
 };
 
 // 120161

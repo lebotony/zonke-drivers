@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, View, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
+import { Text } from "react-native-paper";
 
 import { MaterialIcons } from "@expo/vector-icons";
 

@@ -1,21 +1,28 @@
+import { useEffect } from "react";
+import "react-native-reanimated";
+
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
-import "react-native-reanimated";
-import { View } from "react-native";
+import {
+  useFonts,
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+} from "@expo-google-fonts/poppins";
+import { Provider as PaperProvider, MD3LightTheme } from "react-native-paper";
+
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import { useColorScheme } from "../components/useColorScheme";
-import { Colors } from "@/constants/ui";
 import { AuthProvider, useAuth } from "../authContext";
 import { AuthScreen } from "../screens/SignUp";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { UseCustomQueryProvider } from "../useQueryContext";
 import { PaginatedCacheProvider } from "../updateCacheProvider";
 
@@ -40,18 +47,25 @@ export default function RootLayout() {
     ...FontAwesome.font,
   });
 
+  const [fontsLoaded] = useFonts({
+    Poppins_400Regular,
+    Poppins_500Medium,
+    Poppins_600SemiBold,
+    Poppins_700Bold,
+  });
+
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
     if (error) throw error;
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
+    if (loaded && fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [loaded, fontsLoaded]);
 
-  if (!loaded) {
+  if (!loaded || !fontsLoaded) {
     return null;
   }
 
@@ -72,11 +86,25 @@ function RootLayoutNav() {
     },
   });
 
+  const theme = {
+    ...MD3LightTheme,
+    fonts: {
+      ...MD3LightTheme.fonts,
+      default: { fontFamily: "Poppins_400Regular" },
+      bodyLarge: { fontFamily: "Poppins_400Regular" },
+      bodyMedium: { fontFamily: "Poppins_400Regular" },
+      labelLarge: { fontFamily: "Poppins_500Medium" },
+      titleLarge: { fontFamily: "Poppins_600SemiBold" },
+    },
+  };
+
   return (
     <QueryClientProvider client={queryClient}>
       <UseCustomQueryProvider>
         <AuthProvider>
-          <Layout />
+          <PaperProvider theme={theme}>
+            <Layout />
+          </PaperProvider>
         </AuthProvider>
       </UseCustomQueryProvider>
     </QueryClientProvider>

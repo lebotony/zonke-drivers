@@ -1,5 +1,6 @@
 import React, { ReactNode, useState } from "react";
-import { View, TextInput, Text, Pressable } from "react-native";
+import { View, TextInput, Pressable } from "react-native";
+import { Text } from "react-native-paper";
 
 import {
   Control,

@@ -1,4 +1,5 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
 
 import { Ionicons } from "@expo/vector-icons";
 
@@ -29,7 +30,7 @@ export const PaymentCard = (props: PaymentCardProps) => {
       </View>
       <View style={styles.body}>
         <Text
-          style={[styles.amountText, { color: Colors.dimGrey, fontSize: 20 }]}
+          style={[styles.amountText, { color: Colors.dimGrey, fontSize: 18 }]}
         >
           Paid
         </Text>

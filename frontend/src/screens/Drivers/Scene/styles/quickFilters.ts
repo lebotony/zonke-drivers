@@ -14,9 +14,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 15,
   },
   heading: {
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: 600,
-    fontFamily: "Cinzel",
   },
   clearButton: {
     paddingVertical: 0

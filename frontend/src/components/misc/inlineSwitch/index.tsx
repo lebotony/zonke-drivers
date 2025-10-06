@@ -1,8 +1,7 @@
-import { View, Text, Pressable } from "react-native";
+import { View, Pressable } from "react-native";
+import { Text } from "react-native-paper";
 
 import { styles } from "./styles";
-// import type { Colors } from "@src/types/ui";
-import { Colors } from "../../../../constants/ui";
 
 type Item = {
   slug: string;
@@ -11,7 +10,7 @@ type Item = {
 
 type InlineSwitch = {
   items: Item[];
-  selectedColor: Colors;
+  selectedColor: string;
   onChange: (slug: string) => void;
   value: string;
 };

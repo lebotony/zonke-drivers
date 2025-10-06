@@ -1,4 +1,5 @@
-import { View, Text } from "react-native";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
 
 import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";

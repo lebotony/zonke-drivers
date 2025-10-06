@@ -1,5 +1,6 @@
 import React from "react";
-import { Text, FlatList, SafeAreaView } from "react-native";
+import { FlatList, SafeAreaView } from "react-native";
+import { Text } from "react-native-paper";
 
 import { useInfiniteQuery } from "@tanstack/react-query";
 

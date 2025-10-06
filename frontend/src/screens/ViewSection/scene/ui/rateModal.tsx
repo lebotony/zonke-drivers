@@ -1,12 +1,14 @@
-import { useState } from 'react';
-import { View, Text, TouchableOpacity } from 'react-native';
-import { Octicons } from '@expo/vector-icons';
+import { useState } from "react";
+import { View, TouchableOpacity } from "react-native";
+import { Text } from "react-native-paper";
 
-import { CustomButton } from '@/src/components/elements/button';
-import { Colors } from '@/constants/ui';
-import { Modal } from '@/src/components/elements/modal';
+import { Octicons } from "@expo/vector-icons";
 
-import { styles } from '../styles/modals';
+import { CustomButton } from "@/src/components/elements/button";
+import { Colors } from "@/constants/ui";
+import { Modal } from "@/src/components/elements/modal";
+
+import { styles } from "../styles/modals";
 
 export const RateModal = () => {
   const [rating, setRating] = useState<number | null>(null);
@@ -21,7 +23,9 @@ export const RateModal = () => {
               <Octicons
                 name="star-fill"
                 size={30}
-                color={idx <= (rating as number) ? Colors.yellow : Colors.starGrey}
+                color={
+                  idx <= (rating as number) ? Colors.yellow : Colors.starGrey
+                }
               />
             </TouchableOpacity>
           ))}
@@ -30,7 +34,12 @@ export const RateModal = () => {
           Your rating is important to me, thanks for checking out my work
         </Text>
         <CustomButton
-          customStyle={{ position: 'absolute', bottom: 35, width: '100%', paddingVertical: 13 }}
+          customStyle={{
+            position: "absolute",
+            bottom: 35,
+            width: "100%",
+            paddingVertical: 13,
+          }}
           color="primaryBlue"
           onPress={() => null}
         >

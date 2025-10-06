@@ -1,11 +1,6 @@
 import React from "react";
-import {
-  ScrollView,
-  View,
-  Text,
-  ScrollViewProps,
-  ViewStyle,
-} from "react-native";
+import { ScrollView, View, ScrollViewProps, ViewStyle } from "react-native";
+import { Text } from "react-native-paper";
 
 import { PLATFORM_FILTERS } from "../utils/constants";
 

@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import {
   View,
-  Text,
   Image,
   Pressable,
   FlatList,
   KeyboardAvoidingView,
   SafeAreaView,
 } from "react-native";
+import { Text } from "react-native-paper";
 
 import { useLocalSearchParams } from "expo-router";
 import { useNavigation } from "expo-router";

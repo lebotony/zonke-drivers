@@ -103,15 +103,22 @@ business_profiles =
 
 Logger.info("Creating vehicles")
 
+vehicle_types = ["bike", "passenger", "taxi", "truck", "lorry"]
+
 vehicles =
   Enum.map(owners_users, fn user ->
     profile = Enum.find(business_profiles, fn bp -> bp.user_id == user.id end)
+    rand_number = Enum.random(1..length(vehicle_types))
 
       {:ok, vehicle} =
         %Vehicle{
-          name: "Mercedes Benz G40",
-          make: "SUV",
-          model: "T21",
+          type: Enum.at(vehicle_types, rand_number - 1),
+          brand: "Toyota",
+          model: "Corolla",
+          manual: Enum.random([true, false]),
+          diesel: Enum.random([true, false]),
+          engine_capacity: 1.2,
+          passengers: 7,
           description: "Has suspension problems",
           active: true,
           mileage: 60000,

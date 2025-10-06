@@ -1,1 +1,4 @@
 docker/localstack/.localstack/cache/
+
+# Erlang crash dumps
+erl_crash.dump

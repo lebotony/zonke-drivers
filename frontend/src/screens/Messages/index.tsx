@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
-import { View, Text, Pressable, FlatList } from "react-native";
+import { View, Pressable, FlatList } from "react-native";
+import { Text } from "react-native-paper";
 
 import { useSegments } from "expo-router";
 

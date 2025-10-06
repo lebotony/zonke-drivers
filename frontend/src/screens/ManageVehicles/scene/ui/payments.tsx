@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
-import {
-  FlatList,
-  SafeAreaView,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { FlatList, SafeAreaView, TouchableOpacity, View } from "react-native";
+import { Text } from "react-native-paper";
 
 import { useLocalSearchParams } from "expo-router";
 import { find } from "lodash";
