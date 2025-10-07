@@ -171,9 +171,18 @@ drivers =
 
       {:ok, driver} =
         %Driver{
-          location: %{"lat" => 0.0, "lng" => 0.0},
+          location: "Nketa, Bulawayo, Zimbabwe",
           description: Enum.random(descriptions),
-          licences: ["General", "Class 2", "Class 4"],
+          licences: [
+            %{
+              name: "Code A",
+              year: 2015,
+            },
+            %{
+              name: "B Class",
+              year: 2019,
+            },
+          ],
           active: true,
           experience: 12,
           age: 42,
@@ -264,6 +273,7 @@ vehicle_drivers =
   Enum.map(Enum.zip(drivers, vehicles), fn {driver, vehicle} ->
       {:ok, vehicle_driver} =
         %VehicleDriver{
+          accidents: Enum.random(1..3),
           vehicle_id: vehicle.id,
           driver_id: driver.id,
         }

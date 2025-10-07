@@ -24,7 +24,7 @@ export const UseCustomQueryProvider: FC<UseQueryProviderProps> = (props) => {
     const results = useQueries({
       queries: queryKeys.map((key) => ({
         queryKey: [key],
-        queryFn: () => Promise.resolve(null),
+        queryFn: undefined,
         enabled: false,
       })),
     });

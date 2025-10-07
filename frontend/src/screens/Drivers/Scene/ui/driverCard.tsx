@@ -78,7 +78,7 @@ export const DriverCard = (props: DriverProps) => {
       <HorizontalDivider color="#ededed" />
 
       <CustomButton
-        onPress={() => router.push("/drivers/1")}
+        onPress={() => router.push(`/drivers/${driver.id}`)}
         customStyle={{ paddingVertical: 1 }}
       >
         <Text style={[styles.name, { fontWeight: 500, lineHeight: 17 }]}>

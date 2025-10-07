@@ -7,12 +7,14 @@ defmodule Backend.Vehicles.VehicleDriver do
   @params [:driver_id, :vehicle_id]
 
   schema "vehicle_drivers" do
-    belongs_to(:driver, Driver)
-    belongs_to(:vehicle, Vehicle)
+    field(:accidents, :integer)
 
     field(:asset_url, :string, virtual: true)
     field(:first_name, :string, virtual: true)
     field(:last_name, :string, virtual: true)
+
+    belongs_to(:driver, Driver)
+    belongs_to(:vehicle, Vehicle)
 
     has_many(:payments, Payment)
 

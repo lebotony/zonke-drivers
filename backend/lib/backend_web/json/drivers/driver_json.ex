@@ -23,11 +23,14 @@ defmodule BackendWeb.Drivers.DriverJSON do
       :experience,
       :booking_count,
       :email,
+      :licences,
       :platforms,
       :first_name,
       :last_name,
       :username,
       :location,
+      :total_accidents,
+      :previous_vehicles,
       :inserted_at,
       :updated_at
     ])

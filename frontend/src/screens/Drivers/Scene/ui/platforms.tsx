@@ -30,7 +30,7 @@ export const Platforms = (props: Platforms) => {
       snapToAlignment="end"
       contentContainerStyle={[styles.platformTags, customContainerStyle]}
     >
-      {platforms.map((platform, idx) => {
+      {platforms?.map((platform, idx) => {
         const def = PLATFORM_FILTERS.find(({ value }) => value === platform);
 
         if (def) {
