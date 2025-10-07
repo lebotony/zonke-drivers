@@ -10,18 +10,31 @@ import {
   Ionicons,
   MaterialIcons,
 } from "@expo/vector-icons";
+import { useLocalSearchParams } from "expo-router";
+
+import { find } from "lodash";
 
 import { Avatar } from "@/src/components/visual/avatar";
 import profilePic from "@/assets/images/profile_pic.png";
-import { PLATFORM_FILTERS } from "../../Drivers/Scene/utils/constants";
-import { Platforms } from "../../Drivers/Scene/ui/platforms";
 import { Colors } from "@/constants/ui";
 import { CustomButton } from "@/src/components/elements/button";
+import { useCustomQuery } from "@/src/useQueryContext";
 
+import { Platforms } from "../../Drivers/Scene/ui/platforms";
 import { styles } from "./styles";
 import { Header } from "./ui/header";
+import { Licences } from "./ui/licences";
 
 export const Scene = () => {
+  const { id } = useLocalSearchParams();
+  const driverId = Array.isArray(id) ? id[0] : id;
+
+  const { getCachedData } = useCustomQuery();
+  const { drivers } = getCachedData(["drivers"]);
+  const driver = find(drivers, { id: driverId });
+
+  console.log("UUUUUUUUUUUU", driver);
+
   return (
     <SafeAreaView>
       <ScrollView
@@ -34,7 +47,8 @@ export const Scene = () => {
           <View style={styles.profilePic}>
             <Avatar source={profilePic} round width={125} />
             <Text style={styles.name}>
-              Kudakwashe Munyazure <Text style={styles.age}>(56 yrs)</Text>
+              {driver?.first_name} {driver?.last_name}{" "}
+              <Text style={styles.age}>(56 yrs)</Text>
             </Text>
 
             <View style={styles.headerLocation}>
@@ -48,7 +62,7 @@ export const Scene = () => {
           </View>
 
           <Text style={styles.description} numberOfLines={2}>
-            I'm passionate about helping people look and feel their best.
+            {driver?.description}
           </Text>
 
           {/* <HorizontalDivider color="#ededed" /> */}
@@ -57,23 +71,11 @@ export const Scene = () => {
 
           <Platforms
             customContainerStyle={styles.platormsContainer}
-            platforms={PLATFORM_FILTERS}
+            platforms={driver?.platforms}
           />
 
-          {/* <HorizontalDivider color="#ededed" /> */}
+          <Licences licences={driver?.licences} />
 
-          <Text style={styles.heading}>Licences & Certificates</Text>
-          <View style={styles.row}>
-            <View style={styles.pill}>
-              <Text style={styles.location}>Code A, 2022</Text>
-              <Text style={styles.location}> South Africa</Text>
-            </View>
-
-            <View style={styles.pill}>
-              <Text style={styles.location}>Code C, 2015</Text>
-              <Text style={styles.location}> USA</Text>
-            </View>
-          </View>
           <View style={styles.stats}>
             <View style={styles.statsRow}>
               <View style={styles.stat}>
@@ -83,22 +85,12 @@ export const Scene = () => {
               </View>
 
               <View style={styles.stat}>
-                <FontAwesome5
-                  name="money-bill-wave"
-                  size={24}
-                  color={Colors.darkGreen}
-                />
-                <Text style={styles.statValue}>400</Text>
-                <Text style={styles.statType}>Payments</Text>
-              </View>
-
-              <View style={styles.stat}>
                 <Feather
                   name="clock"
                   size={26}
                   color={Colors.checkers60Green}
                 />
-                <Text style={styles.statValue}>4</Text>
+                <Text style={styles.statValue}>{driver?.experience}</Text>
                 <Text style={styles.statType}>Experience</Text>
               </View>
 
@@ -119,7 +111,9 @@ export const Scene = () => {
               <View style={styles.stat}>
                 {/* <FontAwesome5 name="car-side" size={26} color="black" /> */}
                 <FontAwesome5 name="car" size={26} color="black" />
-                <Text style={styles.statValue}>6</Text>
+                <Text style={styles.statValue}>
+                  {driver?.previous_vehicles}
+                </Text>
                 <Text style={styles.statType}>Previous vehicles</Text>
               </View>
             </View>

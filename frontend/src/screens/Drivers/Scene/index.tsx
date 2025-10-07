@@ -4,7 +4,7 @@ import { FlatList, View } from "react-native";
 import { router } from "expo-router";
 
 import { useDebounce } from "use-debounce";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 import { fetchDrivers } from "../actions";
 import { Header } from "./ui/header";
@@ -20,6 +20,8 @@ export const Scene = () => {
   const [searchTerm, setSearchTerm] = useState<string>();
   const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+
+  const queryClient = useQueryClient();
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
@@ -40,6 +42,7 @@ export const Scene = () => {
     });
 
   const drivers = data?.pages.flatMap((page) => page.data) ?? [];
+  queryClient.setQueryData(["drivers"], drivers);
 
   const handleSetSelected = (value: string) => {
     if (selectedPlatforms.includes(value)) {

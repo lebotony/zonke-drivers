@@ -24,7 +24,6 @@ export const fetchPayments = ({ pageParam = 1, vehicleDriverId }: FetchPaymentsP
     params: { page: pageParam, page_size: 10, vehicle_driver_id: vehicleDriverId}
   })
     .then((response) => {
-      console.log(response.data)
       return response.data
     })
     .catch((err) => err);

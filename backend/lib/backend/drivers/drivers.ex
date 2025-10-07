@@ -1,6 +1,7 @@
 defmodule Backend.Drivers.Drivers do
   alias Backend.{Repo, PaginateHelper}
   alias Backend.Drivers.{Driver, Policy, Queries.DriverBy}
+  alias Backend.Vehicles.VehicleDriver
 
   import Ecto.Query
 
@@ -38,7 +39,7 @@ defmodule Backend.Drivers.Drivers do
     DriverBy.base_query()
     |> DriverBy.by_id(id)
     |> DriverBy.by_active_status()
-    |> add_user_fields()
+    |> add_extra_fields()
     |> Repo.one()
     |> format_driver()
   end
@@ -47,7 +48,7 @@ defmodule Backend.Drivers.Drivers do
     data =
       DriverBy.base_query()
       |> DriverBy.by_business_profile(params.business_profile_id)
-      |> add_user_fields()
+      |> add_extra_fields()
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
@@ -57,7 +58,7 @@ defmodule Backend.Drivers.Drivers do
     data =
       DriverBy.base_query()
       |> DriverBy.by_active_status()
-      |> add_user_fields()
+      |> add_extra_fields()
       |> build_search(params)
       |> build_sort(params)
       |> Repo.paginate(PaginateHelper.prep_params(params))
@@ -117,16 +118,28 @@ defmodule Backend.Drivers.Drivers do
     end
   end
 
-  def add_user_fields(query) do
+  def add_extra_fields(query) do
+    subquery =
+      from(vd in VehicleDriver,
+        where: vd.driver_id == parent_as(:driver).id,
+        select: %{
+          previous_vehicles: count(vd.id),
+          total_accidents: coalesce(sum(vd.accidents), 0)
+        }
+      )
+
     query
     |> join(:inner, [driver: d], u in assoc(d, :user), as: :user)
-    |> select_merge([driver: d, user: u], %{
+    |> join(:left_lateral, [driver: d], vd_stats in subquery(subquery), as: :vd_stats)
+    |> select_merge([driver: d, user: u, vd_stats: vd_stats], %{
       d
       | email: u.email,
         first_name: u.first_name,
         last_name: u.last_name,
         username: u.username,
-        location: u.location
+        location: u.location,
+        previous_vehicles: vd_stats.previous_vehicles,
+        total_accidents: vd_stats.total_accidents
     })
   end
 
