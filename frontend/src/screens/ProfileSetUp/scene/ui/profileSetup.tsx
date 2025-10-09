@@ -32,12 +32,6 @@ const formDef = [
     placeholder: "20/10/2001",
   },
   {
-    slug: "location",
-    label: "Location",
-    icon: "location-on",
-    placeholder: "1327 Brooklyn Street, New York, USA",
-  },
-  {
     slug: "platforms",
     label: "Platforms",
     type: "dropdown",
@@ -102,19 +96,28 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
         ))}
       </View>
 
-      <View>
-        <Fieldset
-          label="Bio"
-          name="bio"
-          inputIconSize={23}
-          control={control}
-          placeholder="Tell clients about your experience, specialties and what you offer"
-          type="text"
-          numberOfLines={4}
-          optional
-          errors={errors}
-        />
-      </View>
+      <Fieldset
+        label="Location"
+        name="location"
+        inputIcon="location-on"
+        control={control}
+        placeholder="1327 Brooklyn Street, New York, USA"
+        errors={errors}
+        type="dropdown"
+        required
+      />
+
+      <Fieldset
+        label="Bio"
+        name="bio"
+        inputIconSize={23}
+        control={control}
+        placeholder="Tell clients about your experience, specialties and what you offer"
+        type="text"
+        numberOfLines={4}
+        optional
+        errors={errors}
+      />
 
       <CustomButton
         color="primaryBlue"

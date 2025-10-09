@@ -7,7 +7,6 @@ import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { CustomButton } from "@/src/components/elements/button";
 import { Colors } from "@/constants/ui";
 import { Shadow } from "@/src/components/shadow";
-import { useAuth } from "@/src/authContext";
 
 import { styles } from "../styles/quickFilters";
 import { PLATFORM_FILTERS } from "../utils/constants";
@@ -20,7 +19,6 @@ type QuickFiltersProps = {
 
 export const QuickFilters = (props: QuickFiltersProps) => {
   const { onSetSelectedPlatforms, selectedPlatforms, onClear } = props;
-  const { onLogout } = useAuth();
 
   return (
     <Shadow>
@@ -32,12 +30,6 @@ export const QuickFilters = (props: QuickFiltersProps) => {
               <MaterialIcons name="clear" size={24} color={Colors.black} />
             </CustomButton>
           ) : null}
-          <Text
-            style={{ color: Colors.lightRed, fontWeight: 700 }}
-            onPress={onLogout}
-          >
-            Logout
-          </Text>
         </View>
         <ScrollView
           horizontal

@@ -1,7 +1,6 @@
 export const Colors = {
   tintColorLight: "#2f95dc",
   blueTicksColor: '#34B7F1',
-  tintColorDark: "#fff",
   black: "#000",
   darkCharcoalGrey: "#1C1B1F",
   white: "#fff",

@@ -1,8 +1,6 @@
 import { useState } from "react";
 import { FlatList, View } from "react-native";
 
-import { router } from "expo-router";
-
 import { useDebounce } from "use-debounce";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
@@ -11,10 +9,6 @@ import { Header } from "./ui/header";
 import { QuickFilters } from "./ui/quickFilters";
 import { DriverCard } from "./ui/driverCard";
 import { styles } from "./styles/index";
-
-{
-  /* {router.push("/profileSetup")} */
-}
 
 export const Scene = () => {
   const [searchTerm, setSearchTerm] = useState<string>();
