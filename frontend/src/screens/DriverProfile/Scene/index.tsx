@@ -33,8 +33,6 @@ export const Scene = () => {
   const { drivers } = getCachedData(["drivers"]);
   const driver = find(drivers, { id: driverId });
 
-  console.log("UUUUUUUUUUUU", driver);
-
   return (
     <SafeAreaView>
       <ScrollView
@@ -96,7 +94,7 @@ export const Scene = () => {
 
               <View style={styles.stat}>
                 <FontAwesome5 name="car-crash" size={26} color="red" />
-                <Text style={styles.statValue}>0</Text>
+                <Text style={styles.statValue}>{driver?.total_accidents}</Text>
                 <Text style={styles.statType}>Accidents</Text>
               </View>
             </View>
