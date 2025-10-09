@@ -12,6 +12,7 @@ import { useClientOnlyValue } from "../../components/useClientOnlyValue";
 import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
+  let user = 'driver';
   return (
     <Tabs
       screenOptions={{
@@ -26,7 +27,7 @@ export default function TabLayout() {
         },
       }}
     >
-      <Tabs.Screen
+      {user !== 'driver' && <Tabs.Screen
         name="index"
         options={{
           headerShown: false,
@@ -35,7 +36,18 @@ export default function TabLayout() {
             <MaterialIcons name="people" size={28} color={color} />
           ),
         }}
-      />
+      />}
+
+      {user === 'driver' && <Tabs.Screen
+        name="vehicles"
+        options={{
+          headerShown: false,
+          title: "Vehicles",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="people" size={28} color={color} />
+          ),
+        }}
+      />}
 
       <Tabs.Screen
         name="manage"

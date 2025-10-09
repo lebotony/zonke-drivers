@@ -1,4 +1,4 @@
-import { View, TextInput, ViewStyle } from "react-native";
+import { View, TextInput, ViewStyle, TextStyle } from "react-native";
 
 import { EvilIcons } from "@expo/vector-icons";
 
@@ -10,18 +10,18 @@ type SearchComponentProps = {
   height?: number;
   placeholder?: string;
   customStyle?: ViewStyle;
+  inputStyle?: TextStyle;
 };
 
 export const SearchComponent = (props: SearchComponentProps) => {
-  const { height = 34, placeholder, customStyle } = props;
+  const { height = 34, placeholder, customStyle, inputStyle } = props;
 
   return (
     <View style={[{ height: height }, customStyle]}>
       <View style={[styles.inputWrapper, { maxHeight: height }, customStyle]}>
-        <EvilIcons name="search" size={20} color="black" />
         <TextInput
           onChangeText={() => {}}
-          style={styles.textInput}
+          style={[styles.textInput, inputStyle]}
           placeholder={placeholder}
           placeholderTextColor={Colors.mediumGrey}
           cursorColor={Colors.mediumGrey}
@@ -34,6 +34,7 @@ export const SearchComponent = (props: SearchComponentProps) => {
           returnKeyType="search"
           spellCheck={false}
         />
+        <EvilIcons name="search" size={20} color="black" />
       </View>
     </View>
   );

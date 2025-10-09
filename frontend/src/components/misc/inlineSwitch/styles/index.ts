@@ -23,6 +23,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 48,
     paddingVertical: 11,
     flexGrow: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: Colors.white
   },
   label: {
