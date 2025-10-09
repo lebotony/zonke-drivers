@@ -9,6 +9,7 @@ import { Colors } from "@/constants/ui";
 import { useClientOnlyValue } from "../../components/useClientOnlyValue";
 
 export default function TabLayout() {
+  let user = 'driver';
   return (
     <Tabs
       screenOptions={{
@@ -23,7 +24,7 @@ export default function TabLayout() {
         },
       }}
     >
-      <Tabs.Screen
+      {user !== 'driver' && <Tabs.Screen
         name="index"
         options={{
           headerShown: false,
@@ -32,7 +33,18 @@ export default function TabLayout() {
             <FontAwesome name="users" size={22} color={color} />
           ),
         }}
-      />
+      />}
+
+      {user === 'driver' && <Tabs.Screen
+        name="vehicles"
+        options={{
+          headerShown: false,
+          title: "Vehicles",
+          tabBarIcon: ({ color, size }) => (
+            <MaterialIcons name="people" size={28} color={color} />
+          ),
+        }}
+      />}
 
       <Tabs.Screen
         name="manage"

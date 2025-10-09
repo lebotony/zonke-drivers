@@ -25,6 +25,8 @@ import { AuthProvider, useAuth } from "../authContext";
 import { AuthScreen } from "../screens/SignUp";
 import { UseCustomQueryProvider } from "../useQueryContext";
 import { PaginatedCacheProvider } from "../updateCacheProvider";
+import { Colors } from "../../constants/ui";
+import { Provider } from "react-native-paper";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -124,6 +126,11 @@ const Layout = (props: LayoutProps) => {
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="drivers" options={{ headerShown: false }} />
+            <Stack.Screen name="vehicles" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="vehicleProfile"
+              options={{ headerShown: false }}
+            />
             <Stack.Screen
               name="profileSetup"
               options={{ headerShown: false }}
