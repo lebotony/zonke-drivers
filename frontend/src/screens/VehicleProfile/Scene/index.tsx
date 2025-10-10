@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SafeAreaView, ScrollView, View, Text, Image, Modal, TouchableOpacity, Dimensions, LayoutAnimation } from "react-native";
+import { SafeAreaView, ScrollView, View, Image, TouchableOpacity, Dimensions, LayoutAnimation } from "react-native";
 import { Ionicons, AntDesign, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
 
 import { Colors } from "../../../../constants/ui";
@@ -8,6 +8,7 @@ import { Avatar } from "../../../components/visual/avatar";
 import { Circle } from "../../../components/shapes/circle";
 import { router } from "expo-router";
 import { styles } from "./styles/index";
+import { Text } from "react-native-paper";
 
 export const Scene = () => {
 

@@ -11,13 +11,14 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 12
+    paddingVertical: 4,
+    marginTop: 8,
    },
   viewAll: {
     color: Colors.mrDBlue
   },
   wrapper: {
-    padding: 16
+    padding: 16,
   },
   header: {
      flexDirection: 'row',
@@ -33,14 +34,16 @@ export const styles = StyleSheet.create({
     right: 10
   },
   contentSection: {
-    marginTop: 12
+    marginTop: 12,
+    flexDirection: 'column',
+    gap: 10
   },
   contentTitle: {
     fontWeight: '600'
   },
   chipFlatlist: {
     paddingVertical: 8,
-    paddingHorizontal: 4
+    paddingHorizontal: 4,
   },
   chipBtn: {
     paddingHorizontal: 12,
@@ -109,10 +112,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.mrDBlue
   },
   footer: {
-    position: 'absolute',
-    left: 16,
-    right: 16,
-    bottom: 16
+    marginTop: 18
   },
   footerBtn: {
     backgroundColor: Colors.mrDBlue,

@@ -7,109 +7,94 @@ export const styles = StyleSheet.create({
      card: {
     backgroundColor: Colors.white,
     flex: 1,
-    flexDirection: 'row',
+    paddingHorizontal: 14,
+    paddingVertical: 16,
+    borderRadius: 12,
+    flexDirection: 'column',
     ...shadowStyles,
   },
-  header: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    // backgroundColor: 'lime'
-  },
-  cardTop: {
-    flex: 1,
-    flexDirection: "row",
-    gap: 10,
-  },
-  modelText: {
-    fontSize: 12,
-    fontWeight: "700",
-    color: Colors.darkCharcoalGrey,
-  },
-  actionCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: Colors.yellow,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-
-   actions: {
-    flexDirection: "column",
-    alignItems: "flex-end",
-    justifyContent: "space-between",
-    marginLeft: "auto",
-    gap: 20,
-  },
-
-  imgContainer: {
-    width: '40%'
-  },
-  image: {
-    width: "100%",
-    height: 150,
-  },
-  info: {
-    padding: 18,
-    flexDirection: 'column',
-    gap: 8,
-    flex: 1,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: Colors.veryDarkGrey,
-  },
-  location: {
+  topSection: {
     flexDirection: 'row',
-    gap: 4,
+    justifyContent: 'space-between',
+    marginBottom: 28
   },
-  locationText: {
-    color: Colors.mediumGrey,
-    fontSize: 13,
-  },
-  priceText: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: Colors.white,
-  },
+  leftInfo: {
+    flexDirection: 'column',
 
-  bottomRow: {
-    justifyContent: "center",
-    marginTop: 10,
   },
-  rating: {
-    flexDirection: "row",
-    alignItems: 'center',
-    gap: 4,
+  rightInfo: {
+    flexDirection: 'column',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
   },
-  numReviews: {
-    fontSize: 12,
+  carName: {
+    fontSize: 20,
+    fontWeight: 600
   },
-  ratingText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: Colors.darkCharcoalGrey,
+  model: {
+    fontSize: 16
+  },
+  priceContainer: {
+    flexDirection: 'row',
+    alignItems:'baseline',
   },
   price: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-    borderRadius: 14,
-    backgroundColor: Colors.mrDBlue,
-    paddingVertical: 4,
-    paddingHorizontal: 6,
-    width: '70%'
+    fontSize: 17,
+    color: Colors.mrDBlue
   },
   perDay: {
-    color: Colors.whiteSmoke,
+
   },
-  viewText: {
-    fontSize: 16,
-    fontWeight: 600,
-    color: Colors.white,
-    lineHeight: 14,
+  iconWrapper: {
+    width: 38,
+    height: 38,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: '50%',
+    backgroundColor: Colors.mrDBlue,
+    transform: [{ rotate: '330deg' }],
+  },
+  rating: {
+    flexDirection: 'row',
+    gap: 2
+  },
+  ratingValue: {
+    fontSize: 15
+  },
+  imgContainer: {
+    position: 'relative',
+    width: '100%',
+    height: 250,
+    backgroundColor: 'pink',
+    borderRadius: 12
+
+  },
+  leftFlap: {
+    position: 'absolute',
+    width: '80%',
+    height: '30%',
+    zIndex: -1,
+    left: 10,
+    top: -10,
+    backgroundColor: Colors.lightGrey,
+    opacity: 0.2,
+    borderRadius: 14,
+    transform: [{ rotate: '5deg' }],
+  },
+  rightFlap: {
+     position: 'absolute',
+    width: '80%',
+    height: '30%',
+    zIndex: -1,
+    top: -10,
+    right: 10,
+    backgroundColor: Colors.lightGrey,
+    opacity: 0.25,
+    borderRadius: 14,
+    transform: [{ rotate: '175deg' }],
+
+  },
+  footer: {
+
   }
 })

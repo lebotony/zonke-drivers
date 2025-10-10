@@ -1,9 +1,8 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import {
   SafeAreaView,
   FlatList,
   View,
-  Text,
   TouchableOpacity,
 } from "react-native";
 import { Svg, Path } from "react-native-svg";
@@ -12,12 +11,15 @@ import { EvilIcons, MaterialIcons } from "@expo/vector-icons";
 
 import { VehicleCard } from "./scene/ui/card";
 import { styles } from "./styles";
-import { Avatar } from "../../components/visual/avatar";
 import { Colors } from "../../../constants/ui";
 import { Circle } from "../../components/shapes/circle";
 import { SearchComponent } from "../../components/searchBar";
 import { PopupMenu } from "../../components/popup";
 import { FilterModal } from "./scene/ui/filter";
+import { TextLogo } from "@/src/components/misc/textLogo";
+import { Text } from "react-native-paper";
+import { fetchVehicles } from "./actions";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 const Brand = [
   { id: "bmw", label: "BMW", icon: "siBmw" },
@@ -115,6 +117,23 @@ export const VehiclesScreen = () => {
   const [visibleCategories, setVisibleCategories] = useState<string[]>(initialVisibleCategories);
   const [visibleBrands, setVisibleBrands] = useState<string[]>(initialVisibleBrands);
 
+
+   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ["vehicles"],
+      queryFn: fetchVehicles,
+      getNextPageParam: (lastPage) => {
+        const page = lastPage?.paginate?.page;
+        const max_page = lastPage?.paginate?.max_page
+        return page < max_page ? page + 1 : undefined;
+      },
+      initialPageParam: 1,
+    });
+
+  const vehicles = data?.pages.flatMap((page) => page?.data) ?? [];
+
+  console.log('ddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddddd', vehicles)
+
  const toggleBrand = (id: string) => {
   setSelectedBrands((s) =>
     s.includes(id)
@@ -188,25 +207,17 @@ export const VehiclesScreen = () => {
     setPriceRange([low, high]);
   }, []);
 
+  const onFilterDismiss = () => {
+
+    setShowFilterModal(false)
+    handleFilterReset()
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topRow}>
-        <Avatar
-          round
-          width={36}
-          source={require("@/assets/images/profile_pic.png")}
-        />
-        <View style={styles.greeting}>
-          <Text style={styles.hello}>Hello, Jacob</Text>
-          <View style={{ flexDirection: "row", alignItems: "center", gap: 4 }}>
-            <MaterialIcons
-              name="location-pin"
-              size={17}
-              color={Colors.mediumDarkGrey}
-            />
-            <Text style={styles.sub}>Soweto, Gauteng</Text>
-          </View>
-        </View>
+        <TextLogo size="small" />
+        <SearchComponent customStyle={{flex: 1, marginHorizontal: 6}} />
         <View>
           <TouchableOpacity>
             <Circle size={35} borderColor={Colors.lightGrey}>
@@ -217,12 +228,27 @@ export const VehiclesScreen = () => {
         <View />
       </View>
 
-      <View style={styles.searchContainer}>
-        <SearchComponent placeholder="Search" />
-      </View>
 
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Brand</Text>
+        <View style={styles.filterContainer}>
+        <TouchableOpacity style={styles.filterBtn} onPress={() => setShowFilterModal(true)}>
+          <Text style={{  fontWeight: '600', fontSize: 15 }}>Filter</Text>
+          <MaterialIcons name="filter-list" size={20} color={Colors.mediumDarkGrey} />
+        </TouchableOpacity>
+       {selectedBrands.length > 0 && (
+    <TouchableOpacity
+      style={styles.resetBtn}
+      onPress={() => {setSelectedBrands([]),setVisibleBrands(Brand.map(b => b.id).slice(0, 5));}}
+      activeOpacity={0.8}
+    >
+      <Text style={{ color: Colors.mrDBlue, fontWeight: '600' }}>Reset</Text>
+      <MaterialIcons name="refresh" size={18} color={Colors.mrDBlue} />
+      
+    </TouchableOpacity>
+  )}
+
+       
+      </View>
         <PopupMenu
           options={Brand.map((c) => c.label)}
           selectedValue={null}
@@ -234,24 +260,6 @@ export const VehiclesScreen = () => {
         >
           <Text style={styles.seeAll}>View all</Text>
         </PopupMenu>
-      </View>
-
-      <View style={styles.filterContainer}>
-        <TouchableOpacity style={styles.filterBtn} onPress={() => setShowFilterModal(true)}>
-          <Text style={{  fontWeight: '600' }}>Filter</Text>
-          <MaterialIcons name="filter-list" size={18} color={Colors.mediumDarkGrey} />
-        </TouchableOpacity>
-
-        {selectedBrands.length > 0 && (
-    <TouchableOpacity
-      style={styles.resetBtn}
-      onPress={() => {setSelectedBrands([]),setVisibleBrands(Brand.map(b => b.id).slice(0, 5));}}
-      activeOpacity={0.8}
-    >
-      <MaterialIcons name="refresh" size={18} color={Colors.mrDBlue} />
-      <Text style={{ color: Colors.mrDBlue, fontWeight: '600' }}>Reset</Text>
-    </TouchableOpacity>
-  )}
       </View>
 
       <FlatList
@@ -307,7 +315,7 @@ export const VehiclesScreen = () => {
 
       <FilterModal
         visible={showFilterModal}
-        onDismiss={() => setShowFilterModal(false)}
+        onDismiss={onFilterDismiss}
         onReset={handleFilterReset}
         categories={Categories}
         brands={Brand}
@@ -318,6 +326,8 @@ export const VehiclesScreen = () => {
         selectedFuelTypes={selectedFuelTypes}
         selectedRating={selectedRating}
         priceRange={priceRange}
+        minPrice={0}
+        maxPrice={235}
         onToggleCategory={toggleCategory}
         onToggleBrand={toggleBrand}
         onFuelToggle={(f) =>
@@ -332,15 +342,19 @@ export const VehiclesScreen = () => {
 
       <FlatList
         data={SAMPLE}
+         onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
+            }
+          }}
         keyExtractor={(i) => i.id}
         renderItem={({ item }) => <VehicleCard item={item} />}
         contentContainerStyle={{
-          paddingVertical: 12,
           gap: 12,
           paddingHorizontal: 14,
+
         }}
         showsVerticalScrollIndicator={false}
-        style={{ marginTop: 20 }}
       />
       
     </SafeAreaView>

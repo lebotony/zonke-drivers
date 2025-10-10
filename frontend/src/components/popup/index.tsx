@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
-  Text,
   Pressable,
   TouchableWithoutFeedback,
   UIManager,
@@ -15,7 +14,7 @@ import {
   BackHandler,
 } from "react-native";
 import { Feather, MaterialIcons, FontAwesome, AntDesign } from '@expo/vector-icons';
-import { Portal } from "react-native-paper";
+import { Portal, Text } from "react-native-paper";
 
 import { Colors } from "../../../constants/ui";
 import { styles } from "./styles";
