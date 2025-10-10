@@ -1,0 +1,9 @@
+{
+  "name": "zonke-drivers-root",
+  "private": true,
+  "scripts": {
+    "start:mobile": "cd frontend && npx expo start",
+    "start:mobile:android": "cd frontend && npx expo start --android",
+    "start:mobile:ios": "cd frontend && npx expo start --ios"
+  }
+}

@@ -1,33 +1,32 @@
 import { StyleSheet } from "react-native";
 
 import { Colors } from "../../../../constants/ui";
+import { shadowStyles } from "../../shadowStyles";
 
 export const styles = StyleSheet.create({
   label: {
-    fontWeight: 500,
-    fontSize: 16,
-    marginBottom: 10,
+    fontSize: 15,
+    marginBottom: 8
   },
   inputBox: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 14,
-    paddingVertical: 14,
-    borderRadius: 10,
+    borderRadius: 5,
     position: 'relative',
-    zIndex: 1,
+    // zIndex: 1,
     overflow: 'hidden'
   },
   before: {
     ...StyleSheet.absoluteFillObject,
-    borderRadius: 10,
+    borderRadius: 5,
     backgroundColor: Colors.lightGrey,
     opacity: 0.4,
     zIndex: -1,
   },
   inputText: {
-    fontSize: 16,
+    fontSize: 15,
     color: Colors.black,
   },
   placeholderText: {
@@ -47,11 +46,8 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderRadius: 10,
     paddingVertical: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 5,
     zIndex: 5000,
+    ...shadowStyles
   },
   dropdownItem: {
     flexDirection: 'row',

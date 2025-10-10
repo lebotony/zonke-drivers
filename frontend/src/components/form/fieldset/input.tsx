@@ -42,10 +42,10 @@ const DropDownCaret = (props: DropDownCaretProps) => {
   const { displayDropdown } = props;
 
   return (
-    <Ionicons
+    <Feather
       name={!displayDropdown ? "chevron-down" : "chevron-up"}
       color={Colors.black}
-      size={23}
+      size={24}
       style={{ position: "absolute", right: 8 }}
     />
   );
@@ -140,6 +140,7 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
           </Text>
         )}
       </View>
+
       <View
         style={[
           styles.inputContainer,

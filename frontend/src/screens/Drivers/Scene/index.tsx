@@ -51,7 +51,6 @@ export const Scene = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      {router.push("/profileSetup")}
       <Header setSearchTerm={(value: string) => setSearchTerm(value)} />
       <QuickFilters
         onSetSelectedPlatforms={(value: string) => handleSetSelected(value)}

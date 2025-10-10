@@ -14,6 +14,7 @@ import profilePic from "@/assets/images/profile_pic.png";
 import { Fieldset } from "@/src/components/form/fieldset/input";
 import { CustomButton } from "@/src/components/elements/button";
 import { Avatar } from "@/src/components/visual/avatar";
+import { DropdownInput } from "@/src/components/dropdown";
 
 import { styles } from "../styles/profileSetup";
 import { SetUpOneSchema } from "../schema";
@@ -56,6 +57,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
 
   const {
     control,
+    setValue,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({
@@ -96,15 +98,12 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
         ))}
       </View>
 
-      <Fieldset
-        label="Location"
+      <DropdownInput
         name="location"
-        inputIcon="location-on"
-        control={control}
-        placeholder="1327 Brooklyn Street, New York, USA"
-        errors={errors}
-        type="dropdown"
         required
+        label="Locations"
+        setValue={setValue}
+        placeholder="Search location..."
       />
 
       <Fieldset

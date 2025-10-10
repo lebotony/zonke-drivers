@@ -9,7 +9,7 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "router": {
-      "appDir": "src/app"
+      "appDir": "frontend/src/app"
     },
     "splash": {
       "image": "./assets/images/splash-icon.png",
