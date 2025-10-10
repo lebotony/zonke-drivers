@@ -12,13 +12,13 @@ export const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingVertical: 4,
+    paddingHorizontal: 16,
     marginTop: 8,
    },
   viewAll: {
     color: Colors.mrDBlue
   },
   wrapper: {
-    padding: 16,
   },
   header: {
      flexDirection: 'row',
@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
   },
   resetBtn: {
     position: 'absolute',
-    right: 10
+    right: 26
   },
   contentSection: {
     marginTop: 12,
@@ -39,11 +39,11 @@ export const styles = StyleSheet.create({
     gap: 10
   },
   contentTitle: {
-    fontWeight: '600'
+    fontWeight: '700'
   },
   chipFlatlist: {
     paddingVertical: 8,
-    paddingHorizontal: 4,
+    paddingHorizontal: 16,
   },
   chipBtn: {
     paddingHorizontal: 12,
@@ -52,7 +52,8 @@ export const styles = StyleSheet.create({
     marginRight: 16,
   },
   fuelCheckbox: {
-    marginVertical: 14
+    marginVertical: 14,
+    paddingHorizontal: 16
   },
   fuelOptions: {
     flexDirection: 'row',
@@ -76,8 +77,11 @@ export const styles = StyleSheet.create({
     backgroundColor: 'transparent'
   },
   reviewContainer: {
+    paddingHorizontal: 16
+  },
+  reviewText: {
+    marginVertical: 12,
     fontWeight: '700',
-    marginVertical: 12
   },
   ratingBtn: {
     flexDirection: 'row',
@@ -112,7 +116,8 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.mrDBlue
   },
   footer: {
-    marginTop: 18
+    marginTop: 18,
+    paddingHorizontal: 16
   },
   footerBtn: {
     backgroundColor: Colors.mrDBlue,

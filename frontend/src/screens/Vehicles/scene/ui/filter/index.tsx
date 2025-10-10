@@ -102,7 +102,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
   return (
     <Modal onDismiss={onDismiss}>
-      <View style={[styles.wrapper, {maxHeight: screenHeight * 0.8}]}>
+      <View style={{maxHeight: screenHeight * 0.8}}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Filter</Text>
           { selected && <TouchableOpacity onPress={onReset} style={styles.resetBtn}>
@@ -237,7 +237,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           </View>
 
           {/* Price Range */}
-          <View style={{ marginVertical: 18 }}>
+          <View style={{ marginVertical: 18, marginHorizontal: 16 }}>
             <Text style={styles.contentTitle}>Price Range</Text>
             <RangeSlider
               min={minPrice}
@@ -263,7 +263,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           </View>
 
           {/* Rating */}
-          <Text style={styles.reviewContainer}>Customer Review</Text>
+          <View style={styles.reviewContainer}>
+            <Text style={styles.reviewText}>Customer Review</Text>
           <View style={{ gap: 12 }}>
             {[4, 3, 2].map((r) => (
               <TouchableOpacity
@@ -294,6 +295,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                 </View>
               </TouchableOpacity>
             ))}
+          </View>
           </View>
 
             <View style={styles.footer}>
