@@ -56,6 +56,7 @@ export const PopupMenu = ({
   const [layout, setLayout] = useState({
     popupTop: 0,
     popupLeft: 0,
+    width: 0,
     poupBtnWidth: 0,
     popupBtnHeight: 0,
     popupMenuWidth: 0,
@@ -80,6 +81,7 @@ export const PopupMenu = ({
           setLayout((prev) => ({
             ...prev,
             popupTop: pageY + height,
+            width,
             popupLeft: pageX,
             poupBtnWidth: width,
             popupBtnHeight: height,
@@ -161,15 +163,7 @@ export const PopupMenu = ({
 
 const screenWidth = Dimensions.get("window").width;
 
-let leftPosition = layout.popupLeft;
-
-if (leftPosition + computedWidth > screenWidth) {
-  leftPosition = screenWidth - computedWidth - layout.poupBtnWidth/2;
-}
-
-if (leftPosition < 0) {
-  leftPosition = 0;
-}
+const leftPosition = Math.max(layout.popupLeft + layout.width - computedWidth,0);
 
   const showAbove = layout.freeHeight <= 225;
   const popupPositionTop = showAbove
