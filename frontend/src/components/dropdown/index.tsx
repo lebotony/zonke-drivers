@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
+  Text,
   Pressable,
   TouchableWithoutFeedback,
   UIManager,
@@ -12,28 +13,35 @@ import {
   Keyboard,
   Platform,
   BackHandler,
+  TextInput,
 } from "react-native";
-import { Text } from "react-native-paper";
+import { FieldValues, Path, UseFormSetValue } from "react-hook-form";
+import { Portal } from "react-native-paper";
 
 import { Feather, MaterialIcons } from "@expo/vector-icons";
-import { Portal } from "react-native-paper";
-import { Colors } from "../../../constants/ui";
+
+import { Colors } from "@/constants/ui";
 
 import { styles } from "./styles";
+import { fetchSuggestions } from "@/src/helpers/locations";
 
-type DropdownInputProps = {
+type DropdownInputProps<T extends FieldValues> = {
   label: string;
-  options: string[];
-  selectedValue: string | null;
-  onSelect: (value: string) => void;
+  options?: string[];
+  selectedValue?: string | null;
+  onSelect?: (value: string) => void;
   placeholder?: string;
   menuWidth?: "full" | "auto" | number;
   menuStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<ViewStyle>;
   caretSize?: number;
+  name: Path<T>;
+  required?: boolean;
+  setValue: UseFormSetValue<T>;
+  placeholderTextColor?: string;
 };
 
-export const DropdownInput = ({
+export const DropdownInput = <T extends FieldValues>({
   label,
   options,
   selectedValue,
@@ -43,9 +51,17 @@ export const DropdownInput = ({
   menuStyle,
   inputStyle,
   caretSize = 24,
-}: DropdownInputProps) => {
+  name,
+  setValue,
+  required,
+  placeholderTextColor = Colors.midToneGrey,
+}: DropdownInputProps<T>) => {
   const [open, setOpen] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+
+  const isLocation = name === "location";
 
   const [layout, setLayout] = useState({
     dropdownTop: 0,
@@ -87,8 +103,18 @@ export const DropdownInput = ({
     }
   };
 
-  const openDropdown = () => {
-    measureInputPosition(() => setOpen(true));
+  const measureCaretWidth = () => {
+    if (caretRef.current) {
+      const handle = findNodeHandle(caretRef.current);
+      if (handle) {
+        UIManager.measure(handle, (x, y, width) => {
+          setLayout((prev) => ({
+            ...prev,
+            caretWidth: width,
+          }));
+        });
+      }
+    }
   };
 
   useEffect(() => {
@@ -137,9 +163,32 @@ export const DropdownInput = ({
     };
   }, [open]);
 
+  useEffect(() => {
+    measureCaretWidth();
+    measureInputPosition();
+  }, [layout.dropdownHeight]);
+
+  useEffect(() => {
+    return () => {
+      fetchSuggestions.cancel();
+    };
+  }, [fetchSuggestions]);
+
   const handleSelect = (value: string) => {
-    onSelect(value);
+    isLocation
+      ? setValue(name, value, { shouldValidate: true })
+      : onSelect!(value);
+
+    setQuery(value);
     setOpen(false);
+  };
+
+  const handleChange = (text: string) => {
+    setQuery(text);
+
+    if (isLocation) {
+      fetchSuggestions(text, setResults, setOpen);
+    }
   };
 
   let computedWidth;
@@ -157,47 +206,42 @@ export const DropdownInput = ({
 
   const showAbove = layout.freeHeight <= 225;
   const dropdownPositionTop = showAbove
-    ? layout.dropdownTop - (layout.dropdownHeight + layout.inputHeight)
-    : layout.dropdownTop;
+    ? layout.dropdownTop - (layout.dropdownHeight + layout.inputHeight) - 10
+    : layout.dropdownTop + 10;
 
   return (
     <View style={{ marginBottom: 20 }}>
-      <Text style={styles.label}>{label}</Text>
+      <View style={{ flexDirection: "row" }}>
+        <Text style={styles.label}>{label}</Text>
+        {required && (
+          <Text style={{ color: Colors.primaryBlue, paddingLeft: 3 }}>*</Text>
+        )}
+      </View>
 
       <Pressable
         ref={inputRef}
         style={[styles.inputBox, inputStyle]}
         onPress={() => {
-          if (!open) openDropdown();
-          else setOpen(false);
+          setOpen(!open);
         }}
         onLayout={() => {
           if (open) measureInputPosition();
         }}
       >
         <View style={styles.before} />
-        <Text
+        <TextInput
+          value={query}
+          onChangeText={handleChange}
           numberOfLines={1}
-          ellipsizeMode="tail"
+          placeholderTextColor={placeholderTextColor}
+          placeholder={placeholder}
           style={[
             styles.inputText,
-            !selectedValue && styles.placeholderText,
+            // !selectedValue && styles.placeholderText,
             { width: layout.inputWidth - layout.caretWidth * 2 },
           ]}
-        >
-          {selectedValue || placeholder}
-        </Text>
-        <View
-          style={styles.caretWrapper}
-          ref={caretRef}
-          onLayout={(event) => {
-            const { width } = event.nativeEvent.layout;
-            setLayout((prev) => ({
-              ...prev,
-              caretWidth: width,
-            }));
-          }}
-        >
+        />
+        <View style={styles.caretWrapper} ref={caretRef}>
           <Feather
             name={open ? "chevron-up" : "chevron-down"}
             size={caretSize}
@@ -226,11 +270,10 @@ export const DropdownInput = ({
               styles.dropdownMenu,
               {
                 top: dropdownPositionTop,
-                left:
-                  layout.freeWidth === 0
-                    ? layout.dropdownLeft +
-                      (layout.inputWidth - layout.dropdownWidth)
-                    : layout.dropdownLeft,
+                left: Math.max(
+                  layout.dropdownLeft + layout.inputWidth - computedWidth,
+                  0
+                ),
                 width: computedWidth,
                 maxWidth:
                   layout.freeWidth === 0
@@ -244,7 +287,7 @@ export const DropdownInput = ({
             ]}
           >
             <FlatList
-              data={options}
+              data={isLocation ? results : options}
               keyExtractor={(item, index) => `${item}-${index}`}
               renderItem={({ item }) => (
                 <Pressable
@@ -294,7 +337,7 @@ export const DropdownInput = ({
 
       {/* Invisible measurement text for width */}
       <View style={styles.longText}>
-        {options.map((option, index) => (
+        {options?.map((option, index) => (
           <Text
             key={`${option}-${index}`}
             style={styles.dropdownText}
