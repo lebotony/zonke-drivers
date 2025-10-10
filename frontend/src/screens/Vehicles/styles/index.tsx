@@ -8,12 +8,14 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.bg,
   },
   topRow: {
+    width: '100%',
     flexDirection: "row",
     alignItems: "center",
-    marginTop: 22,
     paddingHorizontal: 14,
-    paddingTop: 12,
-    gap: 10,
+    paddingTop: 28,
+    paddingBottom: 12,
+    backgroundColor: Colors.white,
+    ...shadowStyles
   },
   greeting: {
     flex: 1,
@@ -23,7 +25,6 @@ export const styles = StyleSheet.create({
     color: Colors.darkCharcoalGrey,
   },
   searchContainer: { 
-    paddingHorizontal: 14,
     paddingVertical:  6,
     marginTop: 12
   },
@@ -38,15 +39,14 @@ export const styles = StyleSheet.create({
     marginTop: 2,
   },
   brands: {
-    paddingHorizontal: 14,
     marginTop: 8,
-    marginBottom: 12,
     gap: 6,
-    justifyContent: "space-between", 
+    justifyContent: "space-between",
   },
   brandsFlatlist: {
     marginBottom: 20,
-    overflow: 'visible'
+    height: 140,
+    marginHorizontal: 14,
   },
   chip: {
     height: 90,
@@ -76,7 +76,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 14,
-    marginTop: 18,
+    marginTop: 8,
   },
   sectionTitle: {
     fontSize: 18,
@@ -87,18 +87,17 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     color: Colors.mrDBlue,
     fontWeight: "600",
-    marginTop: 4
   },
   filterContainer: {
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    marginTop: 12,
     justifyContent: 'space-between',
+    gap: 6,
   },
   resetBtn: {
   flexDirection: 'row',
   alignItems: 'center',
   gap: 6,
+  paddingHorizontal: 14
 },
 
  

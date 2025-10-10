@@ -1,22 +1,23 @@
 import React, { useCallback } from "react";
 import {
   View,
-  Text,
   TouchableOpacity,
   FlatList,
   ScrollView,
+  Dimensions,
 } from "react-native";
 import RangeSlider from "rn-range-slider";
-import { AntDesign, MaterialIcons } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 import { styles } from "./styles";
-import { Thumb } from "../../../../../components/slider/thumb";
-import { Rail } from "../../../../../components/slider/rail";
-import { RailSelected } from "../../../../../components/slider/railSelected";
-import { Label } from "../../../../../components/slider/label";
-import { Modal } from "../../../../../components/modal";
-import { Colors } from "../../../../../../constants/ui";
-import { PopupMenu } from "../../../../../components/popup";
+import { Thumb } from "@/src/components/slider/thumb";
+import { Rail } from "@/src/components/slider/rail";
+import { RailSelected } from "@/src/components/slider/railSelected";
+import { Label } from "@/src/components/slider/label";
+import { Modal } from "@/src/components/modal";
+import { Colors } from "@/src/../constants/ui";
+import { PopupMenu } from "@/src/components/popup";
+import { Text } from "react-native-paper";
 
 interface FilterModalProps {
   visible: boolean;
@@ -31,6 +32,8 @@ interface FilterModalProps {
   selectedFuelTypes: string[];
   selectedRating: number | null;
   priceRange: [number, number];
+  minPrice: number,
+  maxPrice: number,
   onToggleCategory: (c: string) => void;
   onToggleBrand: (b: string) => void;
   onFuelToggle: (fuel: string) => void;
@@ -52,6 +55,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   selectedFuelTypes,
   selectedRating,
   priceRange,
+  minPrice,
+  maxPrice,
   onToggleCategory,
   onToggleBrand,
   onFuelToggle,
@@ -86,17 +91,26 @@ export const FilterModal: React.FC<FilterModalProps> = ({
       })
       .filter(Boolean) as any[];
 
+  const selected =
+    (selectedBrands.length > 0 ||
+      selectedCategories.length > 0 ||
+      selectedFuelTypes.length > 0) ||
+    (selectedRating! > 1) ||
+    (priceRange[0] !== minPrice || priceRange[1] !== maxPrice);
+
+  const screenHeight = Dimensions.get('window').height;
+
   return (
     <Modal onDismiss={onDismiss}>
-      <View style={styles.wrapper}>
+      <View style={[styles.wrapper, {maxHeight: screenHeight * 0.8}]}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Filter</Text>
-          <TouchableOpacity onPress={onReset} style={styles.resetBtn}>
+          { selected && <TouchableOpacity onPress={onReset} style={styles.resetBtn}>
             <Text style={{ color: Colors.mrDBlue }}>Reset</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>}
         </View>
 
-        <ScrollView style={styles.contentSection}>
+        <ScrollView style={styles.contentSection} showsVerticalScrollIndicator={false}>
           <View style={styles.row}>
             <Text style={styles.contentTitle}>Category</Text>
             <PopupMenu
@@ -226,8 +240,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           <View style={{ marginVertical: 18 }}>
             <Text style={styles.contentTitle}>Price Range</Text>
             <RangeSlider
-              min={0}
-              max={235}
+              min={minPrice}
+              max={maxPrice}
               step={5}
               low={priceRange[0]}
               high={priceRange[1]}
@@ -243,8 +257,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                 justifyContent: "space-between",
               }}
             >
-              <Text>$0</Text>
-              <Text>$235</Text>
+              <Text>${priceRange[0]}</Text>
+              <Text>${priceRange[1]}</Text>
             </View>
           </View>
 
@@ -282,14 +296,14 @@ export const FilterModal: React.FC<FilterModalProps> = ({
             ))}
           </View>
 
-          <View style={{ height: 96 }} />
+            <View style={styles.footer}>
+            <TouchableOpacity onPress={onApply} style={styles.footerBtn}>
+              <Text style={styles.footerText}>Show results</Text>
+            </TouchableOpacity>
+          </View>
         </ScrollView>
 
-        <View style={styles.footer}>
-          <TouchableOpacity onPress={onApply} style={styles.footerBtn}>
-            <Text style={styles.footerText}>Show results</Text>
-          </TouchableOpacity>
-        </View>
+        
       </View>
     </Modal>
   );

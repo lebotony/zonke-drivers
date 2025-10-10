@@ -14,7 +14,7 @@ type SearchComponentProps = {
 };
 
 export const SearchComponent = (props: SearchComponentProps) => {
-  const { height = 34, placeholder, customStyle, inputStyle } = props;
+  const { height = 34, placeholder='Search', customStyle, inputStyle } = props;
 
   return (
     <View style={[{ height: height }, customStyle]}>

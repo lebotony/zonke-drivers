@@ -9,7 +9,7 @@ import { Colors } from "@/constants/ui";
 import { useClientOnlyValue } from "../../components/useClientOnlyValue";
 
 export default function TabLayout() {
-  let user = 'driver';
+  let driver = true;
   return (
     <Tabs
       screenOptions={{
@@ -24,27 +24,16 @@ export default function TabLayout() {
         },
       }}
     >
-      {user !== 'driver' && <Tabs.Screen
+      <Tabs.Screen
         name="index"
         options={{
           headerShown: false,
-          title: "Drivers",
+          title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="users" size={22} color={color} />
+            <FontAwesome name="home" size={25} color={color} />
           ),
         }}
-      />}
-
-      {user === 'driver' && <Tabs.Screen
-        name="vehicles"
-        options={{
-          headerShown: false,
-          title: "Vehicles",
-          tabBarIcon: ({ color, size }) => (
-            <MaterialIcons name="people" size={28} color={color} />
-          ),
-        }}
-      />}
+      />
 
       <Tabs.Screen
         name="manage"

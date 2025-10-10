@@ -1,5 +1,5 @@
-import { DriversScreen } from "../../screens/Drivers";
+import { HomeScreen } from "@/src/screens/Home";
 
 export default function Drivers() {
-  return <DriversScreen />;
+  return <HomeScreen />;
 }

@@ -41,6 +41,10 @@ defmodule BackendWeb.Router do
         get("/vehicle_drivers", Vehicles.VehicleController, :index_management_vehicle)
       end
 
+      scope("/vehicles") do
+        get("/public", Vehicles.VehicleController, :index_public)
+      end
+
       resources("/vehicle_payments", Vehicles.PaymentController, except: @except_path_actions)
 
       scope("/threads") do
