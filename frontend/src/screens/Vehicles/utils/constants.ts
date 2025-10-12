@@ -1,0 +1,30 @@
+export const BrandsList = [
+  { id: "bmw", label: "BMW", icon: "siBmw" },
+  { id: "nissan", label: "Nissan", icon: "siNissan" },
+  { id: "volkswagen", label: "VW", icon: "siVolkswagen" },
+  { id: "audi", label: "Audi", icon: "siAudi" },
+  { id: "toyota", label: "Toyota", icon: "siToyota" },
+  { id: "mercedes", label: "Mercedes", icon: "siMercedes" },
+  { id: "ford", label: "Ford", icon: "siFord" },
+  { id: "honda", label: "Honda", icon: "siHonda" },
+  { id: "hyundai", label: "Hyundai", icon: "siHyundai" },
+  { id: "kia", label: "Kia", icon: "siKia" },
+  { id: "mazda", label: "Mazda", icon: "siMazda" },
+  { id: "subaru", label: "Subaru", icon: "siSubaru" },
+  { id: "lexus", label: "Lexus", icon: "siLexus" },
+  { id: "volvo", label: "Volvo", icon: "siVolvo" },
+];
+
+export const Categories = [
+  "All",
+  "SUV",
+  "Truck",
+  "Van",
+  "Motorcycle",
+  "Hatchback",
+  "Convertible",
+  "Wagon",
+  "Hybrid",
+  "Luxury",
+  "Off-Road",
+];

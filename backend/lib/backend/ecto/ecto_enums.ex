@@ -31,4 +31,12 @@ defmodule Backend.Ecto.EctoEnums do
     :truck,
     :lorry
   ])
+
+  defenum(FuelTypeEnum, :fuel_type_enum, [
+    :diesel,
+    :petrol,
+    :electric,
+    :hybrid,
+    :hydrogen
+  ])
 end

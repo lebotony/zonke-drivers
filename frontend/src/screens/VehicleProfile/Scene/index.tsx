@@ -1,20 +1,45 @@
 import React, { useState, useRef, useEffect } from "react";
-import { SafeAreaView, ScrollView, View, Image, TouchableOpacity, Dimensions, LayoutAnimation } from "react-native";
-import { Ionicons, AntDesign, MaterialIcons, FontAwesome5 } from "@expo/vector-icons";
-
-import { Colors } from "../../../../constants/ui";
-import carPic from "@/assets/images/car-test.jpg";
-import { Avatar } from "../../../components/visual/avatar";
-import { Circle } from "../../../components/shapes/circle";
-import { router } from "expo-router";
-import { styles } from "./styles/index";
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  LayoutAnimation,
+} from "react-native";
 import { Text } from "react-native-paper";
 
+import { router, useLocalSearchParams } from "expo-router";
+import { find } from "lodash";
+
+import {
+  Ionicons,
+  AntDesign,
+  MaterialIcons,
+  FontAwesome5,
+} from "@expo/vector-icons";
+
+import { capitalizeFirstLetter } from "@/src/utils";
+import { useCustomQuery } from "@/src/useQueryContext";
+import { Circle } from "@/src/components/shapes/circle";
+import { Colors } from "@/constants/ui";
+import { Avatar } from "@/src/components/visual/avatar";
+import carPic from "@/assets/images/car-test.jpg";
+
+import { styles } from "./styles/index";
+
 export const Scene = () => {
+  const { id } = useLocalSearchParams();
+  const vehicleId = Array.isArray(id) ? id[0] : id;
 
   const [expanded, setExpanded] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+
+  const { getCachedData } = useCustomQuery();
+  const { vehicles } = getCachedData(["vehicles"]);
+  const vehicle: Vehicle = find(vehicles, { id: vehicleId });
 
   const width = Dimensions.get("window").width;
   const IMAGES = [carPic, carPic, carPic];
@@ -24,7 +49,10 @@ export const Scene = () => {
   useEffect(() => {
     if (expanded && modalRef.current) {
       setTimeout(() => {
-        modalRef.current.scrollTo?.({ x: currentIndex * width, animated: false });
+        modalRef.current.scrollTo?.({
+          x: currentIndex * width,
+          animated: false,
+        });
       }, 50);
     }
   }, [expanded, currentIndex, width]);
@@ -33,7 +61,6 @@ export const Scene = () => {
     LayoutAnimation.easeInEaseOut();
     setIsDescriptionExpanded(!isDescriptionExpanded);
   };
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -72,8 +99,9 @@ export const Scene = () => {
               </Circle>
             </TouchableOpacity>
 
-            <View style={{ flexDirection: "row", alignItems: "center", gap: 8}}>
-
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+            >
               <TouchableOpacity
                 onPress={() => {
                   setExpanded(true);
@@ -83,11 +111,18 @@ export const Scene = () => {
                   <Ionicons name="expand" size={18} color={Colors.white} />
                 </Circle>
               </TouchableOpacity>
-
             </View>
           </View>
 
-          <View style={{ position: "absolute", bottom: 12, left: 0, right: 0, alignItems: "center" }}>
+          <View
+            style={{
+              position: "absolute",
+              bottom: 12,
+              left: 0,
+              right: 0,
+              alignItems: "center",
+            }}
+          >
             <View style={{ flexDirection: "row", gap: 8 }}>
               {IMAGES.map((_, i) => (
                 <View
@@ -96,7 +131,10 @@ export const Scene = () => {
                     width: currentIndex === i ? 18 : 6,
                     height: 6,
                     borderRadius: 6,
-                    backgroundColor: currentIndex === i ? Colors.mrDBlue : "rgba(255,255,255,0.6)",
+                    backgroundColor:
+                      currentIndex === i
+                        ? Colors.mrDBlue
+                        : "rgba(255,255,255,0.6)",
                   }}
                 />
               ))}
@@ -107,8 +145,22 @@ export const Scene = () => {
         <ScrollView style={styles.meta}>
           <View style={styles.titleRow}>
             <Text style={styles.title}>Audi RS7</Text>
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, backgroundColor: Colors.white, paddingHorizontal:12, paddingVertical:4, borderRadius:20 }}>
-              <Avatar round width={34} source={require('@/assets/images/profile_pic.png')} />
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 8,
+                backgroundColor: Colors.white,
+                paddingHorizontal: 12,
+                paddingVertical: 4,
+                borderRadius: 20,
+              }}
+            >
+              <Avatar
+                round
+                width={34}
+                source={require("@/assets/images/profile_pic.png")}
+              />
               <View style={styles.rating}>
                 <AntDesign name="star" size={16} color={Colors.yellow} />
                 <Text style={styles.ratingText}>4.5</Text>
@@ -116,162 +168,160 @@ export const Scene = () => {
             </View>
           </View>
 
-           <View style={styles.descriptionContainer}>
+          <View style={styles.descriptionContainer}>
             <Text
               style={styles.descriptionText}
               numberOfLines={isDescriptionExpanded ? undefined : 2}
             >
-              The Audi RS7 is a high-performance luxury sedan that combines sporty
-              design with advanced technology and powerful performance. It features
-              a sleek exterior, a luxurious interior, and a range of cutting-edge
-              features to enhance the driving experience.
+              {vehicle?.description}
             </Text>
-            
+
             {!isDescriptionExpanded && (
               <TouchableOpacity onPress={toggleDescription}>
-                <Text style={styles.readText}>
-                  Read more
-                </Text>
+                <Text style={styles.readText}>Read more</Text>
               </TouchableOpacity>
             )}
           </View>
 
           {isDescriptionExpanded && (
             <TouchableOpacity onPress={toggleDescription}>
-              <Text style={styles.readText}>
-                Read less
-              </Text>
+              <Text style={styles.readText}>Read less</Text>
             </TouchableOpacity>
           )}
 
-
-
           <Text style={styles.title}>Overview</Text>
-          
+
           <SafeAreaView style={styles.infoContainer}>
-              <View style={styles.infoRow}>
-              
-                <View style={styles.infoItem}>
-                  <View style={styles.xIconWrapper}>
+            <View style={styles.infoRow}>
+              <View style={styles.infoItem}>
+                <View style={styles.xIconWrapper}>
                   <View style={styles.xsIconWrapper}>
-                    <MaterialIcons name="local-gas-station" size={22} color={Colors.mrDBlue} />
+                    <MaterialIcons
+                      name="local-gas-station"
+                      size={22}
+                      color={Colors.mrDBlue}
+                    />
                   </View>
-
-                  </View>
-
-                  <Text style={styles.infoTitle}>
-                    Fuel Type
-                  </Text>
-
-                  <Text style={styles.infoText}>
-                    Diesel
-                  </Text>
-                  
                 </View>
 
-                 
-                <View style={styles.infoItem}>
-                  <View style={styles.xIconWrapper}>
-                  <View style={styles.xsIconWrapper}>
-                    <MaterialIcons name="event-seat" size={22} color={Colors.mrDBlue} />
-                  </View>
+                <Text style={styles.infoTitle}>Fuel Type</Text>
 
-                  </View>
-
-                  <Text style={styles.infoTitle}>
-                    Passangers
-                  </Text>
-
-                  <Text style={styles.infoText}>
-                    4
-                  </Text>
-                  
-                </View>
-
-
-                 <View style={styles.infoItem}>
-                  <View style={styles.xIconWrapper}>
-                  <View style={styles.xsIconWrapper}>
-                    <FontAwesome5 name="cogs" size={22} color={Colors.mrDBlue} />
-                  </View>
-
-                  </View>
-
-                  <Text style={styles.infoTitle}>
-                    Transmission
-                  </Text>
-
-                  <Text style={styles.infoText}>
-                    Manual
-                  </Text>
-                  
-                </View>
-
-                <View style={styles.infoItem}>
-                  <View style={styles.xIconWrapper}>
-                  <View style={styles.xsIconWrapper}>
-                    <Ionicons name="speedometer-outline" size={22} color={Colors.mrDBlue} />
-                  </View>
-
-                  </View>
-
-                  <Text style={styles.infoTitle}>
-                    Mileage
-                  </Text>
-
-                  <Text style={styles.infoText}>
-                    12 540 km
-                  </Text>
-                  
-                </View>
-                 <View style={styles.infoItem}>
-                  <View style={styles.xIconWrapper}>
-                  <View style={styles.xsIconWrapper}>
-                    <MaterialIcons name="engineering" size={22} color={Colors.mrDBlue} />
-                  </View>
-
-                  </View>
-
-                  <Text style={styles.infoTitle}>
-                    Engine Capacity
-                  </Text>
-
-                  <Text style={styles.infoText}>
-                    2 litre
-                  </Text>
-                  
-                </View>
-
-                <View style={[styles.infoItem,{ backgroundColor: 'transparent'}]} />
-        
+                <Text style={styles.infoText}>
+                  {capitalizeFirstLetter(vehicle?.fuel_type)}
+                </Text>
               </View>
-          </SafeAreaView>
 
+              <View style={styles.infoItem}>
+                <View style={styles.xIconWrapper}>
+                  <View style={styles.xsIconWrapper}>
+                    <MaterialIcons
+                      name="event-seat"
+                      size={22}
+                      color={Colors.mrDBlue}
+                    />
+                  </View>
+                </View>
+
+                <Text style={styles.infoTitle}>Passangers</Text>
+
+                <Text style={styles.infoText}>{vehicle?.passengers}</Text>
+              </View>
+
+              <View style={styles.infoItem}>
+                <View style={styles.xIconWrapper}>
+                  <View style={styles.xsIconWrapper}>
+                    <FontAwesome5
+                      name="cogs"
+                      size={22}
+                      color={Colors.mrDBlue}
+                    />
+                  </View>
+                </View>
+
+                <Text style={styles.infoTitle}>Transmission</Text>
+
+                <Text style={styles.infoText}>
+                  {vehicle?.manual ? "Manual" : "Automatic"}
+                </Text>
+              </View>
+
+              <View style={styles.infoItem}>
+                <View style={styles.xIconWrapper}>
+                  <View style={styles.xsIconWrapper}>
+                    <Ionicons
+                      name="speedometer-outline"
+                      size={22}
+                      color={Colors.mrDBlue}
+                    />
+                  </View>
+                </View>
+
+                <Text style={styles.infoTitle}>Mileage</Text>
+
+                <Text style={styles.infoText}>{vehicle?.mileage}</Text>
+              </View>
+              <View style={styles.infoItem}>
+                <View style={styles.xIconWrapper}>
+                  <View style={styles.xsIconWrapper}>
+                    <MaterialIcons
+                      name="engineering"
+                      size={22}
+                      color={Colors.mrDBlue}
+                    />
+                  </View>
+                </View>
+
+                <Text style={styles.infoTitle}>Engine Capacity</Text>
+
+                <Text
+                  style={styles.infoText}
+                >{`${vehicle?.engine_capacity} litre`}</Text>
+              </View>
+
+              <View
+                style={[styles.infoItem, { backgroundColor: "transparent" }]}
+              />
+            </View>
+          </SafeAreaView>
         </ScrollView>
       </ScrollView>
 
-        { expanded && 
-          <View style={{ position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 1000 }}>
-            <SafeAreaView style={{ flex: 1, backgroundColor: Colors.black }}>
-          <TouchableOpacity
-            onPress={() => setExpanded(false)}
-            style={{ position: "absolute", top: 30, left: 20, zIndex: 20 }}
-          >
+      {expanded && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1000,
+          }}
+        >
+          <SafeAreaView style={{ flex: 1, backgroundColor: Colors.black }}>
+            <TouchableOpacity
+              onPress={() => setExpanded(false)}
+              style={{ position: "absolute", top: 30, left: 20, zIndex: 20 }}
+            >
               <Ionicons name="close" size={26} color={Colors.white} />
-          </TouchableOpacity>
+            </TouchableOpacity>
 
-          <ScrollView
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            ref={modalRef}
-          >
-            {IMAGES.map((img, i) => (
-              <Image key={i} source={img} style={{ width, height: "100%", resizeMode: "contain" }} />
-            ))}
-          </ScrollView>
-        </SafeAreaView> 
-          </View>}
+            <ScrollView
+              horizontal
+              pagingEnabled
+              showsHorizontalScrollIndicator={false}
+              ref={modalRef}
+            >
+              {IMAGES.map((img, i) => (
+                <Image
+                  key={i}
+                  source={img}
+                  style={{ width, height: "100%", resizeMode: "contain" }}
+                />
+              ))}
+            </ScrollView>
+          </SafeAreaView>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

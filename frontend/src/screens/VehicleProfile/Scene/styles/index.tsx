@@ -1,7 +1,7 @@
+import { StyleSheet } from "react-native";
+
 import { Colors } from "@/constants/ui";
 import { shadowStyles } from "@/src/components/shadowStyles";
-import { StyleSheet } from "react-native";
-import { de } from "zod/v4/locales";
 
 export const styles = StyleSheet.create({
   container: {
@@ -18,9 +18,8 @@ export const styles = StyleSheet.create({
   meta: {
     flex: 1,
     padding: 16,
-    flexDirection: 'column',
+    flexDirection: "column",
     gap: 12,
-
   },
 
   titleRow: {
@@ -28,7 +27,6 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
   },
-
 
   title: {
     fontSize: 20,
@@ -46,7 +44,8 @@ export const styles = StyleSheet.create({
     gap: 8,
   },
   rating: {
-    flexDirection: 'row',
+    flexDirection: "row",
+    ...shadowStyles,
   },
   ratingText: {
     marginLeft: 2,
@@ -65,21 +64,21 @@ export const styles = StyleSheet.create({
   xsIconWrapper: {
     width: 40,
     height: 40,
-    borderRadius: '50%',
+    borderRadius: "50%",
     backgroundColor: Colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...shadowStyles
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadowStyles,
   },
   xIconWrapper: {
     width: 60,
     height: 60,
     marginBottom: 10,
-    borderRadius: '50%',
+    borderRadius: "50%",
     backgroundColor: Colors.white,
-    alignItems: 'center',
-    justifyContent: 'center',
-    ...shadowStyles
+    alignItems: "center",
+    justifyContent: "center",
+    ...shadowStyles,
   },
   readText: {
     marginBottom: 12,
@@ -90,11 +89,11 @@ export const styles = StyleSheet.create({
 
   descriptionContainer: {
     marginTop: 8,
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'flex-end',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    alignItems: "flex-end",
   },
-  
+
   descriptionText: {
     fontSize: 14,
     color: Colors.darkCharcoalGrey,
@@ -108,23 +107,20 @@ export const styles = StyleSheet.create({
     fontWeight: "600",
     color: Colors.mrDBlue,
     marginLeft: 4,
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
   },
-  
-  description: {
 
-  },
-  overView: {
-
-  },
+  description: {},
+  overView: {},
   infoTitle: {
     fontSize: 15,
     fontWeight: 500,
-    opacity: 0.6
+    opacity: 0.6,
   },
   infoText: {
     fontSize: 16,
-    fontWeight: 'bold'
+    fontWeight: "bold",
+    textTransform: "capitalize",
   },
   stat: {
     alignItems: "center",
@@ -148,7 +144,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 8,
     borderRadius: 10,
-    width: 120,
+    width: 125,
   },
 
   footerRow: {
@@ -169,6 +165,4 @@ export const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 24,
   },
-
-  
 });

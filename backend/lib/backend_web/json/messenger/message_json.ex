@@ -6,8 +6,6 @@ defmodule BackendWeb.Messenger.MessageJSON do
   end
 
   def show(%{message: message}) do
-    # IO.inspect(message)
-
     Map.take(message, [
       :id,
       :content,

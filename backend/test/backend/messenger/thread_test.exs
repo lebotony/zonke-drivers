@@ -87,8 +87,6 @@ defmodule Backend.Messenger.ThreadTest do
              %Thread{last_message: th_message_1, unseen_msg_count: unseen_msg_count_1}
            ] = Threads.get_participant_threads(%{user_id: p1.id})
 
-    # IO.inspect(thread_participants)
-
     assert thread_2_id == thread_2.id
     assert th_message_1.content == "Second Message in Thread 1"
     assert unseen_msg_count_1 == 1

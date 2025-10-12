@@ -92,7 +92,7 @@ defmodule Backend.Drivers.Drivers do
         where(query, [driver: d], d.experience >= ^min and d.experience <= ^max)
 
       {:rating_range, %{min: min, max: max}}, query ->
-        where(query, [driver: d], d.experience >= ^min and d.experience <= ^max)
+        where(query, [driver: d], d.rating >= ^min and d.rating <= ^max)
 
       {:platforms, val}, query when is_list(val) ->
         where(query, [driver: d], fragment("? && ?", d.platforms, ^val))

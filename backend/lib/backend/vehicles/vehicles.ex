@@ -100,6 +100,28 @@ defmodule Backend.Vehicles.Vehicles do
           fragment("? @@ websearch_to_tsquery(?)", s.searchable_document, ^value)
         )
 
+      {:brands, val}, query ->
+        where(query, [vehicle: v], v.brand in ^val)
+
+      {:fuel_types, val}, query ->
+        where(query, [vehicle: v], v.fuel_type in ^val)
+
+      {:price_range, [min, max]}, query ->
+        min = String.to_integer(min)
+        max = String.to_integer(max)
+
+        where(
+          query,
+          [vehicle: v],
+          fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) >= ^min and
+            fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) <= ^max
+        )
+
+      {:rating_range, val}, query ->
+        # First compute rating before you filter
+        rating = String.to_integer(val)
+        where(query, [vehicle: v], v.rating >= ^rating)
+
       _, query ->
         query
     end)

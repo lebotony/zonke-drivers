@@ -6,20 +6,23 @@ import {
   ScrollView,
   Dimensions,
 } from "react-native";
+import { Text } from "react-native-paper";
+
 import RangeSlider from "rn-range-slider";
 import { AntDesign } from "@expo/vector-icons";
 
-import { styles } from "./styles";
-import { Thumb } from "@/src/components/slider/thumb";
+import { PopupMenu } from "@/src/components/popup";
 import { Rail } from "@/src/components/slider/rail";
+import { Thumb } from "@/src/components/slider/thumb";
 import { RailSelected } from "@/src/components/slider/railSelected";
 import { Label } from "@/src/components/slider/label";
 import { Modal } from "@/src/components/modal";
 import { Colors } from "@/src/../constants/ui";
-import { PopupMenu } from "@/src/components/popup";
-import { Text } from "react-native-paper";
+
+import { styles } from "./styles";
 
 interface FilterModalProps {
+  showReset: boolean;
   visible: boolean;
   onDismiss: () => void;
   onReset: () => void;
@@ -31,9 +34,7 @@ interface FilterModalProps {
   selectedBrands: string[];
   selectedFuelTypes: string[];
   selectedRating: number | null;
-  priceRange: [number, number];
-  minPrice: number,
-  maxPrice: number,
+  priceRange: [number, number] | [];
   onToggleCategory: (c: string) => void;
   onToggleBrand: (b: string) => void;
   onFuelToggle: (fuel: string) => void;
@@ -43,6 +44,7 @@ interface FilterModalProps {
 }
 
 export const FilterModal: React.FC<FilterModalProps> = ({
+  showReset,
   visible,
   onDismiss,
   onReset,
@@ -55,8 +57,6 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   selectedFuelTypes,
   selectedRating,
   priceRange,
-  minPrice,
-  maxPrice,
   onToggleCategory,
   onToggleBrand,
   onFuelToggle,
@@ -91,26 +91,24 @@ export const FilterModal: React.FC<FilterModalProps> = ({
       })
       .filter(Boolean) as any[];
 
-  const selected =
-    (selectedBrands.length > 0 ||
-      selectedCategories.length > 0 ||
-      selectedFuelTypes.length > 0) ||
-    (selectedRating! > 1) ||
-    (priceRange[0] !== minPrice || priceRange[1] !== maxPrice);
-
-  const screenHeight = Dimensions.get('window').height;
+  const screenHeight = Dimensions.get("window").height;
 
   return (
     <Modal onDismiss={onDismiss}>
-      <View style={{maxHeight: screenHeight * 0.8}}>
+      <View style={{ maxHeight: screenHeight * 0.8 }}>
         <View style={styles.header}>
           <Text style={styles.headerTitle}>Filter</Text>
-          { selected && <TouchableOpacity onPress={onReset} style={styles.resetBtn}>
-            <Text style={{ color: Colors.mrDBlue }}>Reset</Text>
-          </TouchableOpacity>}
+          {showReset && (
+            <TouchableOpacity onPress={onReset} style={styles.resetBtn}>
+              <Text style={{ color: Colors.mrDBlue }}>Reset</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
-        <ScrollView style={styles.contentSection} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          style={styles.contentSection}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.row}>
             <Text style={styles.contentTitle}>Category</Text>
             <PopupMenu
@@ -205,34 +203,42 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           <View style={styles.fuelCheckbox}>
             <Text style={styles.contentTitle}>Fuel Type</Text>
             <View style={styles.fuelOptions}>
-              {["Diesel", "Petrol"].map((f) => {
-                const key = f.toLowerCase();
-                const selected = selectedFuelTypes.includes(key);
-                return (
-                  <TouchableOpacity
-                    key={key}
-                    onPress={() => onFuelToggle(key)}
-                    style={styles.checkbox}
-                  >
-                    <View
-                      style={[
-                        styles.box,
-                        {
-                          borderWidth: selected ? 1.5 : 1,
-                          borderColor: selected
-                            ? Colors.mrDBlue
-                            : Colors.mediumGrey,
-                        },
-                      ]}
+              {["Diesel", "Petrol", "Electric", "Hybrid", "Hydrogen"].map(
+                (f) => {
+                  const key = f.toLowerCase();
+                  const selected = selectedFuelTypes.includes(key);
+                  return (
+                    <TouchableOpacity
+                      key={key}
+                      onPress={() => onFuelToggle(key)}
+                      style={styles.checkbox}
                     >
-                      {selected ? (
-                        <AntDesign name="check" size={16} color={Colors.mrDBlue} />
-                      ) : null}
-                    </View>
-                    <Text style={{ color: Colors.darkCharcoalGrey }}>{f}</Text>
-                  </TouchableOpacity>
-                );
-              })}
+                      <View
+                        style={[
+                          styles.box,
+                          {
+                            borderWidth: selected ? 1.5 : 1,
+                            borderColor: selected
+                              ? Colors.mrDBlue
+                              : Colors.mediumGrey,
+                          },
+                        ]}
+                      >
+                        {selected ? (
+                          <AntDesign
+                            name="check"
+                            size={16}
+                            color={Colors.mrDBlue}
+                          />
+                        ) : null}
+                      </View>
+                      <Text style={{ color: Colors.darkCharcoalGrey }}>
+                        {f}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                }
+              )}
             </View>
           </View>
 
@@ -240,8 +246,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           <View style={{ marginVertical: 18, marginHorizontal: 16 }}>
             <Text style={styles.contentTitle}>Price Range</Text>
             <RangeSlider
-              min={minPrice}
-              max={maxPrice}
+              min={0}
+              max={235}
               step={5}
               low={priceRange[0]}
               high={priceRange[1]}
@@ -257,55 +263,55 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                 justifyContent: "space-between",
               }}
             >
-              <Text>${priceRange[0]}</Text>
-              <Text>${priceRange[1]}</Text>
+              <Text>R{priceRange[0]}</Text>
+              <Text>R{priceRange[1]}</Text>
             </View>
           </View>
 
           {/* Rating */}
           <View style={styles.reviewContainer}>
             <Text style={styles.reviewText}>Customer Review</Text>
-          <View style={{ gap: 12 }}>
-            {[4, 3, 2].map((r) => (
-              <TouchableOpacity
-                key={r}
-                style={styles.ratingBtn}
-                onPress={() => onRatingSelect(r)}
-              >
-                <View style={styles.ratingText}>
-                  {Array.from({ length: r }).map((_, idx) => (
-                    <AntDesign
-                      key={idx}
-                      name="star"
-                      size={18}
-                      color={Colors.yellow}
-                    />
-                  ))}
-                  <Text style={{ color: Colors.mediumGrey }}>& up</Text>
-                </View>
-                <View
-                  style={[
-                    styles.radio,
-                    selectedRating === r
-                      ? styles.activeRadio
-                      : styles.inactiveRadio,
-                  ]}
+            <View style={{ gap: 12 }}>
+              {[4, 3, 2].map((r) => (
+                <TouchableOpacity
+                  key={r}
+                  style={styles.ratingBtn}
+                  onPress={() => onRatingSelect(r)}
                 >
-                  {selectedRating === r ? <View style={styles.activeDot} /> : null}
-                </View>
-              </TouchableOpacity>
-            ))}
-          </View>
+                  <View style={styles.ratingText}>
+                    {Array.from({ length: r }).map((_, idx) => (
+                      <AntDesign
+                        key={idx}
+                        name="star"
+                        size={18}
+                        color={Colors.yellow}
+                      />
+                    ))}
+                    <Text style={{ color: Colors.mediumGrey }}>& up</Text>
+                  </View>
+                  <View
+                    style={[
+                      styles.radio,
+                      selectedRating === r
+                        ? styles.activeRadio
+                        : styles.inactiveRadio,
+                    ]}
+                  >
+                    {selectedRating === r ? (
+                      <View style={styles.activeDot} />
+                    ) : null}
+                  </View>
+                </TouchableOpacity>
+              ))}
+            </View>
           </View>
 
-            <View style={styles.footer}>
+          <View style={styles.footer}>
             <TouchableOpacity onPress={onApply} style={styles.footerBtn}>
               <Text style={styles.footerText}>Show results</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>
-
-        
       </View>
     </Modal>
   );

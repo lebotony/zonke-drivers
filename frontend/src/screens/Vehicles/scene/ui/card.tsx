@@ -1,56 +1,75 @@
 // ...existing code...
 import React from "react";
-import { View, Image as RNImage, Pressable } from "react-native";
-import carPic from "@/assets/images/car-test.jpg";
-import { router } from "expo-router";
-import { HorizontalDivider } from "../../../../components/shapes/divider";
-import { CustomButton } from "../../../../components/elements/button";
-import { Colors } from "../../../../../constants/ui";
-import { Ionicons, AntDesign, FontAwesome5, MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
-import { styles } from "../styles/card";
 import { Text } from "react-native-paper";
+import { View, Pressable } from "react-native";
+
+import { router } from "expo-router";
+import { Ionicons, AntDesign } from "@expo/vector-icons";
+
+import carPic from "@/assets/images/car-test.jpg";
+
+import { Colors } from "../../../../../constants/ui";
+import { styles } from "../styles/card";
+import { Image } from "expo-image";
+import { capitalizeFirstLetter } from "@/src/utils";
 
 type Props = {
-  item: any;
+  vehicle: Vehicle;
 };
 
-export const VehicleCard = ({ item }: Props) => {
+export const VehicleCard = ({ vehicle }: Props) => {
   return (
     <View style={styles.card}>
-     <View style={styles.topSection}>
-      <View style={styles.leftInfo}>
-        <Text style={styles.carName}>Luxury sedan</Text>
-        <Text style={styles.model}>Model year: 2020 </Text>
-        <View style={styles.priceContainer}>
-          <Text style={styles.price}> $220</Text>
-          <Text style={styles.perDay}> per day</Text>
+      <View style={styles.topSection}>
+        <View style={styles.leftInfo}>
+          <Text style={styles.carName}>
+            {capitalizeFirstLetter(vehicle?.brand)}{" "}
+            {capitalizeFirstLetter(vehicle?.model)}
+          </Text>
+          <Text
+            style={styles.model}
+          >{`Model year: ${vehicle?.model_year}`}</Text>
+          <View style={styles.priceContainer}>
+            <Text
+              style={styles.price}
+            >{`R${vehicle?.price_fixed?.value}`}</Text>
+            <Text style={styles.perDay}> per day</Text>
+          </View>
         </View>
 
-      </View>
+        <View style={styles.rightInfo}>
+          <Pressable
+            style={styles.iconWrapper}
+            onPress={() => router.push(`/vehicles/${vehicle.id}`)}
+          >
+            <Ionicons name="arrow-forward" size={20} color={Colors.white} />
+          </Pressable>
 
-      <View style={styles.rightInfo}>
-        <Pressable style={styles.iconWrapper} onPress={()=> router.push("/vehicles/1")}>
-          <Ionicons name="arrow-forward" size={20} color={Colors.white}/>
-        </Pressable>
-
-        <View style={styles.rating}>
-          <AntDesign name="star" size={18} color={Colors.lightYellow} />
-          <Text style={styles.ratingValue}> 4.5</Text>
+          <View style={styles.rating}>
+            <AntDesign name="star" size={18} color={Colors.lightYellow} />
+            <Text style={styles.ratingValue}> {vehicle.rating}</Text>
+          </View>
         </View>
       </View>
-     </View>
 
-     <Pressable style={styles.imgContainer} onPress={()=> router.push("/vehicles/1")}>
-      <RNImage source={carPic} style={{width: '100%', height: '100%', borderRadius: 12}}/>
-      <View style={styles.leftFlap} />
-      <View style={styles.rightFlap} />
-     </Pressable>
-     
+      <Pressable
+        style={styles.imgContainer}
+        onPress={() => router.push(`/vehicles/${vehicle.id}`)}
+      >
+        <Image
+          source={carPic}
+          style={{
+            width: "100%",
+            height: "100%",
+            borderRadius: 12,
+          }}
+          contentFit="cover"
+        />
+        <View style={styles.leftFlap} />
+        <View style={styles.rightFlap} />
+      </Pressable>
 
-     <View style={styles.footer}>
-
-     </View>
-      
+      <View style={styles.footer}></View>
     </View>
   );
 };

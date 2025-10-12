@@ -1,10 +1,9 @@
-import { View } from "react-native"
-import { DriversScreen } from "../Drivers"
-import VehiclesScreen from "../Vehicles"
+import { View } from "react-native";
+import { DriversScreen } from "../Drivers";
+import { VehiclesScreen } from "../Vehicles";
 
+export const HomeScreen = () => {
+  const driver = true;
 
-export const HomeScreen = ()=> {
-    const driver = true
-
-    return driver ? <VehiclesScreen /> : <DriversScreen />
-}
+  return driver ? <VehiclesScreen /> : <DriversScreen />;
+};
