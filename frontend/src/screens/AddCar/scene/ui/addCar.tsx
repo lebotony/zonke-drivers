@@ -41,8 +41,8 @@ export const AddCar = () => {
               style={{
                 height: 200,
                 borderRadius: 10,
-                resizeMode: "contain",
               }}
+              contentFit="cover"
             />
           </View>
         </View>

@@ -98,8 +98,6 @@ defmodule Backend.Vehicles.VehiclesTest do
       {:ok, drivers, %{total_count: total_count}} =
         Vehicles.get_management_vehicles(%{}, session, :owner)
 
-      IO.inspect(drivers)
-
       assert total_count == 1
     end
   end

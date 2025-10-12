@@ -53,7 +53,8 @@ export const styles = StyleSheet.create({
   },
   fuelCheckbox: {
     marginVertical: 14,
-    paddingHorizontal: 16
+    paddingHorizontal: 16,
+    flexWrap: 'wrap'
   },
   fuelOptions: {
     flexDirection: 'row',

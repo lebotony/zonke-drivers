@@ -22,11 +22,17 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
       :price_fixed,
       :active,
       :user_id,
+      :type,
+      :brand,
+      :manual,
+      :fuel_type,
+      :engine_capacity,
+      :passengers,
+      :model_year,
       # :rating,
       :inserted_at,
       :updated_at
     ])
-
-    # |> Map.merge(%{rating: (:rand.uniform(39) + 10) / 10})
+    |> Map.merge(%{rating: (:rand.uniform(39) + 10) / 10})
   end
 end

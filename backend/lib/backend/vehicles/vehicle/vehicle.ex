@@ -7,7 +7,7 @@ defmodule Backend.Vehicles.Vehicle do
   alias Backend.Ecto.Embeds.{PriceRangeEmbed, PriceFixed}
   alias Backend.Assets.Asset
   alias Backend.Bookings.VehicleBooking
-  alias Backend.Ecto.EctoEnums.VehicleTypeEnum
+  alias Backend.Ecto.EctoEnums.{VehicleTypeEnum, FuelTypeEnum}
 
   @required_fields [:name, :business_profile_id, :user_id, :type, :brand, :diesel, :manual]
   @optional_fields [:model, :description, :mileage, :active, :engine_capacity, :passengers]
@@ -19,16 +19,18 @@ defmodule Backend.Vehicles.Vehicle do
     field(:description, :string)
     field(:mileage, :integer)
     field(:active, :boolean, default: false)
-
     field(:type, VehicleTypeEnum)
     field(:brand, :string)
     field(:manual, :boolean)
-    field(:diesel, :boolean)
+    field(:fuel_type, FuelTypeEnum)
     field(:engine_capacity, :float)
     field(:passengers, :integer)
+    field(:model_year, :integer)
 
     embeds_one(:price_range, PriceRangeEmbed, on_replace: :update)
     embeds_one(:price_fixed, PriceFixed, on_replace: :update)
+
+    field(:rating, :float, virtual: true)
 
     belongs_to(:business_profile, BusinessProfile)
     belongs_to(:user, User)

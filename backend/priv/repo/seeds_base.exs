@@ -103,7 +103,10 @@ business_profiles =
 
 Logger.info("Creating vehicles")
 
+vehicle_brands = ["bmw", "nissan", "volkswagen", "audi", "toyota", "mercedes", "ford", "honda", "hyundai", "kia", "mazda", "subaru", "lexus", "volvo"]
+vehicle_models = ["Civic", "Corolla", "Accord", "Camry", "Model S", "Mustang", "Golf", "A4", "CX-5", "Elantra", "Tucson", "X5", "C-Class", "E-Class", "Altima", "Forester"]
 vehicle_types = ["bike", "passenger", "taxi", "truck", "lorry"]
+fuel_types = [:diesel, :petrol, :electric, :hybrid, :hydrogen]
 
 vehicles =
   Enum.map(owners_users, fn user ->
@@ -112,18 +115,19 @@ vehicles =
 
       {:ok, vehicle} =
         %Vehicle{
-          type: Enum.at(vehicle_types, rand_number - 1),
-          brand: "Toyota",
-          model: "Corolla",
+          type: Enum.random(vehicle_types),
+          brand: Enum.random(vehicle_brands),
+          model: Enum.random(vehicle_models),
           manual: Enum.random([true, false]),
-          diesel: Enum.random([true, false]),
+          fuel_type: Enum.random(fuel_types),
+          model_year: Enum.random(2005..2024),
           engine_capacity: 1.2,
-          passengers: 7,
+          passengers: Enum.random(2..40),
           description: "Has suspension problems",
           active: true,
-          mileage: 60000,
-          price_range: %{currency: "dollars", min: 20, max: 25},
-          price_fixed: %{currency: "dollars", value: 25},
+          mileage: Enum.random(10000..100000),
+          price_range: %{currency: "ZAR", min: 20, max: Enum.random(25..100)},
+          price_fixed: %{currency: "ZAR", value: Enum.random(20..60)},
           user_id: user.id,
           business_profile_id: profile.id,
         }

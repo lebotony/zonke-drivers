@@ -23,9 +23,16 @@ export const Card = (props: CardProps) => {
   return (
     <View style={styles.card}>
       <View style={styles.body}>
-        <Image source={vehicleDriver.asset_url} style={styles.image} />
+        <Image
+          source={vehicleDriver.asset_url}
+          style={styles.image}
+          contentFit="cover"
+        />
         <View style={styles.details}>
-          <Text style={styles.name}> {vehicleDriver.vehicle.name} </Text>
+          <Text style={styles.name}>
+            {" "}
+            {vehicleDriver.vehicle.brand} {vehicleDriver.vehicle.model}
+          </Text>
 
           <View style={styles.ratingRow}>
             <View style={styles.detailIcon}>
