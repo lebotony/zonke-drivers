@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
-import { Colors } from "../../../../../../../constants/ui";
+
+import { Colors } from "@/constants/ui";
 
 
 export const styles = StyleSheet.create({
@@ -7,13 +8,12 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 16,
     marginTop: 4,
   },
-  row: { 
+  row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 4,
+    paddingVertical: 2,
     paddingHorizontal: 16,
-    marginTop: 8,
    },
   viewAll: {
     color: Colors.mrDBlue
@@ -21,9 +21,10 @@ export const styles = StyleSheet.create({
   wrapper: {
   },
   header: {
-     flexDirection: 'row',
-     justifyContent: 'center',
-     alignItems: 'center'
+    marginTop: 10,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   headerTitle: {
     fontSize: 18,
@@ -31,12 +32,11 @@ export const styles = StyleSheet.create({
   },
   resetBtn: {
     position: 'absolute',
-    right: 26
+    right: 26,
   },
   contentSection: {
-    marginTop: 12,
     flexDirection: 'column',
-    gap: 10
+    gap: 10,
   },
   contentTitle: {
     fontWeight: '700'
@@ -52,7 +52,7 @@ export const styles = StyleSheet.create({
     marginRight: 16,
   },
   fuelCheckbox: {
-    marginVertical: 14,
+    paddingTop: 5,
     paddingHorizontal: 16,
     flexWrap: 'wrap'
   },
@@ -61,8 +61,6 @@ export const styles = StyleSheet.create({
     paddingTop: 8 
   },
   checkbox: {
-    paddingHorizontal: 12,
-    paddingVertical: 8,
     borderRadius: 20,
     marginRight: 12,
     flexDirection: 'row',

@@ -15,22 +15,39 @@ type QuickFiltersProps = {
   onSetSelectedPlatforms: (value: string) => void;
   selectedPlatforms: string[];
   onClear: VoidCallback;
+  isVehicle?: boolean;
 };
 
 export const QuickFilters = (props: QuickFiltersProps) => {
-  const { onSetSelectedPlatforms, selectedPlatforms, onClear } = props;
+  const { onSetSelectedPlatforms, selectedPlatforms, onClear, isVehicle } =
+    props;
+
+  const WrapperElement = isVehicle ? View : Shadow;
+
+  const platformFilters = isVehicle
+    ? PLATFORM_FILTERS.slice(0, 5)
+    : PLATFORM_FILTERS;
 
   return (
-    <Shadow>
-      <View style={styles.container}>
-        <View style={styles.titleWrapper}>
-          <Text style={styles.heading}>Find by platform</Text>
-          {selectedPlatforms.length ? (
-            <CustomButton onPress={onClear} customStyle={styles.clearButton}>
-              <MaterialIcons name="clear" size={24} color={Colors.black} />
-            </CustomButton>
-          ) : null}
-        </View>
+    <WrapperElement>
+      <View
+        style={[
+          styles.container,
+          isVehicle && { width: 252, justifyContent: "center" },
+        ]}
+      >
+        {!isVehicle && (
+          <View style={styles.titleWrapper}>
+            <Text style={styles.heading}>
+              {isVehicle ? "" : "Find by platform"}
+            </Text>
+            {selectedPlatforms?.length ? (
+              <CustomButton onPress={onClear} customStyle={styles.clearButton}>
+                <MaterialIcons name="clear" size={24} color={Colors.black} />
+              </CustomButton>
+            ) : null}
+          </View>
+        )}
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -38,7 +55,7 @@ export const QuickFilters = (props: QuickFiltersProps) => {
           contentContainerStyle={styles.platformFilter}
           bounces={false}
         >
-          {PLATFORM_FILTERS.map(
+          {platformFilters.map(
             ({ value, bgColor, color, slug, icon, justIcon }) => (
               <CustomButton
                 key={value}
@@ -50,7 +67,7 @@ export const QuickFilters = (props: QuickFiltersProps) => {
                   width: justIcon ? 40 : "auto",
                 }}
               >
-                {selectedPlatforms.includes(value) && (
+                {selectedPlatforms?.includes(value) && (
                   <View style={{ position: "absolute", top: -9, right: -10 }}>
                     <Ionicons
                       name="checkmark-circle"
@@ -68,6 +85,6 @@ export const QuickFilters = (props: QuickFiltersProps) => {
           )}
         </ScrollView>
       </View>
-    </Shadow>
+    </WrapperElement>
   );
 };

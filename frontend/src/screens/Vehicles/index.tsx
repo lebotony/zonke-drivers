@@ -1,46 +1,40 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { SafeAreaView, FlatList, View, TouchableOpacity } from "react-native";
+import { SafeAreaView, FlatList, View } from "react-native";
 
 import { useDebounce } from "use-debounce";
 
-import { EvilIcons } from "@expo/vector-icons";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
-
-import { TextLogo } from "@/src/components/misc/textLogo";
-import { Circle } from "@/src/components/shapes/circle";
-import { Colors } from "@/constants/ui";
-import { SearchComponent } from "@/src/components/searchBar";
 
 import { VehicleCard } from "./scene/ui/card";
 import { styles } from "./styles";
 import { FilterModal } from "./scene/ui/filter";
 import { fetchVehicles } from "./actions";
 import { HeaderFilter } from "./scene/ui/FilterHeader";
-import { BrandsList, Categories } from "./utils/constants";
+import { BrandsList } from "./utils/constants";
 import { Brands } from "./scene/ui/brands";
+import { QuickFilters } from "../Drivers/Scene/ui/quickFilters";
+import { Header } from "../Drivers/Scene/ui/header";
 
 export const VehiclesScreen = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
 
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 235]);
   const [selectedFuelTypes, setSelectedFuelTypes] = useState<string[]>([]);
+  const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>(
+    []
+  );
 
   const [applyFilter, setApplyFilter] = useState<boolean>(false);
   const [reset, setReset] = useState<boolean>(false);
   const resetRef = useRef<boolean>(undefined);
 
   const [searchTerm, setSearchTerm] = useState<string>();
-  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
-  const initialVisibleCategories = Categories.slice(0, 5);
   const initialVisibleBrands = BrandsList.map((b) => b.id).slice(0, 5);
 
-  const [visibleCategories, setVisibleCategories] = useState<string[]>(
-    initialVisibleCategories
-  );
   const [visibleBrands, setVisibleBrands] =
     useState<string[]>(initialVisibleBrands);
 
@@ -50,8 +44,8 @@ export const VehiclesScreen = () => {
     brands: selectedBrands,
     fuel_types: selectedFuelTypes,
     price_range: priceRange,
-    rating: selectedRating,
-    categories: selectedCategories,
+    rating_range: selectedRating,
+    types: selectedVehicleTypes,
   };
 
   const getFilters = () => {
@@ -75,6 +69,8 @@ export const VehiclesScreen = () => {
     }
 
     if (resetRef.current === true) resetRef.current = false;
+
+    console.log("AAAAAAAAAAAAAAAAAAAAA", filters);
 
     return fetchVehicles({ pageParam }, filters);
   };
@@ -109,7 +105,7 @@ export const VehiclesScreen = () => {
       queryClient.removeQueries({ queryKey });
       refetch();
     }
-  }, [selectedBrands]);
+  }, [selectedBrands, selectedVehicleTypes]);
 
   useEffect(() => {
     if (reset) {
@@ -120,8 +116,8 @@ export const VehiclesScreen = () => {
   }, [reset]);
 
   const isDefaultState =
-    selectedCategories.length === 0 &&
     selectedBrands.length === 0 &&
+    selectedVehicleTypes.length === 0 &&
     selectedFuelTypes.length === 0 &&
     selectedRating === null &&
     priceRange[0] === 0 &&
@@ -134,23 +130,6 @@ export const VehiclesScreen = () => {
 
     setVisibleBrands((prev) => {
       const isInitial = initialVisibleBrands.includes(id);
-      const isAlreadyVisible = prev.includes(id);
-
-      if (isAlreadyVisible) return prev;
-
-      if (!isInitial) return [id, ...prev];
-
-      return [...prev, id];
-    });
-  };
-
-  const toggleCategory = (id: string) => {
-    setSelectedCategories((s) =>
-      s.includes(id) ? s.filter((x) => x !== id) : [...s, id]
-    );
-
-    setVisibleCategories((prev) => {
-      const isInitial = initialVisibleCategories.includes(id);
       const isAlreadyVisible = prev.includes(id);
 
       if (isAlreadyVisible) return prev;
@@ -175,11 +154,10 @@ export const VehiclesScreen = () => {
     resetRef.current = true;
 
     setSelectedBrands([]);
+    setSelectedVehicleTypes([]);
     setApplyFilter(false);
-    setSelectedCategories([]);
     setSelectedRating(null);
     setPriceRange([0, 235]);
-    setVisibleCategories(Categories.slice(0, 5));
     setVisibleBrands(BrandsList.map((b) => b.id).slice(0, 5));
     setSelectedFuelTypes([]);
     setReset((prev) => !prev);
@@ -188,6 +166,16 @@ export const VehiclesScreen = () => {
   const handleValueChange = useCallback((low: number, high: number) => {
     setPriceRange([low, high]);
   }, []);
+
+  const handleSetSelectedVehicleType = (value: string) => {
+    setSelectedVehicleTypes((prev) => {
+      if (selectedVehicleTypes?.includes(value)) {
+        return selectedVehicleTypes.filter((type) => type !== value);
+      } else {
+        return [...(prev || []), value];
+      }
+    });
+  };
 
   const handleApplyFilter = () => {
     setApplyFilter(true);
@@ -198,51 +186,61 @@ export const VehiclesScreen = () => {
     setShowFilterModal(false);
   };
 
+  // To use memoized vehicle card
+  const renderVehicle = useCallback(({ item }: { item: Vehicle }) => {
+    return <VehicleCard vehicle={item} />;
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.topRow}>
-        <TextLogo size="small" />
-        <SearchComponent customStyle={{ flex: 1, marginHorizontal: 6 }} />
-        <View>
-          <TouchableOpacity>
-            <Circle size={35} borderColor={Colors.lightGrey}>
-              <EvilIcons name="bell" size={20} color="black" />
-            </Circle>
-          </TouchableOpacity>
-        </View>
-        <View />
+      <Header setSearchTerm={(value: string) => setSearchTerm(value)} />
+
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <QuickFilters
+          onSetSelectedPlatforms={(value: string) =>
+            handleSetSelectedVehicleType(value)
+          }
+          selectedPlatforms={selectedVehicleTypes}
+          onClear={() => setSelectedVehicleTypes([])}
+          isVehicle
+        />
+
+        <HeaderFilter
+          setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
+          onReset={handleFilterReset}
+          toggleBrand={toggleBrand}
+          setVisibleBrands={(value: string[]) => setVisibleBrands(value)}
+          showReset={!isDefaultState && !showFilterModal}
+        />
       </View>
 
-      <HeaderFilter
-        setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
-        selectedBrands={selectedBrands}
-        onReset={handleFilterReset}
-        toggleBrand={toggleBrand}
-        setVisibleBrands={(value: string[]) => setVisibleBrands(value)}
-        showReset={!isDefaultState && !showFilterModal}
-      />
-
-      <Brands
-        selectedBrands={selectedBrands}
-        toggleBrand={toggleBrand}
-        visibleBrandData={() => getVisibleBrandData()}
-      />
+      <View style={{ height: 80 }}>
+        <Brands
+          selectedBrands={selectedBrands}
+          toggleBrand={toggleBrand}
+          visibleBrandData={() => getVisibleBrandData()}
+        />
+      </View>
 
       <FilterModal
         showReset={!isDefaultState}
         visible={showFilterModal}
         onDismiss={onFilterDismiss}
         onReset={handleFilterReset}
-        categories={Categories}
         brands={BrandsList}
-        visibleCategories={visibleCategories}
         visibleBrands={visibleBrands}
-        selectedCategories={selectedCategories}
         selectedBrands={selectedBrands}
         selectedFuelTypes={selectedFuelTypes}
+        selectedVehicleTypes={selectedVehicleTypes}
         selectedRating={selectedRating}
         priceRange={priceRange}
-        onToggleCategory={toggleCategory}
+        onToggleVehicleTypes={handleSetSelectedVehicleType}
         onToggleBrand={toggleBrand}
         onFuelToggle={(f) =>
           setSelectedFuelTypes((s) =>
@@ -261,8 +259,10 @@ export const VehiclesScreen = () => {
             fetchNextPage();
           }
         }}
-        keyExtractor={(i) => i.id}
+        keyExtractor={(i) => i?.id}
         renderItem={({ item }) => <VehicleCard vehicle={item} />}
+        // renderItem={renderVehicle}
+
         contentContainerStyle={{
           gap: 12,
           paddingHorizontal: 14,

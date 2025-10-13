@@ -2,6 +2,7 @@ defmodule Backend.Vehicles.Vehicles do
   alias Backend.{Repo, PaginateHelper}
   alias Backend.Vehicles.Vehicle
   alias Backend.Vehicles.Queries.{VehicleDriverBy, VehicleBy}
+  alias Backend.Reviews.Review
   alias Backend.Assets.Assets
   alias Ecto.Multi
 
@@ -71,9 +72,20 @@ defmodule Backend.Vehicles.Vehicles do
   end
 
   def get_vehicles(params, :public) do
+    rating_subquery =
+      from(r in Review,
+        where: r.vehicle_id == parent_as(:vehicle).id,
+        select: %{avg_rating: fragment("ROUND(AVG(?)::numeric, 1)", r.rating)}
+      )
+
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()
+      |> join(:left_lateral, [vehicle: v], rating in subquery(rating_subquery), as: :rating, on: true)
+      |> select_merge([vehicle: v, rating: rating], %{
+        v
+        | rating: coalesce(rating.avg_rating, 0)
+      })
       |> build_search(params)
       |> build_sort(params)
       |> Repo.paginate(PaginateHelper.prep_params(params))
@@ -103,6 +115,9 @@ defmodule Backend.Vehicles.Vehicles do
       {:brands, val}, query ->
         where(query, [vehicle: v], v.brand in ^val)
 
+      {:types, val}, query ->
+        where(query, [vehicle: v], v.type in ^val)
+
       {:fuel_types, val}, query ->
         where(query, [vehicle: v], v.fuel_type in ^val)
 
@@ -117,10 +132,9 @@ defmodule Backend.Vehicles.Vehicles do
             fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) <= ^max
         )
 
-      {:rating_range, val}, query ->
-        # First compute rating before you filter
+      {:rating_range, val}, query when is_binary(val) and val != "" ->
         rating = String.to_integer(val)
-        where(query, [vehicle: v], v.rating >= ^rating)
+        where(query, [rating: r], coalesce(r.avg_rating, 0) >= ^rating)
 
       _, query ->
         query

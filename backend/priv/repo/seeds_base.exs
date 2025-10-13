@@ -305,6 +305,28 @@ payments =
   end)
 ######################################################################################################
 
+Logger.info("Creating vehicle reviews")
+
+vehicle_reviews =
+  Enum.flat_map(vehicles, fn vehicle ->
+    Enum.map(drivers, fn driver ->
+      user = Enum.find(users, fn user -> user.id == driver.user_id end)
+
+      {:ok, review} =
+        %Review{
+          comment: "This is a good vehicle",
+          author_id: user.id,
+          vehicle_id: vehicle.id,
+          rating: (:rand.uniform(39) + 10) / 10
+        }
+        |> Repo.insert()
+
+        review
+    end)
+  end)
+
+######################################################################################################
+
 # Logger.info("Creating tags")
 
 # tags =
@@ -376,6 +398,7 @@ Logger.info("Created: #{length(vehicles)} vehicles")
 Logger.info("Created: #{length(drivers)} drivers")
 Logger.info("Created: #{length(vehicle_drivers)} vehicle_drivers")
 Logger.info("Created: #{length(payments)} payments")
+Logger.info("Created: #{length(vehicle_reviews)} vehicle_reviews")
 
 # Logger.info("Created: #{length(reviews)} reviews, #{length(tags)} tags")
 Logger.info("Created: #{length(threads)} threads, #{length(messages)} messages")

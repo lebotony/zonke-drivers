@@ -6,13 +6,12 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 14,
-    marginTop: 8,
+    paddingRight: 10,
+    paddingTop: 5
   },
   filterBtn: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
   },
   sectionTitle: {
     fontSize: 18,
@@ -26,8 +25,7 @@ export const styles = StyleSheet.create({
   },
   filterContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    gap: 6,
+    alignItems: 'center'
   },
   resetBtn: {
     flexDirection: "row",

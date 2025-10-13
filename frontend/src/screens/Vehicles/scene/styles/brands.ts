@@ -4,26 +4,19 @@ import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   brands: {
-    marginTop: 2,
     gap: 6,
-    justifyContent: "space-between",
-  },
-  brandsFlatlist: {
-    height: 150,
-    marginLeft: 14,
+    paddingBottom: 5
   },
   chip: {
-    height: 90,
     flexDirection: "column",
     alignItems: "center",
     paddingTop: 4,
     paddingHorizontal: 6,
     borderRadius: 12,
-    gap: 4,
   },
   brandLogo: {
-    width: 58,
-    height: 58,
+    width: 50,
+    height: 50,
     borderRadius: 29,
     backgroundColor: Colors.white,
     alignItems: "center",

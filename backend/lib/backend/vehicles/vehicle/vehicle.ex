@@ -7,6 +7,7 @@ defmodule Backend.Vehicles.Vehicle do
   alias Backend.Ecto.Embeds.{PriceRangeEmbed, PriceFixed}
   alias Backend.Assets.Asset
   alias Backend.Bookings.VehicleBooking
+  alias Backend.Reviews.Review
   alias Backend.Ecto.EctoEnums.{VehicleTypeEnum, FuelTypeEnum}
 
   @required_fields [:name, :business_profile_id, :user_id, :type, :brand, :diesel, :manual]
@@ -26,18 +27,22 @@ defmodule Backend.Vehicles.Vehicle do
     field(:engine_capacity, :float)
     field(:passengers, :integer)
     field(:model_year, :integer)
+    field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
 
     embeds_one(:price_range, PriceRangeEmbed, on_replace: :update)
     embeds_one(:price_fixed, PriceFixed, on_replace: :update)
 
     field(:rating, :float, virtual: true)
+    field(:rank_value, :decimal, virtual: true)
 
     belongs_to(:business_profile, BusinessProfile)
     belongs_to(:user, User)
 
-    many_to_many(:drivers, Driver, join_through: VehicleDriver)
     has_one(:asset, Asset)
     has_many(:vehicle_bookings, VehicleBooking)
+    has_many(:reviews, Review)
+
+    many_to_many(:drivers, Driver, join_through: VehicleDriver)
 
     timestamps()
   end
