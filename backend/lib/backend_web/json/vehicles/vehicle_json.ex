@@ -29,10 +29,9 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
       :engine_capacity,
       :passengers,
       :model_year,
-      # :rating,
+      :rating,
       :inserted_at,
       :updated_at
     ])
-    |> Map.merge(%{rating: (:rand.uniform(39) + 10) / 10})
   end
 end

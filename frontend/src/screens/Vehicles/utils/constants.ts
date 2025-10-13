@@ -15,16 +15,9 @@ export const BrandsList = [
   { id: "volvo", label: "Volvo", icon: "siVolvo" },
 ];
 
-export const Categories = [
-  "All",
-  "SUV",
+export const VEHICLE_TYPES = [
+  "Bike",
+  "Taxi",
   "Truck",
-  "Van",
-  "Motorcycle",
-  "Hatchback",
-  "Convertible",
-  "Wagon",
-  "Hybrid",
-  "Luxury",
-  "Off-Road",
+  "Lorry",
 ];

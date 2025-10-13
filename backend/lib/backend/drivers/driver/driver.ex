@@ -3,7 +3,7 @@ defmodule Backend.Drivers.Driver do
 
   alias Backend.Accounts.{BusinessProfile, User}
   alias Backend.Ecto.Embeds.{PriceRangeEmbed, PriceFixed, Licence}
-  # alias Backend.Reviews.Review
+  alias Backend.Reviews.Review
   alias Backend.Vehicles.Vehicle
   alias Backend.Bookings.DriverBooking
 
@@ -49,7 +49,7 @@ defmodule Backend.Drivers.Driver do
     belongs_to(:business_profile, BusinessProfile)
     belongs_to(:user, User)
 
-    # has_many(:reviews, Review)
+    has_many(:reviews, Review)
     has_many(:driver_bookings, DriverBooking)
     many_to_many(:vehicles, Vehicle, join_through: VehicleDriver)
 

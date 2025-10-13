@@ -1,4 +1,4 @@
-import { FontAwesome5 } from "@expo/vector-icons";
+import { FontAwesome5, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { Colors } from "@/constants/ui";
 
@@ -29,6 +29,13 @@ export const PLATFORM_FILTERS = [
     color: Colors.white,
     bgColor: Colors.mediumDarkGrey,
     icon: <FontAwesome5 name="truck" size={16} color="white" />,
+    justIcon: true,
+  },
+  {
+    value: "lorry",
+    color: Colors.white,
+    bgColor: Colors.mediumDarkGrey,
+    icon: <FontAwesome5 name="truck-moving" size={16} color="white" />,
     justIcon: true,
   },
   { value: "uber", slug: "Uber", bgColor: Colors.black, color: Colors.white },

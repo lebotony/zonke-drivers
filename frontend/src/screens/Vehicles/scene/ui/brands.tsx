@@ -23,7 +23,6 @@ export const Brands = (props: BrandsProps) => {
       data={visibleBrandData()}
       horizontal
       showsHorizontalScrollIndicator={false}
-      style={styles.brandsFlatlist}
       keyExtractor={(item) => item.id}
       contentContainerStyle={styles.brands}
       renderItem={({ item }) => {
@@ -45,8 +44,8 @@ export const Brands = (props: BrandsProps) => {
             <View style={styles.brandLogo}>
               {iconData ? (
                 <Svg
-                  width={32}
-                  height={32}
+                  width={25}
+                  height={25}
                   viewBox="0 0 24 24"
                   fill={`#${iconData.hex}`}
                 >

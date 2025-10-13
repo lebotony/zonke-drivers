@@ -144,7 +144,10 @@ export const Scene = () => {
 
         <ScrollView style={styles.meta}>
           <View style={styles.titleRow}>
-            <Text style={styles.title}>Audi RS7</Text>
+            <Text style={styles.title}>
+              {capitalizeFirstLetter(vehicle?.brand)}{" "}
+              {capitalizeFirstLetter(vehicle?.model)}
+            </Text>
             <View
               style={{
                 flexDirection: "row",

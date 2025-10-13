@@ -47,14 +47,14 @@ export const VehicleCard = ({ vehicle }: Props) => {
 
           <View style={styles.rating}>
             <AntDesign name="star" size={18} color={Colors.lightYellow} />
-            <Text style={styles.ratingValue}> {vehicle.rating}</Text>
+            <Text style={styles.ratingValue}> {vehicle?.rating}</Text>
           </View>
         </View>
       </View>
 
       <Pressable
         style={styles.imgContainer}
-        onPress={() => router.push(`/vehicles/${vehicle.id}`)}
+        onPress={() => router.push(`/vehicles/${vehicle?.id}`)}
       >
         <Image
           source={carPic}

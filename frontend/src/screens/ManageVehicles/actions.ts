@@ -9,6 +9,7 @@ export const fetchManagementVehicles = ({ pageParam = 1 }) =>
     params: { page: pageParam, per_page: 5,  }
   })
     .then((response) => {
+      console.log("AAAAAAAAAAAAAAAAAAAAAA", response.data)
       return response.data
     })
     .catch((err) => err);

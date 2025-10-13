@@ -1,6 +1,11 @@
 defmodule Backend.Accounts.User do
   use Backend, :model
 
+  alias Backend.Reviews.Review
+  alias Backend.Vehicles.Vehicle
+  alias Backend.Bookings.DriverBooking
+  alias Backend.Bookings.VehicleBooking
+
   @required_fields [:first_name, :last_name, :email]
   @optional_fields [:location, :username]
   @all_fields @required_fields ++ @optional_fields
@@ -14,6 +19,11 @@ defmodule Backend.Accounts.User do
     field(:password_hash, :string)
 
     field(:password, :string, virtual: true)
+
+    has_many(:reviews, Review, foreign_key: :author_id)
+    has_many(:vehicles, Vehicle)
+    has_many(:driver_bookings, DriverBooking)
+    has_many(:vehicle_bookings, VehicleBooking)
 
     timestamps()
   end

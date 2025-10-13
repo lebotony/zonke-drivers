@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity } from "react-native";
-import React from "react";
+import { View, TouchableOpacity } from "react-native";
+import { Text } from "react-native-paper";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -12,7 +12,6 @@ import { BrandsList } from "../../utils/constants";
 
 type HeaderFilterProps = {
   setShowFilterModal: (value: boolean) => void;
-  selectedBrands: string[];
   setVisibleBrands: (value: string[]) => void;
   toggleBrand: (id: string) => void;
   showReset: boolean;
@@ -22,7 +21,6 @@ type HeaderFilterProps = {
 export const HeaderFilter = (props: HeaderFilterProps) => {
   const {
     setShowFilterModal,
-    selectedBrands,
     setVisibleBrands,
     toggleBrand,
     showReset,
@@ -39,15 +37,10 @@ export const HeaderFilter = (props: HeaderFilterProps) => {
           onPress={() => setShowFilterModal(true)}
         >
           <Text style={{ fontWeight: "600", fontSize: 15 }}>Filter</Text>
-          <MaterialIcons
-            name="filter-list"
-            size={20}
-            color={Colors.mediumDarkGrey}
-          />
         </TouchableOpacity>
 
         {/* FOR PRODUCTION USE ONLY */}
-        <TouchableOpacity onPress={onLogout}>
+        {/* <TouchableOpacity onPress={onLogout}>
           <Text
             style={{
               color: Colors.lightRed,
@@ -57,10 +50,10 @@ export const HeaderFilter = (props: HeaderFilterProps) => {
           >
             Logout
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         {/* FOR PRODUCTION USE ONLY */}
 
-        {showReset && (
+        {showReset ? (
           <TouchableOpacity
             style={styles.resetBtn}
             onPress={() => {
@@ -72,21 +65,22 @@ export const HeaderFilter = (props: HeaderFilterProps) => {
             <Text style={{ color: Colors.mrDBlue, fontWeight: "600" }}>
               Reset
             </Text>
-            <MaterialIcons name="refresh" size={18} color={Colors.mrDBlue} />
+            {/* <MaterialIcons name="refresh" size={18 } color={Colors.mrDBlue} /> */}
           </TouchableOpacity>
+        ) : (
+          <PopupMenu
+            options={BrandsList.map((c) => c.label)}
+            selectedValue={null}
+            onSelect={(label) => {
+              const found = BrandsList.find((c) => c.label === label);
+              if (found) toggleBrand(found.id);
+            }}
+            iconColor={Colors.mediumDarkGrey}
+          >
+            <Text style={styles.seeAll}>View all</Text>
+          </PopupMenu>
         )}
       </View>
-      <PopupMenu
-        options={BrandsList.map((c) => c.label)}
-        selectedValue={null}
-        onSelect={(label) => {
-          const found = BrandsList.find((c) => c.label === label);
-          if (found) toggleBrand(found.id);
-        }}
-        iconColor={Colors.mediumDarkGrey}
-      >
-        <Text style={styles.seeAll}>View all</Text>
-      </PopupMenu>
     </View>
   );
 };

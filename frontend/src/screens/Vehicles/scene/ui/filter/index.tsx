@@ -20,27 +20,26 @@ import { Modal } from "@/src/components/modal";
 import { Colors } from "@/src/../constants/ui";
 
 import { styles } from "./styles";
+import { VEHICLE_TYPES } from "../../../utils/constants";
 
 interface FilterModalProps {
   showReset: boolean;
   visible: boolean;
   onDismiss: () => void;
   onReset: () => void;
-  categories: string[];
   brands: { id: string; label: string; icon: string }[];
-  visibleCategories: string[];
   visibleBrands: string[];
-  selectedCategories: string[];
   selectedBrands: string[];
   selectedFuelTypes: string[];
+  selectedVehicleTypes: string[];
   selectedRating: number | null;
   priceRange: [number, number] | [];
-  onToggleCategory: (c: string) => void;
   onToggleBrand: (b: string) => void;
   onFuelToggle: (fuel: string) => void;
   onPriceChange: (low: number, high: number) => void;
   onRatingSelect: (r: number) => void;
   onApply: () => void;
+  onToggleVehicleTypes: (value: string) => void;
 }
 
 export const FilterModal: React.FC<FilterModalProps> = ({
@@ -48,21 +47,19 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   visible,
   onDismiss,
   onReset,
-  categories,
   brands,
-  visibleCategories,
   visibleBrands,
-  selectedCategories,
   selectedBrands,
   selectedFuelTypes,
+  selectedVehicleTypes,
   selectedRating,
   priceRange,
-  onToggleCategory,
   onToggleBrand,
   onFuelToggle,
   onPriceChange,
   onRatingSelect,
   onApply,
+  onToggleVehicleTypes,
 }) => {
   const renderThumb = useCallback(() => <Thumb />, []);
   const renderRail = useCallback(() => <Rail />, []);
@@ -74,11 +71,11 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
   if (!visible) return null;
 
-  const getVisibleCategoryData = () =>
-    visibleCategories.map((category) => ({
-      value: category,
-      label: category,
-      isSelected: selectedCategories.includes(category),
+  const getVehicleTypesData = () =>
+    VEHICLE_TYPES.map((type) => ({
+      value: type.toLowerCase(),
+      label: type,
+      isSelected: selectedVehicleTypes.includes(type.toLowerCase()),
     }));
 
   const getVisibleBrandData = () =>
@@ -110,11 +107,11 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           showsVerticalScrollIndicator={false}
         >
           <View style={styles.row}>
-            <Text style={styles.contentTitle}>Category</Text>
+            <Text style={styles.contentTitle}>Vehicle Type</Text>
             <PopupMenu
-              options={categories}
+              options={VEHICLE_TYPES}
               selectedValue={null}
-              onSelect={onToggleCategory}
+              onSelect={onToggleVehicleTypes}
               iconColor={Colors.mediumDarkGrey}
               before
             >
@@ -123,14 +120,14 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           </View>
 
           <FlatList
-            data={getVisibleCategoryData()}
+            data={getVehicleTypesData()}
             keyExtractor={(item) => item.value}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.chipFlatlist}
             renderItem={({ item }) => (
               <TouchableOpacity
-                onPress={() => onToggleCategory(item.value)}
+                onPress={() => onToggleVehicleTypes(item.value)}
                 style={[
                   styles.chipBtn,
                   {
@@ -243,7 +240,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           </View>
 
           {/* Price Range */}
-          <View style={{ marginVertical: 18, marginHorizontal: 16 }}>
+          <View style={{ marginVertical: 15, marginHorizontal: 16 }}>
             <Text style={styles.contentTitle}>Price Range</Text>
             <RangeSlider
               min={0}
