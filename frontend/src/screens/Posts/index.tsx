@@ -1,7 +1,7 @@
-import React from "react";
+import { View } from "react-native"
+import { PostsComponent } from "./scene"
 
-import { CreatePostComponent } from "./scene";
 
-export const CreatePostScreen = () => {
-  return <CreatePostComponent />;
-};
+export const PostsScreen = () => {
+    return <PostsComponent /> 
+}

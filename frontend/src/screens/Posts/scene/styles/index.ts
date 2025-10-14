@@ -1,29 +1,37 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { Colors } from '@/constants/ui';
+import { Colors } from "@/constants/ui";
+import { shadowStyles } from "@/src/components/shadowStyles";
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: 24,
-    marginTop: 30,
-  },
-  backBtn: {
-    position: 'absolute',
-    top: 6,
-    zIndex: 10,
-    backgroundColor: 'transparent',
-  },
-  title: {
-    fontSize: 23,
-    fontWeight: '600',
-    color: Colors.black,
-    alignSelf: 'center',
-  },
-  profile: {
-    flexDirection: 'row',
-    gap: 20,
-    alignItems: 'center',
-    marginVertical: 15,
-  },
-});
+    wrapper: {
+        flex: 1,
+        backgroundColor: Colors.bg,
+        flexDirection: 'column',
+    },
+    header: {
+        paddingTop: 25,
+        backgroundColor: Colors.white,
+        ...shadowStyles
+    },
+    headerTilte: {
+        fontSize: 22,
+        fontWeight: '600',
+        color: Colors.black,
+        alignSelf: 'center'
+    },
+    profileRow: {
+        paddingVertical: 12,
+    },
+    profileCircle: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        ...shadowStyles
+    },
+    mainSection: {
+        flex: 1,
+        padding: 14,
+    },
+   
+}) 

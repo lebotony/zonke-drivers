@@ -1,5 +1,6 @@
-import { CreatePostScreen } from "../../screens/Posts";
+import { PostsScreen } from "@/src/screens/Posts";
+import { CreatePostScreen } from "../../screens/CreatePosts";
 
 export default function Post() {
-  return <CreatePostScreen />;
+  return <PostsScreen />;
 }
