@@ -1,5 +1,5 @@
-import { AddCarScreen } from "@/src/screens/AddCar";
+import { AddVehicleScreen } from "@/src/screens/AddVehicle";
 
 export default function Vehicle() {
-  return <AddCarScreen />;
+  return <AddVehicleScreen />;
 }

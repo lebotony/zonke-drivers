@@ -34,6 +34,7 @@ export const Form = (props: FormProps) => {
             inputIconSize={22}
             errors={errors}
             customStyles={{ flex: 1 }}
+            required
           />
           <Fieldset
             control={control}
@@ -44,6 +45,7 @@ export const Form = (props: FormProps) => {
             inputIconSize={22}
             errors={errors}
             customStyles={{ flex: 1 }}
+            required
           />
         </View>
       )}
@@ -65,6 +67,7 @@ export const Form = (props: FormProps) => {
         inputIcon="mail-outline"
         placeholder="example@gmail.com"
         errors={errors}
+        required
       />
 
       <View>
@@ -81,6 +84,7 @@ export const Form = (props: FormProps) => {
           type="password"
           placeholder="********"
           errors={errors}
+          required
         />
       </View>
 
@@ -93,6 +97,7 @@ export const Form = (props: FormProps) => {
           type="password"
           placeholder="********"
           errors={errors}
+          required
         />
       )}
     </View>

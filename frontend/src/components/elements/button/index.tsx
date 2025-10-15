@@ -22,7 +22,7 @@ type CustomButtonProps = {
 export const CustomButton = (props: CustomButtonProps) => {
   const {
     haptics,
-    color,
+    color = "mrDBlue",
     children,
     onPress,
     customStyle,

@@ -84,7 +84,7 @@ export const styles = StyleSheet.create({
     marginTop: 20,
   },
   signupText: {
-    color: Colors.primaryBlue,
+    color: Colors.mrDBlue,
     fontWeight: '500',
     marginLeft: 5,
   },

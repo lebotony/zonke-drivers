@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
     right: 0,
   },
   forgotPassword: {
-    color: Colors.primaryBlue,
+    color: Colors.mrDBlue,
     fontSize: 13,
     fontWeight: '400',
     marginBottom: 6,
