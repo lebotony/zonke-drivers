@@ -13,13 +13,16 @@ import {
   Platform,
   BackHandler,
 } from "react-native";
-import { Feather, MaterialIcons, FontAwesome, AntDesign } from '@expo/vector-icons';
+import {
+  Feather,
+  MaterialIcons,
+  FontAwesome,
+  AntDesign,
+} from "@expo/vector-icons";
 import { Portal, Text } from "react-native-paper";
 
 import { Colors } from "../../../constants/ui";
 import { styles } from "./styles";
-
-
 
 type PopupMenuProps = {
   label?: string;
@@ -29,9 +32,9 @@ type PopupMenuProps = {
   menuWidth?: "auto" | number;
   style?: StyleProp<ViewStyle>;
   iconSize?: number;
-  icon?: React.ComponentProps<any>["name"],
-  iconColor?: string,
-  iconLibrary?: 'Feather' | 'MaterialIcons' | 'AntDesign',
+  icon?: React.ComponentProps<any>["name"];
+  iconColor?: string;
+  iconLibrary?: "Feather" | "MaterialIcons" | "AntDesign";
   children?: React.ReactNode;
   before?: boolean;
 };
@@ -46,9 +49,9 @@ export const PopupMenu = ({
   menuWidth = "auto",
   style,
   iconSize = 24,
-  iconLibrary = 'Feather',
+  iconLibrary = "Feather",
   children,
-  before = false
+  before = false,
 }: PopupMenuProps) => {
   const [open, setOpen] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
@@ -160,24 +163,26 @@ export const PopupMenu = ({
       break;
   }
 
+  const screenWidth = Dimensions.get("window").width;
 
-const screenWidth = Dimensions.get("window").width;
-
-const leftPosition = Math.max(layout.popupLeft + layout.width - computedWidth,0);
+  const leftPosition = Math.max(
+    layout.popupLeft + layout.width - computedWidth,
+    0
+  );
 
   const showAbove = layout.freeHeight <= 225;
   const popupPositionTop = showAbove
     ? layout.popupTop - (layout.popupMenuHeight + layout.popupBtnHeight)
     : layout.popupTop;
 
-const IconLibraries = {
-  Feather,
-  MaterialIcons,
-  FontAwesome,
-  AntDesign,
-};
+  const IconLibraries = {
+    Feather,
+    MaterialIcons,
+    FontAwesome,
+    AntDesign,
+  };
 
-const IconComponent = IconLibraries[iconLibrary] || Feather;
+  const IconComponent = IconLibraries[iconLibrary] || Feather;
 
   return (
     <View>
@@ -191,7 +196,8 @@ const IconComponent = IconLibraries[iconLibrary] || Feather;
         onLayout={() => {
           if (open) measureInputPosition();
         }}
-      >{before && children}
+      >
+        {before && children}
         <View
           style={styles.iconWrapper}
           ref={iconRef}
@@ -203,13 +209,11 @@ const IconComponent = IconLibraries[iconLibrary] || Feather;
             }));
           }}
         >
-          
           <IconComponent
             name={icon}
             size={iconSize}
             color={iconColor || Colors.black}
           />
-          
         </View>
         {!before && children}
       </Pressable>
@@ -240,7 +244,7 @@ const IconComponent = IconLibraries[iconLibrary] || Feather;
                   ? "auto"
                   : Math.max(layout.freeHeight - keyboardHeight - 50, 0),
                 maxWidth: screenWidth,
-                marginVertical: showAbove ? -4 : 4
+                marginVertical: showAbove ? -4 : 4,
               },
             ]}
           >
@@ -254,10 +258,12 @@ const IconComponent = IconLibraries[iconLibrary] || Feather;
                   style={styles.popupItem}
                   onPress={() => handleSelect(item)}
                 >
-                
-                  <View style={[styles.dot, selectedValue !== item && {opacity: 0}]}>
-                    
-                  </View>
+                  <View
+                    style={[
+                      styles.dot,
+                      selectedValue !== item && { opacity: 0 },
+                    ]}
+                  ></View>
                   <Text
                     style={[
                       styles.popupText,
@@ -276,10 +282,7 @@ const IconComponent = IconLibraries[iconLibrary] || Feather;
                       const { width } = e.nativeEvent.layout;
                       setLayout((prev) => ({
                         ...prev,
-                        widestTextWidth: Math.max(
-                          prev.widestTextWidth,
-                          width
-                        ),
+                        widestTextWidth: Math.max(prev.widestTextWidth, width),
                       }));
                     }}
                   >
@@ -297,7 +300,7 @@ const IconComponent = IconLibraries[iconLibrary] || Feather;
 
       {/* Invisible measurement text for width */}
       <View style={styles.longText}>
-        {options.map((option, index) => (
+        {options?.map((option, index) => (
           <Text
             key={`${option}-${index}`}
             style={styles.popupText}

@@ -17,11 +17,22 @@ export const styles = StyleSheet.create({
     fontWeight: 600,
     marginBottom: 20
   },
+  plusBtn: {
+    backgroundColor: Colors.mrDBlue,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: -10,
+    right: -10,
+    zIndex: 1,
+  },
   imageWrapper: {
     height: 240,
     padding: 20,
     width: "80%",
-    // marginHorizontal: 20,
     borderRadius: 12,
     backgroundColor: Colors.white,
     ...shadowStyles

@@ -131,12 +131,13 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
     <View style={[customStyles]}>
       <View style={styles.label}>
         <Text style={{ fontWeight: "500", color: Colors.black }}>{label}</Text>
-        {required && (
-          <Text style={{ color: Colors.primaryBlue, paddingLeft: 3 }}>*</Text>
-        )}
-        {optional && (
-          <Text style={{ color: Colors.lightGrey, paddingLeft: 3 }}>
-            {"(Optional)"}
+        {required ? (
+          <Text style={{ color: Colors.mrDBlue, paddingLeft: 3 }}>*</Text>
+        ) : (
+          <Text
+            style={{ color: Colors.lightGrey, paddingLeft: 3, fontSize: 13 }}
+          >
+            (optional)
           </Text>
         )}
       </View>

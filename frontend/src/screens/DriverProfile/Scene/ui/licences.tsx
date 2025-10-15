@@ -14,8 +14,8 @@ export const Licences = (props: LicencesProp) => {
       <Text style={styles.heading}>Licences & Certificates</Text>
 
       <View style={styles.row}>
-        {licences.map((licence: Licence) => (
-          <View style={styles.pill}>
+        {licences.map((licence: Licence, index: number) => (
+          <View key={`${licence}-${index}`} style={styles.pill}>
             <Text
               style={styles.location}
             >{`${licence.name}, ${licence.year}`}</Text>

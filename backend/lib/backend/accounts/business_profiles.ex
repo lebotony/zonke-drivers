@@ -46,6 +46,13 @@ defmodule Backend.Accounts.BusinessProfiles do
     |> Repo.update()
   end
 
+  def get_business_profile(%{user_id: user_id}) do
+    case Repo.get_by(BusinessProfile, user_id: user_id) do
+      nil -> {:error, :not_found}
+      profile -> {:ok, profile}
+    end
+  end
+
   def get_business_profile(id) do
     case Repo.get_by(BusinessProfile, id: id) do
       nil -> {:error, :not_found}

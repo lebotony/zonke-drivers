@@ -80,12 +80,12 @@ export const LoginScreen = (props: LoginScreenProps) => {
             <Checkbox
               style={{ marginRight: 10, height: 15, width: 15 }}
               value={isChecked}
-              color={Colors.primaryBlue}
+              color={Colors.mrDBlue}
               onValueChange={setChecked}
             />
             <Text style={styles.policyText}>I understood the </Text>
             <TouchableOpacity>
-              <Text style={[styles.policyText, { color: Colors.primaryBlue }]}>
+              <Text style={[styles.policyText, { color: Colors.mrDBlue }]}>
                 terms & policy
               </Text>
             </TouchableOpacity>
@@ -93,7 +93,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
         )}
 
         <CustomButton
-          color="primaryBlue"
           haptics="light"
           customStyle={{ borderRadius: 6, marginTop: 20 }}
           onPress={handleSubmit(onSubmit)}

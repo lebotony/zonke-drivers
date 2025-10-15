@@ -5,13 +5,12 @@ defmodule Backend.Assets.Assets do
   alias Ecto.Multi
 
   @bucket "zonke-drivers-bucket"
-  # 1 hour in seconds
-  @expires_in 3600
+  @expires_in 604000
 
-  def upload_and_save(%{file_path: file_path, filename: filename} = params) do
+  def upload_and_save(%{file: %Plug.Upload{path: path, filename: filename}} = params) do
     Multi.new()
     |> Multi.run(:s3_upload, fn _repo, _changes ->
-      case put_object(file_path, filename) do
+      case put_object(path, filename) do
         {:ok, resp} -> {:ok, resp}
         {:error, reason} -> {:error, {:ex_aws_s3_upload_failed, reason}}
       end
@@ -29,7 +28,7 @@ defmodule Backend.Assets.Assets do
       with {:ok, url} <- presigned_url(filename) do
         params
         |> Map.merge(%{url: url})
-        |> Map.delete(:file_path)
+        |> Map.delete(:file)
         |> create_asset()
       else
         {:error, reason} -> {:error, {:presigned_url_failed, reason}}
@@ -82,6 +81,21 @@ defmodule Backend.Assets.Assets do
       )
     else
       ExAws.Config.new(:s3)
+    end
+  end
+
+  def ensure_bucket_exists() do
+    case ExAws.S3.head_bucket(@bucket) |> ExAws.request() do
+      {:ok, _} ->
+        IO.puts("Bucket #{@bucket} already exists")
+        :ok
+
+      {:error, {:http_error, 404, _}} ->
+        IO.puts("Bucket #{@bucket} not found — creating it now")
+        ExAws.S3.put_bucket(@bucket, "us-east-1") |> ExAws.request()
+
+      {:error, reason} ->
+        IO.inspect(reason, label: "Unexpected S3 error when creating bucket")
     end
   end
 end

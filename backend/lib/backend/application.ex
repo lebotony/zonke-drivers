@@ -5,8 +5,12 @@ defmodule Backend.Application do
 
   use Application
 
+  alias Backend.Assets.Assets
+
   @impl true
   def start(_type, _args) do
+    Assets.ensure_bucket_exists()
+
     children = [
       BackendWeb.Telemetry,
       Backend.Repo,

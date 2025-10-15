@@ -52,8 +52,8 @@ export const AddCar = () => {
           Add your vehicle details below
         </Text>
 
-        {CardFormDef.map((card) => (
-          <Card card={card} />
+        {CardFormDef.map((card, index) => (
+          <Card key={`${card.label}-${index}`} card={card} />
         ))}
 
         <AddCarForm control={control} errors={errors} />

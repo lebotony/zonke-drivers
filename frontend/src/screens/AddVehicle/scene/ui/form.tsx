@@ -3,15 +3,23 @@ import { Control, FieldErrors } from "react-hook-form";
 
 import { Fieldset } from "@/src/components/form/fieldset/input";
 
-import { AddCarFormValues } from "./addCar";
+import { AddVehicleFormValues } from "./addVehicle";
 import { styles } from "../styles/form";
 
-type AddCarFormProps = {
-  control: Control<AddCarFormValues, any, AddCarFormValues>;
-  errors: FieldErrors<AddCarFormValues>;
+type AddVehicleFormProps = {
+  control: Control<AddVehicleFormValues, any, AddVehicleFormValues>;
+  errors: FieldErrors<AddVehicleFormValues>;
 };
 
 const addFormDef = [
+  {
+    name: "price_fixed",
+    placeholder: "36",
+    label: "Price per day",
+    icon: "monetization-on",
+    iconSize: 22,
+    required: true,
+  },
   {
     name: "model",
     placeholder: "AMG C-Class",
@@ -42,7 +50,7 @@ const addFormDef = [
   },
 ];
 
-export const AddCarForm = (props: AddCarFormProps) => {
+export const AddVehicleForm = (props: AddVehicleFormProps) => {
   const { control, errors } = props;
 
   return (
@@ -58,6 +66,7 @@ export const AddCarForm = (props: AddCarFormProps) => {
           inputIconSize={item.iconSize}
           errors={errors}
           customStyles={{ flex: 1 }}
+          required={item.required}
         />
       ))}
     </View>

@@ -4,15 +4,15 @@ defmodule Backend.Vehicles.Vehicle do
   alias Backend.Accounts.{User, BusinessProfile}
   alias Backend.Vehicles.VehicleDriver
   alias Backend.Drivers.Driver
-  alias Backend.Ecto.Embeds.{PriceRangeEmbed, PriceFixed}
+  alias Backend.Ecto.Embeds.PriceFixed
   alias Backend.Assets.Asset
   alias Backend.Bookings.VehicleBooking
   alias Backend.Reviews.Review
   alias Backend.Ecto.EctoEnums.{VehicleTypeEnum, FuelTypeEnum}
 
-  @required_fields [:name, :business_profile_id, :user_id, :type, :brand, :diesel, :manual]
-  @optional_fields [:model, :description, :mileage, :active, :engine_capacity, :passengers]
-  @embeds [:price_range, :price_fixed]
+  @required_fields [:business_profile_id, :type, :brand, :fuel_type, :manual]
+  @optional_fields [:model, :description, :mileage, :active, :engine_capacity, :passengers, :model_year, :user_id]
+  @embeds [:price_fixed]
   @all_fields @required_fields ++ @optional_fields ++ @embeds
 
   schema "vehicles" do
@@ -29,7 +29,6 @@ defmodule Backend.Vehicles.Vehicle do
     field(:model_year, :integer)
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
 
-    embeds_one(:price_range, PriceRangeEmbed, on_replace: :update)
     embeds_one(:price_fixed, PriceFixed, on_replace: :update)
 
     field(:rating, :float, virtual: true)
@@ -51,9 +50,7 @@ defmodule Backend.Vehicles.Vehicle do
     vehicle
     |> cast(attrs, @all_fields -- @embeds)
     |> cast_embed(:price_fixed, required: true, with: &PriceFixed.changeset/2)
-    |> cast_embed(:price_range, required: false, with: &PriceRangeEmbed.changeset/2)
     |> assoc_constraint(:business_profile)
-    |> assoc_constraint(:user)
     |> validate_required(@required_fields)
   end
 end

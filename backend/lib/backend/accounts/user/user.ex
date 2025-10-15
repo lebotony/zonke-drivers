@@ -5,6 +5,7 @@ defmodule Backend.Accounts.User do
   alias Backend.Vehicles.Vehicle
   alias Backend.Bookings.DriverBooking
   alias Backend.Bookings.VehicleBooking
+  alias Backend.Accounts.BusinessProfile
 
   @required_fields [:first_name, :last_name, :email]
   @optional_fields [:location, :username]
@@ -19,6 +20,8 @@ defmodule Backend.Accounts.User do
     field(:password_hash, :string)
 
     field(:password, :string, virtual: true)
+
+    has_one(:business_profile, BusinessProfile)
 
     has_many(:reviews, Review, foreign_key: :author_id)
     has_many(:vehicles, Vehicle)

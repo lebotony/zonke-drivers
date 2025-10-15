@@ -1,4 +1,5 @@
 defmodule Backend.Vehicles.Vehicles do
+  alias Backend.Accounts.BusinessProfiles
   alias Backend.{Repo, PaginateHelper}
   alias Backend.Vehicles.Vehicle
   alias Backend.Vehicles.Queries.{VehicleDriverBy, VehicleBy}
@@ -11,9 +12,17 @@ defmodule Backend.Vehicles.Vehicles do
   # defdelegate authorize(action, params, session), to: Policy
 
   def create(params, %{user_id: user_id}) do
+    {:ok, %{id: profile_id}} = BusinessProfiles.get_business_profile(%{user_id: user_id})
+
+    decoded_params =
+      Map.update(params, :price_fixed, %{}, fn val ->
+        if is_binary(val), do: Jason.decode!(val), else: val
+      end)
+
     vehicle_params =
-      params
+      decoded_params
       |> Map.delete(:asset)
+      |> Map.put(:business_profile_id, profile_id)
       |> Map.put(:user_id, user_id)
 
     Multi.new()
@@ -32,7 +41,7 @@ defmodule Backend.Vehicles.Vehicles do
     |> Repo.transaction()
     |> case do
       {:ok, %{vehicle: vehicle}} ->
-        {:ok, vehicle}
+        {:ok, Repo.preload(vehicle, :asset)}
 
       {:error, step, reason, changes_so_far} ->
         {:error, step, reason}
