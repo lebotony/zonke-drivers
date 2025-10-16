@@ -29,6 +29,7 @@ defmodule BackendWeb.Drivers.DriverJSON do
       :last_name,
       :username,
       :location,
+      :user_id,
       :total_accidents,
       :previous_vehicles,
       :inserted_at,

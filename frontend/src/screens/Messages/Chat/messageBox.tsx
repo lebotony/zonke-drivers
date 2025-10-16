@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { View, TextInput, TouchableOpacity } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -12,16 +12,20 @@ import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { styles } from "./styles/messageBox";
 import { MessageSchema } from "./schema";
 import { useCustomQuery } from "@/src/useQueryContext";
+import { Channel, Socket } from "phoenix";
 
 type MessageFormValues = z.infer<typeof MessageSchema>;
 
 type MessageBoxProps = {
   recipientId: string;
   threadId: string | undefined;
+  isNewThread: boolean;
+  socket: Socket | null;
 };
 
 export const MessageBox = (props: MessageBoxProps) => {
-  const { recipientId, threadId } = props;
+  const { recipientId, threadId, isNewThread, socket } = props;
+  const [newChannelJoined, setNewChannelJoined] = useState(false);
 
   const { updateAndMoveObjectToTop, getUpdatedObjectSnapshot } =
     usePaginatedCache();
@@ -35,8 +39,8 @@ export const MessageBox = (props: MessageBoxProps) => {
 
   const thread = getUpdatedObjectSnapshot("threads", threadId as string);
 
-  const sendMessage = (params: Partial<Message>) => {
-    threadChannels[threadId as string]
+  const sendAndUpdateThreads = (channel: Channel, params: Partial<Message>) => {
+    channel
       .push("send_message", {
         params: params,
       })
@@ -54,6 +58,31 @@ export const MessageBox = (props: MessageBoxProps) => {
       });
   };
 
+  const sendToNewThread = (params: Partial<Message>) => {
+    const channel = socket?.channel(`chats:${thread.id}`);
+
+    if (!newChannelJoined && channel) {
+      channel
+        ?.join()
+        .receive("ok", () => {
+          setNewChannelJoined(true);
+          console.log(`Joined chats:${thread.id} successfully`);
+          sendAndUpdateThreads(channel, params);
+        })
+        .receive("error", (err: Error) => console.log("Unable to join", err));
+    } else if (channel) {
+      sendAndUpdateThreads(channel, params);
+    }
+  };
+
+  const sendMessage = (params: Partial<Message>) => {
+    if (threadChannels?.[threadId as string]) {
+      sendAndUpdateThreads(threadChannels?.[threadId as string], params);
+    } else {
+      console.warn(`No channel for thread ${threadId} to mark seen`);
+    }
+  };
+
   const onSubmit = (data: MessageFormValues) => {
     const params = {
       ...data,
@@ -62,7 +91,7 @@ export const MessageBox = (props: MessageBoxProps) => {
       thread_id: threadId,
     };
 
-    sendMessage(params);
+    isNewThread ? sendToNewThread(params) : sendMessage(params);
   };
 
   return (

@@ -13,7 +13,7 @@ alias Backend.Vehicles.{Vehicle, VehicleDriver, Payment}
 alias Backend.Drivers.Driver
 alias Backend.Bookings.{VehicleBooking, DriverBooking}
 alias Backend.Assets.Assets
-alias Backend.Posts.Post
+# alias Backend.Posts.Post
 alias Backend.Ecto.EctoEnums
 
 # Script for populating the database. You can run it as:
@@ -27,9 +27,6 @@ alias Backend.Ecto.EctoEnums
 #
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
-
-ExAws.S3.put_bucket("zonke-drivers-bucket", "us-east-1")
-|> ExAws.request!()
 
 # Create client users without business profiles
 #####################################################################################################
@@ -89,8 +86,10 @@ business_profiles =
 
     # CREATE PROFILE ASSET
     asset_params = %{
-      file_path: Path.expand("priv/person-test.jpg"),
-      filename: "uploads/person-test.jpg",
+      file: %Plug.Upload{
+        path: Path.expand("priv/person-test.jpg"),
+        filename: "uploads/person-test.jpg",
+      },
       business_profile_id: profile.id
     }
 
@@ -126,7 +125,6 @@ vehicles =
           description: "Has suspension problems",
           active: true,
           mileage: Enum.random(10000..100000),
-          price_range: %{currency: "ZAR", min: 20, max: Enum.random(25..100)},
           price_fixed: %{currency: "ZAR", value: Enum.random(20..60)},
           user_id: user.id,
           business_profile_id: profile.id,
@@ -135,8 +133,10 @@ vehicles =
 
       # CREATE VEHICLE ASSET
       asset_params = %{
-        file_path: Path.expand("priv/car-test.jpg"),
-        filename: "uploads/car-test.jpg",
+        file: %Plug.Upload{
+          path: Path.expand("priv/car-test.jpg"),
+          filename: "uploads/car-test.jpg",
+        },
         vehicle_id: vehicle.id
       }
 
@@ -191,7 +191,6 @@ drivers =
           experience: 12,
           age: 42,
           platforms: random_platforms.(driver_platforms),
-          price_range: %{currency: "dollars", min: 20, max: 25},
           price_fixed: %{currency: "dollars", value: 25},
           user_id: user.id,
           business_profile_id: profile.id,
@@ -203,33 +202,35 @@ drivers =
 
 ######################################################################################################
 
-Logger.info("Creating posts")
+# Logger.info("Creating posts")
 
-posts =
-  Enum.map(owners_users, fn user ->
-    profile = Enum.find(business_profiles, fn bp -> bp.user_id == user.id end)
+# posts =
+#   Enum.map(owners_users, fn user ->
+#     profile = Enum.find(business_profiles, fn bp -> bp.user_id == user.id end)
 
-      {:ok, post} =
-        %Post{
-          location: %{"lat" => 0.0, "lng" => 0.0},
-          description: "I am looking for a scooter driver",
-          licences: ["General", "Class 2", "Class 4"],
-          location_options: ["Pretoria", "Jozi", "Soweto"],
-          business_profile_id: profile.id,
-        }
-        |> Repo.insert()
+#       {:ok, post} =
+#         %Post{
+#           location: %{"lat" => 0.0, "lng" => 0.0},
+#           description: "I am looking for a scooter driver",
+#           licences: ["General", "Class 2", "Class 4"],
+#           location_options: ["Pretoria", "Jozi", "Soweto"],
+#           business_profile_id: profile.id,
+#         }
+#         |> Repo.insert()
 
-      # CREATE POST ASSET
-      asset_params = %{
-        file_path: Path.expand("priv/car-test.jpg"),
-        filename: "uploads/car-test.jpg",
-        post_id: post.id
-      }
+#       # CREATE POST ASSET
+#       asset_params = %{
+#         file: %Plug.Upload{
+#           path: Path.expand("priv/car-test.jpg"),
+#           filename: "uploads/car-test.jpg",
+#         },
+#         vehicle_id: vehicle.id
+#       }
 
-      Assets.upload_and_save(asset_params)
+#       Assets.upload_and_save(asset_params)
 
-      post
-    end)
+#       post
+#     end)
 
 ######################################################################################################
 
@@ -347,7 +348,7 @@ Logger.info("Creating threads")
 
 threads =
   Enum.map(owners_users, fn user ->
-    {:ok, thread} = Threads.initialize_thread(user.id, List.first(drivers_users).id)
+    {:ok, thread} = Threads.initialize_thread([user.id, List.first(drivers_users).id])
 
     thread
   end)
@@ -393,7 +394,7 @@ Logger.info("Seed data population completed successfully!")
 Logger.info("Created: #{length(users)} users, #{length(business_profiles)} business profiles")
 Logger.info("Created: #{length(vehicle_bookings)} vehicle_bookings")
 Logger.info("Created: #{length(driver_bookings)} driver_bookings")
-Logger.info("Created: #{length(posts)} posts")
+# Logger.info("Created: #{length(posts)} posts")
 Logger.info("Created: #{length(vehicles)} vehicles")
 Logger.info("Created: #{length(drivers)} drivers")
 Logger.info("Created: #{length(vehicle_drivers)} vehicle_drivers")

@@ -10,7 +10,7 @@ import {
   Ionicons,
   MaterialIcons,
 } from "@expo/vector-icons";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 
 import { find } from "lodash";
 
@@ -19,19 +19,32 @@ import profilePic from "@/assets/images/profile_pic.png";
 import { Colors } from "@/constants/ui";
 import { CustomButton } from "@/src/components/elements/button";
 import { useCustomQuery } from "@/src/useQueryContext";
+import { usePaginatedCache } from "@/src/updateCacheProvider";
 
 import { Platforms } from "../../Drivers/Scene/ui/platforms";
 import { styles } from "./styles";
 import { Header } from "./ui/header";
 import { Licences } from "./ui/licences";
+import { createThread } from "../actions";
 
 export const Scene = () => {
   const { id } = useLocalSearchParams();
   const driverId = Array.isArray(id) ? id[0] : id;
 
+  const { addItemToPaginatedList } = usePaginatedCache();
+
   const { getCachedData } = useCustomQuery();
-  const { drivers } = getCachedData(["drivers"]);
+  const { drivers, threads } = getCachedData(["drivers", "threads"]);
   const driver = find(drivers, { id: driverId });
+
+  const handleCreateThread = () =>
+    createThread({ participant_id: driver.user_id }).then((response) => {
+      if (!find(threads, { id: response.id })) {
+        addItemToPaginatedList("threads", response);
+      }
+
+      router.push(`/chats/${response.id}`);
+    });
 
   return (
     <SafeAreaView>
@@ -132,7 +145,7 @@ export const Scene = () => {
         </CustomButton>
         <CustomButton
           color={Colors.white}
-          onPress={() => {}}
+          onPress={handleCreateThread}
           customStyle={{
             borderRadius: 13,
             paddingHorizontal: 13,

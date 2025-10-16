@@ -80,6 +80,8 @@ export const newMessage = (
   userId: string,
   activeThreadId?: string,
 ) => {
+  if (payload.author_id === userId) return
+
   console.log('New message received: ', payload, userId, payload.recipient_id);
 
   const isMessageFromActiveThread = payload?.thread_id === activeThreadId;

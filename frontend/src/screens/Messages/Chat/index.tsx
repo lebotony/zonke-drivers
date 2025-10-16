@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   View,
   Image,
@@ -26,12 +26,16 @@ import { ChatMessage } from "./chatMessage";
 import { MessageBox } from "./messageBox";
 import { styles } from "./styles/index";
 import { fetchThreadMessages, setSeenTrue } from "../actions";
+import { initializeSocket } from "@/src/socket";
+import { Socket } from "phoenix";
 
 const userAvatar = require("@/assets/images/person_1.jpg");
 
 export const ChatScreen = () => {
   const { id } = useLocalSearchParams();
   const threadId = Array.isArray(id) ? id[0] : id;
+
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   const { getCachedData } = useCustomQuery();
   const { threads, user, fetchedMsgThreadIds, threadChannels } = getCachedData([
@@ -52,7 +56,10 @@ export const ChatScreen = () => {
     (thd_part) => thd_part.participant_id !== user?.id
   )?.participant;
 
-  console.log(user?.id, recipient?.id);
+  const isNewThread = isEmpty(thread.last_message);
+
+  console.log("CHAT USER_ID: ", user?.id);
+  console.log("CHAT RECIPIENT_ID: ", recipient?.id);
 
   const loadThreadMessages = (messages: Message[]) => {
     if (Array.isArray(messages) && !isEmpty(messages)) {
@@ -74,28 +81,55 @@ export const ChatScreen = () => {
     onSuccess: (_data, variables: Thread["id"]) => {
       updatePaginatedObject("threads", variables, { unseen_msg_count: 0 });
 
-      threadChannels[variables].push("msg_seen_status_changed", {
-        thread_id: variables,
-      });
+      if (threadChannels?.[variables]) {
+        threadChannels[variables].push("msg_seen_status_changed", {
+          thread_id: variables,
+        });
+      } else {
+        console.warn(`No channel for thread ${variables} to mark seen`);
+      }
     },
   });
   const onResetUnseenCount = (threadId: string) =>
     resetUnseenCountMutation.mutate(threadId);
 
   useEffect(() => {
+    if (isNewThread) {
+      console.log("1111111111111111111");
+      return;
+    }
+
+    console.log("3333333333333333333");
+
     if (!fetchedMsgThreadIds?.includes(threadId)) {
+      console.log("444444444444444444444");
       fetchThreadMessages(threadId).then((res: Message[]) => {
-        loadThreadMessages(res);
+        !isEmpty(res) && loadThreadMessages(res);
         handleSetFetchedMsgThreadIds(threadId);
       });
     }
 
     if (thread?.unseen_msg_count ?? 0 > 0) {
+      console.log("555555555555555555555");
       onResetUnseenCount(threadId);
     }
 
     flatListRef.current?.scrollToEnd({ animated: false });
-  }, [threads]);
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+
+    if (isNewThread) {
+      initializeSocket().then((sock) => {
+        if (mounted) setSocket(sock);
+      });
+    }
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const onGoBack = () => navigation.goBack();
 
@@ -152,6 +186,8 @@ export const ChatScreen = () => {
         <MessageBox
           recipientId={recipient?.id as string}
           threadId={thread?.id}
+          isNewThread={isNewThread}
+          socket={socket}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

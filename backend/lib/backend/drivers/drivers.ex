@@ -138,6 +138,7 @@ defmodule Backend.Drivers.Drivers do
         last_name: u.last_name,
         username: u.username,
         location: u.location,
+        user_id: u.id,
         previous_vehicles: vd_stats.previous_vehicles,
         total_accidents: vd_stats.total_accidents
     })

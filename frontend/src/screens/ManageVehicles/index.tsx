@@ -14,7 +14,9 @@ export const ManageVehicles = () => {
       queryKey: ["vehicleDrivers"],
       queryFn: fetchManagementVehicles,
       getNextPageParam: (lastPage) => {
-        const { page = 0, max_page } = lastPage?.paginate;
+        const page = lastPage?.paginate?.page;
+        const max_page = lastPage?.paginate?.max_page;
+
         return page < max_page ? page + 1 : undefined;
       },
       initialPageParam: 1,

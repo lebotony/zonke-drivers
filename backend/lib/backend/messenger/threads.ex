@@ -58,9 +58,31 @@ defmodule Backend.Messenger.Threads do
     {:ok, threads, PaginateHelper.prep_paginate(data)}
   end
 
-  def initialize_thread(participant_id_1, participant_id_2) do
-    participant_ids = [participant_id_1, participant_id_2]
+  def find_thread_between(participant_ids) when is_list(participant_ids) do
+    [p1, p2] = participant_ids
 
+    query =
+      from tp1 in ThreadParticipant,
+        join: tp2 in ThreadParticipant,
+        on: tp1.thread_id == tp2.thread_id,
+        where: tp1.participant_id == ^p1 and tp2.participant_id == ^p2,
+        select: tp1.thread_id,
+        limit: 1
+
+    Repo.one(query)
+  end
+
+  def initialize_thread(participant_ids) do
+    case find_thread_between(participant_ids) do
+      nil ->
+        create_thread(participant_ids)
+
+      thread_id ->
+        get_thread(thread_id)
+    end
+  end
+
+  def create_thread(participant_ids) do
     Multi.new()
     |> Multi.insert(
       :thread,

@@ -54,6 +54,8 @@ defmodule BackendWeb.Router do
         post("/messages_seen", Messenger.ThreadController, :set_seen_true)
       end
 
+      resources("/threads", Messenger.ThreadController, except: @except_path_actions)
+
       scope("/messages") do
         get("/", Messenger.MessageController, :get_thread_messages)
       end

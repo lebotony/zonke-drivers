@@ -132,6 +132,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .catch((error) => error);
 
   const logout = async () => {
+    disconnectSocket();
     await deleteToken();
     axios.defaults.headers.common["Authorization"] = "";
     setAuthState({ token: null, authenticated: false });
