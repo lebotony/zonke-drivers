@@ -4,7 +4,7 @@ defmodule Backend.Assets.Asset do
   alias Backend.Accounts.BusinessProfile
   alias Backend.Vehicles.Vehicle
 
-  @required_fields [:url, :filename]
+  @required_fields [:url]
   @optional_fields [:copied, :meta, :vehicle_id, :business_profile_id]
   @all_fields @required_fields ++ @optional_fields
 

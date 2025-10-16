@@ -29,7 +29,9 @@ export const Scene = () => {
         return fetchDrivers({ pageParam }, filters);
       },
       getNextPageParam: (lastPage) => {
-        const { page, max_page } = lastPage?.paginate;
+        const page = lastPage?.paginate?.page;
+        const max_page = lastPage?.paginate?.max_page;
+
         return page < max_page ? page + 1 : undefined;
       },
       initialPageParam: 1,

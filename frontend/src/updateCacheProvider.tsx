@@ -1,7 +1,7 @@
-import React, { ReactNode, createContext, useContext, FC } from 'react';
+import React, { ReactNode, createContext, useContext, FC } from "react";
 
-import { useQueryClient } from '@tanstack/react-query';
-import { find } from 'lodash';
+import { useQueryClient } from "@tanstack/react-query";
+import { find } from "lodash";
 
 const PaginatedCacheContext = createContext<
   | {
@@ -9,9 +9,10 @@ const PaginatedCacheContext = createContext<
       updateAndMoveObjectToTop: (
         queryKey: string,
         objToUpdateId: string,
-        updatedParams: any,
+        updatedParams: any
       ) => void;
       getUpdatedObjectSnapshot: GetUpdatedObjectSnapshot;
+      addItemToPaginatedList: (queyKey: string, newItem: any) => void;
     }
   | undefined
 >(undefined);
@@ -25,7 +26,11 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
 
   const queryClient = useQueryClient();
 
-  const updatePaginatedObject = (queryKey: string, objToUpdateId: string, updatedParams: any) => {
+  const updatePaginatedObject = (
+    queryKey: string,
+    objToUpdateId: string,
+    updatedParams: any
+  ) => {
     queryClient.setQueryData([queryKey], (oldData: any) => {
       if (!oldData) return oldData;
 
@@ -50,7 +55,7 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
   const updateAndMoveObjectToTop = (
     queryKey: string,
     objToUpdateId: string,
-    updatedParams: any,
+    updatedParams: any
   ) => {
     queryClient.setQueryData([queryKey], (oldData: any) => {
       if (!oldData) return oldData;
@@ -79,7 +84,45 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
     });
   };
 
-  const getUpdatedObjectSnapshot = (queryKey: string, objToUpdateId: string) => {
+  const addItemToPaginatedList = (queyKey: string, newItem: any) => {
+    queryClient.setQueryData([queyKey], (oldData: any) => {
+      if (!oldData) {
+        return {
+          pages: [
+            {
+              data: [newItem],
+              paginate: { page: 1, max_page: 1, per_page: 10, total_count: 1 },
+            },
+          ],
+          pageParams: [1],
+        };
+      }
+
+      const updatedPages = oldData.pages.map((page: any, idx: number) => {
+        if (idx === 0) {
+          return {
+            ...page,
+            data: [newItem, ...page.data],
+            paginate: {
+              ...page.paginate,
+              total_count: page.paginate.total_count + 1,
+            },
+          };
+        }
+        return page;
+      });
+
+      return {
+        ...oldData,
+        pages: updatedPages,
+      };
+    });
+  };
+
+  const getUpdatedObjectSnapshot = (
+    queryKey: string,
+    objToUpdateId: string
+  ) => {
     const cachedObj: any = queryClient.getQueryData([queryKey]);
     const valueList = cachedObj?.pages.flatMap((page: Page) => page.data) ?? [];
     const objectToUpdate = find(valueList, { id: objToUpdateId });
@@ -91,15 +134,22 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
     updatePaginatedObject,
     updateAndMoveObjectToTop,
     getUpdatedObjectSnapshot,
+    addItemToPaginatedList,
   };
 
-  return <PaginatedCacheContext.Provider value={value}>{children}</PaginatedCacheContext.Provider>;
+  return (
+    <PaginatedCacheContext.Provider value={value}>
+      {children}
+    </PaginatedCacheContext.Provider>
+  );
 };
 
 export const usePaginatedCache = () => {
   const context = useContext(PaginatedCacheContext);
   if (context === undefined) {
-    throw new Error('usePaginatedCache must be used within a PaginatedCacheProvider');
+    throw new Error(
+      "usePaginatedCache must be used within a PaginatedCacheProvider"
+    );
   }
   return context;
 };

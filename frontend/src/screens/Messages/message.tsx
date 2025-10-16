@@ -21,7 +21,7 @@ type MessageProps = {
 export const Message = (props: MessageProps) => {
   const { thread, user, setActiveThreadIdRef } = props;
 
-  const isOnline = true;
+  // const isOnline = true;
   const isAuthor = thread?.last_message?.author_id === user?.id;
   const thd_participants = thread?.thread_participants;
   const recipient = thd_participants?.filter(
@@ -44,12 +44,12 @@ export const Message = (props: MessageProps) => {
     <TouchableOpacity style={[styles.messageItem]} onPress={handlePressChat}>
       <View style={{ position: "relative" }}>
         <Image source={userAvatar} style={styles.avatar} resizeMode="contain" />
-        <View
+        {/* <View
           style={[
             styles.avatarStatus,
             { backgroundColor: isOnline ? "#4CAF50" : "#B0B0B0" },
           ]}
-        />
+        /> */}
       </View>
       <View style={styles.messageContent}>
         <View style={styles.messageNameRow}>

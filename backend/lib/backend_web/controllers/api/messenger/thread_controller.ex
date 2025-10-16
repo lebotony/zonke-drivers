@@ -6,7 +6,7 @@ defmodule BackendWeb.Messenger.ThreadController do
   alias Backend.Messenger.Schemas.Thread
 
   def create(conn, %{participant_id: participant_id}, %{user_id: user_id}) do
-    with {:ok, %Thread{} = thread} <- Threads.initialize_thread(participant_id, user_id) do
+    with {:ok, %Thread{} = thread} <- Threads.initialize_thread([participant_id, user_id]) do
       render(conn, :show, thread: thread)
     end
   end

@@ -53,7 +53,7 @@ export const PaymentsScreen = () => {
     );
 
     updatePaginatedObject("vehicleDrivers", vehicleDriverId, {
-      payments: [...(vehicleDriver.payments || []), ...payments],
+      payments: [...(vehicleDriver?.payments || []), ...payments],
     });
   };
 
