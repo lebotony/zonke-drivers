@@ -2,20 +2,21 @@ import { StyleSheet } from "react-native";
 
 import { Colors } from "@/constants/ui";
 import { shadowStyles } from "@/src/components/shadowStyles";
+import { topOffset } from "@/src/components/appStyles";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingTop: 20,
+    ...topOffset
   },
   headerWrapper: {
     alignItems: 'center',
     marginBottom: 20
   },
   header: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: 600,
-    marginBottom: 20
+    marginBottom: 10
   },
   plusBtn: {
     backgroundColor: Colors.mrDBlue,
@@ -30,12 +31,9 @@ export const styles = StyleSheet.create({
     zIndex: 1,
   },
   imageWrapper: {
-    height: 240,
-    padding: 20,
-    width: "80%",
+    width: "88%",
+    aspectRatio: 16/12,
     borderRadius: 12,
-    backgroundColor: Colors.white,
-    ...shadowStyles
   },
   addVehicleText: {
     fontSize: 16,

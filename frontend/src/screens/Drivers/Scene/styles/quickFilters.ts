@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
   },
   platformFilter: {
     marginTop: 7,
-    paddingHorizontal: 10,
+    paddingHorizontal: 7,
     gap: 8,
     minWidth: "100%",
     ...shadowStyles,

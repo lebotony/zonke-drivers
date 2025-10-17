@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
 import carPic from "@/assets/images/audi.png";
+import { pickImage } from "@/src/helpers/pickImage";
 
 import { styles } from "../styles/addVehicle";
 import { CardFormDef } from "../utils/cardFormDef";
@@ -35,33 +36,6 @@ export const AddVehicle = () => {
 
   const pickedAsset = watch("asset");
 
-  const pickImage = async () => {
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    if (status !== "granted") {
-      alert("Permission to access media library is required!");
-      return;
-    }
-
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 0.8,
-    });
-
-    if (!result.canceled) {
-      // expo-image-picker returns assets array in newer versions
-      const asset = Array.isArray(result.assets)
-        ? result.assets[0]
-        : (result as any);
-      const uri = asset.uri || asset.uri;
-      const filename = uri.split("/").pop() || `photo-${Date.now()}.jpg`;
-
-      // set asset on the form so it will be sent with createVehicle
-      setValue("asset", { file_path: uri, filename });
-    }
-  };
-
   const create = (data) => {
     const params = {
       ...data,
@@ -86,7 +60,10 @@ export const AddVehicle = () => {
           <Text style={[styles.header]}>Car Details</Text>
 
           <View style={styles.imageWrapper}>
-            <TouchableOpacity style={styles.plusBtn} onPress={pickImage}>
+            <TouchableOpacity
+              style={styles.plusBtn}
+              onPress={(value) => pickImage(setValue)}
+            >
               <AntDesign name="plus" size={24} color={Colors.white} />
             </TouchableOpacity>
             <Image
@@ -94,10 +71,11 @@ export const AddVehicle = () => {
                 pickedAsset?.file_path ? { uri: pickedAsset.file_path } : carPic
               }
               style={{
-                height: 200,
+                width: "100%",
+                height: "100%",
                 borderRadius: 10,
               }}
-              contentFit="cover"
+              contentFit="contain"
             />
           </View>
         </View>
