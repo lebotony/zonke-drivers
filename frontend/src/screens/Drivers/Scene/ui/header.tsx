@@ -1,4 +1,4 @@
-import { View, TextInput } from "react-native";
+import { View, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import EvilIcons from "@expo/vector-icons/EvilIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -12,10 +12,11 @@ import { styles } from "../styles/header";
 
 type HeaderProps = {
   setSearchTerm: (value: string) => void;
+  setShowFilterModal: (value: boolean) => void;
 };
 
 export const Header = (props: HeaderProps) => {
-  const { setSearchTerm } = props;
+  const { setSearchTerm, setShowFilterModal } = props;
 
   return (
     <View style={styles.container}>
@@ -43,9 +44,15 @@ export const Header = (props: HeaderProps) => {
             />
           </View>
 
-          <Circle size={35} borderColor={Colors.mrDBlue}>
-            <Ionicons name="filter-outline" size={20} color={Colors.mrDBlue} />
-          </Circle>
+          <TouchableOpacity onPress={() => setShowFilterModal(true)}>
+            <Circle size={33} borderColor={Colors.mrDBlue}>
+              <Ionicons
+                name="filter-outline"
+                size={20}
+                color={Colors.mrDBlue}
+              />
+            </Circle>
+          </TouchableOpacity>
         </View>
       </SafeAreaView>
     </View>

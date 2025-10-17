@@ -29,6 +29,7 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
       :engine_capacity,
       :passengers,
       :model_year,
+      :user_id,
       :rating,
       :inserted_at,
       :updated_at

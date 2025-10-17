@@ -47,17 +47,6 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="post"
-        options={{
-          headerShown: false,
-          title: "Posts",
-          tabBarIcon: ({ color, size }) => (
-            <AntDesign name="appstore-o" size={21} color="black" />
-          ),
-        }}
-      />
-
-      <Tabs.Screen
         name="vehicle"
         options={{
           headerShown: false,

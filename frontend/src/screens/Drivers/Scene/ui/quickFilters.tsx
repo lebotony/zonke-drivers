@@ -12,12 +12,11 @@ import { styles } from "../styles/quickFilters";
 import { PLATFORM_FILTERS } from "../utils/constants";
 
 type QuickFiltersProps = {
-  showReset: boolean;
+  showReset?: boolean;
   onSetSelectedPlatforms: (value: string) => void;
   selectedPlatforms: string[];
   onClear: VoidCallback;
   isVehicle?: boolean;
-  setShowFilterModal: (value: boolean) => void;
 };
 
 export const QuickFilters = (props: QuickFiltersProps) => {
@@ -27,7 +26,6 @@ export const QuickFilters = (props: QuickFiltersProps) => {
     selectedPlatforms,
     onClear,
     isVehicle,
-    setShowFilterModal,
   } = props;
 
   const WrapperElement = isVehicle ? View : Shadow;
@@ -65,15 +63,6 @@ export const QuickFilters = (props: QuickFiltersProps) => {
                 />
               </TouchableOpacity>
             )}
-            <TouchableOpacity
-              style={styles.filterBtn}
-              onPress={() => setShowFilterModal(true)}
-            >
-              <Text style={{ fontWeight: "600", fontSize: 15, marginRight: 6 }}>
-                Filter
-              </Text>
-              <Ionicons name="filter" size={18} color="black" />
-            </TouchableOpacity>
           </View>
         )}
         <ScrollView

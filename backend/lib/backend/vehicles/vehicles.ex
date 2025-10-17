@@ -90,10 +90,12 @@ defmodule Backend.Vehicles.Vehicles do
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()
+      |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
       |> join(:left_lateral, [vehicle: v], rating in subquery(rating_subquery), as: :rating, on: true)
-      |> select_merge([vehicle: v, rating: rating], %{
+      |> select_merge([vehicle: v, user: u, rating: rating], %{
         v
-        | rating: coalesce(rating.avg_rating, 0)
+        | rating: coalesce(rating.avg_rating, 0),
+          user_id: u.id,
       })
       |> build_search(params)
       |> build_sort(params)
