@@ -75,7 +75,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
         <Form isSignUp={isSignUp} control={control} errors={errors} />
 
-        {isSignUp && (
+        {/* {isSignUp && (
           <View style={styles.policy}>
             <Checkbox
               style={{ marginRight: 10, height: 15, width: 15 }}
@@ -90,7 +90,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
               </Text>
             </TouchableOpacity>
           </View>
-        )}
+        )} */}
 
         <CustomButton
           haptics="light"

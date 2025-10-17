@@ -3,10 +3,6 @@ import { StyleSheet } from 'react-native';
 import { Colors } from '@/constants/ui';
 
 export const styles = StyleSheet.create({
-  messageRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-  },
   chatMessage: {
     backgroundColor: '#f7f7f7ff',
     paddingVertical: 7,
@@ -15,12 +11,6 @@ export const styles = StyleSheet.create({
     maxWidth: '80%',
     marginVertical: 5,
     marginHorizontal: 15,
-
-    // shadowColor: '#000',
-    // shadowOpacity: 0.1,
-    // shadowOffset: { width: 0, height: 2 },
-    // shadowRadius: 4,
-    // elevation: 1,
   },
   messageMetaRow: {
     flexDirection: 'row',

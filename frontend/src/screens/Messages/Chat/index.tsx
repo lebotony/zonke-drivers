@@ -59,7 +59,7 @@ export const ChatScreen = () => {
   const isNewThread = isEmpty(thread.last_message);
 
   console.log("CHAT USER_ID: ", user?.id);
-  console.log("CHAT RECIPIENT_ID: ", recipient?.id);
+  // console.log("CHAT RECIPIENT_ID: ", recipient?.id);
 
   const loadThreadMessages = (messages: Message[]) => {
     if (Array.isArray(messages) && !isEmpty(messages)) {
@@ -95,22 +95,18 @@ export const ChatScreen = () => {
 
   useEffect(() => {
     if (isNewThread) {
-      console.log("1111111111111111111");
       return;
     }
 
-    console.log("3333333333333333333");
-
     if (!fetchedMsgThreadIds?.includes(threadId)) {
-      console.log("444444444444444444444");
       fetchThreadMessages(threadId).then((res: Message[]) => {
         !isEmpty(res) && loadThreadMessages(res);
+        console.log("AAAAAAAAAAAAAAA", res);
         handleSetFetchedMsgThreadIds(threadId);
       });
     }
 
     if (thread?.unseen_msg_count ?? 0 > 0) {
-      console.log("555555555555555555555");
       onResetUnseenCount(threadId);
     }
 
@@ -136,7 +132,7 @@ export const ChatScreen = () => {
   return (
     <SafeAreaView style={[styles.container, { paddingTop: IS_IOS ? 35 : 30 }]}>
       <View style={styles.header}>
-        <Pressable style={{ marginRight: 8 }} onPress={onGoBack}>
+        <Pressable style={{ marginRight: 12 }} onPress={onGoBack}>
           <MaterialIcons
             name="arrow-back-ios"
             size={22}
@@ -148,9 +144,9 @@ export const ChatScreen = () => {
           <Text style={styles.name}>
             {recipient?.first_name} {recipient?.last_name}
           </Text>
-          <Text style={styles.status}>Online</Text>
+          {/* <Text style={styles.status}>Online</Text> */}
         </View>
-        <Feather name="more-vertical" size={22} color={Colors.mediumDarkGrey} />
+        {/* <Feather name="more-vertical" size={22} color={Colors.mediumDarkGrey} /> */}
       </View>
 
       <KeyboardAvoidingView

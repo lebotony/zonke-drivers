@@ -28,6 +28,9 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     color: Colors.black,
     backgroundColor: Colors.whiteSmoke,
+
+    // FOR PRODUCTION USE
+    // paddingVertical: 10
   },
   textArea: {
     minHeight: 65,
