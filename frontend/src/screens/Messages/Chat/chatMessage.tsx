@@ -23,16 +23,18 @@ export const ChatMessage = (props: ChatProps) => {
     : Colors.mediumDarkGrey;
 
   const customStyle = {
-    alignSelf: `${isAuthor ? "flex-end" : "flex-start"}`,
+    alignItems: `${isAuthor ? "flex-end" : "flex-start"}`,
   } as ViewStyle;
 
   return (
-    <View style={[styles.messageRow, { alignSelf: customStyle.alignSelf }]}>
+    <View style={{ alignItems: customStyle.alignItems }}>
       <View
         style={[
           styles.chatMessage,
-          isAuthor && { backgroundColor: Colors.skyLight },
-          !isAuthor && { borderBottomLeftRadius: 0 },
+          isAuthor && {
+            backgroundColor: Colors.skyLight,
+            borderBottomRightRadius: 0,
+          },
           !isAuthor && { borderBottomLeftRadius: 0 },
         ]}
       >

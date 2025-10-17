@@ -118,6 +118,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (params: SignIn) =>
     httpPost("/session/current_session", params)
       .then(async (response: Session) => {
+        console.log("FFFFFFFFFFFFFFFFFF", response);
+        if (!response?.jwt) return;
+
         setAuthState({ token: response.jwt, authenticated: true });
         await setToken(response.jwt);
 

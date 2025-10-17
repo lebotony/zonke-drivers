@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    marginRight: 10,
+    marginRight: 15,
     backgroundColor: Colors.lightGrey,
   },
   name: {
@@ -34,7 +34,6 @@ export const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    // paddingHorizontal: 16,
   },
   dateDivider: {
     alignSelf: 'center',

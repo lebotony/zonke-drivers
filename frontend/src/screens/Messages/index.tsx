@@ -23,7 +23,7 @@ import {
   participantLeft,
 } from "./utils/channels";
 
-const TABS = ["All", "Unread", "Archived", "Starred"];
+const TABS = ["All", "Unread"];
 
 export const MessagesScreen = () => {
   const [search, setSearch] = useState("");
@@ -186,7 +186,7 @@ export const MessagesScreen = () => {
       <View style={styles.tabsRow}>
         {TABS.map((tab, idx) => (
           <Pressable
-            key={tab}
+            key={idx}
             style={styles.tabItem}
             onPress={() => setActiveTab(idx)}
           >

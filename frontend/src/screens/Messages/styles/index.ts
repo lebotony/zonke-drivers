@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
   },
   tabsRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    // justifyContent: 'space-between',
     alignItems: 'center',
     marginTop: 15,
     marginHorizontal: 12,

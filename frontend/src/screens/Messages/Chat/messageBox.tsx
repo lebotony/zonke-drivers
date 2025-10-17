@@ -30,7 +30,7 @@ export const MessageBox = (props: MessageBoxProps) => {
   const { updateAndMoveObjectToTop, getUpdatedObjectSnapshot } =
     usePaginatedCache();
 
-  const { control, handleSubmit } = useForm<MessageFormValues>({
+  const { control, handleSubmit, reset } = useForm<MessageFormValues>({
     resolver: zodResolver(MessageSchema),
   });
 
@@ -49,6 +49,7 @@ export const MessageBox = (props: MessageBoxProps) => {
           last_message: payload.message,
           messages: [...(thread?.messages ?? []), payload.message],
         });
+        reset();
       })
       .receive("error", (err: Error) => {
         console.error("Failed to send message:", err);
