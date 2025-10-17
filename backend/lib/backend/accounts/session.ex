@@ -13,6 +13,9 @@ defmodule Backend.Accounts.Session do
          user: user,
          jwt: jwt
        }}
+    else
+      _ ->
+        {:error, :invalid_credentials}
     end
   end
 

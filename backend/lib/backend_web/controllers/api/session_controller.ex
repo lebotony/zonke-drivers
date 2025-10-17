@@ -1,5 +1,6 @@
 defmodule BackendWeb.SessionController do
   use BackendWeb, :controller
+  action_fallback BackendWeb.FallbackController
   alias Backend.Accounts.Session
 
   def create(conn, %{email: email, password: password} = params) do

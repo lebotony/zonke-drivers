@@ -8,7 +8,7 @@ export const httpGet = (
   axios
     .get(`${API_URL}${path}`, { params: params })
     .then((response) => response.data)
-    .catch((err) => err);
+    .catch((err) => Promise.reject(err));
 
 export const httpPost = (
   path: string,
@@ -17,7 +17,7 @@ export const httpPost = (
   axios
     .post(`${API_URL}${path}`, params)
     .then((response) => response.data)
-    .catch((err) => err);
+    .catch((err) => Promise.reject(err));
 
 export const httpPut = (
   path: string,
@@ -27,10 +27,10 @@ export const httpPut = (
   axios
     .put(`${API_URL}${path}/${id}`, params)
     .then((response) => response.data)
-    .catch((err) => err);
+    .catch((err) => Promise.reject(err));
 
 export const httpDelete = (path: string, id: string) =>
   axios
     .delete(`${API_URL}${path}/${id}`)
     .then((response) => response.data)
-    .catch((err) => err);
+    .catch((err) => Promise.reject(err));
