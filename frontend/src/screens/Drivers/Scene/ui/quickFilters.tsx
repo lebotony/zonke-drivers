@@ -1,4 +1,4 @@
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
@@ -12,15 +12,23 @@ import { styles } from "../styles/quickFilters";
 import { PLATFORM_FILTERS } from "../utils/constants";
 
 type QuickFiltersProps = {
+  showReset: boolean;
   onSetSelectedPlatforms: (value: string) => void;
   selectedPlatforms: string[];
   onClear: VoidCallback;
   isVehicle?: boolean;
+  setShowFilterModal: (value: boolean) => void;
 };
 
 export const QuickFilters = (props: QuickFiltersProps) => {
-  const { onSetSelectedPlatforms, selectedPlatforms, onClear, isVehicle } =
-    props;
+  const {
+    showReset,
+    onSetSelectedPlatforms,
+    selectedPlatforms,
+    onClear,
+    isVehicle,
+    setShowFilterModal,
+  } = props;
 
   const WrapperElement = isVehicle ? View : Shadow;
 
@@ -41,11 +49,31 @@ export const QuickFilters = (props: QuickFiltersProps) => {
             <Text style={styles.heading}>
               {isVehicle ? "" : "Find by platform"}
             </Text>
-            {selectedPlatforms?.length ? (
-              <CustomButton onPress={onClear} customStyle={styles.clearButton}>
-                <MaterialIcons name="clear" size={24} color={Colors.black} />
-              </CustomButton>
-            ) : null}
+            {showReset && (
+              <TouchableOpacity
+                style={styles.resetBtn}
+                onPress={() => onClear()}
+                activeOpacity={0.8}
+              >
+                <Text style={{ color: Colors.mrDBlue, fontWeight: "600" }}>
+                  Reset
+                </Text>
+                <MaterialIcons
+                  name="refresh"
+                  size={18}
+                  color={Colors.mrDBlue}
+                />
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity
+              style={styles.filterBtn}
+              onPress={() => setShowFilterModal(true)}
+            >
+              <Text style={{ fontWeight: "600", fontSize: 15, marginRight: 6 }}>
+                Filter
+              </Text>
+              <Ionicons name="filter" size={18} color="black" />
+            </TouchableOpacity>
           </View>
         )}
         <ScrollView
@@ -77,7 +105,7 @@ export const QuickFilters = (props: QuickFiltersProps) => {
                   </View>
                 )}
                 {icon && icon}
-                {slug && (
+                {slug && !justIcon && (
                   <Text style={[styles.platformText, { color }]}>{slug}</Text>
                 )}
               </CustomButton>

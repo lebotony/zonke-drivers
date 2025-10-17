@@ -161,10 +161,45 @@ descriptions = [
   "Fast and reliable deliveries"
 ]
 
+licences = [
+  %{
+    name: "Class 1",
+    year: Enum.random(1980..2025)
+  },
+  %{
+    name: "Class 2",
+    year: Enum.random(1980..2025)
+  },
+  %{
+    name: "Class 3",
+    year: Enum.random(1980..2025)
+  },
+  %{
+    name: "Class 4",
+    year: Enum.random(1980..2025)
+  },
+  %{
+    name: "Class 5",
+    year: Enum.random(1980..2025)
+  },
+  %{
+    name: "Public Service Vehicle (PSV)",
+    year: Enum.random(1980..2025)
+  }
+]
+
 random_platforms = fn platforms ->
   rand_num_of_items = Enum.random(1..length(platforms))
 
   platforms
+  |> Enum.shuffle()
+  |> Enum.take(rand_num_of_items)
+end
+
+random_licences = fn licences ->
+  rand_num_of_items = Enum.random(1..length(licences))
+
+  licences
   |> Enum.shuffle()
   |> Enum.take(rand_num_of_items)
 end
@@ -177,21 +212,12 @@ drivers =
         %Driver{
           location: "Nketa, Bulawayo, Zimbabwe",
           description: Enum.random(descriptions),
-          licences: [
-            %{
-              name: "Code A",
-              year: 2015,
-            },
-            %{
-              name: "B Class",
-              year: 2019,
-            },
-          ],
+          licences: random_licences.(licences),
           active: true,
-          experience: 12,
-          age: 42,
+          experience: Enum.random(0..52),
+          age: Enum.random(18..70),
           platforms: random_platforms.(driver_platforms),
-          price_fixed: %{currency: "dollars", value: 25},
+          price_fixed: %{currency: "Rands", value: Enum.random(80..250)},
           user_id: user.id,
           business_profile_id: profile.id,
         }
@@ -328,6 +354,26 @@ vehicle_reviews =
 
 ######################################################################################################
 
+Logger.info("Creating driver reviews")
+
+driver_reviews =
+  Enum.flat_map(drivers, fn driver ->
+    Enum.map(owners_users, fn owner ->
+      {:ok, review} =
+        %Review{
+          comment: "This is a good driver",
+          author_id: owner.id,
+          driver_id: driver.id,
+          rating: (:rand.uniform(39) + 10) / 10
+        }
+        |> Repo.insert()
+
+        review
+    end)
+  end)
+
+######################################################################################################
+
 # Logger.info("Creating tags")
 
 # tags =
@@ -400,6 +446,5 @@ Logger.info("Created: #{length(drivers)} drivers")
 Logger.info("Created: #{length(vehicle_drivers)} vehicle_drivers")
 Logger.info("Created: #{length(payments)} payments")
 Logger.info("Created: #{length(vehicle_reviews)} vehicle_reviews")
-
-# Logger.info("Created: #{length(reviews)} reviews, #{length(tags)} tags")
+Logger.info("Created: #{length(driver_reviews)} driver_reviews")
 Logger.info("Created: #{length(threads)} threads, #{length(messages)} messages")

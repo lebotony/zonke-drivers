@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, View } from "react-native";
 
 import { useDebounce } from "use-debounce";
@@ -9,25 +9,65 @@ import { Header } from "./ui/header";
 import { QuickFilters } from "./ui/quickFilters";
 import { DriverCard } from "./ui/driverCard";
 import { styles } from "./styles/index";
+import { FilterModal } from "./ui/filter";
 
 export const Scene = () => {
+  const [showFilterModal, setShowFilterModal] = useState(false);
+
   const [searchTerm, setSearchTerm] = useState<string>();
-  const [debouncedSearchTerm] = useDebounce(searchTerm, 500);
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
+
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  const [selectedLicences, setSelectedLicences] = useState<string[]>([]);
+  const [ageRange, setAgeRange] = useState([18, 70]);
+  const [experienceRange, setExperienceRange] = useState([0, 52]);
+  const [selectedRating, setSelectedRating] = useState<number | null>(null);
+
+  const [applyFilter, setApplyFilter] = useState<boolean>(false);
+  const [reset, setReset] = useState<boolean>(false);
+  const resetRef = useRef<boolean>(undefined);
 
   const queryClient = useQueryClient();
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ["drivers", debouncedSearchTerm, selectedPlatforms],
-      queryFn: ({ pageParam = 1 }) => {
-        const filters = {
-          search_term: debouncedSearchTerm,
-          platforms: selectedPlatforms,
-        };
+  const filterParams = {
+    platforms: selectedPlatforms,
+    licences: selectedLicences,
+    age_range: ageRange,
+    experience_range: experienceRange,
+    rating_range: selectedRating,
+  };
 
-        return fetchDrivers({ pageParam }, filters);
-      },
+  const getFilters = () => {
+    if (applyFilter) return filterParams;
+
+    if (!reset && !showFilterModal) return filterParams;
+
+    return {};
+  };
+
+  const queryKey = ["drivers", debouncedSearchTerm];
+
+  const queryFn = ({ pageParam = 1 }) => {
+    const filters = {
+      search_term: debouncedSearchTerm,
+      ...getFilters(),
+    };
+
+    if (applyFilter) {
+      setApplyFilter(false);
+    }
+
+    if (resetRef.current === true) resetRef.current = false;
+
+    console.log("AAAAAAAAAAAAAAAAAAAAA", filters);
+
+    return fetchDrivers({ pageParam }, filters);
+  };
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
+    useInfiniteQuery({
+      queryKey: queryKey,
+      queryFn: queryFn,
       getNextPageParam: (lastPage) => {
         const page = lastPage?.paginate?.page;
         const max_page = lastPage?.paginate?.max_page;
@@ -40,7 +80,40 @@ export const Scene = () => {
   const drivers = data?.pages.flatMap((page) => page.data) ?? [];
   queryClient.setQueryData(["drivers"], drivers);
 
-  const handleSetSelected = (value: string) => {
+  // useEffects responsible for triggering refetch
+  useEffect(() => {
+    if (applyFilter) {
+      queryClient.removeQueries({ queryKey });
+      refetch();
+      setApplyFilter(false);
+    }
+  }, [applyFilter]);
+
+  useEffect(() => {
+    if (!showFilterModal && resetRef.current !== true) {
+      queryClient.removeQueries({ queryKey });
+      refetch();
+    }
+  }, [selectedPlatforms]);
+
+  useEffect(() => {
+    if (reset) {
+      queryClient.removeQueries({ queryKey });
+      refetch();
+      setReset(false);
+    }
+  }, [reset]);
+
+  const isDefaultState =
+    selectedLicences.length === 0 &&
+    selectedPlatforms.length === 0 &&
+    selectedRating === null &&
+    ageRange[0] === 18 &&
+    ageRange[1] === 70 &&
+    experienceRange[0] === 0 &&
+    experienceRange[1] === 52;
+
+  const handleSetSelectedPlatforms = (value: string) => {
     if (selectedPlatforms.includes(value)) {
       const newPlatforms = selectedPlatforms.filter(
         (platform) => platform !== value
@@ -51,13 +124,58 @@ export const Scene = () => {
     return setSelectedPlatforms((prev) => [...(prev || []), value]);
   };
 
+  const handleSetSelectedLicences = (value: string) => {
+    if (selectedLicences.includes(value)) {
+      const newLicences = selectedLicences.filter(
+        (platform) => platform !== value
+      );
+
+      return setSelectedLicences(newLicences);
+    }
+    return setSelectedLicences((prev) => [...(prev || []), value]);
+  };
+
+  const handleAgeChange = useCallback((low: number, high: number) => {
+    setAgeRange([low, high]);
+  }, []);
+
+  const handleExperienceChange = useCallback((low: number, high: number) => {
+    setExperienceRange([low, high]);
+  }, []);
+
+  const handleApplyFilter = () => {
+    setApplyFilter(true);
+    setShowFilterModal(false);
+  };
+
+  const onFilterDismiss = () => {
+    setShowFilterModal(false);
+  };
+
+  const handleFilterReset = () => {
+    resetRef.current = true;
+
+    setSelectedLicences([]);
+    setSelectedPlatforms([]);
+    setApplyFilter(false);
+    setSelectedRating(null);
+    setAgeRange([18, 70]);
+    setExperienceRange([0, 52]);
+
+    setReset((prev) => !prev);
+  };
+
   return (
     <View style={{ flex: 1 }}>
       <Header setSearchTerm={(value: string) => setSearchTerm(value)} />
       <QuickFilters
-        onSetSelectedPlatforms={(value: string) => handleSetSelected(value)}
+        showReset={!isDefaultState}
+        onSetSelectedPlatforms={(value: string) =>
+          handleSetSelectedPlatforms(value)
+        }
         selectedPlatforms={selectedPlatforms}
-        onClear={() => setSelectedPlatforms([])}
+        onClear={handleFilterReset}
+        setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
       />
       <View style={styles.drivers}>
         <FlatList
@@ -68,11 +186,29 @@ export const Scene = () => {
             }
           }}
           showsVerticalScrollIndicator={false}
-          keyExtractor={({ id }, _index) => String(id)}
+          keyExtractor={(item, index) => String(item?.id ?? index)}
           renderItem={({ item }) => <DriverCard driver={item} />}
           contentContainerStyle={{ gap: 15, paddingVertical: 15 }}
         />
       </View>
+
+      <FilterModal
+        showReset={!isDefaultState}
+        visible={showFilterModal}
+        onDismiss={onFilterDismiss}
+        onReset={handleFilterReset}
+        selectedPlatforms={selectedPlatforms}
+        selectedLicences={selectedLicences}
+        selectedRating={selectedRating}
+        ageRange={ageRange}
+        experienceRange={experienceRange}
+        onAgeChange={handleAgeChange}
+        onExperienceChange={handleExperienceChange}
+        onRatingSelect={setSelectedRating}
+        onApply={handleApplyFilter}
+        onTogglePlatforms={handleSetSelectedPlatforms}
+        onToggleLicences={handleSetSelectedLicences}
+      />
     </View>
   );
 };

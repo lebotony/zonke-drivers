@@ -32,9 +32,9 @@ defmodule BackendWeb.Drivers.DriverJSON do
       :user_id,
       :total_accidents,
       :previous_vehicles,
+      :rating,
       :inserted_at,
       :updated_at
     ])
-    |> Map.merge(%{rating: (:rand.uniform(39) + 10) / 10})
   end
 end

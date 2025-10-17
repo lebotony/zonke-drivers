@@ -17,8 +17,15 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 600,
   },
-  clearButton: {
-    paddingVertical: 0
+  filterBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  resetBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 14,
   },
   platformFilter: {
     marginTop: 7,

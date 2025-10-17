@@ -20,6 +20,10 @@ type Driver = {
 }
 
 type Filters = {
-  search_term: string,
-  platforms: string[]
+  search_term?: string,
+  platforms?: string[]
+  licences?: string[],
+  age_range?: number[],
+  experience_range?: number[],
+  rating?: number,
 }

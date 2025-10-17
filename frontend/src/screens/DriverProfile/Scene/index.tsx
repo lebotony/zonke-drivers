@@ -2,14 +2,7 @@ import { Platform, ScrollView, View } from "react-native";
 import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import {
-  AntDesign,
-  Feather,
-  FontAwesome,
-  FontAwesome5,
-  Ionicons,
-  MaterialIcons,
-} from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { find } from "lodash";
@@ -26,6 +19,8 @@ import { styles } from "./styles";
 import { Header } from "./ui/header";
 import { Licences } from "./ui/licences";
 import { createThread } from "../actions";
+import { detailsDef } from "./ui/detailsPill";
+import { shadowStyles } from "@/src/components/shadowStyles";
 
 export const Scene = () => {
   const { id } = useLocalSearchParams();
@@ -76,8 +71,6 @@ export const Scene = () => {
             {driver?.description}
           </Text>
 
-          {/* <HorizontalDivider color="#ededed" /> */}
-
           <Text style={styles.heading}>Platforms</Text>
 
           <Platforms
@@ -88,76 +81,43 @@ export const Scene = () => {
           <Licences licences={driver?.licences} />
 
           <View style={styles.stats}>
-            <View style={styles.statsRow}>
-              <View style={styles.stat}>
-                <AntDesign name="star" size={26} color={Colors.yellow} />
-                <Text style={styles.statValue}>4.8</Text>
-                <Text style={styles.statType}>Rating</Text>
-              </View>
-
-              <View style={styles.stat}>
-                <Feather
-                  name="clock"
-                  size={26}
-                  color={Colors.checkers60Green}
-                />
-                <Text style={styles.statValue}>{driver?.experience}</Text>
-                <Text style={styles.statType}>Experience</Text>
-              </View>
-
-              <View style={styles.stat}>
-                <FontAwesome5 name="car-crash" size={26} color="red" />
-                <Text style={styles.statValue}>{driver?.total_accidents}</Text>
-                <Text style={styles.statType}>Accidents</Text>
-              </View>
-            </View>
-
-            <View style={styles.statsRow}>
-              <View style={styles.stat}>
-                <FontAwesome name="comments" size={26} color="black" />
-                <Text style={styles.statValue}>3</Text>
-                <Text style={styles.statType}>Comments</Text>
-              </View>
-
-              <View style={styles.stat}>
-                {/* <FontAwesome5 name="car-side" size={26} color="black" /> */}
-                <FontAwesome5 name="car" size={26} color="black" />
-                <Text style={styles.statValue}>
-                  {driver?.previous_vehicles}
-                </Text>
-                <Text style={styles.statType}>Previous vehicles</Text>
-              </View>
+            <Text style={styles.driverDetailsText}>Driver Details</Text>
+            <View style={styles.statsWrapper}>
+              {detailsDef.map((detail, index) => (
+                <View key={`${detail.slug}-${index}`} style={styles.stat}>
+                  {detail.icon}
+                  <Text style={styles.statValue}>
+                    {driver?.[`${detail.slug}`]}
+                  </Text>
+                  <Text style={styles.statType}>{detail.label}</Text>
+                </View>
+              ))}
             </View>
           </View>
         </View>
       </ScrollView>
+
       <View style={styles.footer}>
         <CustomButton
           color={Colors.emeraldGreen}
-          onPress={() => {}}
-          customStyle={{
-            flex: 1,
-            paddingVertical: 12,
-            borderRadius: 13,
-          }}
-        >
-          <Text style={{ color: Colors.white }}>Hire Now</Text>
-        </CustomButton>
-        <CustomButton
-          color={Colors.white}
           onPress={handleCreateThread}
           customStyle={{
+            flex: 1,
             borderRadius: 13,
-            paddingHorizontal: 13,
-            borderColor: Colors.emeraldGreen,
-            borderWidth: 1,
+            ...shadowStyles,
           }}
         >
-          <Ionicons
-            name="chatbubble-outline"
-            size={20}
-            color={Colors.emeraldGreen}
-          />
+          <Text
+            style={{
+              color: Colors.white,
+              marginRight: 5,
+              fontSize: 15,
+              fontWeight: 600,
+            }}
+          >
+            Message
+          </Text>
+          <Ionicons name="chatbubble-outline" size={20} color={Colors.white} />
         </CustomButton>
       </View>
     </SafeAreaView>

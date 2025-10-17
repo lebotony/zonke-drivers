@@ -12,6 +12,7 @@ export const fetchDrivers = ({ pageParam = 1 }, filters: Filters) =>
       qs.stringify(params, { arrayFormat: "brackets" }),
   })
     .then((response) => {
+      console.log("ZZZZZZZZZZZZZZZ", response.data.paginate)
       return response.data
     })
     .catch((err) => err);

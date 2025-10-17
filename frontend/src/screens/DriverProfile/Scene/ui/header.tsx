@@ -16,11 +16,11 @@ export const Header = (props: HeaderProps) => {
 
   return (
     <View style={[styles.row, customStyles]}>
-      <CustomButton onPress={() => router.back()}>
+      <CustomButton color={Colors.whiteSmoke} onPress={() => router.back()}>
         <MaterialIcons
           name={Platform.OS === "ios" ? "arrow-back-ios-new" : "arrow-back"}
           size={24}
-          color={Colors.mrDBlue}
+          color={Colors.black}
         />
       </CustomButton>
     </View>

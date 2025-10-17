@@ -2,6 +2,7 @@ defmodule Backend.Drivers.Drivers do
   alias Backend.{Repo, PaginateHelper}
   alias Backend.Drivers.{Driver, Policy, Queries.DriverBy}
   alias Backend.Vehicles.VehicleDriver
+  alias Backend.Reviews.Review
 
   import Ecto.Query
 
@@ -85,17 +86,27 @@ defmodule Backend.Drivers.Drivers do
           fragment("? @@ websearch_to_tsquery(?)", s.searchable_document, ^value)
         )
 
-      {:age_range, %{min: min, max: max}}, query ->
+      {:age_range, [min, max]}, query ->
+        min = String.to_integer(min)
+        max = String.to_integer(max)
+
         where(query, [driver: d], d.age >= ^min and d.age <= ^max)
 
-      {:experience_range, %{min: min, max: max}}, query ->
+      {:experience_range, [min, max]}, query ->
+        min = String.to_integer(min)
+        max = String.to_integer(max)
+
         where(query, [driver: d], d.experience >= ^min and d.experience <= ^max)
 
-      {:rating_range, %{min: min, max: max}}, query ->
-        where(query, [driver: d], d.rating >= ^min and d.rating <= ^max)
+      {:rating_range, val}, query when is_binary(val) and val != "" ->
+        rating = String.to_integer(val)
+        where(query, [rating: r], coalesce(r.avg_rating, 0) >= ^rating)
 
       {:platforms, val}, query when is_list(val) ->
         where(query, [driver: d], fragment("? && ?", d.platforms, ^val))
+
+      # {:licences, val}, query when is_list(val) ->
+        # where(query, [driver: d], fragment("?->>'name' && ?", d.licences, ^val))
 
       _, query ->
         query
@@ -128,10 +139,17 @@ defmodule Backend.Drivers.Drivers do
         }
       )
 
+    rating_subquery =
+      from(r in Review,
+        where: r.driver_id == parent_as(:driver).id,
+        select: %{avg_rating: fragment("ROUND(AVG(?)::numeric, 1)", r.rating)}
+      )
+
     query
     |> join(:inner, [driver: d], u in assoc(d, :user), as: :user)
     |> join(:left_lateral, [driver: d], vd_stats in subquery(subquery), as: :vd_stats)
-    |> select_merge([driver: d, user: u, vd_stats: vd_stats], %{
+    |> join(:left_lateral, [driver: d], rating in subquery(rating_subquery), as: :rating, on: true)
+    |> select_merge([driver: d, user: u, vd_stats: vd_stats, rating: rating], %{
       d
       | email: u.email,
         first_name: u.first_name,
@@ -140,7 +158,8 @@ defmodule Backend.Drivers.Drivers do
         location: u.location,
         user_id: u.id,
         previous_vehicles: vd_stats.previous_vehicles,
-        total_accidents: vd_stats.total_accidents
+        total_accidents: vd_stats.total_accidents,
+        rating: coalesce(rating.avg_rating, 0)
     })
   end
 
