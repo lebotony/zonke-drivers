@@ -26,8 +26,11 @@ import { Circle } from "@/src/components/shapes/circle";
 import { Colors } from "@/constants/ui";
 import { Avatar } from "@/src/components/visual/avatar";
 import carPic from "@/assets/images/car-test.jpg";
+import { usePaginatedCache } from "@/src/updateCacheProvider";
+import { CustomButton } from "@/src/components/elements/button";
 
 import { styles } from "./styles/index";
+import { createThread } from "../../DriverProfile/actions";
 
 export const Scene = () => {
   const { id } = useLocalSearchParams();
@@ -37,8 +40,10 @@ export const Scene = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
+  const { addItemToPaginatedList } = usePaginatedCache();
+
   const { getCachedData } = useCustomQuery();
-  const { vehicles } = getCachedData(["vehicles"]);
+  const { vehicles, threads } = getCachedData(["vehicles", "threads"]);
   const vehicle: Vehicle = find(vehicles, { id: vehicleId });
 
   const width = Dimensions.get("window").width;
@@ -61,6 +66,15 @@ export const Scene = () => {
     LayoutAnimation.easeInEaseOut();
     setIsDescriptionExpanded(!isDescriptionExpanded);
   };
+
+  const handleCreateThread = () =>
+    createThread({ participant_id: vehicle.user_id }).then((response) => {
+      if (!find(threads, { id: response.id })) {
+        addItemToPaginatedList("threads", response);
+      }
+
+      router.push(`/chats/${response.id}`);
+    });
 
   return (
     <SafeAreaView style={styles.container}>
@@ -287,6 +301,23 @@ export const Scene = () => {
             </View>
           </SafeAreaView>
         </ScrollView>
+
+        <View style={{ flexDirection: "row", gap: 15 }}>
+          <CustomButton
+            onPress={() => null}
+            customStyle={{ marginBottom: 20, marginLeft: 15, flex: 1 }}
+          >
+            <Text style={{ color: Colors.white }}>Apply</Text>
+          </CustomButton>
+
+          <CustomButton
+            color={Colors.emeraldGreen}
+            onPress={handleCreateThread}
+            customStyle={{ marginBottom: 20, marginRight: 15, flex: 1 }}
+          >
+            <Text style={{ color: Colors.white }}>Message</Text>
+          </CustomButton>
+        </View>
       </ScrollView>
 
       {expanded && (

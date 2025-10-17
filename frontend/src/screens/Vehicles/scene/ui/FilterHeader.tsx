@@ -32,28 +32,7 @@ export const HeaderFilter = (props: HeaderFilterProps) => {
   return (
     <View style={styles.sectionHeader}>
       <View style={styles.filterContainer}>
-        <TouchableOpacity
-          style={styles.filterBtn}
-          onPress={() => setShowFilterModal(true)}
-        >
-          <Text style={{ fontWeight: "600", fontSize: 15 }}>Filter</Text>
-        </TouchableOpacity>
-
-        {/* FOR PRODUCTION USE ONLY */}
-        {/* <TouchableOpacity onPress={onLogout}>
-          <Text
-            style={{
-              color: Colors.lightRed,
-              fontWeight: 600,
-              marginHorizontal: 20,
-            }}
-          >
-            Logout
-          </Text>
-        </TouchableOpacity> */}
-        {/* FOR PRODUCTION USE ONLY */}
-
-        {showReset ? (
+        {showReset && (
           <TouchableOpacity
             style={styles.resetBtn}
             onPress={() => {
@@ -65,21 +44,21 @@ export const HeaderFilter = (props: HeaderFilterProps) => {
             <Text style={{ color: Colors.mrDBlue, fontWeight: "600" }}>
               Reset
             </Text>
-            {/* <MaterialIcons name="refresh" size={18 } color={Colors.mrDBlue} /> */}
+            {/* <MaterialIcons name="refresh" size={18} color={Colors.mrDBlue} /> */}
           </TouchableOpacity>
-        ) : (
-          <PopupMenu
-            options={BrandsList.map((c) => c.label)}
-            selectedValue={null}
-            onSelect={(label) => {
-              const found = BrandsList.find((c) => c.label === label);
-              if (found) toggleBrand(found.id);
-            }}
-            iconColor={Colors.mediumDarkGrey}
-          >
-            <Text style={styles.seeAll}>View all</Text>
-          </PopupMenu>
         )}
+
+        <PopupMenu
+          options={BrandsList.map((c) => c.label)}
+          selectedValue={null}
+          onSelect={(label) => {
+            const found = BrandsList.find((c) => c.label === label);
+            if (found) toggleBrand(found.id);
+          }}
+          iconColor={Colors.mediumDarkGrey}
+        >
+          <Text style={styles.seeAll}>View all</Text>
+        </PopupMenu>
       </View>
     </View>
   );

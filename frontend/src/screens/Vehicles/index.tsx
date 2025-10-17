@@ -193,7 +193,10 @@ export const VehiclesScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header setSearchTerm={(value: string) => setSearchTerm(value)} />
+      <Header
+        setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
+        setSearchTerm={(value: string) => setSearchTerm(value)}
+      />
 
       <View
         style={{

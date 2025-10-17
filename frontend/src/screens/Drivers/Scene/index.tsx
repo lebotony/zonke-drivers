@@ -167,7 +167,10 @@ export const Scene = () => {
 
   return (
     <View style={{ flex: 1 }}>
-      <Header setSearchTerm={(value: string) => setSearchTerm(value)} />
+      <Header
+        setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
+        setSearchTerm={(value: string) => setSearchTerm(value)}
+      />
       <QuickFilters
         showReset={!isDefaultState}
         onSetSelectedPlatforms={(value: string) =>
@@ -175,7 +178,6 @@ export const Scene = () => {
         }
         selectedPlatforms={selectedPlatforms}
         onClear={handleFilterReset}
-        setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
       />
       <View style={styles.drivers}>
         <FlatList
