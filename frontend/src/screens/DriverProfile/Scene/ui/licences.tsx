@@ -10,7 +10,7 @@ export const Licences = (props: LicencesProp) => {
   const { licences } = props;
 
   return (
-    <View>
+    <View style={styles.container}>
       <Text style={styles.heading}>Licences & Certificates</Text>
 
       <View style={styles.row}>

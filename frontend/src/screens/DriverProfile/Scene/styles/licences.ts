@@ -6,6 +6,14 @@ import { shadowStyles } from "@/src/components/shadowStyles";
 const VERTIAL_MARGIN = 10;
 
 export const styles = StyleSheet.create({
+  container: {
+    width: "100%",
+    borderColor: Colors.lightGrey,
+    borderWidth: 1,
+    borderRadius: 8,
+    marginBottom: 20,
+    padding: 8,
+  },
   pill: {
     backgroundColor: Colors.white,
     borderRadius: 7,
@@ -17,9 +25,9 @@ export const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 15.5,
-    fontWeight: 500,
+    fontWeight: 700,
     textAlign: "center",
-    marginVertical: 8,
+    marginBottom: 8,
     fontStyle: "italic",
   },
   location: {
@@ -28,6 +36,7 @@ export const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
+    flexWrap: 'wrap',
     gap: 10,
     justifyContent: "center",
     marginBottom: VERTIAL_MARGIN

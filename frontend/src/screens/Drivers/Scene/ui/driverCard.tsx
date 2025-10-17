@@ -31,8 +31,8 @@ export const DriverCard = (props: DriverProps) => {
         <Avatar source={profilePic} radius shadow width={83} />
         <View style={styles.details}>
           <Text style={styles.name}>
-            {driver.first_name} {driver.last_name}
-            <Text style={styles.age}> {`(${driver.age})`}</Text>
+            {driver?.first_name} {driver?.last_name}
+            <Text style={styles.age}> {`(${driver?.age})`}</Text>
           </Text>
 
           <View style={styles.ratingRow}>
@@ -40,7 +40,7 @@ export const DriverCard = (props: DriverProps) => {
               <AntDesign name="star" size={ICON_SIZE} color={Colors.yellow} />
             </View>
             <Text style={styles.ratingText}>
-              {driver.rating}{" "}
+              {driver?.rating}{" "}
               <Text style={styles.ratingCreteria}>(200 payments)</Text>
             </Text>
           </View>
@@ -51,7 +51,7 @@ export const DriverCard = (props: DriverProps) => {
             </View>
 
             <Text style={styles.address} numberOfLines={1}>
-              {driver.experience} years
+              {driver?.experience} years
             </Text>
           </View>
 
@@ -74,12 +74,12 @@ export const DriverCard = (props: DriverProps) => {
       </View>
 
       <HorizontalDivider color="#ededed" />
-      <Platforms platforms={driver.platforms} />
+      <Platforms platforms={driver?.platforms} />
       <HorizontalDivider color="#ededed" />
 
       <CustomButton
         color="white"
-        onPress={() => router.push(`/drivers/${driver.id}`)}
+        onPress={() => router.push(`/drivers/${driver?.id}`)}
         customStyle={{ paddingVertical: 1 }}
       >
         <Text style={[styles.name, { fontWeight: 500, lineHeight: 17 }]}>

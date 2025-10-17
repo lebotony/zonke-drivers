@@ -62,7 +62,7 @@ export const styles = StyleSheet.create({
   },
   heading: {
     fontSize: 15.5,
-    fontWeight: 500,
+    fontWeight: 700,
     textAlign: "center",
     marginVertical: 8,
     fontStyle: "italic",
@@ -77,23 +77,35 @@ export const styles = StyleSheet.create({
     fontSize: 12,
     color: Colors.mediumDarkGrey
   },
-  stats: {
-    marginBottom: 60
+  driverDetailsText: {
+    fontSize: 15.5,
+    fontWeight: 700,
+    textAlign: "center",
+    marginBottom: 8,
+    fontStyle: "italic",
   },
-  statsRow: {
+  stats: {
+    borderColor: Colors.lightGrey,
+    borderWidth: 1,
+    borderRadius: 8,
+    alignItems: 'center',
+    padding: 8,
+    marginBottom: 60,
+  },
+  statsWrapper: {
     flexDirection: "row",
+    flexWrap: 'wrap',
     justifyContent: 'center',
     gap: 10,
-    marginBottom: 10
   },
   stat: {
-    width: 75,
+    width: 80,
     height: 100,
     backgroundColor: Colors.white,
     borderRadius: 9,
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     paddingVertical: 8,
 
     ...shadowStyles
@@ -112,8 +124,8 @@ export const styles = StyleSheet.create({
     marginLeft: 6
   },
   footer: {
-    height: 70,
-    paddingHorizontal: 20,
+    height: 60,
+    paddingHorizontal: 15,
     backgroundColor: Colors.white,
     flexDirection: 'row',
     gap: 12,

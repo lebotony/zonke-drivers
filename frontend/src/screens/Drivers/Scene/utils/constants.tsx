@@ -5,6 +5,7 @@ import { Colors } from "@/constants/ui";
 export const PLATFORM_FILTERS = [
   {
     value: "bike",
+    slug: "Bike",
     color: Colors.white,
     bgColor: Colors.mediumDarkGrey,
     icon: <FontAwesome5 name="motorcycle" size={18} color="white" />,
@@ -12,6 +13,7 @@ export const PLATFORM_FILTERS = [
   },
   {
     value: "passenger",
+    slug: "Passenger",
     color: Colors.white,
     bgColor: Colors.mediumDarkGrey,
     icon: <FontAwesome5 name="car" size={20} color="white" />,
@@ -19,6 +21,7 @@ export const PLATFORM_FILTERS = [
   },
   {
     value: "taxi",
+    slug: "Taxi",
     color: Colors.white,
     bgColor: Colors.mediumDarkGrey,
     icon: <FontAwesome5 name="bus" size={17} color="white" />,
@@ -26,6 +29,7 @@ export const PLATFORM_FILTERS = [
   },
   {
     value: "truck",
+    slug: "Truck",
     color: Colors.white,
     bgColor: Colors.mediumDarkGrey,
     icon: <FontAwesome5 name="truck" size={16} color="white" />,
@@ -33,6 +37,7 @@ export const PLATFORM_FILTERS = [
   },
   {
     value: "lorry",
+    slug: "Lorry",
     color: Colors.white,
     bgColor: Colors.mediumDarkGrey,
     icon: <FontAwesome5 name="truck-moving" size={16} color="white" />,
@@ -63,4 +68,17 @@ export const PLATFORM_FILTERS = [
     color: Colors.bg,
     bgColor: Colors.mrDBlue,
   },
+];
+
+export const PLATFORM_LABELS = PLATFORM_FILTERS.map(
+  (platform) => platform.slug
+);
+
+export const LICENCES = [
+  "Class 1",
+  "Class 2",
+  "Class 3",
+  "Class 4",
+  "Class 5",
+  "Public Service Vehicle (PSV)",
 ];

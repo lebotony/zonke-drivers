@@ -44,7 +44,7 @@ export const Platforms = (props: Platforms) => {
               ]}
             >
               {def.icon && def.icon}
-              {def.slug && (
+              {def.slug && !def.justIcon && (
                 <Text style={[{ color: def.color }]}>{def.slug}</Text>
               )}
             </View>
