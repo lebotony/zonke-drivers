@@ -43,8 +43,8 @@ const deleteToken = async () => {
 
 type AuthProps = {
   authState?: { token: string | null; authenticated: boolean | null };
-  onRegister?: (params: SignUp) => Promise<void>;
-  onLogin?: (params: SignIn) => Promise<void>;
+  onRegister?: (params: SignUp) => Promise<any>;
+  onLogin?: (params: SignIn) => Promise<any>;
   onLogout?: () => Promise<void>;
 };
 
@@ -107,19 +107,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       })
       .catch((err) => err);
 
-  const register = async (params: SignUp) =>
-    httpPost("/users/register_user", params)
+  const register = async (params: SignUp) => {
+    return httpPost("/users/register_user", params)
       .then((_response) => {
         const { email, password } = params;
-        login({ email, password });
+        return login({ email, password });
       })
-      .catch((err) => err);
+      .catch((err) => {
+        const message =
+          err?.response?.data?.error || err.message || "Registration failed";
+        return Promise.reject(new Error(message));
+      });
+  };
 
-  const login = (params: SignIn) =>
-    httpPost("/session/current_session", params)
+  const login = (params: SignIn) => {
+    return httpPost("/session/current_session", params)
       .then(async (response: Session) => {
-        console.log("FFFFFFFFFFFFFFFFFF", response);
-        if (!response?.jwt) return;
+        if (!response?.jwt)
+          return Promise.reject(new Error("Invalid response from server"));
 
         setAuthState({ token: response.jwt, authenticated: true });
         await setToken(response.jwt);
@@ -131,8 +136,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
         queryClient.setQueryData(["token"], response.jwt);
         queryClient.setQueryData(["user"], response.user);
+
+        return response;
       })
-      .catch((error) => error);
+      .catch((err) => {
+        const message =
+          err?.response?.data?.error || err.message || "Login failed";
+        return Promise.reject(new Error(message));
+      });
+  };
 
   const logout = async () => {
     disconnectSocket();

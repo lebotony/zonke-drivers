@@ -4,9 +4,10 @@ import { Text } from "react-native-paper";
 
 import { Control, FieldErrors } from "react-hook-form";
 
+import { Fieldset } from "@/src/components/form/fieldset/input";
+
 import { styles } from "../styles/form";
 import { SignInFormValues, SignUpFormValues } from "./login";
-import { Fieldset } from "@/src/components/form/fieldset/input";
 
 type FormProps = {
   isSignUp: boolean;
@@ -21,6 +22,8 @@ type FormProps = {
 export const Form = (props: FormProps) => {
   const { isSignUp, control, errors } = props;
 
+  const customErrors = isSignUp ? errors : undefined;
+
   return (
     <View>
       {isSignUp && (
@@ -32,7 +35,7 @@ export const Form = (props: FormProps) => {
             inputIcon="person-outline"
             placeholder="John Doe"
             inputIconSize={22}
-            errors={errors}
+            errors={customErrors}
             customStyles={{ flex: 1 }}
             required
           />
@@ -43,22 +46,12 @@ export const Form = (props: FormProps) => {
             inputIcon="person-outline"
             placeholder="John Doe"
             inputIconSize={22}
-            errors={errors}
+            errors={customErrors}
             customStyles={{ flex: 1 }}
             required
           />
         </View>
       )}
-      {/* 
-      <Fieldset
-        control={control}
-        name="username"
-        label="Username"
-        inputIcon="person-outline"
-        placeholder="john_doe"
-        inputIconSize={22}
-        errors={errors}
-      /> */}
 
       <Fieldset
         control={control}
@@ -66,7 +59,7 @@ export const Form = (props: FormProps) => {
         label="Email"
         inputIcon="mail-outline"
         placeholder="example@gmail.com"
-        errors={errors}
+        errors={customErrors}
         required
       />
 
@@ -83,7 +76,7 @@ export const Form = (props: FormProps) => {
           inputIcon="lock-outline"
           type="password"
           placeholder="********"
-          errors={errors}
+          errors={customErrors}
           required
         />
       </View>
@@ -96,7 +89,7 @@ export const Form = (props: FormProps) => {
           inputIcon="lock-outline"
           type="password"
           placeholder="********"
-          errors={errors}
+          errors={customErrors}
           required
         />
       )}

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, TouchableOpacity, ScrollView } from "react-native";
 import { Text } from "react-native-paper";
 
@@ -16,11 +16,11 @@ import { TextLogo } from "@/src/components/misc/textLogo";
 import { CustomButton } from "@/src/components/elements/button";
 import { Colors } from "@/constants/ui";
 import google_logo from "@/assets/images/google_logo.jpg";
+import { useAuth } from "@/src/authContext";
 
 import { styles } from "../styles/login";
 import { Form } from "./form";
 import { SignInSchema, SignUpSchema } from "../schema";
-import { useAuth } from "@/src/authContext";
 
 type LoginScreenProps = {};
 
@@ -29,8 +29,9 @@ export type SignInFormValues = z.infer<typeof SignInSchema>;
 
 export const LoginScreen = (props: LoginScreenProps) => {
   const {} = props;
+
   const [isSignUp, setIsSignUp] = useState(false);
-  const [isChecked, setChecked] = useState(false);
+  const [authError, setAuthError] = useState<string | null>(null);
   const { onRegister, onLogin } = useAuth();
 
   const {
@@ -44,13 +45,26 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
   console.log(watch());
 
-  const onSubmit = (data: SignUpFormValues | SignInFormValues) => {
-    if (isSignUp) {
-      const { confirm_password, ...submitData } = data as SignUpFormValues;
+  const watchedFields = watch(["email", "password"]);
 
-      onRegister!(submitData);
-    } else {
-      onLogin!(data);
+  useEffect(() => {
+    if (!authError) return;
+    setAuthError(null);
+  }, [JSON.stringify(watchedFields)]);
+
+  const onSubmit = async (data: SignUpFormValues | SignInFormValues) => {
+    setAuthError(null);
+
+    try {
+      if (isSignUp) {
+        const { confirm_password, ...submitData } = data as SignUpFormValues;
+        await onRegister!(submitData as any);
+      } else {
+        await onLogin!(data as SignInFormValues);
+      }
+    } catch (err: any) {
+      const message = err?.message || "Authentication failed";
+      setAuthError(message);
     }
   };
 
@@ -75,22 +89,11 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
         <Form isSignUp={isSignUp} control={control} errors={errors} />
 
-        {/* {isSignUp && (
-          <View style={styles.policy}>
-            <Checkbox
-              style={{ marginRight: 10, height: 15, width: 15 }}
-              value={isChecked}
-              color={Colors.mrDBlue}
-              onValueChange={setChecked}
-            />
-            <Text style={styles.policyText}>I understood the </Text>
-            <TouchableOpacity>
-              <Text style={[styles.policyText, { color: Colors.mrDBlue }]}>
-                terms & policy
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )} */}
+        {authError && (
+          <Text style={{ color: Colors.lightRed, marginTop: 5, marginLeft: 8 }}>
+            {authError}
+          </Text>
+        )}
 
         <CustomButton
           haptics="light"
