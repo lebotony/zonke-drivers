@@ -114,6 +114,7 @@ function RootLayoutNav() {
 const Layout = (props: LayoutProps) => {
   const colorScheme = useColorScheme();
   const { authState } = useAuth();
+  console.log("TTTTTTTTTTT", authState);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -124,10 +125,7 @@ const Layout = (props: LayoutProps) => {
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="drivers" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="vehicles"
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="vehicles" options={{ headerShown: false }} />
             <Stack.Screen
               name="profileSetup"
               options={{ headerShown: false }}

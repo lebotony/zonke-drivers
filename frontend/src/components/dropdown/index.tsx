@@ -214,7 +214,7 @@ export const DropdownInput = <T extends FieldValues>({
       <View style={{ flexDirection: "row" }}>
         <Text style={styles.label}>{label}</Text>
         {required && (
-          <Text style={{ color: Colors.primaryBlue, paddingLeft: 3 }}>*</Text>
+          <Text style={{ color: Colors.mrDBlue, paddingLeft: 3 }}>*</Text>
         )}
       </View>
 

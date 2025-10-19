@@ -62,7 +62,7 @@ export const AddVehicle = () => {
           <View style={styles.imageWrapper}>
             <TouchableOpacity
               style={styles.plusBtn}
-              onPress={(value) => pickImage(setValue)}
+              onPress={() => pickImage(setValue)}
             >
               <AntDesign name="plus" size={24} color={Colors.white} />
             </TouchableOpacity>
