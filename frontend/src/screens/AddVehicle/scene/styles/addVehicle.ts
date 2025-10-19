@@ -35,6 +35,22 @@ export const styles = StyleSheet.create({
     aspectRatio: 16/12,
     borderRadius: 12,
   },
+  imageStyles: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 10,
+  },
+  imageText: {
+    color: Colors.mediumGrey,
+    fontSize: 20,
+    position: 'absolute',
+    top: "50%",
+  },
+  defaultImageStyles: {
+    borderWidth: 2,
+    borderColor: Colors.lightGrey,
+    borderStyle: "dashed",
+  },
   addVehicleText: {
     fontSize: 16,
     fontWeight: 500,
