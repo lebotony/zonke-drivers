@@ -10,7 +10,6 @@ export const styles = StyleSheet.create({
     position: 'relative',
     zIndex: 1,
     overflow: 'hidden',
-    
   },
   placeholderText: {
     opacity: 0.3,

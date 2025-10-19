@@ -124,10 +124,7 @@ const Layout = (props: LayoutProps) => {
           <Stack>
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="drivers" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="vehicles"
-              options={{ headerShown: false }}
-            />
+            <Stack.Screen name="vehicles" options={{ headerShown: false }} />
             <Stack.Screen
               name="profileSetup"
               options={{ headerShown: false }}

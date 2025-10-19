@@ -3,6 +3,9 @@ import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
+  container: {
+    alignItems: 'center',
+  },
   title: {
     fontSize: 20,
     fontWeight: "600",
@@ -18,12 +21,24 @@ export const styles = StyleSheet.create({
     marginLeft: 2,
   },
   avatarWrapper: {
-    width: "100%",
+    width: 130,
+    height: 130,
+    borderRadius: 65,
     flexDirection: 'row',
     alignSelf: 'center',
-    justifyContent: 'center',
-    marginBottom: 30 ,
+    marginBottom: 20 ,
     position: "relative",
+    borderWidth: 2,
+    borderColor: Colors.lightGrey,
+    borderStyle: "dashed",
+    justifyContent: 'center'
+  },
+  imageText: {
+    color: Colors.mediumGrey,
+    fontSize: 12,
+    position: 'absolute',
+    left: 14,
+    top: 53,
   },
   editButton: {
     position: "absolute",
