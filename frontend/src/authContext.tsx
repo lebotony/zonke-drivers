@@ -88,7 +88,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [authState.authenticated]);
 
   useEffect(() => {
-    console.log("YYYYYYYYYYYYYYYYYYYYYYY", authState);
     const loadToken = async () => {
       const token = await getToken();
 

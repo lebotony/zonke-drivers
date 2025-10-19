@@ -114,7 +114,6 @@ function RootLayoutNav() {
 const Layout = (props: LayoutProps) => {
   const colorScheme = useColorScheme();
   const { authState } = useAuth();
-  console.log("TTTTTTTTTTT", authState);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>

@@ -65,8 +65,6 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
 
   const isProfilePicPresent = !isEmpty(pickedAsset?.file_path);
 
-  console.log("ZZZZZZZZZZZZZZZZZZZZZZZ", watch());
-
   const handleAddPlatform = (item: string) => {
     const selectedValue = PLATFORM_FILTERS.filter((p) => p.slug === item)[0]
       .value;
@@ -95,10 +93,6 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       selectedLicences?.filter((licence) => licence !== item)
     );
   };
-
-  useEffect(() => {
-    console.log("Form errors:", errors);
-  }, [errors]);
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
