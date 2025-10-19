@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "600",
-    marginBottom: 5,
+    marginBottom: 10,
     color: Colors.black,
     textAlign: "center",
   },

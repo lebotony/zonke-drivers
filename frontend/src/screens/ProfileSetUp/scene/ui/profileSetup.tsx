@@ -26,21 +26,7 @@ import { SetUpOneSchema } from "../schema";
 import { SelectLicenceArea, SelectPlatformArea } from "./selectAreas";
 import { LICENCES } from "../../constants";
 import { createDriver } from "../../actions";
-
-const formDef = [
-  {
-    slug: "full_name",
-    label: "Full Name",
-    icon: "person-outline",
-    placeholder: "John Doe",
-  },
-  {
-    slug: "dob",
-    icon: "event",
-    label: "Date of Birth",
-    placeholder: "20/10/2001",
-  },
-];
+import { ModalDatePicker } from "@/src/components/elements/datePicker";
 
 type FormValues = z.infer<typeof SetUpOneSchema>;
 
@@ -58,6 +44,8 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   } = useForm<FormValues>({
     resolver: zodResolver(SetUpOneSchema),
   });
+
+  const driver = false;
 
   const selectedPlatforms = watch("platforms");
   const selectedLicences = watch("licences");
@@ -96,7 +84,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
-      <Text style={styles.title}>Profile Set Up</Text>
+      <Text style={styles.title}>Edit Profile</Text>
       <TouchableOpacity
         onPress={() => pickImage(setValue, [1, 1])}
         style={[
@@ -121,65 +109,91 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
         )}
       </TouchableOpacity>
 
-      <View>
-        {formDef.map((item, idx) => (
-          <View key={`${item.slug} - ${idx}`}>
-            <Fieldset
-              label={item.label}
-              name={item.slug as keyof FormValues}
-              inputIcon={item.icon}
-              control={control}
-              placeholder={item.placeholder}
-              errors={errors}
-              required
-            />
-          </View>
-        ))}
+      <Fieldset
+        label="Full Name"
+        name="full_name"
+        inputIcon="person-outline"
+        control={control}
+        placeholder="John Doe"
+        errors={errors}
+        required
+      />
+
+      <View
+        style={{
+          borderColor: Colors.tealGreen,
+          borderWidth: 2,
+          borderRadius: 10,
+          paddingVertical: 10,
+          paddingHorizontal: 18,
+          marginBottom: 10,
+        }}
+      >
+        <Fieldset
+          label="Date of Birth"
+          name="dob"
+          inputIcon="event"
+          control={control}
+          placeholder="20/10/2001"
+          errors={errors}
+          required
+        />
+
+        <ModalDatePicker setValue={setValue} />
       </View>
 
       <DropdownInput
         name="location"
         required
-        label="Locations"
+        label="Location"
         setValue={setValue}
         placeholder="Search location..."
       />
 
-      <SelectLicenceArea
-        onAddItem={(value: string) => handleAddLicence(value)}
-        onRemoveItem={handleRemoveLicences}
-        options={LICENCES}
-        selectedItems={selectedLicences}
-        label="Licences"
-      />
+      {driver && (
+        <>
+          <SelectLicenceArea
+            onAddItem={(value: string) => handleAddLicence(value)}
+            onRemoveItem={handleRemoveLicences}
+            options={LICENCES}
+            selectedItems={selectedLicences}
+            label="Licences"
+          />
 
-      <SelectPlatformArea
-        onAddItem={(value: string) => handleAddPlatform(value)}
-        onRemoveItem={handleRemovePlatform}
-        options={PLATFORM_LABELS}
-        selectedItems={selectedPlatforms}
-        label="Platforms"
-      />
+          <SelectPlatformArea
+            onAddItem={(value: string) => handleAddPlatform(value)}
+            onRemoveItem={handleRemovePlatform}
+            options={PLATFORM_LABELS}
+            selectedItems={selectedPlatforms}
+            label="Platforms"
+          />
 
-      <Fieldset
-        label="Bio"
-        name="bio"
-        inputIconSize={23}
-        control={control}
-        placeholder="Tell clients about your experience, specialties and what you offer..."
-        type="text"
-        numberOfLines={4}
-        optional
-        errors={errors}
-      />
+          <Fieldset
+            label="Bio"
+            name="bio"
+            inputIconSize={23}
+            control={control}
+            placeholder="Tell clients about your experience, specialties and what you offer..."
+            type="text"
+            numberOfLines={4}
+            optional
+            errors={errors}
+          />
+        </>
+      )}
 
       <CustomButton
         onPress={handleSubmit(createDriver)}
         haptics="light"
-        customStyle={{ flexGrow: 1, marginBottom: 20, marginTop: 10 }}
+        customStyle={{
+          flexGrow: 1,
+          marginBottom: 20,
+          marginTop: 10,
+          flex: 1,
+        }}
       >
         <Text style={{ color: Colors.white, fontWeight: 600, fontSize: 16 }}>
-          Add Driver Profile
+          Edit Profile
         </Text>
       </CustomButton>
     </ScrollView>

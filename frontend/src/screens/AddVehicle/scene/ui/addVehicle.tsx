@@ -20,6 +20,7 @@ import { CustomButton } from "@/src/components/elements/button";
 import { Colors } from "@/constants/ui";
 import { createVehicle } from "../../actions";
 import { AntDesign } from "@expo/vector-icons";
+import { isEmpty } from "lodash";
 
 export type AddVehicleFormValues = z.infer<typeof FormSchema>;
 
@@ -35,6 +36,8 @@ export const AddVehicle = () => {
   });
 
   const pickedAsset = watch("asset");
+
+  const isVehiclePicPresent = !isEmpty(pickedAsset?.file_path);
 
   const create = (data) => {
     const params = {
@@ -59,7 +62,10 @@ export const AddVehicle = () => {
         <View style={styles.headerWrapper}>
           <Text style={[styles.header]}>Car Details</Text>
 
-          <View style={styles.imageWrapper}>
+          <TouchableOpacity
+            onPress={() => pickImage(setValue)}
+            style={styles.imageWrapper}
+          >
             <TouchableOpacity
               style={styles.plusBtn}
               onPress={() => pickImage(setValue)}
@@ -67,17 +73,17 @@ export const AddVehicle = () => {
               <AntDesign name="plus" size={24} color={Colors.white} />
             </TouchableOpacity>
             <Image
-              source={
-                pickedAsset?.file_path ? { uri: pickedAsset.file_path } : carPic
-              }
-              style={{
-                width: "100%",
-                height: "100%",
-                borderRadius: 10,
-              }}
+              source={isVehiclePicPresent && { uri: pickedAsset?.file_path }}
+              style={[
+                styles.imageStyles,
+                !isVehiclePicPresent && styles.defaultImageStyles,
+              ]}
               contentFit="contain"
             />
-          </View>
+          </TouchableOpacity>
+          {!isVehiclePicPresent && (
+            <Text style={styles.imageText}>Add Vehicle image</Text>
+          )}
         </View>
 
         <Text style={styles.addVehicleText}>Add a Vehicle</Text>
