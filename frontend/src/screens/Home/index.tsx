@@ -1,9 +1,15 @@
-import { View } from "react-native";
+import { Spinner } from "@/src/components/elements/Spinner";
 import { DriversScreen } from "../Drivers";
 import { VehiclesScreen } from "../Vehicles";
+import { useCustomQuery } from "@/src/useQueryContext";
 
 export const HomeScreen = () => {
-  const driver = true;
+  const { getCachedData } = useCustomQuery();
+  const { user } = getCachedData(["user"]);
 
-  return driver ? <VehiclesScreen /> : <DriversScreen />;
+  if (!user) {
+    return <Spinner />;
+  }
+
+  return user.role === "owner" ? <DriversScreen /> : <VehiclesScreen />;
 };

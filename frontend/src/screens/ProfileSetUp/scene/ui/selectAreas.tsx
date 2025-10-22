@@ -97,7 +97,7 @@ export const SelectLicenceArea = (props: SelectAreaProps) => {
       <View style={styles.selected}>
         {isEmpty(selectedItems) ? (
           <Text style={{ color: Colors.mediumGrey, marginLeft: 10 }}>
-            Select platforms...
+            Select licences...
           </Text>
         ) : (
           selectedItems.map((item, idx) => (

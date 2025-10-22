@@ -9,6 +9,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
 import { MaterialIcons } from "@expo/vector-icons";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Colors } from "@/constants/ui";
 import { Fieldset } from "@/src/components/form/fieldset/input";
@@ -20,38 +21,76 @@ import {
   PLATFORM_LABELS,
 } from "@/src/screens/Drivers/Scene/utils/constants";
 import { pickImage } from "@/src/helpers/pickImage";
+import { ModalDatePicker } from "@/src/components/elements/datePicker";
+import { useCustomQuery } from "@/src/useQueryContext";
 
 import { styles } from "../styles/profileSetup";
-import { SetUpOneSchema } from "../schema";
+import { DriverProfileSchema, OwnerProfileSchema } from "../schema";
 import { SelectLicenceArea, SelectPlatformArea } from "./selectAreas";
 import { LICENCES } from "../../constants";
-import { createDriver } from "../../actions";
-import { ModalDatePicker } from "@/src/components/elements/datePicker";
+import {
+  fetchDriverProfile,
+  updateDriver,
+  updateVehicleUser,
+} from "../../actions";
 
-type FormValues = z.infer<typeof SetUpOneSchema>;
+export type DriverFormValues = z.infer<typeof DriverProfileSchema>;
+export type OwnerFormValues = z.infer<typeof OwnerProfileSchema>;
 
 type ProfileSetupProps = {};
 
 export const ProfileSetup = (props: ProfileSetupProps) => {
   const {} = props;
 
+  const queryClient = useQueryClient();
+  const { getCachedData } = useCustomQuery();
+  const { user, driverProfile } = getCachedData(["user", "driverProfile"]);
+
+  const isDriver = user?.role === "driver";
+
+  const formValues = {
+    first_name: user?.first_name || "",
+    last_name: user?.last_name || "",
+    email: user?.email || "",
+    dob: driverProfile?.dob || "",
+    location: user.location || "",
+    platforms: driverProfile?.platforms || [],
+    // licences: [],
+    description: driverProfile?.description || "",
+  };
+
   const {
     control,
     setValue,
     handleSubmit,
     watch,
+    reset,
     formState: { errors },
-  } = useForm<FormValues>({
-    resolver: zodResolver(SetUpOneSchema),
+  } = useForm<DriverFormValues | OwnerFormValues>({
+    resolver: zodResolver(isDriver ? DriverProfileSchema : OwnerProfileSchema),
+    defaultValues: formValues,
   });
 
-  const driver = false;
+  useEffect(() => {
+    if (isDriver) {
+      fetchDriverProfile().then((response) =>
+        queryClient.setQueryData(["driverProfile"], response)
+      );
+    }
+  }, [isDriver]);
+
+  useEffect(() => {
+    if (driverProfile) {
+      reset(formValues);
+    }
+  }, [driverProfile]);
 
   const selectedPlatforms = watch("platforms");
   const selectedLicences = watch("licences");
   const pickedAsset = watch("asset");
 
-  const isProfilePicPresent = !isEmpty(pickedAsset?.file_path);
+  const isProfilePicPresent =
+    !isEmpty(pickedAsset?.file_path) || !isEmpty(user.asset.url);
 
   const handleAddPlatform = (item: string) => {
     const selectedValue = PLATFORM_FILTERS.filter((p) => p.slug === item)[0]
@@ -82,6 +121,28 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
     );
   };
 
+  const handleEditProfile = () => {
+    console.log(watch());
+
+    if (isDriver) {
+      handleSubmit((formData) =>
+        updateDriver(formData)
+          .then((response) => {
+            console.log("33333333333333333", response.user);
+            queryClient.setQueryData(["user"], response.user);
+            queryClient.setQueryData(["driverProfile"], response);
+          })
+          .catch((err) => err)
+      )();
+    } else {
+      handleSubmit((formData) =>
+        updateVehicleUser(user.id, formData)
+          .then((response) => queryClient.setQueryData(["user"], response))
+          .catch((err) => err)
+      )();
+    }
+  };
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Text style={styles.title}>Edit Profile</Text>
@@ -94,7 +155,9 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       >
         <Avatar
           width={130}
-          source={isProfilePicPresent && { uri: pickedAsset.file_path }}
+          source={
+            isProfilePicPresent && (pickedAsset?.file_path || user.asset.url)
+          }
           round
         />
         <TouchableOpacity style={styles.editButton}>
@@ -110,47 +173,72 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       </TouchableOpacity>
 
       <Fieldset
-        label="Full Name"
-        name="full_name"
+        label="First Name"
+        name="first_name"
         inputIcon="person-outline"
         control={control}
-        placeholder="John Doe"
+        placeholder="John"
         errors={errors}
         required
       />
 
-      <View
-        style={{
-          borderColor: Colors.tealGreen,
-          borderWidth: 2,
-          borderRadius: 10,
-          paddingVertical: 10,
-          paddingHorizontal: 18,
-          marginBottom: 10,
-        }}
-      >
-        <Fieldset
-          label="Date of Birth"
-          name="dob"
-          inputIcon="event"
-          control={control}
-          placeholder="20/10/2001"
-          errors={errors}
-          required
-        />
+      <Fieldset
+        label="Last Name"
+        name="last_name"
+        inputIcon="person-outline"
+        control={control}
+        placeholder="Doe"
+        errors={errors}
+        required
+      />
 
-        <ModalDatePicker setValue={setValue} />
-      </View>
+      <Fieldset
+        label="Email"
+        name="email"
+        inputIcon="person-outline"
+        control={control}
+        placeholder="Doe"
+        errors={errors}
+        required
+      />
+
+      {isDriver && (
+        <View
+          style={{
+            borderColor: Colors.tealGreen,
+            borderWidth: 2,
+            borderRadius: 10,
+            paddingVertical: 10,
+            paddingHorizontal: 18,
+            marginBottom: 10,
+          }}
+        >
+          <Fieldset
+            label="Date of Birth"
+            name="dob"
+            inputIcon="event"
+            control={control}
+            placeholder="20/10/2001"
+            errors={errors}
+            required
+          />
+
+          <ModalDatePicker setValue={setValue} />
+        </View>
+      )}
 
       <DropdownInput
         name="location"
         required
         label="Location"
+        value={
+          !isEmpty(user.location) ? user?.location?.address?.join(", ") : ""
+        }
         setValue={setValue}
         placeholder="Search location..."
       />
 
-      {driver && (
+      {isDriver && (
         <>
           <SelectLicenceArea
             onAddItem={(value: string) => handleAddLicence(value)}
@@ -170,7 +258,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
 
           <Fieldset
             label="Bio"
-            name="bio"
+            name="description"
             inputIconSize={23}
             control={control}
             placeholder="Tell clients about your experience, specialties and what you offer..."
@@ -183,7 +271,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       )}
 
       <CustomButton
-        onPress={handleSubmit(createDriver)}
+        onPress={handleEditProfile}
         haptics="light"
         customStyle={{
           flexGrow: 1,

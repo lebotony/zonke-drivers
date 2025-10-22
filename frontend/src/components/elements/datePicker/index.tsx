@@ -14,13 +14,13 @@ export const ModalDatePicker = (props: ModalDatePickerProps) => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
 
   const handleConfirm = (date: Date) => {
-    // Convert to DD/MM/YYYY
     const day = String(date.getDate()).padStart(2, "0");
     const month = String(date.getMonth() + 1).padStart(2, "0");
     const year = date.getFullYear();
-    const formatted = `${day}/${month}/${year}`;
 
-    setValue("dob", formatted);
+    const formattedForEcto = `${year}-${month}-${day}`;
+
+    setValue("dob", formattedForEcto);
     setDatePickerVisibility(false);
   };
 

@@ -2,19 +2,20 @@ import { View, SafeAreaView, ScrollView, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 
 import { MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 import { Avatar } from "@/src/components/visual/avatar";
 import { useCustomQuery } from "@/src/useQueryContext";
-import pic from "@/assets/images/person_1.jpg";
 
 import { styles } from "../styles";
 import { SettingsItems } from "./settingsItems";
 import { settingsItemsDef } from "../../utils/settingsData";
-import { router } from "expo-router";
 
 export const Settings = () => {
   const { getCachedData } = useCustomQuery();
   const { user } = getCachedData(["user"]);
+
+  const isProfilePicPresent = user?.asset?.url;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -30,7 +31,19 @@ export const Settings = () => {
           onPress={() => router.push("/profileSetup")}
           style={styles.userWrapper}
         >
-          <Avatar source={pic} round width={55} />
+          <View
+            style={[
+              styles.avatarWrapper,
+              isProfilePicPresent && { borderWidth: 0 },
+            ]}
+          >
+            <Avatar
+              source={isProfilePicPresent && user.asset.url}
+              round
+              width={60}
+            />
+            {!isProfilePicPresent && <Text style={styles.addText}>Add</Text>}
+          </View>
           <View>
             <Text style={styles.userText}>
               {user?.first_name} {user?.last_name}

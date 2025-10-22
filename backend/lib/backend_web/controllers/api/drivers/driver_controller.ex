@@ -5,9 +5,9 @@ defmodule BackendWeb.Drivers.DriverController do
   alias Backend.Drivers.Drivers
 
   # TODO: add rate limiting
-  def index(conn, %{business_profile_id: profile_id} = params, session) do
+  def index(conn, params, session) do
     # with :ok <- Bodyguard.permit(Drivers, :get_drivers, %{id: profile_id}, session),
-    with {:ok, drivers, paginate} <- Drivers.get_drivers(params) do
+    with {:ok, drivers, paginate} <- Drivers.get_drivers(params, session) do
       render(conn, :index, %{drivers: drivers, paginate: paginate})
     end
   end
@@ -18,30 +18,26 @@ defmodule BackendWeb.Drivers.DriverController do
     end
   end
 
-  def create(conn, %{business_profile_id: profile_id} = params, session) do
-    with :ok <- Bodyguard.permit(Drivers, :create, %{id: profile_id}, session),
-         {:ok, driver} <- Drivers.create(params, session) do
+  def create(conn, params, session) do
+    with {:ok, driver} <- Drivers.create(params, session) do
       render(conn, :show, driver: driver)
     end
   end
 
   def show_public(conn, %{id: id}, _session) do
-    with {:ok, driver} <- Drivers.get_driver(id, :public),
-         :ok <- Bodyguard.permit(Drivers, :show_public, driver, nil) do
+    with {:ok, driver} <- Drivers.get_driver(id, :public) do
       render(conn, :show, driver: driver)
     end
   end
 
   def show(conn, %{id: id}, session) do
-    with {:ok, driver} <- Drivers.get_driver(id),
-         :ok <- Bodyguard.permit(Drivers, :show, driver, session) do
+    with {:ok, driver} <- Drivers.get_driver(id) do
       render(conn, :show, driver: driver)
     end
   end
 
   def update(conn, %{id: id} = params, session) do
     with {:ok, driver} <- Drivers.get_driver(id),
-         :ok <- Bodyguard.permit(Drivers, :update, driver, session),
          {:ok, driver} <- Drivers.update(driver, params) do
       render(conn, :show, driver: driver)
     end
@@ -49,9 +45,20 @@ defmodule BackendWeb.Drivers.DriverController do
 
   def delete(conn, %{id: id}, session) do
     with {:ok, driver} <- Drivers.get_driver(id),
-         :ok <- Bodyguard.permit(Drivers, :delete, driver, session),
          {:ok, _driver} <- Drivers.delete(driver) do
       json(conn, :ok)
+    end
+  end
+
+  def upsert(conn, params, %{user_id: user_id}) do
+    with {:ok, driver} <- Drivers.update_or_create(params, user_id) do
+      render(conn, :show, driver: driver)
+    end
+  end
+
+  def fetch_user_driver(conn, _params, %{user_id: user_id}) do
+    with {:ok, driver} <- Drivers.get_user_driver(user_id) do
+      render(conn, :show, driver: driver)
     end
   end
 end

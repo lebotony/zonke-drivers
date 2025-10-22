@@ -8,12 +8,11 @@ defmodule Backend.Assets.AssetsTest do
   setup do
     vehicle = insert(:vehicle)
 
-    {:ok, tmp} = Briefly.create()
-    File.write!(tmp, "test file content")
-
     params = %{
-      file_path: tmp,
-      filename: "uploads/test.png",
+      file: %Plug.Upload{
+        path: Path.expand("priv/car-test.jpg"),
+        filename: "uploads/car-test.jpg"
+      },
       vehicle_id: vehicle.id
     }
 
@@ -29,6 +28,29 @@ defmodule Backend.Assets.AssetsTest do
 
       assert asset.vehicle_id == vehicle.id
       assert is_binary(asset.url)
+    end
+  end
+
+  describe "update_asset_with_file/2" do
+    test "update asset with a new image url", %{
+      params: params,
+      vehicle: vehicle
+    } do
+      assert {:ok, %Asset{} = asset} = Assets.upload_and_save(params)
+
+      updated_params = %{
+        file: %Plug.Upload{
+          path: Path.expand("priv/person-test.jpg"),
+          filename: "uploads/person-test.jpg"
+        }
+      }
+
+      assert {:ok, %Asset{} = updated_asset} =
+               Assets.update_asset_with_file(asset, updated_params)
+
+      assert updated_asset.vehicle_id == vehicle.id
+      assert updated_asset.filename == updated_params.file.filename
+      assert updated_asset.url != asset.url
     end
   end
 end

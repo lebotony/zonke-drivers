@@ -21,4 +21,11 @@ defmodule BackendWeb.UserController do
       json(conn, :ok)
     end
   end
+
+  def update(conn, params, %{user_id: user_id}) do
+    with {:ok, user} <- Users.get_user_by(id: user_id),
+         {:ok, user} <- Users.update(user, params) do
+      render(conn, :show, user: user)
+    end
+  end
 end

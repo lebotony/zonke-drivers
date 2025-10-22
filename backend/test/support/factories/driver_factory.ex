@@ -9,7 +9,6 @@ defmodule Backend.DriverFactory do
         %Driver{
           id: Ecto.UUID.generate(),
           location: %{lat: "123", lon: "987"},
-          business_profile: build(:business_profile),
           user: build(:user)
         }
       end

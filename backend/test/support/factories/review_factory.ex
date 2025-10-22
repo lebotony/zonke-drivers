@@ -13,8 +13,9 @@ defmodule Backend.ReviewFactory do
           comment: sequence(:name, &"Comment No. #{&1}"),
           # likes: length(users_liked_array),
           # users_liked: users_liked_array,
-          user: build(:user),
-          service: build(:service)
+          author: build(:user),
+          driver: build(:driver),
+          vehicle: build(:vehicle)
         }
       end
     end

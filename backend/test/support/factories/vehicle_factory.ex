@@ -8,9 +8,8 @@ defmodule Backend.VehicleFactory do
       def vehicle_factory do
         %Vehicle{
           id: Ecto.UUID.generate(),
-          name: "Mazda G40",
           price_fixed: %{currency: "ZIG", value: 200},
-          business_profile: build(:business_profile),
+          type: "taxi",
           user: build(:user)
         }
       end

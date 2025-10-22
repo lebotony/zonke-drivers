@@ -5,14 +5,14 @@ defmodule Backend.Assets.Assets do
   alias Ecto.Multi
 
   @bucket "zonke-drivers-bucket"
-  @expires_in 604000
+  @expires_in 604_000
 
   def upload_and_save(%{file: %Plug.Upload{path: path, filename: filename}} = params) do
     Multi.new()
     |> Multi.run(:s3_upload, fn _repo, _changes ->
       case put_object(path, filename) do
         {:ok, resp} -> {:ok, resp}
-        {:error, reason} -> {:error, {:ex_aws_s3_upload_failed, reason}}
+        {:error, reason} -> {:error, {:s3_upload_failed, reason}}
       end
     end)
     # |> Multi.on_rollback(:s3_upload_cleanup, fn _repo, %{s3_upload: s3_upload}, _error ->
@@ -27,7 +27,7 @@ defmodule Backend.Assets.Assets do
     |> Multi.run(:asset, fn _repo, _changes ->
       with {:ok, url} <- presigned_url(filename) do
         params
-        |> Map.merge(%{url: url})
+        |> Map.merge(%{url: url, filename: filename})
         |> Map.delete(:file)
         |> create_asset()
       else
@@ -47,10 +47,70 @@ defmodule Backend.Assets.Assets do
     end
   end
 
+  def update_asset_with_file(
+        %Asset{} = asset,
+        %{file: %Plug.Upload{path: path, filename: filename}} = params
+      ) do
+    Multi.new()
+    |> Multi.run(:delete_old_s3_file, fn _repo, _changes ->
+      if asset.filename do
+        case delete_object(asset.filename) do
+          {:ok, _} -> {:ok, :deleted}
+          {:error, reason} -> {:error, {:delete_old_file_failed, reason}}
+        end
+      else
+        {:ok, :no_file_to_delete}
+      end
+    end)
+    |> Multi.run(:new_s3_upload, fn _repo, _changes ->
+      case put_object(path, filename) do
+        {:ok, resp} -> {:ok, resp}
+        {:error, reason} -> {:error, {:s3_upload_failed, reason}}
+      end
+    end)
+    |> Multi.run(:updated_asset, fn _repo, _changes ->
+      with {:ok, url} <- presigned_url(filename) do
+        asset_params =
+          params
+          |> Map.merge(%{url: url, filename: filename})
+          |> Map.delete(:file)
+
+        update_asset(asset, asset_params)
+      else
+        {:error, reason} -> {:error, {:presigned_url_failed, reason}}
+      end
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{updated_asset: updated_asset}} ->
+        {:ok, updated_asset}
+
+      {:error, :delete_old_s3_file, {:error, reason}, _changes} ->
+        {:error, "Failed to delete old s3 file file: #{inspect(reason)}"}
+
+      {:error, :new_s3_upload, {:error, reason}, _changes} ->
+        {:error, "Failed to upload file: #{inspect(reason)}"}
+
+      {:error, :updated_asset, {:error, reason}, _changes} ->
+        {:error, "Failed to save file record: #{inspect(reason)}"}
+    end
+  end
+
   def create_asset(params) do
     %Asset{}
     |> Asset.changeset(params)
     |> Repo.insert()
+  end
+
+  def update_asset(%Asset{} = asset, params) do
+    asset
+    |> Asset.changeset(params)
+    |> Repo.update()
+  end
+
+  def get_asset(id) do
+    Repo.get_by(Asset, id: id)
+    |> format_asset()
   end
 
   def put_object(file_path, filename) do
@@ -62,7 +122,7 @@ defmodule Backend.Assets.Assets do
 
   def delete_object(filename) do
     S3.delete_object(@bucket, filename)
-    |> ExAws.request()
+    |> ExAws.request(config: s3_config())
   end
 
   def presigned_url(filename) do
@@ -73,11 +133,12 @@ defmodule Backend.Assets.Assets do
   end
 
   def s3_config() do
-    if System.get_env("MIX_ENV") == "dev" do
+    if Mix.env() == :dev do
       ExAws.Config.new(:s3,
         scheme: "http://",
-        host: "localhost",
-        port: 4566
+        host: "192.168.1.106",
+        port: 4566,
+        region: "us-east-1"
       )
     else
       ExAws.Config.new(:s3)
@@ -98,4 +159,7 @@ defmodule Backend.Assets.Assets do
         IO.inspect(reason, label: "Unexpected S3 error when creating bucket")
     end
   end
+
+  defp format_asset(%Asset{} = asset), do: {:ok, asset}
+  defp format_asset(nil), do: {:error, :not_found}
 end

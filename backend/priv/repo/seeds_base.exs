@@ -35,18 +35,37 @@ Logger.info("Creating users with profiles")
 
 users =
   Enum.map(1..40, fn number ->
+    role = if number < 21, do: "driver", else: "owner"
+
     params = %{
       first_name: Person.first_name(),
       last_name: Person.last_name(),
       username: Faker.Internet.user_name(),
       email: "user#{number}@gmail.com",
       password: "user123",
-      location: %{address: "Bulawayo 1st street", lat: "20.1457", lng: "28.5873"}
+      location: %{address: ["Bulawayo", "1st street"], lat: 20.1457, lon: 28.5873},
+      role: role
     }
 
     {:ok, user} =
       User.registration_changeset(params)
       |> Repo.insert()
+
+
+    %Membership{
+      user_id: user.id,
+      role: role
+    }
+
+    asset_params = %{
+      file: %Plug.Upload{
+        path: Path.expand("priv/person-test.jpg"),
+        filename: "uploads/person-test.jpg",
+      },
+      user_id: user.id
+    }
+
+    Assets.upload_and_save(asset_params)
 
     user
   end)
@@ -55,48 +74,47 @@ users =
 
 #####################################################################################################
 
-Logger.info("Creating business profiles")
+# Logger.info("Creating business profiles")
 
-business_profiles =
-  Enum.map(users, fn user ->
-    {:ok, profile} =
-      %BusinessProfile{
-        user_id: user.id,
-        active: true,
-        description: Company.catch_phrase(),
-        email: Internet.email(),
-        name: Company.name(),
-        location: %{
-          address: Address.street_address(),
-          lat: Address.latitude(),
-          lng: Address.longitude()
-        },
-        phone: Faker.Phone.EnUs.phone()
-      }
-      |> Repo.insert()
+# business_profiles =
+#   Enum.map(users, fn user ->
+#     {:ok, profile} =
+#       %BusinessProfile{
+#         user_id: user.id,
+#         active: true,
+#         description: Company.catch_phrase(),
+#         email: Internet.email(),
+#         name: Company.name(),
+#         location: %{
+#           address: Address.street_address(),
+#           lat: Address.latitude(),
+#           lng: Address.longitude()
+#         },
+#         phone: Faker.Phone.EnUs.phone()
+#       }
+#       |> Repo.insert()
 
-    Logger.info("Creating business profiles user_id memberships")
+#     Logger.info("Creating business profiles user_id memberships")
 
-    %Membership{
-      user_id: user.id,
-      business_profile_id: profile.id,
-      role: EctoEnums.RoleEnum.__enum_map__()[:owner]
-    }
-    |> Repo.insert()
+#     %Membership{
+#       user_id: user.id,
+#       role: EctoEnums.RoleEnum.__enum_map__()[:owner]
+#     }
+#     |> Repo.insert()
 
-    # CREATE PROFILE ASSET
-    asset_params = %{
-      file: %Plug.Upload{
-        path: Path.expand("priv/person-test.jpg"),
-        filename: "uploads/person-test.jpg",
-      },
-      business_profile_id: profile.id
-    }
+#     # CREATE PROFILE ASSET
+#     asset_params = %{
+#       file: %Plug.Upload{
+#         path: Path.expand("priv/person-test.jpg"),
+#         filename: "uploads/person-test.jpg",
+#       },
+#       business_profile_id: profile.id
+#     }
 
-    Assets.upload_and_save(asset_params)
+#     Assets.upload_and_save(asset_params)
 
-    profile
-  end)
+#     profile
+#   end)
 
 ######################################################################################################
 
@@ -109,7 +127,6 @@ fuel_types = [:diesel, :petrol, :electric, :hybrid, :hydrogen]
 
 vehicles =
   Enum.map(owners_users, fn user ->
-    profile = Enum.find(business_profiles, fn bp -> bp.user_id == user.id end)
     rand_number = Enum.random(1..length(vehicle_types))
 
       {:ok, vehicle} =
@@ -127,7 +144,6 @@ vehicles =
           mileage: Enum.random(10000..100000),
           price_fixed: %{currency: "ZAR", value: Enum.random(20..60)},
           user_id: user.id,
-          business_profile_id: profile.id,
         }
         |> Repo.insert()
 
@@ -206,22 +222,18 @@ end
 
 drivers =
   Enum.map(drivers_users, fn user ->
-    profile = Enum.find(business_profiles, fn bp -> bp.user_id == user.id end)
-
-      {:ok, driver} =
-        %Driver{
-          location: "Nketa, Bulawayo, Zimbabwe",
-          description: Enum.random(descriptions),
-          licences: random_licences.(licences),
-          active: true,
-          experience: Enum.random(0..52),
-          age: Enum.random(18..70),
-          platforms: random_platforms.(driver_platforms),
-          price_fixed: %{currency: "Rands", value: Enum.random(80..250)},
-          user_id: user.id,
-          business_profile_id: profile.id,
-        }
-        |> Repo.insert()
+    {:ok, driver} =
+      %Driver{
+        description: Enum.random(descriptions),
+        licences: random_licences.(licences),
+        active: true,
+        experience: Enum.random(0..52),
+        dob: Date.new!(Enum.random(1960..2006), 10, 13),
+        platforms: random_platforms.(driver_platforms),
+        price_fixed: %{currency: "Rands", value: Enum.random(80..250)},
+        user_id: user.id,
+      }
+      |> Repo.insert()
 
       driver
     end)
@@ -437,7 +449,7 @@ messages =
   end)
 
 Logger.info("Seed data population completed successfully!")
-Logger.info("Created: #{length(users)} users, #{length(business_profiles)} business profiles")
+# Logger.info("Created: #{length(users)} users, #{length(business_profiles)} business profiles")
 Logger.info("Created: #{length(vehicle_bookings)} vehicle_bookings")
 Logger.info("Created: #{length(driver_bookings)} driver_bookings")
 # Logger.info("Created: #{length(posts)} posts")

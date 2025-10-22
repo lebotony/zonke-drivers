@@ -4,9 +4,7 @@ defmodule Backend.Vehicles.Queries.VehicleBy do
 
   def base_query do
     from(v in Vehicle,
-      as: :vehicle,
-      join: bp in assoc(v, :business_profile),
-      as: :business_profile
+      as: :vehicle
     )
   end
 
@@ -14,15 +12,15 @@ defmodule Backend.Vehicles.Queries.VehicleBy do
     where(query, [vehicle: v], v.id == ^id)
   end
 
-  def by_business_profile(query, id) do
-    where(query, [vehicle: v], v.business_profile_id == ^id)
+  def by_user(query, id) do
+    where(query, [vehicle: v], v.user_id == ^id)
   end
 
   def by_active_status(query) do
     where(
       query,
-      [vehicle: v, business_profile: bp],
-      v.active == true and not bp.disabled
+      [vehicle: v],
+      v.active == true
     )
   end
 end

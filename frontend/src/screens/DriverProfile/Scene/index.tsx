@@ -5,7 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 
-import { find } from "lodash";
+import { find, isEmpty } from "lodash";
 
 import { Avatar } from "@/src/components/visual/avatar";
 import profilePic from "@/assets/images/profile_pic.png";
@@ -21,6 +21,7 @@ import { Licences } from "./ui/licences";
 import { createThread } from "../actions";
 import { detailsDef } from "./ui/detailsPill";
 import { shadowStyles } from "@/src/components/shadowStyles";
+import { calculateAge } from "@/src/helpers/calculateAge";
 
 export const Scene = () => {
   const { id } = useLocalSearchParams();
@@ -54,7 +55,9 @@ export const Scene = () => {
             <Avatar source={profilePic} round width={125} />
             <Text style={styles.name}>
               {driver?.first_name} {driver?.last_name}{" "}
-              <Text style={styles.age}>(56 yrs)</Text>
+              <Text
+                style={styles.age}
+              >{`(${calculateAge(driver?.dob)}) yrs`}</Text>
             </Text>
 
             <View style={styles.headerLocation}>
@@ -63,7 +66,11 @@ export const Scene = () => {
                 size={17}
                 color={Colors.mediumDarkGrey}
               />
-              <Text style={styles.location}>Soweto, Gauteng, South Africa</Text>
+              <Text style={styles.location}>
+                {!isEmpty(driver.location)
+                  ? driver?.location?.address.join(", ")
+                  : ""}
+              </Text>
             </View>
           </View>
 

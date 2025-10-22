@@ -12,6 +12,21 @@ export const styles = StyleSheet.create({
   header: {
     fontSize: 22,
   },
+  avatarWrapper: {
+    position: "relative",
+    borderWidth: 2,
+    borderColor: Colors.lightGrey,
+    borderStyle: "dashed",
+    justifyContent: 'center',
+    borderRadius: "50%"
+  },
+  addText: {
+    fontSize: 13,
+    position: 'absolute',
+    color: Colors.mediumGrey,
+    alignItems: 'center',
+    left: 16
+  },
   userWrapper: {
     backgroundColor: Colors.white,
     flexDirection: 'row',

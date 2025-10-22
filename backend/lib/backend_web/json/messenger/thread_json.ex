@@ -9,7 +9,8 @@ defmodule BackendWeb.Messenger.ThreadJSON do
   end
 
   def show(%{thread: thread}) do
-    last_message = if thread.last_message, do: MessageJSON.show(%{message: thread.last_message}), else: %{}
+    last_message =
+      if thread.last_message, do: MessageJSON.show(%{message: thread.last_message}), else: %{}
 
     messages =
       if Ecto.assoc_loaded?(thread.messages) do

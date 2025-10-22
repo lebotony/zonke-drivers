@@ -1,25 +1,42 @@
 import { z } from 'zod';
 
 export const fieldValidators = {
-  full_name: z.string(),
-  location: z.string(),
-  dob: z.string(),
-  bio: z.string().optional(),
+  first_name: z.string().optional(),
+  last_name: z.string().optional(),
+  location: z
+    .object({
+      address: z.string().array(),
+      lon: z.number(),
+      lat: z.number(),
+    }).optional(),
+  email: z.string().optional(),
+  dob: z.string().optional(),
+  description: z.string().optional(),
   platforms: z.string().array().optional(),
   licences: z.string().array().optional(),
   asset: z
     .object({
       file_path: z.string(),
       filename: z.string(),
-    })
+    }).optional()
 };
 
-export const SetUpOneSchema = z.object({
-  full_name: fieldValidators.full_name,
+export const DriverProfileSchema = z.object({
+  first_name: fieldValidators.first_name,
+  last_name: fieldValidators.last_name,
+  email: fieldValidators.email,
   location: fieldValidators.location,
-  bio: fieldValidators.bio,
+  description: fieldValidators.description,
   platforms: fieldValidators.platforms,
   licences: fieldValidators.licences,
   asset: fieldValidators.asset,
   dob: fieldValidators.dob,
+});
+
+export const OwnerProfileSchema = z.object({
+  first_name: fieldValidators.first_name,
+  last_name: fieldValidators.last_name,
+  email: fieldValidators.email,
+  location: fieldValidators.location,
+  asset: fieldValidators.asset,
 });
