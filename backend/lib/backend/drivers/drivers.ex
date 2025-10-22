@@ -1,12 +1,16 @@
 defmodule Backend.Drivers.Drivers do
-  alias Backend.{Repo, PaginateHelper}
+  alias Backend.{Repo, PaginateHelper, EmptyFieldsHelper}
   alias Backend.Drivers.{Driver, Policy, Queries.DriverBy}
   alias Backend.Vehicles.VehicleDriver
   alias Backend.Reviews.Review
+  alias Backend.Accounts.Users
 
   import Ecto.Query
 
   defdelegate authorize(action, params, session), to: Policy
+
+  @user_fields [:asset, :first_name, :last_name, :email, :location]
+  @driver_preloads [user: :asset]
 
   def create(params, %{user_id: user_id}) do
     params =
@@ -19,10 +23,61 @@ defmodule Backend.Drivers.Drivers do
     |> Repo.insert()
   end
 
-  def update(%Driver{} = driver, params) do
+  def update_or_create(params, user_id) do
+    {user_params, driver_params} = Map.split(params, @user_fields)
+
+    with {:ok, _user} <- maybe_update_user(user_id, user_params),
+         {:ok, driver} <- maybe_update_driver(user_id, driver_params),
+         updated_driver <- Repo.get(Driver, driver.id) |> Repo.preload(@driver_preloads) do
+      # IO.inspect(updated_driver)
+      {:ok, updated_driver}
+    else
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp maybe_update_user(user_id, params) do
+    case EmptyFieldsHelper.map_has_non_empty_fields?(params) do
+      true ->
+        {:ok, user} = Users.get_user_by(id: user_id)
+        Users.update(user, params)
+
+      _ ->
+        {:ok, :no_user_params}
+    end
+  end
+
+  defp maybe_update_driver(user_id, params) do
+    cleaned_params =
+      params
+      |> Enum.reject(fn {_k, v} -> is_nil(v) or v == "" end)
+      |> Enum.into(%{})
+
+    case get_user_driver(user_id) do
+      {:ok, driver} ->
+        if map_size(cleaned_params) > 0 do
+          update_driver(driver, cleaned_params)
+        else
+          {:ok, driver}
+        end
+
+      {:error, :not_found} ->
+        create(cleaned_params, %{user_id: user_id})
+    end
+  end
+
+  def update_driver(driver, params) do
     driver
     |> Driver.changeset(params)
     |> Repo.update()
+  end
+
+  def get_user_driver(user_id) do
+    from(d in Driver,
+      where: d.user_id == ^user_id
+    )
+    |> Repo.one()
+    |> format_driver()
   end
 
   def delete(%Driver{id: id} = driver) do
@@ -45,10 +100,10 @@ defmodule Backend.Drivers.Drivers do
     |> format_driver()
   end
 
-  def get_drivers(params) do
+  def get_drivers(params, %{user_id: user_id}) do
     data =
       DriverBy.base_query()
-      |> DriverBy.by_business_profile(params.business_profile_id)
+      |> DriverBy.by_user(user_id)
       |> add_extra_fields()
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
@@ -90,7 +145,11 @@ defmodule Backend.Drivers.Drivers do
         min = String.to_integer(min)
         max = String.to_integer(max)
 
-        where(query, [driver: d], d.age >= ^min and d.age <= ^max)
+        where(
+          query,
+          [driver: d],
+          fragment("DATE_PART('year', AGE(?)) BETWEEN ? AND ?", d.dob, ^min, ^max)
+        )
 
       {:experience_range, [min, max]}, query ->
         min = String.to_integer(min)
@@ -106,7 +165,7 @@ defmodule Backend.Drivers.Drivers do
         where(query, [driver: d], fragment("? && ?", d.platforms, ^val))
 
       # {:licences, val}, query when is_list(val) ->
-        # where(query, [driver: d], fragment("?->>'name' && ?", d.licences, ^val))
+      # where(query, [driver: d], fragment("?->>'name' && ?", d.licences, ^val))
 
       _, query ->
         query

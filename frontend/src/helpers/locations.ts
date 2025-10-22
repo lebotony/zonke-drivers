@@ -24,8 +24,13 @@ import { debounce } from "lodash";
       )
       .then((res) => {
         const places = res.data.features.map(
-          (feature: Record<string, any>) => feature.place_name
+          (feature: Record<string, any>) => ({
+            address: feature.place_name.split(",").map(item => item.trim()),
+            lon: feature.center[0],
+            lat: feature.center[1]
+          })
         );
+
         onSetResults(places);
         onOpen(true);
       })

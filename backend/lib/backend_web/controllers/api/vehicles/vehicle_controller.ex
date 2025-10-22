@@ -31,7 +31,7 @@ defmodule BackendWeb.Vehicles.VehicleController do
 
   def create(conn, params, session) do
     # with :ok <- Bodyguard.permit(Vehicles, :create, %{id: profile_id}, session),
-      with {:ok, vehicle} <- Vehicles.create(params, session) do
+    with {:ok, vehicle} <- Vehicles.create(params, session) do
       render(conn, :show, vehicle: vehicle)
     end
   end

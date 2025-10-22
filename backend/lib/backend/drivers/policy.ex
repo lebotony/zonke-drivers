@@ -9,17 +9,17 @@ defmodule Backend.Services.Policy do
       when action in @admins_actions,
       do: :ok
 
-  def authorize(action, %{id: profile_id}, %{user_id: user_id})
+  def authorize(action, %{user_id: user_id})
       when action in @admins_actions do
-    authorize_member(profile_id, user_id)
+    authorize_member(user_id)
   end
 
   def authorize(:show_public, %{draft: false, paused_at: nil}, _), do: :ok
 
   def authorize(_, _, _), do: :error
 
-  defp authorize_member(business_profile_id, user_id) do
-    case Memberships.is_member?(business_profile_id, user_id) do
+  defp authorize_member(user_id) do
+    case Memberships.is_member?(user_id) do
       {true, role} when role in @admin_roles -> :ok
       _ -> :error
     end

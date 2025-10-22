@@ -4,18 +4,18 @@ defmodule Backend.Assets.Asset do
   alias Backend.Accounts.BusinessProfile
   alias Backend.Vehicles.Vehicle
 
-  @required_fields [:url]
-  @optional_fields [:copied, :meta, :vehicle_id, :business_profile_id]
+  @required_fields [:url, :filename]
+  @optional_fields [:copied, :meta, :vehicle_id, :user_id]
   @all_fields @required_fields ++ @optional_fields
 
   schema "assets" do
     field(:copied, :boolean)
     field(:meta, :map)
-    field(:filename, :string, virtual: true)
+    field(:filename, :string)
     field(:url, :string)
 
     belongs_to(:vehicle, Vehicle)
-    belongs_to(:business_profile, BusinessProfile)
+    belongs_to(:user, User)
 
     timestamps()
   end
@@ -29,13 +29,13 @@ defmodule Backend.Assets.Asset do
 
   defp validate_vehicle_or_business(changeset) do
     vehicle_id = get_field(changeset, :vehicle_id)
-    business_profile_id = get_field(changeset, :business_profile_id)
+    user_id = get_field(changeset, :user_id)
 
-    if is_nil(vehicle_id) and is_nil(business_profile_id) do
+    if is_nil(vehicle_id) and is_nil(user_id) do
       add_error(
         changeset,
         :base,
-        "Either vehicle_id or business_profile_id must be present"
+        "Either vehicle_id or user_id must be present"
       )
     else
       changeset

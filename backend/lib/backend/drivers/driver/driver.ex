@@ -7,28 +7,24 @@ defmodule Backend.Drivers.Driver do
   alias Backend.Vehicles.Vehicle
   alias Backend.Bookings.DriverBooking
 
-  @required_fields [:location, :business_profile_id, :user_id]
+  @required_fields [:user_id]
   @optional_fields [
     :description,
-    :location_options,
     :active,
     :paused_at,
     :experience,
-    :age,
-    :licences,
+    :dob,
     :platforms
   ]
-  @embeds [:price_range, :price_fixed]
+  @embeds [:price_range, :price_fixed, :licences]
   @all_fields @required_fields ++ @optional_fields ++ @embeds
 
   schema "drivers" do
     field(:description, :string)
-    field(:location, :string)
-    field(:location_options, {:array, :string})
     field(:active, :boolean, default: false)
     field(:paused_at, :naive_datetime)
     field(:experience, :integer)
-    field(:age, :integer)
+    field(:dob, :date)
     field(:platforms, {:array, :string})
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
 
@@ -42,11 +38,11 @@ defmodule Backend.Drivers.Driver do
     field(:email, :string, virtual: true)
     field(:first_name, :string, virtual: true)
     field(:last_name, :string, virtual: true)
+    field(:location, :map, virtual: true)
     field(:username, :string, virtual: true)
     field(:previous_vehicles, :integer, virtual: true)
     field(:total_accidents, :integer, virtual: true)
 
-    belongs_to(:business_profile, BusinessProfile)
     belongs_to(:user, User)
 
     has_many(:reviews, Review)
@@ -63,7 +59,6 @@ defmodule Backend.Drivers.Driver do
     |> cast_embed(:price_fixed, required: false, with: &PriceFixed.changeset/2)
     |> cast_embed(:licences, required: false, with: &Licence.changeset/2)
     |> assoc_constraint(:user)
-    |> assoc_constraint(:business_profile)
     |> validate_required(@required_fields)
   end
 end

@@ -1,13 +1,11 @@
 defmodule Backend.Ecto.EctoEnums do
   import EctoEnum
 
-  # Used in business profiles <-> user memberships
-  defenum(RoleEnum,
-    owner: 0,
-    admin: 1,
-    supervisor: 1,
-    member: 3
-  )
+  defenum(RoleEnum, :role_enum, [
+    :driver,
+    :owner,
+    :member
+  ])
 
   defenum(BookingStatusEnum, :booking_status_enum, [
     :accepted,

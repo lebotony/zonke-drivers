@@ -1,11 +1,10 @@
 type Driver = {
   id: string,
   description: string,
-  location_options: LocationType[],
   paused_at: string,
-  price_range: PriceRange,
   price_fixed: PriceFixed,
-  age: number,
+  dob: string,
+  location: LocationType,
   experience: number,
   rating: number,
   booking_count: number,

@@ -62,12 +62,13 @@ defmodule Backend.Messenger.Threads do
     [p1, p2] = participant_ids
 
     query =
-      from tp1 in ThreadParticipant,
+      from(tp1 in ThreadParticipant,
         join: tp2 in ThreadParticipant,
         on: tp1.thread_id == tp2.thread_id,
         where: tp1.participant_id == ^p1 and tp2.participant_id == ^p2,
         select: tp1.thread_id,
         limit: 1
+      )
 
     Repo.one(query)
   end

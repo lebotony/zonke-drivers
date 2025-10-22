@@ -24,6 +24,7 @@ type Paginate = {
 };
 
 type LocationType = {
+  address: string[],
   lat: string,
   lon: string
 }

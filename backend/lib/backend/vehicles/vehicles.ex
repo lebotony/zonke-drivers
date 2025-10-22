@@ -12,8 +12,6 @@ defmodule Backend.Vehicles.Vehicles do
   # defdelegate authorize(action, params, session), to: Policy
 
   def create(params, %{user_id: user_id}) do
-    {:ok, %{id: profile_id}} = BusinessProfiles.get_business_profile(%{user_id: user_id})
-
     decoded_params =
       Map.update(params, :price_fixed, %{}, fn val ->
         if is_binary(val), do: Jason.decode!(val), else: val
@@ -22,7 +20,6 @@ defmodule Backend.Vehicles.Vehicles do
     vehicle_params =
       decoded_params
       |> Map.delete(:asset)
-      |> Map.put(:business_profile_id, profile_id)
       |> Map.put(:user_id, user_id)
 
     Multi.new()
@@ -74,7 +71,7 @@ defmodule Backend.Vehicles.Vehicles do
   def get_vehicles(params) do
     data =
       VehicleBy.base_query()
-      |> VehicleBy.by_business_profile(params.business_profile_id)
+      |> VehicleBy.by_user(params.user_id)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
@@ -91,11 +88,14 @@ defmodule Backend.Vehicles.Vehicles do
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()
       |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
-      |> join(:left_lateral, [vehicle: v], rating in subquery(rating_subquery), as: :rating, on: true)
+      |> join(:left_lateral, [vehicle: v], rating in subquery(rating_subquery),
+        as: :rating,
+        on: true
+      )
       |> select_merge([vehicle: v, user: u, rating: rating], %{
         v
         | rating: coalesce(rating.avg_rating, 0),
-          user_id: u.id,
+          user_id: u.id
       })
       |> build_search(params)
       |> build_sort(params)

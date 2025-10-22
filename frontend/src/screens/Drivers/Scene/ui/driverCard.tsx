@@ -15,6 +15,7 @@ import { CustomButton } from "@/src/components/elements/button";
 
 import { styles } from "../styles/driverCard";
 import { Platforms } from "./platforms";
+import { calculateAge } from "@/src/helpers/calculateAge";
 
 const ICON_SIZE = 14;
 
@@ -32,7 +33,7 @@ export const DriverCard = (props: DriverProps) => {
         <View style={styles.details}>
           <Text style={styles.name}>
             {driver?.first_name} {driver?.last_name}
-            <Text style={styles.age}> {`(${driver?.age})`}</Text>
+            <Text style={styles.age}> {`(${calculateAge(driver?.dob)})`}</Text>
           </Text>
 
           <View style={styles.ratingRow}>
@@ -51,7 +52,7 @@ export const DriverCard = (props: DriverProps) => {
             </View>
 
             <Text style={styles.address} numberOfLines={1}>
-              {driver?.experience} years
+              {driver?.experience} years of XP
             </Text>
           </View>
 
@@ -64,7 +65,8 @@ export const DriverCard = (props: DriverProps) => {
               />
             </View>
             <Text style={styles.address} numberOfLines={1}>
-              Soweto, Gauteng, South Africa
+              {Array.isArray(driver?.location?.address) &&
+                driver.location.address.join(", ")}
             </Text>
           </View>
         </View>

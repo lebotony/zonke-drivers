@@ -23,6 +23,8 @@ defmodule BackendWeb.Router do
     scope "/" do
       pipe_through([:authorization])
 
+      resources("/users", UserController, except: @except_path_actions)
+
       scope("/business_profiles") do
         get("/public", BusinessProfiles.BusinessProfilesController, :public_index)
       end
@@ -33,6 +35,8 @@ defmodule BackendWeb.Router do
 
       scope("/drivers") do
         get("/public", Drivers.DriverController, :public_index)
+        get("/user_driver", Drivers.DriverController, :fetch_user_driver)
+        post("/upsert", Drivers.DriverController, :upsert)
       end
 
       resources("/drivers", Drivers.DriverController, except: @except_path_actions)

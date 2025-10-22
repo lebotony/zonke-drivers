@@ -5,9 +5,10 @@ defmodule Backend.Accounts.User do
   alias Backend.Vehicles.Vehicle
   alias Backend.Bookings.DriverBooking
   alias Backend.Bookings.VehicleBooking
-  alias Backend.Accounts.BusinessProfile
+  alias Backend.Ecto.EctoEnums.RoleEnum
+  alias Backend.Assets.Asset
 
-  @required_fields [:first_name, :last_name, :email]
+  @required_fields [:first_name, :last_name, :email, :role]
   @optional_fields [:location, :username]
   @all_fields @required_fields ++ @optional_fields
 
@@ -18,10 +19,11 @@ defmodule Backend.Accounts.User do
     field(:username, :string)
     field(:location, :map)
     field(:password_hash, :string)
+    field(:role, RoleEnum)
 
     field(:password, :string, virtual: true)
 
-    has_one(:business_profile, BusinessProfile)
+    has_one(:asset, Asset)
 
     has_many(:reviews, Review, foreign_key: :author_id)
     has_many(:vehicles, Vehicle)

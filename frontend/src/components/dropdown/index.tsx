@@ -39,6 +39,7 @@ type DropdownInputProps<T extends FieldValues> = {
   required?: boolean;
   setValue: UseFormSetValue<T>;
   placeholderTextColor?: string;
+  value: string;
 };
 
 export const DropdownInput = <T extends FieldValues>({
@@ -55,11 +56,12 @@ export const DropdownInput = <T extends FieldValues>({
   setValue,
   required,
   placeholderTextColor = Colors.midToneGrey,
+  value,
 }: DropdownInputProps<T>) => {
   const [open, setOpen] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
-  const [query, setQuery] = useState("");
-  const [results, setResults] = useState([]);
+  const [query, setQuery] = useState(value || "");
+  const [results, setResults] = useState<LocationType[]>([]);
 
   const isLocation = name === "location";
 
@@ -174,12 +176,15 @@ export const DropdownInput = <T extends FieldValues>({
     };
   }, [fetchSuggestions]);
 
-  const handleSelect = (value: string) => {
-    isLocation
-      ? setValue(name, value, { shouldValidate: true })
-      : onSelect!(value);
+  const handleSelect = (value: string | LocationType) => {
+    if (isLocation) {
+      setValue(name, value, { shouldValidate: true });
+      setQuery((value as LocationType).address.join(", "));
+    } else {
+      onSelect!(value as string);
+      setQuery(value as string);
+    }
 
-    setQuery(value);
     setOpen(false);
   };
 
@@ -316,7 +321,7 @@ export const DropdownInput = <T extends FieldValues>({
                       }));
                     }}
                   >
-                    {item}
+                    {isLocation ? item.address.join(", ") : item}
                   </Text>
                   {selectedValue === item && (
                     <MaterialIcons
