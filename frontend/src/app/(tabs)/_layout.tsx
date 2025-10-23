@@ -1,15 +1,24 @@
 import React from "react";
 import { Tabs } from "expo-router";
 
-import AntDesign from "@expo/vector-icons/AntDesign";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 
 import { Colors } from "@/constants/ui";
-import { useClientOnlyValue } from "../../components/useClientOnlyValue";
+import { useCustomQuery } from "@/src/useQueryContext";
+import { useClientOnlyValue } from "@/src/components/useClientOnlyValue";
+import { Spinner } from "@/src/components/elements/Spinner";
 
 export default function TabLayout() {
-  let driver = true;
+  const { getCachedData } = useCustomQuery();
+  const { user } = getCachedData(["user"]);
+
+  const isDriver = user?.role === "driver";
+
+  if (!user) {
+    return <Spinner />;
+  }
+
   return (
     <Tabs
       screenOptions={{
@@ -40,6 +49,7 @@ export default function TabLayout() {
         options={{
           headerShown: false,
           title: "Manage",
+          href: isDriver ? null : "/(tabs)/manage",
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="layers-outline" size={24} color={color} />
           ),
@@ -51,6 +61,7 @@ export default function TabLayout() {
         options={{
           headerShown: false,
           title: "Vehicle",
+          href: isDriver ? null : "/(tabs)/vehicle",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="commute" size={25} color={color} />
           ),

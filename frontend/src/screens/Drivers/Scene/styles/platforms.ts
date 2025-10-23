@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
   platformTags: {
     gap: 5,
     flexDirection: "row",
-    flex: 1
+    alignItems: "center",
   },
   platform: {
     paddingVertical: 4,

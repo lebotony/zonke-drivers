@@ -1,4 +1,4 @@
-import { ManageVehicles } from "../../screens/ManageVehicles";
+import { ManageVehicles } from "@/src/screens/ManageVehicles";
 
 export default function Manage() {
   return <ManageVehicles />;

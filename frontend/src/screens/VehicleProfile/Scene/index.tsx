@@ -31,6 +31,7 @@ import { CustomButton } from "@/src/components/elements/button";
 
 import { styles } from "./styles/index";
 import { createThread } from "../../DriverProfile/actions";
+import { shadowStyles } from "@/src/components/shadowStyles";
 
 export const Scene = () => {
   const { id } = useLocalSearchParams();
@@ -305,7 +306,12 @@ export const Scene = () => {
         <View style={{ flexDirection: "row", gap: 15 }}>
           <CustomButton
             onPress={() => null}
-            customStyle={{ marginBottom: 20, marginLeft: 15, flex: 1 }}
+            customStyle={{
+              marginBottom: 20,
+              marginLeft: 15,
+              flex: 1,
+              ...shadowStyles,
+            }}
           >
             <Text style={{ color: Colors.white }}>Apply</Text>
           </CustomButton>
@@ -313,7 +319,12 @@ export const Scene = () => {
           <CustomButton
             color={Colors.emeraldGreen}
             onPress={handleCreateThread}
-            customStyle={{ marginBottom: 20, marginRight: 15, flex: 1 }}
+            customStyle={{
+              marginBottom: 20,
+              marginRight: 15,
+              flex: 1,
+              ...shadowStyles,
+            }}
           >
             <Text style={{ color: Colors.white }}>Message</Text>
           </CustomButton>

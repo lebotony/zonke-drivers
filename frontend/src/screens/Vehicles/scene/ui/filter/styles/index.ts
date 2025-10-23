@@ -47,22 +47,22 @@ export const styles = StyleSheet.create({
   },
   chipBtn: {
     paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 20,
+    paddingVertical: 5,
+    borderRadius: 15,
     marginRight: 16,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   fuelCheckbox: {
     paddingTop: 5,
-    paddingHorizontal: 16,
-    flexWrap: 'wrap'
+    paddingLeft: 16,
   },
   fuelOptions: {
     flexDirection: 'row',
-    paddingTop: 8 
+    paddingTop: 8
   },
   checkbox: {
-    borderRadius: 20,
-    marginRight: 12,
+    marginRight: 22,
     flexDirection: 'row',
     alignItems: 'center',
   },
