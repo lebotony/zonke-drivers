@@ -12,8 +12,8 @@ import { fetchVehicles } from "./actions";
 import { HeaderFilter } from "./scene/ui/FilterHeader";
 import { BrandsList } from "./utils/constants";
 import { Brands } from "./scene/ui/brands";
-import { QuickFilters } from "../Drivers/Scene/ui/quickFilters";
 import { Header } from "../Drivers/Scene/ui/header";
+import { HeaderFilterPlatforms } from "./scene/ui/platforms";
 
 export const VehiclesScreen = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -205,13 +205,11 @@ export const VehiclesScreen = () => {
           alignItems: "center",
         }}
       >
-        <QuickFilters
+        <HeaderFilterPlatforms
           onSetSelectedPlatforms={(value: string) =>
             handleSetSelectedVehicleType(value)
           }
           selectedPlatforms={selectedVehicleTypes}
-          onClear={() => setSelectedVehicleTypes([])}
-          isVehicle
         />
 
         <HeaderFilter

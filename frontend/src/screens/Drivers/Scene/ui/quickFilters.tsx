@@ -39,7 +39,10 @@ export const QuickFilters = (props: QuickFiltersProps) => {
       <View
         style={[
           styles.container,
-          isVehicle && { width: 252, justifyContent: "center" },
+          isVehicle && {
+            justifyContent: "center",
+            backgroundColor: "yellow",
+          },
         ]}
       >
         {!isVehicle && (
@@ -69,7 +72,7 @@ export const QuickFilters = (props: QuickFiltersProps) => {
           horizontal
           showsHorizontalScrollIndicator={false}
           snapToAlignment="end"
-          contentContainerStyle={styles.platformFilter}
+          contentContainerStyle={[styles.platformFilter]}
           bounces={false}
         >
           {platformFilters.map(

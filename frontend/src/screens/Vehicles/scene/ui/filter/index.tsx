@@ -199,10 +199,14 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
           <View style={styles.fuelCheckbox}>
             <Text style={styles.contentTitle}>Fuel Type</Text>
-            <View style={styles.fuelOptions}>
-              {["Diesel", "Petrol", "Electric", "Hybrid", "Hydrogen"].map(
-                (f) => {
-                  const key = f.toLowerCase();
+            <FlatList
+              data={["Diesel", "Petrol", "Electric", "Hybrid", "Hydrogen"]}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.fuelOptions}
+              renderItem={({ item }) => {
+                {
+                  const key = item.toLowerCase();
                   const selected = selectedFuelTypes.includes(key);
                   return (
                     <TouchableOpacity
@@ -230,13 +234,13 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                         ) : null}
                       </View>
                       <Text style={{ color: Colors.darkCharcoalGrey }}>
-                        {f}
+                        {item}
                       </Text>
                     </TouchableOpacity>
                   );
                 }
-              )}
-            </View>
+              }}
+            />
           </View>
 
           {/* Price Range */}

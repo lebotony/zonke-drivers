@@ -67,7 +67,7 @@ export const Scene = () => {
                 color={Colors.mediumDarkGrey}
               />
               <Text style={styles.location}>
-                {!isEmpty(driver.location)
+                {!isEmpty(driver?.location)
                   ? driver?.location?.address.join(", ")
                   : ""}
               </Text>

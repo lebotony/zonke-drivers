@@ -14,7 +14,7 @@ export const styles = StyleSheet.create({
     },
     shadowOpacity: 0.19,
     shadowRadius: 5.62,
-    elevation: 3,
+    elevation: 2,
     paddingBottom: 11,
   },
   items: {
@@ -29,7 +29,7 @@ export const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.06)",
     flex: 1,
     height: 34,
-    borderRadius: 10,
+    borderRadius: 8,
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,

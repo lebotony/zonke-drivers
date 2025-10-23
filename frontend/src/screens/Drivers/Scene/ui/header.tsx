@@ -6,7 +6,6 @@ import { StatusBar } from "expo-status-bar";
 
 import { TextLogo } from "@/src/components/misc/textLogo";
 import { Colors } from "@/constants/ui";
-import { Circle } from "@/src/components/shapes/circle";
 
 import { styles } from "../styles/header";
 
@@ -44,14 +43,17 @@ export const Header = (props: HeaderProps) => {
             />
           </View>
 
-          <TouchableOpacity onPress={() => setShowFilterModal(true)}>
-            <Circle size={33} borderColor={Colors.mrDBlue}>
-              <Ionicons
-                name="filter-outline"
-                size={20}
-                color={Colors.mrDBlue}
-              />
-            </Circle>
+          <TouchableOpacity
+            style={{
+              borderColor: Colors.mrDBlue,
+              borderWidth: 1,
+              borderRadius: 8,
+              paddingVertical: 4,
+              paddingHorizontal: 5,
+            }}
+            onPress={() => setShowFilterModal(true)}
+          >
+            <Ionicons name="options-outline" size={23} color={Colors.mrDBlue} />
           </TouchableOpacity>
         </View>
       </SafeAreaView>
