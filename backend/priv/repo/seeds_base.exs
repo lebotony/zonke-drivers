@@ -406,7 +406,7 @@ Logger.info("Creating threads")
 
 threads =
   Enum.map(owners_users, fn user ->
-    {:ok, thread} = Threads.initialize_thread([user.id, List.first(drivers_users).id])
+    {:ok, thread} = Threads.initialize_thread(user.id, List.first(drivers_users).id)
 
     thread
   end)
@@ -418,16 +418,14 @@ Logger.info("Creating messages")
 preloads = [:messages, [thread_participants: :participant]]
 
 messages =
-  Enum.flat_map(Enum.zip(threads, 1..length(threads)), fn {thread, thd_index} ->
-    preloaded_thread = Repo.preload(thread, preloads)
+  Enum.flat_map(Enum.zip(threads, owners_users), fn {thread, owner_user} ->
+    thd_index =
+      Enum.find_index(threads, fn thd ->
+        thd.id == thread.id
+      end)
 
     Enum.map(1..5, fn msg_number ->
-      [
-        %ThreadParticipant{participant_id: author_id},
-        %ThreadParticipant{participant_id: recipient_id}
-      ] = preloaded_thread.thread_participants
-
-      shift_minutes_by = (thd_index * 10) + msg_number
+      shift_minutes_by = ((thd_index + 1) * 10) + msg_number
 
       inserted_at =
         NaiveDateTime.utc_now()
@@ -438,8 +436,8 @@ messages =
         %Message{
           content: "Message #{msg_number} in thread #{thread.id}",
           thread_id: thread.id,
-          recipient_id: recipient_id,
-          author_id: author_id,
+          recipient_id: List.first(drivers_users).id,
+          author_id: owner_user.id,
           inserted_at: inserted_at
         }
         |> Repo.insert()

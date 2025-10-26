@@ -4,15 +4,11 @@ defmodule BackendWeb.Messenger.ParticipantJSON do
   end
 
   def show(%{participant: participant}) do
-    Map.take(participant, [
-      :id,
-      :first_name,
-      :last_name,
-      :username,
-      :email,
-      :location,
-      :inserted_at,
-      :updated_at
-    ])
+    %{
+      id: participant.id,
+      first_name: participant.first_name,
+      last_name: participant.last_name,
+      asset_url: participant.asset_url
+    }
   end
 end

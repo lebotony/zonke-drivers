@@ -206,9 +206,10 @@ defmodule Backend.Drivers.Drivers do
 
     query
     |> join(:inner, [driver: d], u in assoc(d, :user), as: :user)
+    |> join(:inner, [user: u], a in assoc(u, :asset), as: :asset)
     |> join(:left_lateral, [driver: d], vd_stats in subquery(subquery), as: :vd_stats)
     |> join(:left_lateral, [driver: d], rating in subquery(rating_subquery), as: :rating, on: true)
-    |> select_merge([driver: d, user: u, vd_stats: vd_stats, rating: rating], %{
+    |> select_merge([driver: d, user: u, vd_stats: vd_stats, rating: rating, asset: a], %{
       d
       | email: u.email,
         first_name: u.first_name,
@@ -218,7 +219,8 @@ defmodule Backend.Drivers.Drivers do
         user_id: u.id,
         previous_vehicles: vd_stats.previous_vehicles,
         total_accidents: vd_stats.total_accidents,
-        rating: coalesce(rating.avg_rating, 0)
+        rating: coalesce(rating.avg_rating, 0),
+        asset_url: a.url
     })
   end
 

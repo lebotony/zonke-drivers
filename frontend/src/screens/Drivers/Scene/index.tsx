@@ -59,8 +59,6 @@ export const Scene = () => {
 
     if (resetRef.current === true) resetRef.current = false;
 
-    console.log("AAAAAAAAAAAAAAAAAAAAA", filters);
-
     return fetchDrivers({ pageParam }, filters);
   };
 

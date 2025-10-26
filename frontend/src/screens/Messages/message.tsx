@@ -9,23 +9,20 @@ import { Colors } from "@/constants/ui";
 
 import { styles } from "./styles/message";
 
-const userAvatar = require("@/assets/images/person_1.jpg");
-
 type MessageProps = {
-  activeThreadId?: string;
+  currentThreadId?: string;
   thread?: Thread;
   user?: { id: string };
-  setActiveThreadIdRef: (threadId: string) => void;
+  onSetCurrentThread: (threadId: string) => void;
 };
 
 export const Message = (props: MessageProps) => {
-  const { thread, user, setActiveThreadIdRef } = props;
+  const { thread, user, onSetCurrentThread, currentThreadId } = props;
 
-  // const isOnline = true;
   const isAuthor = thread?.last_message?.author_id === user?.id;
   const thd_participants = thread?.thread_participants;
   const recipient = thd_participants?.filter(
-    (thd_part) => thd_part.participant_id != user?.id
+    (thd_part) => thd_part.participant.id != user?.id
   )[0].participant;
   const tickColor = thread?.last_message?.seen
     ? Colors.blueTicksColor
@@ -34,7 +31,7 @@ export const Message = (props: MessageProps) => {
   const handlePressChat = () => {
     if (thread?.id) {
       router.push(`/chats/${thread.id}`);
-      setActiveThreadIdRef(thread.id);
+      onSetCurrentThread(thread.id);
     }
   };
 
@@ -43,7 +40,11 @@ export const Message = (props: MessageProps) => {
   return (
     <TouchableOpacity style={[styles.messageItem]} onPress={handlePressChat}>
       <View style={{ position: "relative" }}>
-        <Image source={userAvatar} style={styles.avatar} resizeMode="contain" />
+        <Image
+          source={recipient?.asset_url}
+          style={styles.avatar}
+          resizeMode="cover"
+        />
         {/* <View
           style={[
             styles.avatarStatus,

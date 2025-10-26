@@ -29,7 +29,7 @@ export const DriverCard = (props: DriverProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <Avatar source={profilePic} radius shadow width={83} />
+        <Avatar source={driver?.asset_url} radius shadow width={83} />
         <View style={styles.details}>
           <Text style={styles.name}>
             {driver?.first_name} {driver?.last_name}

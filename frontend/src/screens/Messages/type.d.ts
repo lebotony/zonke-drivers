@@ -24,11 +24,7 @@ type Participant = {
   id: string,
   first_name: string,
   last_name: string,
-  username: string,
-  email: string,
-  location: object,
-  inserted_at: string,
-  updated_at: string
+  asset_url: string,
 }
 
 type Thread = {

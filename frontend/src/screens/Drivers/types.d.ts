@@ -15,7 +15,8 @@ type Driver = {
   first_name: string,
   last_name: string,
   username: string,
-  location: string
+  location: string,
+  asset_url: string
 }
 
 type Filters = {

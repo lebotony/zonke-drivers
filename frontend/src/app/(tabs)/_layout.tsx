@@ -15,6 +15,8 @@ export default function TabLayout() {
 
   const isDriver = user?.role === "driver";
 
+  const headerShown = useClientOnlyValue(false, true);
+
   if (!user) {
     return <Spinner />;
   }
@@ -26,7 +28,7 @@ export default function TabLayout() {
         tabBarInactiveTintColor: Colors.black,
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
-        headerShown: useClientOnlyValue(false, true),
+        headerShown,
         tabBarStyle: {
           backgroundColor: Colors.white,
           paddingVertical: 8,
