@@ -41,6 +41,7 @@ defmodule BackendWeb.Drivers.DriverJSON do
       rating: driver.rating,
       inserted_at: driver.inserted_at,
       updated_at: driver.updated_at,
+      asset_url: driver.asset_url,
       user: user
     }
   end

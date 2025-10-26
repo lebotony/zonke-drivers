@@ -25,6 +25,7 @@ import { AuthProvider, useAuth } from "../authContext";
 import { AuthScreen } from "../screens/SignUp";
 import { UseCustomQueryProvider } from "../useQueryContext";
 import { PaginatedCacheProvider } from "../updateCacheProvider";
+import { MessagesProvider } from "../screens/Messages/MessagesProvider";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -100,13 +101,17 @@ function RootLayoutNav() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <UseCustomQueryProvider>
-        <AuthProvider>
-          <PaperProvider theme={theme}>
-            <Layout />
-          </PaperProvider>
-        </AuthProvider>
-      </UseCustomQueryProvider>
+      <PaginatedCacheProvider>
+        <UseCustomQueryProvider>
+          <AuthProvider>
+            <MessagesProvider>
+              <PaperProvider theme={theme}>
+                <Layout />
+              </PaperProvider>
+            </MessagesProvider>
+          </AuthProvider>
+        </UseCustomQueryProvider>
+      </PaginatedCacheProvider>
     </QueryClientProvider>
   );
 }
@@ -120,21 +125,16 @@ const Layout = (props: LayoutProps) => {
       {!authState?.authenticated ? (
         <AuthScreen />
       ) : (
-        <PaginatedCacheProvider>
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="drivers" options={{ headerShown: false }} />
-            <Stack.Screen name="vehicles" options={{ headerShown: false }} />
-            <Stack.Screen
-              name="profileSetup"
-              options={{ headerShown: false }}
-            />
-            <Stack.Screen name="posts" options={{ headerShown: false }} />
-            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-            <Stack.Screen name="chats" options={{ headerShown: false }} />
-            <Stack.Screen name="payments" options={{ headerShown: false }} />
-          </Stack>
-        </PaginatedCacheProvider>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="drivers" options={{ headerShown: false }} />
+          <Stack.Screen name="vehicles" options={{ headerShown: false }} />
+          <Stack.Screen name="profileSetup" options={{ headerShown: false }} />
+          <Stack.Screen name="posts" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          <Stack.Screen name="chats" options={{ headerShown: false }} />
+          <Stack.Screen name="payments" options={{ headerShown: false }} />
+        </Stack>
       )}
     </ThemeProvider>
   );

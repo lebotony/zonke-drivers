@@ -70,8 +70,6 @@ export const VehiclesScreen = () => {
 
     if (resetRef.current === true) resetRef.current = false;
 
-    console.log("AAAAAAAAAAAAAAAAAAAAA", filters);
-
     return fetchVehicles({ pageParam }, filters);
   };
 

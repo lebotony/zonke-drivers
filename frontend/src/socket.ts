@@ -1,24 +1,14 @@
 import { Socket } from "phoenix";
-import { Platform } from "react-native";
-import * as SecureStore from 'expo-secure-store';
 
 import { SOCKET_URL } from "@/constants/srcConstants";
-import { TOKEN_KEY } from "./authContext";
+import { getItem, TOKEN_KEY } from "./authContext";
 
 export let socketInstance: Socket | null = null;
 let token: string | null = null;
 
-const getToken = async () => {
-  if (Platform.OS === 'web') {
-    return localStorage.getItem(TOKEN_KEY);
-  } else {
-    return await SecureStore.getItemAsync(TOKEN_KEY);
-  }
-};
-
 // Initialize during app startup
 export const initializeSocket = async () => {
-  token = await getToken();
+  token = await getItem(TOKEN_KEY);
 
   socketInstance = new Socket(SOCKET_URL, {
     params: { token },

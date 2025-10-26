@@ -14,30 +14,31 @@ import { useQueryClient } from "@tanstack/react-query";
 import { Platform } from "react-native";
 import { disconnectSocket, initializeSocket } from "./socket";
 import { httpGet, httpPost } from "./requests";
+import { useCustomQuery } from "./useQueryContext";
 
 export const TOKEN_KEY = "my_jwt";
 
-const getToken = async () => {
+export const getItem = async (token_key: string) => {
   if (Platform.OS === "web") {
-    return localStorage.getItem(TOKEN_KEY);
+    return localStorage.getItem(token_key);
   } else {
-    return await SecureStore.getItemAsync(TOKEN_KEY);
+    return await SecureStore.getItemAsync(token_key);
   }
 };
 
-const setToken = async (token: string) => {
+export const setItem = async (token_key: string, value: string) => {
   if (Platform.OS === "web") {
-    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(token_key, value);
   } else {
-    await SecureStore.setItemAsync(TOKEN_KEY, token);
+    await SecureStore.setItemAsync(token_key, value);
   }
 };
 
-const deleteToken = async () => {
+export const deleteItem = async (token_key: string) => {
   if (Platform.OS === "web") {
-    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(token_key);
   } else {
-    await SecureStore.deleteItemAsync(TOKEN_KEY);
+    await SecureStore.deleteItemAsync(token_key);
   }
 };
 
@@ -66,13 +67,18 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     token: null,
     authenticated: null,
   });
+
   const queryClient = useQueryClient();
+  const { getCachedData } = useCustomQuery();
+  const { user, socket } = getCachedData(["user", "socket"]);
 
   useEffect(() => {
     const initSocket = async () => {
       if (authState.authenticated) {
         try {
-          await initializeSocket();
+          initializeSocket().then((sock) =>
+            queryClient.setQueryData(["socket"], sock)
+          );
           console.log("Socket connected after authentication");
         } catch (error) {
           console.error("Socket connection failed:", error);
@@ -88,8 +94,26 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [authState.authenticated]);
 
   useEffect(() => {
+    if (!socket && !user) return;
+    const userChannel = socket?.channel(`users:${user?.id}`);
+
+    userChannel
+      ?.join()
+      .receive("ok", () => console.log("joined user channel"))
+      .receive("error", (err: Error) =>
+        console.error("failed to join user channel", err)
+      );
+
+    queryClient.setQueryData(["userChannel"], userChannel);
+
+    return () => {
+      userChannel?.leave();
+    };
+  }, [socket, user?.id]);
+
+  useEffect(() => {
     const loadToken = async () => {
-      const token = await getToken();
+      const token = await getItem(TOKEN_KEY);
 
       if (token) {
         setAuthState({ token, authenticated: true });
@@ -129,7 +153,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           return Promise.reject(new Error("Invalid response from server"));
 
         setAuthState({ token: response.jwt, authenticated: true });
-        await setToken(response.jwt);
+        await setItem(TOKEN_KEY, response.jwt);
 
         console.log("LOGIN LOGIN LOGIN LOGIN", response.user);
 
@@ -150,7 +174,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const logout = async () => {
     disconnectSocket();
-    await deleteToken();
+    await deleteItem(TOKEN_KEY);
     axios.defaults.headers.common["Authorization"] = "";
     setAuthState({ token: null, authenticated: false });
   };

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import {
   View,
   Image,
@@ -15,7 +15,6 @@ import { useNavigation } from "expo-router";
 import { find, isEmpty } from "lodash";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import Feather from "@expo/vector-icons/Feather";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Colors } from "@/constants/ui";
 import { IS_IOS } from "@/constants/srcConstants";
@@ -26,16 +25,10 @@ import { ChatMessage } from "./chatMessage";
 import { MessageBox } from "./messageBox";
 import { styles } from "./styles/index";
 import { fetchThreadMessages, setSeenTrue } from "../actions";
-import { initializeSocket } from "@/src/socket";
-import { Socket } from "phoenix";
-
-const userAvatar = require("@/assets/images/person_1.jpg");
 
 export const ChatScreen = () => {
   const { id } = useLocalSearchParams();
   const threadId = Array.isArray(id) ? id[0] : id;
-
-  const [socket, setSocket] = useState<Socket | null>(null);
 
   const { getCachedData } = useCustomQuery();
   const { threads, user, fetchedMsgThreadIds, threadChannels } = getCachedData([
@@ -53,12 +46,12 @@ export const ChatScreen = () => {
   const thread = find(threads, { id: threadId });
   const recipient = find(
     thread?.thread_participants,
-    (thd_part) => thd_part.participant_id !== user?.id
+    (thd_part) => thd_part.participant.id !== user?.id
   )?.participant;
 
-  const isNewThread = isEmpty(thread.last_message);
+  const isNewThread = isEmpty(thread?.last_message);
 
-  console.log("CHAT USER_ID: ", user?.id);
+  // console.log("CHAT USER_ID: ", user?.id);
   // console.log("CHAT RECIPIENT_ID: ", recipient?.id);
 
   const loadThreadMessages = (messages: Message[]) => {
@@ -101,7 +94,6 @@ export const ChatScreen = () => {
     if (!fetchedMsgThreadIds?.includes(threadId)) {
       fetchThreadMessages(threadId).then((res: Message[]) => {
         !isEmpty(res) && loadThreadMessages(res);
-        console.log("AAAAAAAAAAAAAAA", res);
         handleSetFetchedMsgThreadIds(threadId);
       });
     }
@@ -111,21 +103,7 @@ export const ChatScreen = () => {
     }
 
     flatListRef.current?.scrollToEnd({ animated: false });
-  }, []);
-
-  useEffect(() => {
-    let mounted = true;
-
-    if (isNewThread) {
-      initializeSocket().then((sock) => {
-        if (mounted) setSocket(sock);
-      });
-    }
-
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  }, [thread]);
 
   const onGoBack = () => navigation.goBack();
 
@@ -139,7 +117,11 @@ export const ChatScreen = () => {
             color={Colors.darkCharcoal}
           />
         </Pressable>
-        <Image source={userAvatar} style={styles.avatar} resizeMode="cover" />
+        <Image
+          source={recipient?.asset_url}
+          style={styles.avatar}
+          resizeMode="cover"
+        />
         <View style={{ flex: 1 }}>
           <Text style={styles.name}>
             {recipient?.first_name} {recipient?.last_name}
@@ -183,7 +165,7 @@ export const ChatScreen = () => {
           recipientId={recipient?.id as string}
           threadId={thread?.id}
           isNewThread={isNewThread}
-          socket={socket}
+          user={user}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>

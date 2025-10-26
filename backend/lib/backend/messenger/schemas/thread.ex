@@ -8,6 +8,7 @@ defmodule Backend.Messenger.Schemas.Thread do
   schema "threads" do
     field(:last_message, :map, virtual: true)
     field(:unseen_msg_count, :integer, virtual: true)
+    field(:recipient, :map, virtual: true)
 
     has_many(:thread_participants, ThreadParticipant)
     has_many(:messages, Message)

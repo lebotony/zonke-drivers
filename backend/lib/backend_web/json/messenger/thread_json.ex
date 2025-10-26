@@ -1,5 +1,5 @@
 defmodule BackendWeb.Messenger.ThreadJSON do
-  alias BackendWeb.Messenger.{MessageJSON, ThreadParticipantJSON}
+  alias BackendWeb.Messenger.{MessageJSON, ThreadParticipantJSON, ParticipantJSON}
 
   def index(%{threads: threads, paginate: paginate}) do
     %{
@@ -16,7 +16,7 @@ defmodule BackendWeb.Messenger.ThreadJSON do
       if Ecto.assoc_loaded?(thread.messages) do
         MessageJSON.index(%{messages: thread.messages})
       else
-        %{}
+        []
       end
 
     %{

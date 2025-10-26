@@ -3,15 +3,17 @@ import axios from "axios";
 import { API_URL } from "@/constants/srcConstants";
 import { httpGet, httpPost } from "@/src/requests";
 
-export const fetchUserThreads = async ({ pageParam = 1 }) =>
-  axios
-    .get(`${API_URL}/threads/user_threads`, {
+export const fetchUserThreads = async ({ pageParam = 1 }) => {
+  return axios
+  .get(`${API_URL}/threads/user_threads`, {
     params: { page: pageParam, per_page: 10 }
   })
     .then((response) => {
+      console.log("IIIIIIIIIIIIIIII", response.data)
       return response.data
     })
     .catch((err) => err);
+  }
 
 export const fetchThreadMessages = async (threadId: string) => httpGet('/messages', { thread_id: threadId })
 

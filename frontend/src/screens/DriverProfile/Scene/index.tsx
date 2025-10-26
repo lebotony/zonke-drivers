@@ -8,11 +8,12 @@ import { router, useLocalSearchParams } from "expo-router";
 import { find, isEmpty } from "lodash";
 
 import { Avatar } from "@/src/components/visual/avatar";
-import profilePic from "@/assets/images/profile_pic.png";
 import { Colors } from "@/constants/ui";
 import { CustomButton } from "@/src/components/elements/button";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
+import { shadowStyles } from "@/src/components/shadowStyles";
+import { calculateAge } from "@/src/helpers/calculateAge";
 
 import { Platforms } from "../../Drivers/Scene/ui/platforms";
 import { styles } from "./styles";
@@ -20,8 +21,6 @@ import { Header } from "./ui/header";
 import { Licences } from "./ui/licences";
 import { createThread } from "../actions";
 import { detailsDef } from "./ui/detailsPill";
-import { shadowStyles } from "@/src/components/shadowStyles";
-import { calculateAge } from "@/src/helpers/calculateAge";
 
 export const Scene = () => {
   const { id } = useLocalSearchParams();
@@ -52,7 +51,7 @@ export const Scene = () => {
         <View style={styles.body}>
           {Platform.OS !== "web" && <Header customStyles={{ top: -10 }} />}
           <View style={styles.profilePic}>
-            <Avatar source={profilePic} round width={125} />
+            <Avatar source={driver?.asset_url} round width={125} />
             <Text style={styles.name}>
               {driver?.first_name} {driver?.last_name}{" "}
               <Text

@@ -1,18 +1,19 @@
-import React, { useState } from "react";
 import { View, TextInput, TouchableOpacity } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
+
+import { find } from "lodash";
 
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
 import { usePaginatedCache } from "@/src/updateCacheProvider";
+import { useCustomQuery } from "@/src/useQueryContext";
 
 import { styles } from "./styles/messageBox";
 import { MessageSchema } from "./schema";
-import { useCustomQuery } from "@/src/useQueryContext";
-import { Channel, Socket } from "phoenix";
+import { useMessages } from "../MessagesProvider";
 
 type MessageFormValues = z.infer<typeof MessageSchema>;
 
@@ -20,67 +21,89 @@ type MessageBoxProps = {
   recipientId: string;
   threadId: string | undefined;
   isNewThread: boolean;
-  socket: Socket | null;
+  user: User;
 };
 
 export const MessageBox = (props: MessageBoxProps) => {
-  const { recipientId, threadId, isNewThread, socket } = props;
-  const [newChannelJoined, setNewChannelJoined] = useState(false);
+  const { recipientId, threadId, isNewThread, user } = props;
 
-  const { updateAndMoveObjectToTop, getUpdatedObjectSnapshot } =
-    usePaginatedCache();
+  const {
+    updateAndMoveObjectToTop,
+    getUpdatedObjectSnapshot,
+    addItemToPaginatedList,
+  } = usePaginatedCache();
 
   const { control, handleSubmit, reset } = useForm<MessageFormValues>({
     resolver: zodResolver(MessageSchema),
   });
 
+  const { initiateChannels } = useMessages();
   const { getCachedData } = useCustomQuery();
-  const { threadChannels } = getCachedData(["threadChannels"]);
+  const { threadChannels, userChannel, threads } = getCachedData([
+    "threadChannels",
+    "userChannel",
+    "threads",
+  ]);
 
   const thread = getUpdatedObjectSnapshot("threads", threadId as string);
 
-  const sendAndUpdateThreads = (channel: Channel, params: Partial<Message>) => {
-    channel
-      .push("send_message", {
-        params: params,
-      })
-      .receive("ok", (payload: { message: Partial<Message> }) => {
-        updateAndMoveObjectToTop("threads", threadId as string, {
-          last_message: payload.message,
-          messages: [...(thread?.messages ?? []), payload.message],
-        });
-        reset();
-      })
-      .receive("error", (err: Error) => {
-        console.error("Failed to send message:", err);
-      })
-      .receive("timeout", () => {
-        console.warn("Message push timed out");
-      });
-  };
-
   const sendToNewThread = (params: Partial<Message>) => {
-    const channel = socket?.channel(`chats:${thread.id}`);
-
-    if (!newChannelJoined && channel) {
-      channel
-        ?.join()
-        .receive("ok", () => {
-          setNewChannelJoined(true);
-          console.log(`Joined chats:${thread.id} successfully`);
-          sendAndUpdateThreads(channel, params);
+    if (userChannel) {
+      userChannel
+        .push("send_message_to_new_thread", {
+          params: params,
         })
-        .receive("error", (err: Error) => console.log("Unable to join", err));
-    } else if (channel) {
-      sendAndUpdateThreads(channel, params);
+        .receive("ok", (payload: { thread: Thread }) => {
+          if (find(threads, { id: payload.thread.id })) {
+            updateAndMoveObjectToTop("threads", threadId as string, {
+              last_message: payload.thread.last_message,
+              messages: [
+                ...(thread?.messages ?? []),
+                payload.thread.last_message,
+              ],
+            });
+
+            initiateChannels([payload.thread]);
+          } else {
+            addItemToPaginatedList("threads", payload.thread);
+          }
+
+          reset();
+        })
+        .receive("error", (err: Error) => {
+          console.error("Failed to send message:", err);
+        })
+        .receive("timeout", () => {
+          console.warn("Message push timed out");
+        });
+    } else {
+      console.warn(`No channel for thread ${threadId}`);
+      console.warn("userChannel is undefined");
     }
   };
 
   const sendMessage = (params: Partial<Message>) => {
     if (threadChannels?.[threadId as string]) {
-      sendAndUpdateThreads(threadChannels?.[threadId as string], params);
+      threadChannels?.[threadId as string]
+        .push("send_message", {
+          params: params,
+        })
+        .receive("ok", (payload: { message: Partial<Message> }) => {
+          updateAndMoveObjectToTop("threads", threadId as string, {
+            last_message: payload.message,
+            messages: [...(thread?.messages ?? []), payload.message],
+          });
+
+          reset();
+        })
+        .receive("error", (err: Error) => {
+          console.error("Failed to send message:", err);
+        })
+        .receive("timeout", () => {
+          console.warn("Message push timed out");
+        });
     } else {
-      console.warn(`No channel for thread ${threadId} to mark seen`);
+      sendToNewThread(params);
     }
   };
 

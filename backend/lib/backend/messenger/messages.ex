@@ -11,46 +11,9 @@ defmodule Backend.Messenger.Messages do
   def create(params, user_id) do
     new_params = Map.put(params, :author_id, user_id)
 
-    case new_params do
-      %{thread_id: thread_id} when is_binary(thread_id) ->
-        message =
-          %Message{}
-          |> Message.changeset(new_params)
-          |> Repo.insert()
-
-        case message do
-          {:ok, message} ->
-            {:ok, message}
-
-          {:error, error} ->
-            {:error, error}
-        end
-
-      _ ->
-        create_thread_and_put_message(new_params)
-    end
-  end
-
-  def create_thread_and_put_message(params) do
-    Multi.new()
-    |> Multi.run(:thread, fn _repo, %{} ->
-      Threads.initialize_thread(params.recipient_id, params.author_id)
-    end)
-    |> Multi.run(:message, fn _repo, %{thread: thread} ->
-      updated_params = Map.put(params, :thread_id, thread.id)
-
-      %Message{}
-      |> Message.changeset(updated_params)
-      |> Repo.insert()
-    end)
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{message: message}} ->
-        format_message(message)
-
-      {:error, reason, failed_value, _changes} ->
-        {:error, {reason, failed_value}}
-    end
+    %Message{}
+    |> Message.changeset(new_params)
+    |> Repo.insert()
   end
 
   def get_message(id) do
