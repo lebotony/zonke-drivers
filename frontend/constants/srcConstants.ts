@@ -4,7 +4,7 @@ export const IS_IOS = Platform.OS === 'ios'
 
 export const API_URL =
   !IS_IOS
-    ? 'http://localhost:4000/api'
+    ? 'http://192.168.1.106:4000/api'
     : Platform.OS === 'ios'
     ? 'http://localhost:4000/api'
     : 'http://localhost:4000/api';

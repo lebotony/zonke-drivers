@@ -27,7 +27,7 @@ export const Form = (props: FormProps) => {
   return (
     <View>
       {isSignUp && (
-        <View style={{ flexDirection: "row", gap: 10 }}>
+        <>
           <Fieldset
             control={control}
             name="first_name"
@@ -50,7 +50,7 @@ export const Form = (props: FormProps) => {
             customStyles={{ flex: 1 }}
             required
           />
-        </View>
+        </>
       )}
 
       <Fieldset

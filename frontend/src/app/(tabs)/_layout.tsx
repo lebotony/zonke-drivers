@@ -8,18 +8,25 @@ import { Colors } from "@/constants/ui";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { useClientOnlyValue } from "@/src/components/useClientOnlyValue";
 import { Spinner } from "@/src/components/elements/Spinner";
+import { StyleSheet, View } from "react-native";
+import { Text } from "react-native-paper";
 
 export default function TabLayout() {
-  const { getCachedData } = useCustomQuery();
-  const { user } = getCachedData(["user"]);
-
-  const isDriver = user?.role === "driver";
-
   const headerShown = useClientOnlyValue(false, true);
+
+  const { getCachedData } = useCustomQuery();
+  const { user, threads } = getCachedData(["user", "threads"]);
 
   if (!user) {
     return <Spinner />;
   }
+
+  const isDriver = user?.role === "driver";
+
+  const unseen_msg_count = threads?.reduce(
+    (sum: number, thread: Thread) => sum + thread?.unseen_msg_count,
+    0
+  );
 
   return (
     <Tabs
@@ -76,7 +83,14 @@ export default function TabLayout() {
           headerShown: false,
           title: "Messages",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="chatbubble-outline" size={23} color={color} />
+            <View style={{ position: "relative" }}>
+              <Ionicons name="chatbubble-outline" size={23} color={color} />
+              {unseen_msg_count > 0 && (
+                <View style={styles.unreadBadge}>
+                  <Text style={styles.unreadBadgeText}>{unseen_msg_count}</Text>
+                </View>
+              )}
+            </View>
           ),
         }}
       />
@@ -93,3 +107,21 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
+const styles = StyleSheet.create({
+  unreadBadge: {
+    backgroundColor: Colors.lightRed,
+    width: 15,
+    height: 15,
+    borderRadius: "50%",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: 0,
+    right: -3,
+  },
+  unreadBadgeText: {
+    color: Colors.white,
+    fontSize: 10,
+  },
+});

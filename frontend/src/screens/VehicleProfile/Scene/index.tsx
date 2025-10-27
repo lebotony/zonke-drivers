@@ -44,7 +44,7 @@ export const Scene = () => {
   const { addItemToPaginatedList } = usePaginatedCache();
 
   const { getCachedData } = useCustomQuery();
-  const { vehicles, threads } = getCachedData(["vehicles", "threads"]);
+  const { vehicles, threads = [] } = getCachedData(["vehicles", "threads"]);
   const vehicle: Vehicle = find(vehicles, { id: vehicleId });
 
   const width = Dimensions.get("window").width;
@@ -69,13 +69,15 @@ export const Scene = () => {
   };
 
   const handleCreateThread = () =>
-    createThread({ participant_id: vehicle.user_id }).then((response) => {
-      if (!find(threads, { id: response.id })) {
-        addItemToPaginatedList("threads", response);
-      }
+    createThread({ participant_id: vehicle.user_id })
+      .then((response) => {
+        if (!find(threads, { id: response.id })) {
+          addItemToPaginatedList("threads", response);
+        }
 
-      router.push(`/chats/${response.id}`);
-    });
+        router.push(`/chats/${response.id}`);
+      })
+      .catch((err) => err);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -370,5 +372,3 @@ export const Scene = () => {
     </SafeAreaView>
   );
 };
-
-export default Scene;

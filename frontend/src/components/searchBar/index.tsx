@@ -11,16 +11,23 @@ type SearchComponentProps = {
   placeholder?: string;
   customStyle?: ViewStyle;
   inputStyle?: TextStyle;
+  onChange?: (value: string) => void;
 };
 
 export const SearchComponent = (props: SearchComponentProps) => {
-  const { height = 34, placeholder='Search', customStyle, inputStyle } = props;
+  const {
+    height = 34,
+    placeholder = "Search",
+    customStyle,
+    inputStyle,
+    onChange,
+  } = props;
 
   return (
     <View style={[{ height: height }, customStyle]}>
       <View style={[styles.inputWrapper, { maxHeight: height }, customStyle]}>
         <TextInput
-          onChangeText={() => {}}
+          onChangeText={onChange}
           style={[styles.textInput, inputStyle]}
           placeholder={placeholder}
           placeholderTextColor={Colors.mediumGrey}

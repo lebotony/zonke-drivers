@@ -13,7 +13,6 @@ import { useMessages } from "./MessagesProvider";
 const TABS = ["All"];
 
 export const MessagesScreen = () => {
-  const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState(1);
 
   const { getCachedData } = useCustomQuery();
@@ -25,6 +24,7 @@ export const MessagesScreen = () => {
     hasNextPage,
     currentThreadId,
     onSetCurrentThread,
+    onSetSearchTerm,
   } = useMessages();
 
   if (!threads) return <Spinner />;
@@ -35,6 +35,7 @@ export const MessagesScreen = () => {
         <Text style={styles.headerText}>Messages</Text>
       </View>
       <SearchComponent
+        onChange={onSetSearchTerm}
         placeholder="Search Contacts"
         height={36}
         customStyle={{ paddingHorizontal: 15 }}

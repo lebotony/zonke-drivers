@@ -1,19 +1,23 @@
 import axios from "axios";
+import qs from "qs";
 
 import { API_URL } from "@/constants/srcConstants";
 import { httpGet, httpPost } from "@/src/requests";
 
-export const fetchUserThreads = async ({ pageParam = 1 }) => {
+export const fetchUserThreads = async ({ pageParam = 1 }, filters) => {
   return axios
-  .get(`${API_URL}/threads/user_threads`, {
-    params: { page: pageParam, per_page: 10 }
-  })
-    .then((response) => {
-      console.log("IIIIIIIIIIIIIIII", response.data)
-      return response.data
+    .get(`${API_URL}/threads/user_threads`, {
+
+      params: { page: pageParam, per_page: 10, filters },
+      paramsSerializer: (params) =>
+        qs.stringify(params, { arrayFormat: "brackets" }),
     })
-    .catch((err) => err);
-  }
+      .then((response) => {
+        console.log("IIIIIIIIIIIIIIII", response.data)
+        return response.data
+      })
+      .catch((err) => err);
+}
 
 export const fetchThreadMessages = async (threadId: string) => httpGet('/messages', { thread_id: threadId })
 
