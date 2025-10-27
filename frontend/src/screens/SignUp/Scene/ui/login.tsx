@@ -32,6 +32,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
+  const [isDriver, setIsDriver] = useState(true);
+
   const { onRegister, onLogin } = useAuth();
 
   const {
@@ -58,7 +60,13 @@ export const LoginScreen = (props: LoginScreenProps) => {
     try {
       if (isSignUp) {
         const { confirm_password, ...submitData } = data as SignUpFormValues;
-        await onRegister!(submitData as any);
+
+        const signUpParams = {
+          ...submitData,
+          role: isDriver ? "driver" : "owner",
+        };
+
+        await onRegister!(signUpParams as any);
       } else {
         await onLogin!(data as SignInFormValues);
       }
@@ -83,9 +91,51 @@ export const LoginScreen = (props: LoginScreenProps) => {
           <TextLogo size={isSignUp ? "medium" : "large"} />
         </View>
 
-        <Text style={styles.title}>
-          {!isSignUp ? "Login your account" : "Create your account"}
-        </Text>
+        {!isSignUp && <Text style={styles.title}>Login your account</Text>}
+
+        {isSignUp && (
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Text style={styles.title}>Create </Text>
+            <Text style={[styles.title, { color: Colors.mrDBlue }]}>
+              {isDriver ? "Driver" : "Vehicle Owner"}
+            </Text>
+            <Text style={styles.title}> account</Text>
+          </View>
+        )}
+
+        {isSignUp && (
+          <View style={styles.switch}>
+            <TouchableOpacity
+              onPress={() => setIsDriver(!isDriver)}
+              style={[styles.switchBtns, !isDriver && styles.activeSwitchBtn]}
+            >
+              <Text
+                style={[
+                  styles.switchText,
+                  !isDriver && { color: Colors.white },
+                ]}
+              >
+                Vehicle Owner
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setIsDriver(!isDriver)}
+              style={[styles.switchBtns, isDriver && styles.activeSwitchBtn]}
+            >
+              <Text
+                style={[styles.switchText, isDriver && { color: Colors.white }]}
+              >
+                Driver
+              </Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         <Form isSignUp={isSignUp} control={control} errors={errors} />
 

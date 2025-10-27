@@ -83,14 +83,15 @@ defmodule Backend.Messenger.Threads do
     data =
       ThreadBy.base_query()
       |> ThreadBy.by_participant(participant_id)
-      |> join(:left_lateral, [t], umc in subquery(unseen_messages_count_subquery), on: true)
-      |> join(:left_lateral, [t], lm in subquery(last_message_subquery), as: :lm, on: true)
-      |> select_merge([t, _tp, umc, lm], %{
+      |> build_search(params, participant_id)
+      |> join(:left_lateral, [thread: t], uc in subquery(unseen_messages_count_subquery), as: :unseen_count, on: true)
+      |> join(:left_lateral, [thread: t], lm in subquery(last_message_subquery), as: :last_message, on: true)
+      |> select_merge([thread: t, unseen_count: uc, last_message: lm], %{
         t
         | last_message: lm,
-          unseen_msg_count: coalesce(umc.count, 0)
+          unseen_msg_count: coalesce(uc.count, 0)
       })
-      |> order_by([t, _tp, _umc, lm], desc: lm.inserted_at)
+      |> order_by([last_message: lm], desc: lm.inserted_at)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     threads =
@@ -113,6 +114,27 @@ defmodule Backend.Messenger.Threads do
       )
 
     {:ok, threads, PaginateHelper.prep_paginate(data)}
+  end
+
+  defp build_search(query, params, participant_id) do
+    filters = Map.get(params, :filters, %{})
+
+    Enum.reduce(filters, query, fn
+      {:search_term, value}, query when is_binary(value) and value != "" ->
+        # Joining the thread_participants again but aliasing it as :other_tp and excluding the current participant
+        query
+        |> join(:inner, [thread: t], other_tp in assoc(t, :thread_participants), as: :other_tp)
+        |> where([other_tp: otp], otp.participant_id != ^participant_id)
+        |> join(:inner, [other_tp: otp], p in assoc(otp, :participant), as: :participant)
+        |> where(
+          [participant: p],
+          ilike(p.first_name, ^"%#{value}%") or
+            ilike(p.last_name, ^"%#{value}%")
+        )
+
+      _, query ->
+        query
+    end)
   end
 
   def find_thread_between(participant_ids) when is_list(participant_ids) do

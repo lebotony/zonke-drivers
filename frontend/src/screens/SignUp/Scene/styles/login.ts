@@ -5,7 +5,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.bg,
-    paddingHorizontal: 24,
+    paddingHorizontal: 15,
     paddingTop: 15,
     position: 'relative',
   },
@@ -33,10 +33,32 @@ export const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 25,
   },
+  switch: {
+    flexDirection: 'row',
+    marginBottom: 18,
+    gap: 10
+  },
+  switchBtns: {
+    borderColor: Colors.lightGrey,
+    borderWidth: 1,
+    borderRadius: 6,
+    paddingVertical: 7,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  activeSwitchBtn: {
+    borderWidth: 0,
+    backgroundColor: Colors.mrDBlue
+  },
+  switchText: {
+    color: Colors.black,
+    fontSize: 15,
+  },
   title: {
     fontSize: 20,
     fontWeight: '600',
-    marginBottom: 26,
+    marginBottom: 15,
     color: Colors.black,
     textAlign: 'center',
   },

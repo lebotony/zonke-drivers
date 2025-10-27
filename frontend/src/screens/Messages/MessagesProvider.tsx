@@ -5,6 +5,7 @@ import React, {
   FC,
   useEffect,
   useRef,
+  useState,
 } from "react";
 
 import { useSegments } from "expo-router";
@@ -24,6 +25,7 @@ import { usePaginatedCache } from "@/src/updateCacheProvider";
 
 import { fetchUserThreads } from "./actions";
 import { messageSeen, newMessage } from "./utils/channels";
+import { useDebounce } from "use-debounce";
 
 const MessagesContext = createContext<
   | {
@@ -32,6 +34,7 @@ const MessagesContext = createContext<
       currentThreadId: string | undefined;
       onSetCurrentThread: (threadId: string | undefined) => void;
       initiateChannels: (threads: Thread[]) => void;
+      onSetSearchTerm: (value: string) => void;
       fetchNextPage: (
         options?: FetchNextPageOptions | undefined
       ) => Promise<
@@ -48,7 +51,8 @@ type MessagesProviderProps = {
 export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
   const { children } = props;
 
-  console.log("START START START START START");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
   const threadChannelsRef = useRef<Record<string, Channel>>({});
   const baseChannelRef = useRef<Channel | undefined>(undefined);
@@ -71,10 +75,18 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
     addItemToPaginatedList,
   } = usePaginatedCache();
 
+  const queryFn = ({ pageParam = 1 }) => {
+    const filters = {
+      search_term: debouncedSearchTerm,
+    };
+
+    return fetchUserThreads({ pageParam }, filters);
+  };
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ["threads"],
-      queryFn: fetchUserThreads,
+      queryKey: ["threads", debouncedSearchTerm],
+      queryFn: queryFn,
       enabled: !!user?.id,
       getNextPageParam: (lastPage) => {
         const page = lastPage?.paginate?.page;
@@ -86,6 +98,7 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
     });
 
   const threads = data?.pages.flatMap((page) => page.data) ?? [];
+  queryClient.setQueryData(["threads"], threads);
 
   useEffect(() => {
     if (!threads || !socket) return;
@@ -121,6 +134,8 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
   const setCurrentThread = (threadId: string | undefined) => {
     currentThreadRef.current = threadId;
   };
+
+  const handleSetSearchTerm = (value: string) => setSearchTerm(value);
 
   const setupChannelHandlers = (channel: Channel) => {
     channel.on("new_message", (payload: Message) =>
@@ -200,6 +215,7 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
     onSetCurrentThread: setCurrentThread,
     currentThreadId: currentThreadRef.current,
     initiateChannels,
+    onSetSearchTerm: handleSetSearchTerm,
   };
 
   return (

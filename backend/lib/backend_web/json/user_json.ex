@@ -2,6 +2,8 @@ defmodule BackendWeb.UserJSON do
   alias BackendWeb.Assets.AssetJSON
 
   def show(%{user: user}) do
+    asset = if user.asset, do: AssetJSON.show(%{asset: user.asset}), else: %{}
+
     %{
       id: user.id,
       first_name: user.first_name,
@@ -10,7 +12,7 @@ defmodule BackendWeb.UserJSON do
       email: user.email,
       role: user.role,
       location: user.location,
-      asset: AssetJSON.show(%{asset: user.asset})
+      asset: asset
     }
   end
 end

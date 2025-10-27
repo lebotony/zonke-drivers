@@ -65,7 +65,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   const renderRail = useCallback(() => <Rail />, []);
   const renderRailSelected = useCallback(() => <RailSelected />, []);
   const renderLabel = useCallback(
-    (value: number) => <Label text={`$${value}`} />,
+    (value: number) => <Label text={`R${value}`} />,
     []
   );
 
