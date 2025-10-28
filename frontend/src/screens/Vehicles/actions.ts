@@ -11,7 +11,7 @@ export const fetchVehicles = async ({ pageParam = 1 }, filters) =>
         qs.stringify(params, { arrayFormat: "brackets" }),
     })
       .then((response) => {
-        console.log('SSSSSSSSSSSSSSSSSSSS', response.data);
+        // console.log('SSSSSSSSSSSSSSSSSSSS', response.data);
         return response.data;
       })
       .catch((err) => {

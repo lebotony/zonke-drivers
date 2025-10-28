@@ -12,15 +12,15 @@ import { styles } from "../styles/brands";
 type BrandsProps = {
   selectedBrands: string[];
   toggleBrand: (id: string) => void;
-  visibleBrandData: () => Brand[];
+  brands: Record<string, any>[];
 };
 
 export const Brands = (props: BrandsProps) => {
-  const { selectedBrands, toggleBrand, visibleBrandData } = props;
+  const { selectedBrands, toggleBrand, brands } = props;
 
   return (
     <FlatList
-      data={visibleBrandData()}
+      data={brands}
       horizontal
       showsHorizontalScrollIndicator={false}
       keyExtractor={(item) => item.id}

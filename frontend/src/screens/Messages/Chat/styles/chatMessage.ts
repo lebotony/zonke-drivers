@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     gap: 5
   },
   messageText: {
-    fontSize: 15,
+    fontSize: 14,
     color: Colors.dimGrey,
   },
   messageTime: {

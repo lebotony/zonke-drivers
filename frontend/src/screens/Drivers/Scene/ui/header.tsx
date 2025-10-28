@@ -12,10 +12,11 @@ import { styles } from "../styles/header";
 type HeaderProps = {
   setSearchTerm: (value: string) => void;
   setShowFilterModal: (value: boolean) => void;
+  isVehicleList?: boolean;
 };
 
 export const Header = (props: HeaderProps) => {
-  const { setSearchTerm, setShowFilterModal } = props;
+  const { setSearchTerm, setShowFilterModal, isVehicleList } = props;
 
   return (
     <View style={styles.container}>
@@ -28,7 +29,7 @@ export const Header = (props: HeaderProps) => {
             <TextInput
               onChangeText={setSearchTerm}
               style={styles.textInput}
-              placeholder="Search drivers..."
+              placeholder={`Search ${isVehicleList ? "vehicles" : "drivers"}...`}
               placeholderTextColor={Colors.mediumGrey}
               cursorColor={Colors.darkUiBlue}
               textAlignVertical="center"

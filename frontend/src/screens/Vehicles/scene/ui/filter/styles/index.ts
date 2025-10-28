@@ -116,6 +116,7 @@ export const styles = StyleSheet.create({
   },
   footer: {
     marginTop: 18,
+    marginBottom: 20,
     paddingHorizontal: 16
   },
   footerBtn: {

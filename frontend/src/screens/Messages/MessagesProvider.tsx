@@ -83,9 +83,9 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
     return fetchUserThreads({ pageParam }, filters);
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
     useInfiniteQuery({
-      queryKey: ["threads", debouncedSearchTerm],
+      queryKey: ["threads"],
       queryFn: queryFn,
       enabled: !!user?.id,
       getNextPageParam: (lastPage) => {
@@ -98,7 +98,12 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
     });
 
   const threads = data?.pages.flatMap((page) => page.data) ?? [];
-  queryClient.setQueryData(["threads"], threads);
+
+  useEffect(() => {
+    if (user?.id) {
+      refetch();
+    }
+  }, [debouncedSearchTerm, user?.id]);
 
   useEffect(() => {
     if (!threads || !socket) return;
