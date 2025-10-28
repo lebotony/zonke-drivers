@@ -24,9 +24,14 @@ type Paginate = {
 };
 
 type LocationType = {
-  address: string[],
+  address: string,
   lat: string,
   lon: string
+}
+
+type Licence = {
+  slug: string,
+  name: string,
 }
 
 type PriceRange = {

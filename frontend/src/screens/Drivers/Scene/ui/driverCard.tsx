@@ -5,17 +5,16 @@ import { router } from "expo-router";
 
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Feather, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 import { Avatar } from "@/src/components/visual/avatar";
 import { Colors } from "@/constants/ui";
 import { HorizontalDivider } from "@/src/components/shapes/divider";
-import profilePic from "@/assets/images/profile_pic.png";
 import { CustomButton } from "@/src/components/elements/button";
+import { calculateAge } from "@/src/helpers/calculateAge";
 
 import { styles } from "../styles/driverCard";
 import { Platforms } from "./platforms";
-import { calculateAge } from "@/src/helpers/calculateAge";
 
 const ICON_SIZE = 14;
 
@@ -65,8 +64,7 @@ export const DriverCard = (props: DriverProps) => {
               />
             </View>
             <Text style={styles.address} numberOfLines={1} ellipsizeMode="tail">
-              {Array.isArray(driver?.location?.address) &&
-                driver.location.address.join(", ")}
+              {driver?.location?.address}
             </Text>
           </View>
         </View>

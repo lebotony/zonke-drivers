@@ -17,15 +17,12 @@ defmodule BackendWeb.UserSocket do
   def connect(%{"token" => token}, socket, _connect_info) do
     with {:ok, claims} <- Guardian.decode_and_verify(token),
          {:ok, %{user_id: user_id}} <- Guardian.resource_from_claims(claims) do
-      IO.puts("AAAAAAAAAAAAAAAAAAAAAAAAAAAA")
       {:ok, assign(socket, :user_id, user_id)}
     else
       {:error, error} ->
-        IO.puts("BBBBBBBBBBBBBBBBBBBBBBBBBBB")
         {:error, error}
 
       _ ->
-        IO.puts("CCCCCCCCCCCCCCCCCCCCCCCCC")
         :error
     end
   end

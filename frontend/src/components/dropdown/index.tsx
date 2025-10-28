@@ -63,6 +63,12 @@ export const DropdownInput = <T extends FieldValues>({
   const [query, setQuery] = useState(value || "");
   const [results, setResults] = useState<LocationType[]>([]);
 
+  useEffect(() => {
+    if (value) {
+      setQuery(value);
+    }
+  }, [value]);
+
   const isLocation = name === "location";
 
   const [layout, setLayout] = useState({
@@ -179,7 +185,7 @@ export const DropdownInput = <T extends FieldValues>({
   const handleSelect = (value: string | LocationType) => {
     if (isLocation) {
       setValue(name, value, { shouldValidate: true });
-      setQuery((value as LocationType).address.join(", "));
+      setQuery((value as LocationType).address);
     } else {
       onSelect!(value as string);
       setQuery(value as string);
@@ -321,7 +327,7 @@ export const DropdownInput = <T extends FieldValues>({
                       }));
                     }}
                   >
-                    {isLocation ? item.address.join(", ") : item}
+                    {isLocation ? item.address : item}
                   </Text>
                   {selectedValue === item && (
                     <MaterialIcons

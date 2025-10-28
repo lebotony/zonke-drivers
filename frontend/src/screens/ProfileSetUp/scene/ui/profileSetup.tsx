@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 
-import { isEmpty } from "lodash";
+import { find, isEmpty } from "lodash";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -17,6 +17,7 @@ import { CustomButton } from "@/src/components/elements/button";
 import { Avatar } from "@/src/components/visual/avatar";
 import { DropdownInput } from "@/src/components/dropdown";
 import {
+  LICENCES,
   PLATFORM_FILTERS,
   PLATFORM_LABELS,
 } from "@/src/screens/Drivers/Scene/utils/constants";
@@ -27,7 +28,6 @@ import { useCustomQuery } from "@/src/useQueryContext";
 import { styles } from "../styles/profileSetup";
 import { DriverProfileSchema, OwnerProfileSchema } from "../schema";
 import { SelectLicenceArea, SelectPlatformArea } from "./selectAreas";
-import { LICENCES } from "../../constants";
 import {
   fetchDriverProfile,
   updateDriver,
@@ -48,14 +48,18 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
 
   const isDriver = user?.role === "driver";
 
+  const initialLocation = isDriver
+    ? driverProfile?.location || ""
+    : user?.location || "";
+
   const formValues = {
     first_name: user?.first_name || "",
     last_name: user?.last_name || "",
     email: user?.email || "",
     dob: driverProfile?.dob || "",
-    location: user.location || "",
+    location: initialLocation,
     platforms: driverProfile?.platforms || [],
-    // licences: [],
+    licences: driverProfile?.licences || [],
     description: driverProfile?.description || "",
   };
 
@@ -109,8 +113,10 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   };
 
   const handleAddLicence = (item: string) => {
+    const licence = (find(LICENCES, { name: item }) as Licence).slug;
+
     if (!selectedLicences?.includes(item)) {
-      setValue("licences", [...(selectedLicences || []), item]);
+      setValue("licences", [...(selectedLicences || []), licence]);
     }
   };
 
@@ -231,9 +237,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
         name="location"
         required
         label="Location"
-        value={
-          !isEmpty(user.location) ? user?.location?.address?.join(", ") : ""
-        }
+        value={initialLocation.address}
         setValue={setValue}
         placeholder="Search location..."
       />
@@ -243,7 +247,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
           <SelectLicenceArea
             onAddItem={(value: string) => handleAddLicence(value)}
             onRemoveItem={handleRemoveLicences}
-            options={LICENCES}
+            options={LICENCES.map((licence) => licence.name)}
             selectedItems={selectedLicences}
             label="Licences"
           />

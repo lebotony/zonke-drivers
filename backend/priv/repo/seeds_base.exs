@@ -34,19 +34,19 @@ alias Backend.Ecto.EctoEnums
 Logger.info("Creating users with profiles")
 
 locations = [
-  %{address: ["Bulawayo", "Zimbabwe"], lat: -20.1457, lon: 28.5873},
-  %{address: ["Harare", "Zimbabwe"], lat: -17.8292, lon: 31.0522},
-  %{address: ["Gweru", "Zimbabwe"], lat: -19.4500, lon: 29.8167},
-  %{address: ["Victoria Falls", "Zimbabwe"], lat: -17.9243, lon: 25.8560},
-  %{address: ["Soweto", "Johannesburg", "Gauteng", "South Africa"], lat: -26.2678, lon: 27.8585},
-  %{address: ["Sandton", "Johannesburg", "Gauteng", "South Africa"], lat: -26.1076, lon: 28.0567},
-  %{address: ["Pretoria", "Gauteng", "South Africa"], lat: -25.7461, lon: 28.1881},
-  %{address: ["Durban", "KwaZulu-Natal", "South Africa"], lat: -29.8587, lon: 31.0218},
-  %{address: ["Cape Town", "Western Cape", "South Africa"], lat: -33.9249, lon: 18.4241},
-  %{address: ["Port Elizabeth", "Eastern Cape", "South Africa"], lat: -33.9608, lon: 25.6022},
-  %{address: ["Bloemfontein", "Free State", "South Africa"], lat: -29.0852, lon: 26.1596},
-  %{address: ["Polokwane", "Limpopo", "South Africa"], lat: -23.9045, lon: 29.4689},
-  %{address: ["Mbombela", "Mpumalanga", "South Africa"], lat: -25.4658, lon: 30.9853}
+  %{address: "Bulawayo, Zimbabwe", lat: -20.1457, lon: 28.5873},
+  %{address: "Harare, Zimbabwe", lat: -17.8292, lon: 31.0522},
+  %{address: "Gweru, Zimbabwe", lat: -19.4500, lon: 29.8167},
+  %{address: "Victoria Falls, Zimbabwe", lat: -17.9243, lon: 25.8560},
+  %{address: "Soweto, Johannesburg, Gauteng, South Africa", lat: -26.2678, lon: 27.8585},
+  %{address: "Sandton, Johannesburg, Gauteng, South Africa", lat: -26.1076, lon: 28.0567},
+  %{address: "Pretoria, Gauteng, South Africa", lat: -25.7461, lon: 28.1881},
+  %{address: "Durban, KwaZulu-Natal, South Africa", lat: -29.8587, lon: 31.0218},
+  %{address: "Cape Town, Western Cape, South Africa", lat: -33.9249, lon: 18.4241},
+  %{address: "Port Elizabeth, Eastern Cape, South Africa", lat: -33.9608, lon: 25.6022},
+  %{address: "Bloemfontein, Free State, South Africa", lat: -29.0852, lon: 26.1596},
+  %{address: "Polokwane, Limpopo, South Africa", lat: -23.9045, lon: 29.4689},
+  %{address: "Mbombela, Mpumalanga, South Africa", lat: -25.4658, lon: 30.9853}
 ]
 
 users =
@@ -193,32 +193,7 @@ descriptions = [
   "Fast and reliable deliveries"
 ]
 
-licences = [
-  %{
-    name: "Class 1",
-    year: Enum.random(1980..2025)
-  },
-  %{
-    name: "Class 2",
-    year: Enum.random(1980..2025)
-  },
-  %{
-    name: "Class 3",
-    year: Enum.random(1980..2025)
-  },
-  %{
-    name: "Class 4",
-    year: Enum.random(1980..2025)
-  },
-  %{
-    name: "Class 5",
-    year: Enum.random(1980..2025)
-  },
-  %{
-    name: "Public Service Vehicle (PSV)",
-    year: Enum.random(1980..2025)
-  }
-]
+licences = ["class_1", "class_2", "class_3", "class_4", "class_5", "psv", "code_A1", "code_A", "code_B", "code_EB", "code_C1", "code_C", "code_EC1", "code_EC"]
 
 random_platforms = fn platforms ->
   rand_num_of_items = Enum.random(1..length(platforms))
@@ -244,6 +219,7 @@ drivers =
         licences: random_licences.(licences),
         active: true,
         experience: Enum.random(0..52),
+        location: Enum.random(locations),
         dob: Date.new!(Enum.random(1960..2006), 10, 13),
         platforms: random_platforms.(driver_platforms),
         price_fixed: %{currency: "Rands", value: Enum.random(80..250)},
