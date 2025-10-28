@@ -41,7 +41,7 @@ export const updateDriver = async (params: DriverFormValues) => {
     });
     return response.data;
   } catch (error) {
-    console.error("Error creating user image:", error);
+    console.error("Error updating driver:", error);
     throw error;
   }
 }

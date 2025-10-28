@@ -9,7 +9,7 @@ defmodule Backend.Drivers.Drivers do
 
   defdelegate authorize(action, params, session), to: Policy
 
-  @user_fields [:asset, :first_name, :last_name, :email, :location]
+  @user_fields [:asset, :first_name, :last_name, :email]
   @driver_preloads [user: :asset]
 
   def create(params, %{user_id: user_id}) do
@@ -53,16 +53,21 @@ defmodule Backend.Drivers.Drivers do
       |> Enum.reject(fn {_k, v} -> is_nil(v) or v == "" end)
       |> Enum.into(%{})
 
+    decoded_params =
+      Map.update(cleaned_params, :location, %{}, fn val ->
+        if is_binary(val), do: Jason.decode!(val), else: val
+      end)
+
     case get_user_driver(user_id) do
       {:ok, driver} ->
-        if map_size(cleaned_params) > 0 do
-          update_driver(driver, cleaned_params)
+        if map_size(decoded_params) > 0 do
+          update_driver(driver, decoded_params)
         else
           {:ok, driver}
         end
 
       {:error, :not_found} ->
-        create(cleaned_params, %{user_id: user_id})
+        create(decoded_params, %{user_id: user_id})
     end
   end
 
@@ -215,7 +220,6 @@ defmodule Backend.Drivers.Drivers do
         first_name: u.first_name,
         last_name: u.last_name,
         username: u.username,
-        location: u.location,
         user_id: u.id,
         previous_vehicles: vd_stats.previous_vehicles,
         total_accidents: vd_stats.total_accidents,

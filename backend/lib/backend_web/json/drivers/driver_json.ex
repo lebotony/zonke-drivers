@@ -24,7 +24,6 @@ defmodule BackendWeb.Drivers.DriverJSON do
       id: driver.id,
       description: driver.description,
       paused_at: driver.paused_at,
-      price_fixed: driver.price_fixed,
       dob: driver.dob,
       experience: driver.experience,
       booking_count: driver.booking_count,

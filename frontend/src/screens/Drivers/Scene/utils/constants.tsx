@@ -75,10 +75,18 @@ export const PLATFORM_LABELS = PLATFORM_FILTERS.map(
 );
 
 export const LICENCES = [
-  "Class 1",
-  "Class 2",
-  "Class 3",
-  "Class 4",
-  "Class 5",
-  "Public Service Vehicle (PSV)",
+  { slug: "class_1", name: "Class 1" },
+  { slug: "class_2", name: "Class 2" },
+  { slug: "class_3", name: "Class 3" },
+  { slug: "class_4", name: "Class 4" },
+  { slug: "class_5", name: "Class 5" },
+  { slug: "psv", name: "Public Service Vehicle" },
+  { slug: "code_A1", name: "Code A1" },
+  { slug: "code_A", name: "Code A" },
+  { slug: "code_B", name: "Code B" },
+  { slug: "code_EB", name: "Code EB" },
+  { slug: "code_C1", name: "Code C1" },
+  { slug: "code_C", name: "Code C" },
+  { slug: "code_EC1", name: "Code EC1" },
+  { slug: "code_EC", name: "Code EC" },
 ];

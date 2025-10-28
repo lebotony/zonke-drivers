@@ -70,7 +70,7 @@ export const styles = StyleSheet.create({
   address: {
     color: Colors.mediumGrey,
     fontSize: 13,
-    maxWidth: "75%",
+    width: "75%",
     fontWeight: 400,
   },
   save: { position: "absolute", right: 10, top: 8 }

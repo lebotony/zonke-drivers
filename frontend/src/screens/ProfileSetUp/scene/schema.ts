@@ -5,7 +5,7 @@ export const fieldValidators = {
   last_name: z.string().optional(),
   location: z
     .object({
-      address: z.string().array(),
+      address: z.string(),
       lon: z.number(),
       lat: z.number(),
     }).optional(),

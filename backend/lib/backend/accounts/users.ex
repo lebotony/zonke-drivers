@@ -42,23 +42,17 @@ defmodule Backend.Accounts.Users do
   defp maybe_handle_asset(_user, _), do: {:ok, :no_file_in_asset}
 
   def create_user_asset(user_id, params) do
-    IO.puts("11111111111111111111")
-
     case get_user_asset(user_id) do
       %Asset{} = asset ->
-        IO.puts("222222222222222")
         Assets.update_asset_with_file(asset, params)
 
       _ ->
-        IO.puts("333333333333333333")
         asset_params = Map.put_new(params, :user_id, user_id)
         Assets.upload_and_save(asset_params)
     end
   end
 
   defp maybe_update_user(user, params) do
-    IO.puts("444444444444444")
-
     cleaned_params =
       params
       |> Enum.reject(fn {_k, v} -> is_nil(v) or v == "" end)
@@ -70,13 +64,10 @@ defmodule Backend.Accounts.Users do
           if is_binary(val), do: Jason.decode!(val), else: val
         end)
 
-      IO.inspect(decoded_params, label: "5555555555555555")
-
       user
       |> User.changeset(decoded_params)
       |> Repo.update()
     else
-      IO.puts("66666666666666666666")
       {:ok, user}
     end
   end

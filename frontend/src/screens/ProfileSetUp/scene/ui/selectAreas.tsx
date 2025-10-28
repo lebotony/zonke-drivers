@@ -1,13 +1,16 @@
 import { View, TouchableOpacity } from "react-native";
 
-import { isEmpty } from "lodash";
+import { find, isEmpty } from "lodash";
 
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
 import { PopupMenu } from "@/src/components/popup";
 import { Colors } from "@/constants/ui";
 import { styles } from "../styles/selectedArea";
-import { PLATFORM_FILTERS } from "@/src/screens/Drivers/Scene/utils/constants";
+import {
+  LICENCES,
+  PLATFORM_FILTERS,
+} from "@/src/screens/Drivers/Scene/utils/constants";
 import { CustomButton } from "@/src/components/elements/button";
 import { Text } from "react-native-paper";
 
@@ -100,14 +103,20 @@ export const SelectLicenceArea = (props: SelectAreaProps) => {
             Select licences...
           </Text>
         ) : (
-          selectedItems.map((item, idx) => (
-            <View key={item + idx} style={styles.selectedItem}>
-              <Text style={styles.selectedText}>{item}</Text>
-              <TouchableOpacity onPress={() => onRemoveItem(item)}>
+          selectedItems.map((item, idx) => {
+            const licence = find(LICENCES, { slug: item })?.name;
+
+            return (
+              <TouchableOpacity
+                onPress={() => onRemoveItem(item)}
+                key={idx}
+                style={styles.selectedItem}
+              >
+                <Text style={styles.selectedText}>{licence}</Text>
                 <MaterialIcons name="close" size={15} color={Colors.lightRed} />
               </TouchableOpacity>
-            </View>
-          ))
+            );
+          })
         )}
       </View>
     </View>
