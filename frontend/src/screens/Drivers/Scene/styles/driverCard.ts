@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
   ratingRow: {
     gap: 4,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
   ratingText: {
     fontSize: 13,
@@ -70,8 +70,8 @@ export const styles = StyleSheet.create({
   address: {
     color: Colors.mediumGrey,
     fontSize: 13,
-    maxWidth: "85%",
-    fontWeight: 400
+    maxWidth: "75%",
+    fontWeight: 400,
   },
   save: { position: "absolute", right: 10, top: 8 }
 });

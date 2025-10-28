@@ -82,6 +82,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           console.log("Socket connected after authentication");
         } catch (error) {
           console.error("Socket connection failed:", error);
+          throw error;
         }
       }
     };
@@ -94,7 +95,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, [authState.authenticated]);
 
   useEffect(() => {
-    if (!socket && !user) return;
+    if (!socket || !user) return;
+
     const userChannel = socket?.channel(`users:${user?.id}`);
 
     userChannel
@@ -118,7 +120,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (token) {
         setAuthState({ token, authenticated: true });
         axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-        console.log("INITIAL USE_EFFECT");
         fetchUser();
       }
     };
@@ -131,7 +132,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         console.log("FECTH_USER FECTH_USER ", response);
         queryClient.setQueryData(["user"], response);
       })
-      .catch((err) => err);
+      .catch((err) => {
+        console.error("fetchUser error:", err);
+
+        if (err.response.statusText == "Not Found") {
+          logout();
+        }
+      });
 
   const register = async (params: SignUp) => {
     return httpPost("/users/register_user", params)

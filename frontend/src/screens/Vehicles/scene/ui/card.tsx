@@ -15,11 +15,12 @@ import { capitalizeFirstLetter } from "@/src/utils";
 
 type Props = {
   vehicle: Vehicle;
+  isLast: boolean;
 };
 
-export const VehicleCard = ({ vehicle }: Props) => {
+export const VehicleCard = ({ vehicle, isLast }: Props) => {
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, isLast && { marginBottom: 15 }]}>
       <View style={styles.topSection}>
         <View style={styles.leftInfo}>
           <Text style={styles.carName}>
