@@ -3,9 +3,11 @@ import { Text } from "react-native-paper";
 
 import { router } from "expo-router";
 
+import { isEmpty } from "lodash";
+
 import AntDesign from "@expo/vector-icons/AntDesign";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
-import { Feather } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 
 import { Avatar } from "@/src/components/visual/avatar";
 import { Colors } from "@/constants/ui";
@@ -28,7 +30,13 @@ export const DriverCard = (props: DriverProps) => {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-        <Avatar source={driver?.asset_url} radius shadow width={83} />
+        {driver?.asset_url ? (
+          <Avatar source={driver?.asset_url} radius shadow width={83} />
+        ) : (
+          <View style={styles.defaultPic}>
+            <Ionicons name="person" size={60} color={Colors.mediumLightGrey} />
+          </View>
+        )}
         <View style={styles.details}>
           <Text style={styles.name}>
             {driver?.first_name} {driver?.last_name}
@@ -51,7 +59,7 @@ export const DriverCard = (props: DriverProps) => {
             </View>
 
             <Text style={styles.address} numberOfLines={1}>
-              {driver?.experience} years of XP
+              {driver?.experience || "NA"} years of Experience
             </Text>
           </View>
 
@@ -64,7 +72,7 @@ export const DriverCard = (props: DriverProps) => {
               />
             </View>
             <Text style={styles.address} numberOfLines={1} ellipsizeMode="tail">
-              {driver?.location?.address}
+              {driver?.location?.address || "NA"}
             </Text>
           </View>
         </View>
@@ -73,8 +81,12 @@ export const DriverCard = (props: DriverProps) => {
         <MaterialCommunityIcons name="cards-heart" size={24} color="red" />
       </View> */}
 
-      <HorizontalDivider color="#ededed" />
-      <Platforms platforms={driver?.platforms} />
+      {!isEmpty(driver?.platforms) && (
+        <>
+          <HorizontalDivider color="#ededed" />
+          <Platforms platforms={driver?.platforms} />
+        </>
+      )}
       <HorizontalDivider color="#ededed" />
 
       <CustomButton

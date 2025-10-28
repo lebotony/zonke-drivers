@@ -50,8 +50,20 @@ export const Scene = () => {
       >
         <View style={styles.body}>
           {Platform.OS !== "web" && <Header customStyles={{ top: -10 }} />}
+
           <View style={styles.profilePic}>
-            <Avatar source={driver?.asset_url} round width={125} />
+            {driver?.asset_url ? (
+              <Avatar source={driver?.asset_url} round shadow width={125} />
+            ) : (
+              <View style={styles.defaultPic}>
+                <Ionicons
+                  name="person"
+                  size={60}
+                  color={Colors.mediumLightGrey}
+                />
+              </View>
+            )}
+
             <Text style={styles.name}>
               {driver?.first_name} {driver?.last_name}{" "}
               <Text
@@ -66,16 +78,29 @@ export const Scene = () => {
                 color={Colors.mediumDarkGrey}
               />
               <Text style={styles.location}>
-                {!isEmpty(driver?.location) ? driver?.location?.address : ""}
+                {!isEmpty(driver?.location) ? driver?.location?.address : "NA"}
               </Text>
             </View>
           </View>
 
-          <Text style={styles.description} numberOfLines={2}>
+          <Text
+            style={[
+              styles.description,
+              isEmpty(driver?.description) && { display: "none" },
+            ]}
+            numberOfLines={2}
+          >
             {driver?.description}
           </Text>
 
-          <Text style={styles.heading}>Platforms</Text>
+          <Text
+            style={[
+              styles.heading,
+              isEmpty(driver?.platforms) && { display: "none" },
+            ]}
+          >
+            Platforms
+          </Text>
 
           <Platforms
             customContainerStyle={styles.platormsContainer}

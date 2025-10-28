@@ -14,6 +14,14 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     gap: VERTIAL_MARGIN
   },
+  defaultPic: {
+    backgroundColor: Colors.whiteSmoke,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 125,
+    height: 125,
+    borderRadius: "50%",
+  },
   name: {
     fontWeight: "700",
     fontSize: 20
@@ -39,7 +47,7 @@ export const styles = StyleSheet.create({
   },
   platormsContainer: {
     justifyContent: "center",
-    marginBottom: VERTIAL_MARGIN
+    marginBottom: 15
   },
   location: {
     color: Colors.black,

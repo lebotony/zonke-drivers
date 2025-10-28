@@ -1,8 +1,11 @@
 import { View } from "react-native";
 import { Text } from "react-native-paper";
-import { styles } from "../styles/licences";
+
+import { find, isEmpty } from "lodash";
+
 import { LICENCES } from "@/src/screens/Drivers/Scene/utils/constants";
-import { find } from "lodash";
+
+import { styles } from "../styles/licences";
 
 type LicencesProp = {
   licences: string[];
@@ -12,7 +15,7 @@ export const Licences = (props: LicencesProp) => {
   const { licences } = props;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, isEmpty(licences) && { display: "none" }]}>
       <Text style={styles.heading}>Licences & Certificates</Text>
 
       <View style={styles.row}>

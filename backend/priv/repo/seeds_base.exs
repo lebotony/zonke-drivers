@@ -56,7 +56,7 @@ users =
     params = %{
       first_name: Person.first_name(),
       last_name: Person.last_name(),
-      username: Faker.Internet.user_name(),
+      username: "user#{number}",
       email: "user#{number}@gmail.com",
       password: "user123",
       location: Enum.random(locations),
@@ -222,7 +222,6 @@ drivers =
         location: Enum.random(locations),
         dob: Date.new!(Enum.random(1960..2006), 10, 13),
         platforms: random_platforms.(driver_platforms),
-        price_fixed: %{currency: "Rands", value: Enum.random(80..250)},
         user_id: user.id,
       }
       |> Repo.insert()

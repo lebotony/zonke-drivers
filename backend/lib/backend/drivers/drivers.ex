@@ -16,7 +16,6 @@ defmodule Backend.Drivers.Drivers do
     params =
       params
       |> Map.put(:user_id, user_id)
-      |> Map.put(:draft, true)
 
     %Driver{}
     |> Driver.changeset(params)
@@ -118,7 +117,7 @@ defmodule Backend.Drivers.Drivers do
   def get_drivers(params, :public) do
     data =
       DriverBy.base_query()
-      |> DriverBy.by_active_status()
+      # |> DriverBy.by_active_status()
       |> add_extra_fields()
       |> build_search(params)
       |> build_sort(params)
@@ -146,7 +145,7 @@ defmodule Backend.Drivers.Drivers do
           fragment("? @@ websearch_to_tsquery(?)", s.searchable_document, ^value)
         )
 
-      {:age_range, [min, max]}, query ->
+      {:age_range, [min, max]}, query when min != "18" and max != "70" ->
         min = String.to_integer(min)
         max = String.to_integer(max)
 
@@ -156,7 +155,7 @@ defmodule Backend.Drivers.Drivers do
           fragment("DATE_PART('year', AGE(?)) BETWEEN ? AND ?", d.dob, ^min, ^max)
         )
 
-      {:experience_range, [min, max]}, query ->
+      {:experience_range, [min, max]}, query when min != "0" and max != "52" ->
         min = String.to_integer(min)
         max = String.to_integer(max)
 
@@ -211,7 +210,7 @@ defmodule Backend.Drivers.Drivers do
 
     query
     |> join(:inner, [driver: d], u in assoc(d, :user), as: :user)
-    |> join(:inner, [user: u], a in assoc(u, :asset), as: :asset)
+    |> join(:left, [user: u], a in assoc(u, :asset), as: :asset)
     |> join(:left_lateral, [driver: d], vd_stats in subquery(subquery), as: :vd_stats)
     |> join(:left_lateral, [driver: d], rating in subquery(rating_subquery), as: :rating, on: true)
     |> select_merge([driver: d, user: u, vd_stats: vd_stats, rating: rating, asset: a], %{

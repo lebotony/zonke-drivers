@@ -48,7 +48,7 @@ export const Settings = () => {
             <Text style={styles.userText}>
               {user?.first_name} {user?.last_name}
             </Text>
-            <Text style={styles.descriptionText}>{user?.email}</Text>
+            <Text style={styles.descriptionText}>{user?.username}</Text>
           </View>
           <MaterialIcons
             name="arrow-forward-ios"

@@ -17,7 +17,7 @@ defmodule BackendWeb.FallbackController do
   def call(conn, {:error, :invalid_credentials}) do
     conn
     |> put_status(:unauthorized)
-    |> json(%{error: "Invalid email or password"})
+    |> json(%{error: "Invalid username or password"})
   end
 
   def call(conn, {:error, reason}) do

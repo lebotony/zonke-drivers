@@ -15,7 +15,7 @@ import z from "zod";
 import { TextLogo } from "@/src/components/misc/textLogo";
 import { CustomButton } from "@/src/components/elements/button";
 import { Colors } from "@/constants/ui";
-import google_logo from "@/assets/images/google_logo.jpg";
+// import google_logo from "@/assets/images/google_logo.jpg";
 import { useAuth } from "@/src/authContext";
 
 import { styles } from "../styles/login";
