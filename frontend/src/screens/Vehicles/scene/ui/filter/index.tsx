@@ -28,7 +28,6 @@ interface FilterModalProps {
   onDismiss: () => void;
   onReset: () => void;
   brands: { id: string; label: string; icon: string }[];
-  visibleBrands: string[];
   selectedBrands: string[];
   selectedFuelTypes: string[];
   selectedVehicleTypes: string[];
@@ -48,7 +47,6 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   onDismiss,
   onReset,
   brands,
-  visibleBrands,
   selectedBrands,
   selectedFuelTypes,
   selectedVehicleTypes,
@@ -77,16 +75,6 @@ export const FilterModal: React.FC<FilterModalProps> = ({
       label: type,
       isSelected: selectedVehicleTypes.includes(type.toLowerCase()),
     }));
-
-  const getVisibleBrandData = () =>
-    visibleBrands
-      .map((id) => {
-        const b = brands.find((br) => br.id === id);
-        return b
-          ? { ...b, isSelected: selectedBrands.includes(id) }
-          : undefined;
-      })
-      .filter(Boolean) as any[];
 
   const screenHeight = Dimensions.get("window").height;
 
@@ -167,34 +155,38 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           </View>
 
           <FlatList
-            data={getVisibleBrandData()}
+            data={brands}
             keyExtractor={(item) => item.id}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.chipFlatlist}
-            renderItem={({ item }) => (
-              <TouchableOpacity
-                onPress={() => onToggleBrand(item.id)}
-                style={[
-                  styles.chipBtn,
-                  {
-                    backgroundColor: item.isSelected
-                      ? Colors.mrDBlue
-                      : Colors.softGrey,
-                  },
-                ]}
-              >
-                <Text
-                  style={{
-                    color: item.isSelected
-                      ? Colors.white
-                      : Colors.darkCharcoalGrey,
-                  }}
+            renderItem={({ item }) => {
+              const isSelected = selectedBrands.includes(item.id);
+
+              return (
+                <TouchableOpacity
+                  onPress={() => onToggleBrand(item.id)}
+                  style={[
+                    styles.chipBtn,
+                    {
+                      backgroundColor: isSelected
+                        ? Colors.mrDBlue
+                        : Colors.softGrey,
+                    },
+                  ]}
                 >
-                  {item.label}
-                </Text>
-              </TouchableOpacity>
-            )}
+                  <Text
+                    style={{
+                      color: isSelected
+                        ? Colors.white
+                        : Colors.darkCharcoalGrey,
+                    }}
+                  >
+                    {item.label}
+                  </Text>
+                </TouchableOpacity>
+              );
+            }}
           />
 
           <View style={styles.fuelCheckbox}>

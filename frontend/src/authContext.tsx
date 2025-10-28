@@ -177,6 +177,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     await deleteItem(TOKEN_KEY);
     axios.defaults.headers.common["Authorization"] = "";
     setAuthState({ token: null, authenticated: false });
+    queryClient.clear();
   };
 
   const value = {

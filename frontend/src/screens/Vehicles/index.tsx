@@ -33,11 +33,6 @@ export const VehiclesScreen = () => {
   const [searchTerm, setSearchTerm] = useState<string>();
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
-  const initialVisibleBrands = BrandsList.map((b) => b.id).slice(0, 5);
-
-  const [visibleBrands, setVisibleBrands] =
-    useState<string[]>(initialVisibleBrands);
-
   const queryClient = useQueryClient();
 
   const filterParams = {
@@ -125,28 +120,7 @@ export const VehiclesScreen = () => {
     setSelectedBrands((s) =>
       s.includes(id) ? s.filter((x) => x !== id) : [...s, id]
     );
-
-    setVisibleBrands((prev) => {
-      const isInitial = initialVisibleBrands.includes(id);
-      const isAlreadyVisible = prev.includes(id);
-
-      if (isAlreadyVisible) return prev;
-
-      if (!isInitial) return [id, ...prev];
-
-      return [...prev, id];
-    });
   };
-
-  const getVisibleBrandData = () =>
-    visibleBrands
-      .map((id) => {
-        const b = BrandsList.find((br) => br.id === id);
-        return b
-          ? { ...b, isSelected: selectedBrands.includes(id) }
-          : undefined;
-      })
-      .filter(Boolean) as any[];
 
   const handleFilterReset = () => {
     resetRef.current = true;
@@ -156,7 +130,6 @@ export const VehiclesScreen = () => {
     setApplyFilter(false);
     setSelectedRating(null);
     setPriceRange([0, 235]);
-    setVisibleBrands(BrandsList.map((b) => b.id).slice(0, 5));
     setSelectedFuelTypes([]);
     setReset((prev) => !prev);
   };
@@ -194,6 +167,7 @@ export const VehiclesScreen = () => {
       <Header
         setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
         setSearchTerm={(value: string) => setSearchTerm(value)}
+        isVehicleList
       />
 
       <View
@@ -214,7 +188,6 @@ export const VehiclesScreen = () => {
           setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
           onReset={handleFilterReset}
           toggleBrand={toggleBrand}
-          setVisibleBrands={(value: string[]) => setVisibleBrands(value)}
           showReset={!isDefaultState && !showFilterModal}
         />
       </View>
@@ -223,7 +196,7 @@ export const VehiclesScreen = () => {
         <Brands
           selectedBrands={selectedBrands}
           toggleBrand={toggleBrand}
-          visibleBrandData={() => getVisibleBrandData()}
+          brands={BrandsList}
         />
       </View>
 
@@ -233,7 +206,6 @@ export const VehiclesScreen = () => {
         onDismiss={onFilterDismiss}
         onReset={handleFilterReset}
         brands={BrandsList}
-        visibleBrands={visibleBrands}
         selectedBrands={selectedBrands}
         selectedFuelTypes={selectedFuelTypes}
         selectedVehicleTypes={selectedVehicleTypes}

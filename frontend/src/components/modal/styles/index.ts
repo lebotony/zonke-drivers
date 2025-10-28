@@ -15,9 +15,13 @@ export const styles = StyleSheet.create({
     justifyContent: 'flex-end',
   },
   modalWrapper: {
+    position: "absolute",
+    bottom: -16,
+    left: 0,
+    right: 0,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    width: '100%',
+    width: "100%",
     backgroundColor: Colors.white,
   },
   backdrop: {

@@ -1,33 +1,21 @@
 import { View, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 
-import { MaterialIcons } from "@expo/vector-icons";
-
 import { Colors } from "@/constants/ui";
 import { PopupMenu } from "@/src/components/popup";
-import { useAuth } from "@/src/authContext";
 
 import { styles } from "../styles/header";
 import { BrandsList } from "../../utils/constants";
 
 type HeaderFilterProps = {
   setShowFilterModal: (value: boolean) => void;
-  setVisibleBrands: (value: string[]) => void;
   toggleBrand: (id: string) => void;
   showReset: boolean;
   onReset: VoidCallback;
 };
 
 export const HeaderFilter = (props: HeaderFilterProps) => {
-  const {
-    setShowFilterModal,
-    setVisibleBrands,
-    toggleBrand,
-    showReset,
-    onReset,
-  } = props;
-
-  const { onLogout } = useAuth();
+  const { setShowFilterModal, toggleBrand, showReset, onReset } = props;
 
   return (
     <View style={styles.sectionHeader}>
@@ -35,10 +23,7 @@ export const HeaderFilter = (props: HeaderFilterProps) => {
         {showReset && (
           <TouchableOpacity
             style={styles.resetBtn}
-            onPress={() => {
-              (onReset(),
-                setVisibleBrands(BrandsList?.map((b) => b.id).slice(0, 5)));
-            }}
+            onPress={() => onReset()}
             activeOpacity={0.8}
           >
             <Text style={{ color: Colors.mrDBlue, fontWeight: "600" }}>

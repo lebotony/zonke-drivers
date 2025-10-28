@@ -103,7 +103,7 @@ export const ChatScreen = () => {
     }
 
     flatListRef.current?.scrollToEnd({ animated: false });
-  }, [thread]);
+  }, []);
 
   const onGoBack = () => navigation.goBack();
 
