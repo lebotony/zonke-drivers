@@ -29,7 +29,7 @@ export const Scene = () => {
   const { addItemToPaginatedList } = usePaginatedCache();
 
   const { getCachedData } = useCustomQuery();
-  const { drivers, threads } = getCachedData(["drivers", "threads"]);
+  const { drivers, threads = [] } = getCachedData(["drivers", "threads"]);
   const driver = find(drivers, { id: driverId });
 
   const handleCreateThread = () =>
@@ -62,7 +62,7 @@ export const Scene = () => {
             <View style={styles.headerLocation}>
               <MaterialIcons
                 name="location-pin"
-                size={17}
+                size={20}
                 color={Colors.mediumDarkGrey}
               />
               <Text style={styles.location}>

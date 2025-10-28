@@ -1,7 +1,7 @@
 import React from "react";
 import { Tabs } from "expo-router";
 
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
 
 import { Colors } from "@/constants/ui";
@@ -48,7 +48,7 @@ export default function TabLayout() {
           headerShown: false,
           title: "Home",
           tabBarIcon: ({ color, size }) => (
-            <FontAwesome name="home" size={25} color={color} />
+            <Ionicons name="home-outline" size={24} color={color} />
           ),
         }}
       />

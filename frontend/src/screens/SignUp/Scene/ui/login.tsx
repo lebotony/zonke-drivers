@@ -155,7 +155,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
           </Text>
         </CustomButton>
 
-        <View style={styles.dividerRow}>
+        {/* <View style={styles.dividerRow}>
           <View style={styles.divider} />
           <Text style={styles.dividerText}>or continue with</Text>
           <View style={styles.divider} />
@@ -175,7 +175,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
           <Text style={[styles.googleText, { color: Colors.black }]}>
             Google
           </Text>
-        </CustomButton>
+        </CustomButton> */}
 
         <View>
           <View style={styles.signupRow}>

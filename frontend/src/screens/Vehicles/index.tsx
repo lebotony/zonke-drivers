@@ -231,7 +231,11 @@ export const VehiclesScreen = () => {
           }
         }}
         keyExtractor={(i) => i?.id}
-        renderItem={({ item }) => <VehicleCard vehicle={item} />}
+        renderItem={({ item, index }) => {
+          const isLastItem = index === vehicles.length - 1;
+
+          return <VehicleCard vehicle={item} isLast={isLastItem} />;
+        }}
         // renderItem={renderVehicle}
 
         contentContainerStyle={{

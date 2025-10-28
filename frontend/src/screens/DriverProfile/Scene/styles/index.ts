@@ -44,11 +44,11 @@ export const styles = StyleSheet.create({
   location: {
     color: Colors.black,
     fontSize: 14,
+    maxWidth: "85%"
   },
   headerLocation: {
     flexDirection: 'row',
-    gap: 4,
-    alignItems: 'center',
+    gap: 5,
   },
   pill: {
     backgroundColor: Colors.white,

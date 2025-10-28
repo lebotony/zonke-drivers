@@ -25,7 +25,7 @@ export const Form = (props: FormProps) => {
   const customErrors = isSignUp ? errors : undefined;
 
   return (
-    <View>
+    <View style={[!isSignUp && { marginVertical: 20 }]}>
       {isSignUp && (
         <>
           <Fieldset
@@ -33,7 +33,7 @@ export const Form = (props: FormProps) => {
             name="first_name"
             label="First Name"
             inputIcon="person-outline"
-            placeholder="John Doe"
+            placeholder="John"
             inputIconSize={22}
             errors={customErrors}
             customStyles={{ flex: 1 }}
@@ -44,7 +44,7 @@ export const Form = (props: FormProps) => {
             name="last_name"
             label="Last Name"
             inputIcon="person-outline"
-            placeholder="John Doe"
+            placeholder="Doe"
             inputIconSize={22}
             errors={customErrors}
             customStyles={{ flex: 1 }}

@@ -33,6 +33,22 @@ alias Backend.Ecto.EctoEnums
 
 Logger.info("Creating users with profiles")
 
+locations = [
+  %{address: ["Bulawayo", "Zimbabwe"], lat: -20.1457, lon: 28.5873},
+  %{address: ["Harare", "Zimbabwe"], lat: -17.8292, lon: 31.0522},
+  %{address: ["Gweru", "Zimbabwe"], lat: -19.4500, lon: 29.8167},
+  %{address: ["Victoria Falls", "Zimbabwe"], lat: -17.9243, lon: 25.8560},
+  %{address: ["Soweto", "Johannesburg", "Gauteng", "South Africa"], lat: -26.2678, lon: 27.8585},
+  %{address: ["Sandton", "Johannesburg", "Gauteng", "South Africa"], lat: -26.1076, lon: 28.0567},
+  %{address: ["Pretoria", "Gauteng", "South Africa"], lat: -25.7461, lon: 28.1881},
+  %{address: ["Durban", "KwaZulu-Natal", "South Africa"], lat: -29.8587, lon: 31.0218},
+  %{address: ["Cape Town", "Western Cape", "South Africa"], lat: -33.9249, lon: 18.4241},
+  %{address: ["Port Elizabeth", "Eastern Cape", "South Africa"], lat: -33.9608, lon: 25.6022},
+  %{address: ["Bloemfontein", "Free State", "South Africa"], lat: -29.0852, lon: 26.1596},
+  %{address: ["Polokwane", "Limpopo", "South Africa"], lat: -23.9045, lon: 29.4689},
+  %{address: ["Mbombela", "Mpumalanga", "South Africa"], lat: -25.4658, lon: 30.9853}
+]
+
 users =
   Enum.map(1..40, fn number ->
     role = if number < 21, do: "driver", else: "owner"
@@ -43,7 +59,7 @@ users =
       username: Faker.Internet.user_name(),
       email: "user#{number}@gmail.com",
       password: "user123",
-      location: %{address: ["Bulawayo", "1st street"], lat: 20.1457, lon: 28.5873},
+      location: Enum.random(locations),
       role: role
     }
 

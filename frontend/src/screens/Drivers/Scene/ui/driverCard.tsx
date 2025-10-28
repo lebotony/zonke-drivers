@@ -64,16 +64,16 @@ export const DriverCard = (props: DriverProps) => {
                 color={Colors.mediumDarkGrey}
               />
             </View>
-            <Text style={styles.address} numberOfLines={1}>
+            <Text style={styles.address} numberOfLines={1} ellipsizeMode="tail">
               {Array.isArray(driver?.location?.address) &&
                 driver.location.address.join(", ")}
             </Text>
           </View>
         </View>
       </View>
-      <View style={styles.save}>
+      {/* <View style={styles.save}>
         <MaterialCommunityIcons name="cards-heart" size={24} color="red" />
-      </View>
+      </View> */}
 
       <HorizontalDivider color="#ededed" />
       <Platforms platforms={driver?.platforms} />
