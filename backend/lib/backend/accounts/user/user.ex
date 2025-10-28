@@ -8,8 +8,8 @@ defmodule Backend.Accounts.User do
   alias Backend.Ecto.EctoEnums.RoleEnum
   alias Backend.Assets.Asset
 
-  @required_fields [:first_name, :last_name, :email, :role]
-  @optional_fields [:location, :username]
+  @required_fields [:first_name, :last_name, :username, :role]
+  @optional_fields [:location, :email]
   @all_fields @required_fields ++ @optional_fields
 
   schema "users" do
@@ -38,8 +38,7 @@ defmodule Backend.Accounts.User do
     |> cast(params, @all_fields)
     |> validate_required(@required_fields)
     # TODO: change to 20
-    |> validate_length(:username, min: 1, max: 250)
-    |> unique_constraint(:email, message: "user email already taken")
+    |> validate_length(:username, min: 3, max: 250)
     |> unique_constraint(:username, message: "username already taken")
   end
 

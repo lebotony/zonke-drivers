@@ -25,11 +25,13 @@ import { ChatMessage } from "./chatMessage";
 import { MessageBox } from "./messageBox";
 import { styles } from "./styles/index";
 import { fetchThreadMessages, setSeenTrue } from "../actions";
+import { useMessages } from "../MessagesProvider";
 
 export const ChatScreen = () => {
   const { id } = useLocalSearchParams();
   const threadId = Array.isArray(id) ? id[0] : id;
 
+  const { onSetCurrentThread, currentThreadId } = useMessages();
   const { getCachedData } = useCustomQuery();
   const { threads, user, fetchedMsgThreadIds, threadChannels } = getCachedData([
     "threads",
@@ -50,6 +52,8 @@ export const ChatScreen = () => {
   )?.participant;
 
   const isNewThread = isEmpty(thread?.last_message);
+
+  if (!currentThreadId) onSetCurrentThread(threadId);
 
   // console.log("CHAT USER_ID: ", user?.id);
   // console.log("CHAT RECIPIENT_ID: ", recipient?.id);

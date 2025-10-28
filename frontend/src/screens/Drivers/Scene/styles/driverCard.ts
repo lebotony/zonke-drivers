@@ -42,7 +42,6 @@ export const styles = StyleSheet.create({
   },
   detailIcon: {
     width: 15,
-    height: 15,
     alignItems: "center",
     justifyContent: 'center',
     marginRight: 3
@@ -73,5 +72,16 @@ export const styles = StyleSheet.create({
     width: "75%",
     fontWeight: 400,
   },
-  save: { position: "absolute", right: 10, top: 8 }
+  save: {
+    position: "absolute",
+    right: 10, top: 8
+  },
+  defaultPic: {
+    backgroundColor: Colors.whiteSmoke,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 83,
+    height: 83,
+    borderRadius: 10,
+  }
 });

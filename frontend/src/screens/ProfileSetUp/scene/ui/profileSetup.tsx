@@ -49,8 +49,8 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const isDriver = user?.role === "driver";
 
   const initialLocation = isDriver
-    ? driverProfile?.location || ""
-    : user?.location || "";
+    ? driverProfile?.location || {}
+    : user?.location || {};
 
   const formValues = {
     first_name: user?.first_name || "",

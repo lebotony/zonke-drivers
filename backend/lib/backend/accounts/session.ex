@@ -2,9 +2,9 @@ defmodule Backend.Accounts.Session do
   alias Backend.Accounts.{Users, Accounts}
   alias Backend.Guardian
 
-  def authenticate(%{email: email, password: password})
-      when is_binary(email) and is_binary(password) do
-    with {:ok, user} <- Users.get_user_by(email: email),
+  def authenticate(%{username: username, password: password})
+      when is_binary(username) and is_binary(password) do
+    with {:ok, user} <- Users.get_user_by(username: username),
          :ok <- Accounts.verify_password(user, password),
          # TODO add ttl option
          {:ok, jwt, _claims} <- Guardian.encode_and_sign(user, %{}, token_type: :access) do

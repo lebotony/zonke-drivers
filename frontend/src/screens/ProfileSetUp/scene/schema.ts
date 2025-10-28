@@ -5,9 +5,9 @@ export const fieldValidators = {
   last_name: z.string().optional(),
   location: z
     .object({
-      address: z.string(),
-      lon: z.number(),
-      lat: z.number(),
+      address: z.string().optional(),
+      lon: z.number().optional(),
+      lat: z.number().optional(),
     }).optional(),
   email: z.string().optional(),
   dob: z.string().optional(),
@@ -16,8 +16,8 @@ export const fieldValidators = {
   licences: z.string().array().optional(),
   asset: z
     .object({
-      file_path: z.string(),
-      filename: z.string(),
+      file_path: z.string().optional(),
+      filename: z.string().optional(),
     }).optional()
 };
 

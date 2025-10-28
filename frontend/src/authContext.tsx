@@ -144,8 +144,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const register = async (params: SignUp) => {
     return httpPost("/users/register_user", params)
       .then((_response) => {
-        const { email, password } = params;
-        return login({ email, password });
+        const { username, password } = params;
+        return login({ username, password });
       })
       .catch((err) => {
         const message =

@@ -8,7 +8,7 @@ defmodule Backend.Accounts.Users do
   import Ecto.Query
 
   def get_user_by(opts \\ []) when is_list(opts) do
-    by_opts = Keyword.validate!(opts, [:email, :id])
+    by_opts = Keyword.validate!(opts, [:username, :id])
 
     case Repo.get_by(User, by_opts) do
       nil ->
