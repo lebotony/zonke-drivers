@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { View, Pressable, FlatList } from "react-native";
 import { Text } from "react-native-paper";
 
+import { isEmpty } from "lodash";
+
+import { NoData } from "@/src/components/NoData";
 import { SearchComponent } from "@/src/components/searchBar";
 import { Spinner } from "@/src/components/elements/Spinner";
 import { useCustomQuery } from "@/src/useQueryContext";
@@ -55,26 +58,30 @@ export const MessagesScreen = () => {
           </Pressable>
         ))}
       </View>
-      <FlatList
-        style={styles.messageList}
-        data={threads as Thread[]}
-        keyExtractor={(thread) => thread?.id}
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-          }
-        }}
-        onEndReachedThreshold={0.5}
-        renderItem={({ item }) => (
-          <Message
-            onSetCurrentThread={onSetCurrentThread}
-            currentThreadId={currentThreadId}
-            thread={item}
-            user={user}
-          />
-        )}
-        showsVerticalScrollIndicator={false}
-      />
+      {isEmpty(threads) ? (
+        <NoData messages />
+      ) : (
+        <FlatList
+          style={styles.messageList}
+          data={threads as Thread[]}
+          keyExtractor={(thread) => thread?.id}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          renderItem={({ item }) => (
+            <Message
+              onSetCurrentThread={onSetCurrentThread}
+              currentThreadId={currentThreadId}
+              thread={item}
+              user={user}
+            />
+          )}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </View>
   );
 };

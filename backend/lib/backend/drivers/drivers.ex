@@ -147,7 +147,7 @@ defmodule Backend.Drivers.Drivers do
           fragment("? @@ websearch_to_tsquery(?)", s.searchable_document, ^value)
         )
 
-      {:age_range, [min, max]}, query when min != "18" and max != "70" ->
+      {:age_range, [min, max]}, query when min != "18" or max != "70" ->
         min = String.to_integer(min)
         max = String.to_integer(max)
 
@@ -157,7 +157,7 @@ defmodule Backend.Drivers.Drivers do
           fragment("DATE_PART('year', AGE(?)) BETWEEN ? AND ?", d.dob, ^min, ^max)
         )
 
-      {:experience_range, [min, max]}, query when min != "0" and max != "52" ->
+      {:experience_range, [min, max]}, query when min != "0" or max != "52" ->
         min = String.to_integer(min)
         max = String.to_integer(max)
 
@@ -170,8 +170,8 @@ defmodule Backend.Drivers.Drivers do
       {:platforms, val}, query when is_list(val) ->
         where(query, [driver: d], fragment("? && ?", d.platforms, ^val))
 
-      # {:licences, val}, query when is_list(val) ->
-      # where(query, [driver: d], fragment("?->>'name' && ?", d.licences, ^val))
+      {:licences, val}, query when is_list(val) ->
+        where(query, [driver: d], fragment("? && ?", d.licences, ^val))
 
       _, query ->
         query

@@ -1,8 +1,13 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList, View } from "react-native";
 
+import { isEmpty } from "lodash";
 import { useDebounce } from "use-debounce";
+
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+
+import { NoData } from "@/src/components/NoData";
+import { Spinner } from "@/src/components/elements/Spinner";
 
 import { fetchDrivers } from "../actions";
 import { Header } from "./ui/header";
@@ -62,18 +67,24 @@ export const Scene = () => {
     return fetchDrivers({ pageParam }, filters);
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
-    useInfiniteQuery({
-      queryKey: queryKey,
-      queryFn: queryFn,
-      getNextPageParam: (lastPage) => {
-        const page = lastPage?.paginate?.page;
-        const max_page = lastPage?.paginate?.max_page;
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+    isLoading,
+  } = useInfiniteQuery({
+    queryKey: queryKey,
+    queryFn: queryFn,
+    getNextPageParam: (lastPage) => {
+      const page = lastPage?.paginate?.page;
+      const max_page = lastPage?.paginate?.max_page;
 
-        return page < max_page ? page + 1 : undefined;
-      },
-      initialPageParam: 1,
-    });
+      return page < max_page ? page + 1 : undefined;
+    },
+    initialPageParam: 1,
+  });
 
   const drivers = data?.pages.flatMap((page) => page.data) ?? [];
   queryClient.setQueryData(["drivers"], drivers);
@@ -125,7 +136,7 @@ export const Scene = () => {
   const handleSetSelectedLicences = (value: string) => {
     if (selectedLicences.includes(value)) {
       const newLicences = selectedLicences.filter(
-        (platform) => platform !== value
+        (licence) => licence !== value
       );
 
       return setSelectedLicences(newLicences);
@@ -177,20 +188,6 @@ export const Scene = () => {
         selectedPlatforms={selectedPlatforms}
         onClear={handleFilterReset}
       />
-      <View style={styles.drivers}>
-        <FlatList
-          data={drivers}
-          onEndReached={() => {
-            if (hasNextPage && !isFetchingNextPage) {
-              fetchNextPage();
-            }
-          }}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => String(item?.id ?? index)}
-          renderItem={({ item }) => <DriverCard driver={item} />}
-          contentContainerStyle={{ gap: 15, paddingVertical: 15 }}
-        />
-      </View>
 
       <FilterModal
         showReset={!isDefaultState}
@@ -209,6 +206,27 @@ export const Scene = () => {
         onTogglePlatforms={handleSetSelectedPlatforms}
         onToggleLicences={handleSetSelectedLicences}
       />
+
+      {isEmpty(drivers) && !isLoading ? (
+        <NoData />
+      ) : isLoading ? (
+        <Spinner />
+      ) : (
+        <View style={styles.drivers}>
+          <FlatList
+            data={drivers}
+            onEndReached={() => {
+              if (hasNextPage && !isFetchingNextPage) {
+                fetchNextPage();
+              }
+            }}
+            showsVerticalScrollIndicator={false}
+            keyExtractor={(item, index) => String(item?.id ?? index)}
+            renderItem={({ item }) => <DriverCard driver={item} />}
+            contentContainerStyle={{ gap: 15, paddingVertical: 15 }}
+          />
+        </View>
+      )}
     </View>
   );
 };
