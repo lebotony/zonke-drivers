@@ -31,7 +31,7 @@ export const styles = StyleSheet.create({
   },
   tabItem: {},
   tabText: {
-    fontSize: 15,
+    fontSize: 16,
     color: Colors.black,
     paddingBottom: 4,
     paddingHorizontal: 10,

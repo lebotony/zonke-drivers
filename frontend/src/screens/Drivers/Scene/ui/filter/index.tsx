@@ -151,15 +151,16 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
           <FlatList
             data={LICENCES}
-            keyExtractor={(index) => index}
+            keyExtractor={(item) => item.slug}
             horizontal
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={styles.chipFlatlist}
             renderItem={({ item }) => {
-              const isSelected = selectedLicences.includes(item);
+              const isSelected = selectedLicences.includes(item.slug);
+
               return (
                 <TouchableOpacity
-                  onPress={() => onToggleLicences(item)}
+                  onPress={() => onToggleLicences(item.slug)}
                   style={[
                     styles.chipBtn,
                     {
@@ -176,7 +177,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                         : Colors.darkCharcoalGrey,
                     }}
                   >
-                    {item}
+                    {item.name}
                   </Text>
                 </TouchableOpacity>
               );

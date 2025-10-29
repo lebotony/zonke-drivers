@@ -2,8 +2,12 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { SafeAreaView, FlatList, View } from "react-native";
 
 import { useDebounce } from "use-debounce";
+import { isEmpty } from "lodash";
 
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+
+import { NoData } from "@/src/components/NoData";
+import { Spinner } from "@/src/components/elements/Spinner";
 
 import { VehicleCard } from "./scene/ui/card";
 import { styles } from "./styles";
@@ -68,18 +72,24 @@ export const VehiclesScreen = () => {
     return fetchVehicles({ pageParam }, filters);
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
-    useInfiniteQuery({
-      queryKey: queryKey,
-      queryFn: queryFn,
-      getNextPageParam: (lastPage) => {
-        const page = lastPage?.paginate?.page;
-        const max_page = lastPage?.paginate?.max_page;
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+    isLoading,
+  } = useInfiniteQuery({
+    queryKey: queryKey,
+    queryFn: queryFn,
+    getNextPageParam: (lastPage) => {
+      const page = lastPage?.paginate?.page;
+      const max_page = lastPage?.paginate?.max_page;
 
-        return page < max_page ? page + 1 : undefined;
-      },
-      initialPageParam: 1,
-    });
+      return page < max_page ? page + 1 : undefined;
+    },
+    initialPageParam: 1,
+  });
 
   const vehicles = data?.pages.flatMap((page) => page?.data) ?? [];
   queryClient.setQueryData(["vehicles"], vehicles);
@@ -223,27 +233,33 @@ export const VehiclesScreen = () => {
         onApply={handleApplyFilter}
       />
 
-      <FlatList
-        data={vehicles}
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-          }
-        }}
-        keyExtractor={(i) => i?.id}
-        renderItem={({ item, index }) => {
-          const isLastItem = index === vehicles.length - 1;
+      {isEmpty(vehicles) && !isLoading ? (
+        <NoData />
+      ) : isLoading ? (
+        <Spinner />
+      ) : (
+        <FlatList
+          data={vehicles}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
+            }
+          }}
+          keyExtractor={(i) => i?.id}
+          renderItem={({ item, index }) => {
+            const isLastItem = index === vehicles.length - 1;
 
-          return <VehicleCard vehicle={item} isLast={isLastItem} />;
-        }}
-        // renderItem={renderVehicle}
+            return <VehicleCard vehicle={item} isLast={isLastItem} />;
+          }}
+          // renderItem={renderVehicle}
 
-        contentContainerStyle={{
-          gap: 12,
-          paddingHorizontal: 14,
-        }}
-        showsVerticalScrollIndicator={false}
-      />
+          contentContainerStyle={{
+            gap: 12,
+            paddingHorizontal: 14,
+          }}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </SafeAreaView>
   );
 };

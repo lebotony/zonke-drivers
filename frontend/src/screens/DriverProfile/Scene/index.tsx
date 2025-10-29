@@ -35,7 +35,7 @@ export const Scene = () => {
     driverProfile,
   } = getCachedData(["drivers", "threads", "driverProfile"]);
 
-  const isUserProfile = driverProfile.id === driverId;
+  const isUserProfile = driverProfile?.id === driverId;
   const driver = isUserProfile
     ? driverProfile
     : find(drivers, { id: driverId });

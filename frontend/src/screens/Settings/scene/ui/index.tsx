@@ -16,6 +16,10 @@ export const Settings = () => {
   const { user } = getCachedData(["user"]);
 
   const isProfilePicPresent = user?.asset?.url;
+  const settings =
+    user.role === "driver"
+      ? settingsItemsDef.slice(0, 2)
+      : settingsItemsDef.slice(1, 2);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -57,7 +61,7 @@ export const Settings = () => {
           />
         </TouchableOpacity>
 
-        <SettingsItems settings={settingsItemsDef.slice(0, 3)} />
+        <SettingsItems settings={settings} />
         {/* <SettingsItems settings={settingsItemsDef.slice(3, 5)} /> */}
         <SettingsItems settings={settingsItemsDef.slice(-1)} />
       </ScrollView>
