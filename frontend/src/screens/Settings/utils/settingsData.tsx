@@ -8,6 +8,7 @@ import {
 
 export const settingsItemsDef = [
   {
+    slug: "account",
     label: "Account",
     icon: (
       <MaterialCommunityIcons name="account" size={25} color={Colors.white} />
@@ -30,6 +31,7 @@ export const settingsItemsDef = [
   //   iconWrapperColor: Colors.checkers60Green,
   // },
   {
+    slug: "friend",
     label: "Tell a Friend",
     icon: (
       <Ionicons name="share-social-outline" size={24} color={Colors.white} />
@@ -37,6 +39,15 @@ export const settingsItemsDef = [
     iconWrapperColor: Colors.purplePink,
   },
   {
+    slug: "card",
+    label: "Preview Driver Card",
+    icon: (
+      <Ionicons name="share-social-outline" size={24} color={Colors.white} />
+    ),
+    iconWrapperColor: Colors.purplePink,
+  },
+  {
+    slug: "logout",
     label: "Logout",
     icon: <Ionicons name="exit-outline" size={23} color={Colors.white} />,
     iconWrapperColor: Colors.lightRed,

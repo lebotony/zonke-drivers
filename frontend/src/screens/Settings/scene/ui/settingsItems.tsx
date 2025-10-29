@@ -2,6 +2,7 @@ import { TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 
 import { MaterialIcons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 import { Colors } from "@/constants/ui";
 import { useAuth } from "@/src/authContext";
@@ -19,11 +20,15 @@ export const SettingsItems = (props: SettingsItemsProps) => {
   return (
     <View style={styles.container}>
       {settings.map((item: Record<string, any>, index: number) => {
-        const isLogoutItem = item.label === "Logout";
+        const isLogoutItem = item.slug === "logout";
+        const isPreviewCard = item.slug === "card";
 
         const handleOnPress = () => {
           if (isLogoutItem) {
             return onLogout!();
+          }
+          if (isPreviewCard) {
+            return router.push("/previewCard");
           }
         };
 

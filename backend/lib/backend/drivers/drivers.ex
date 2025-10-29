@@ -78,8 +78,10 @@ defmodule Backend.Drivers.Drivers do
 
   def get_user_driver(user_id) do
     from(d in Driver,
-      where: d.user_id == ^user_id
+      as: :driver,
+      where: d.user_id == ^user_id,
     )
+    |> add_extra_fields()
     |> Repo.one()
     |> format_driver()
   end
