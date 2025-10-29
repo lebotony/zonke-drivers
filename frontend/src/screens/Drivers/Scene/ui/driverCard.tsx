@@ -17,6 +17,7 @@ import { calculateAge } from "@/src/helpers/calculateAge";
 
 import { styles } from "../styles/driverCard";
 import { Platforms } from "./platforms";
+import { Spinner } from "@/src/components/elements/Spinner";
 
 const ICON_SIZE = 14;
 
@@ -26,6 +27,8 @@ type DriverProps = {
 
 export const DriverCard = (props: DriverProps) => {
   const { driver } = props;
+
+  if (!driver) return <Spinner />;
 
   return (
     <View style={styles.container}>

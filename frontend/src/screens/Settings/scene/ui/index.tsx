@@ -57,7 +57,7 @@ export const Settings = () => {
           />
         </TouchableOpacity>
 
-        <SettingsItems settings={settingsItemsDef.slice(0, 2)} />
+        <SettingsItems settings={settingsItemsDef.slice(0, 3)} />
         {/* <SettingsItems settings={settingsItemsDef.slice(3, 5)} /> */}
         <SettingsItems settings={settingsItemsDef.slice(-1)} />
       </ScrollView>

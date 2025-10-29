@@ -29,8 +29,16 @@ export const Scene = () => {
   const { addItemToPaginatedList } = usePaginatedCache();
 
   const { getCachedData } = useCustomQuery();
-  const { drivers, threads = [] } = getCachedData(["drivers", "threads"]);
-  const driver = find(drivers, { id: driverId });
+  const {
+    drivers,
+    threads = [],
+    driverProfile,
+  } = getCachedData(["drivers", "threads", "driverProfile"]);
+
+  const isUserProfile = driverProfile.id === driverId;
+  const driver = isUserProfile
+    ? driverProfile
+    : find(drivers, { id: driverId });
 
   const handleCreateThread = () =>
     createThread({ participant_id: driver.user_id }).then((response) => {
