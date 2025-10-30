@@ -1,5 +1,5 @@
 import React, { ReactNode, useRef } from 'react';
-import { Animated, PanResponder, Pressable, View } from 'react-native';
+import { Animated, Dimensions, PanResponder, Pressable, View } from 'react-native';
 import { BlurView } from 'expo-blur';
 
 import { styles } from './styles';
@@ -50,12 +50,15 @@ export const Modal = (props: ModalProps) => {
     })
   ).current;
 
+  const screenHeight = Dimensions.get("window").height;
+  
+
   return (
     <BlurView intensity={60} tint="dark" style={styles.container}>
       <Pressable style={styles.backdrop} onPress={dismissWithAnimation} />
 
       <Animated.View
-        style={[styles.modalWrapper, { transform: [{ translateY: pan.y }] }]}
+        style={[styles.modalWrapper, { transform: [{ translateY: pan.y }] }, {maxHeight: 0.8*screenHeight}]}
         {...panResponder.panHandlers}
       >
         <BarLine />

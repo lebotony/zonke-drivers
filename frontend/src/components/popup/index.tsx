@@ -27,8 +27,9 @@ import { styles } from "./styles";
 type PopupMenuProps = {
   label?: string;
   options: string[];
-  selectedValue: string | null;
+  selectedValue?: string | null;
   onSelect: (value: string) => void;
+  innerBtnFn?: () => void
   menuWidth?: "auto" | number;
   style?: StyleProp<ViewStyle>;
   iconSize?: number;
@@ -44,6 +45,7 @@ export const PopupMenu = ({
   options,
   selectedValue,
   onSelect,
+  innerBtnFn,
   icon,
   iconColor = Colors.black,
   menuWidth = "auto",
@@ -64,7 +66,8 @@ export const PopupMenu = ({
     popupBtnHeight: 0,
     popupMenuWidth: 0,
     popupMenuHeight: 0,
-    freeHeight: 0,
+    freeHeightBelow: 0,
+    freeHeightAbove: 0,
     freeWidth: 0,
     widestTextWidth: 0,
     iconWidth: 0,
@@ -88,7 +91,8 @@ export const PopupMenu = ({
             popupLeft: pageX,
             poupBtnWidth: width,
             popupBtnHeight: height,
-            freeHeight: screenHeight - (pageY + height),
+            freeHeightBelow: screenHeight - (pageY + height),
+            freeHeightAbove: pageY - 20,
             freeWidth: Math.round(screenWidth - width || 0),
           }));
 
@@ -101,6 +105,27 @@ export const PopupMenu = ({
   const openDropdown = () => {
     measureInputPosition(() => setOpen(true));
   };
+
+  const onPopupPress = () => {
+
+    if(innerBtnFn !== undefined){
+      innerBtnFn();
+    }
+    
+
+    if (!open) openDropdown();
+          else setOpen(false);
+
+  }
+
+  const onBackdropPress = () => {
+    setOpen(false);
+
+    if (innerBtnFn !== undefined){
+      innerBtnFn();
+    }
+    
+  }
 
   useEffect(() => {
     const dimSub = Dimensions.addEventListener("change", () => {
@@ -134,6 +159,11 @@ export const PopupMenu = ({
 
     const onBackPress = () => {
       setOpen(false);
+      
+    if(innerBtnFn !== undefined){
+      innerBtnFn();
+    }
+    
       Keyboard.dismiss();
       return true;
     };
@@ -151,6 +181,11 @@ export const PopupMenu = ({
   const handleSelect = (value: string) => {
     onSelect(value);
     setOpen(false);
+   
+    if(innerBtnFn !== undefined){
+      innerBtnFn();
+    }
+    
   };
 
   let computedWidth: number;
@@ -170,7 +205,7 @@ export const PopupMenu = ({
     0
   );
 
-  const showAbove = layout.freeHeight <= 225;
+  const showAbove = layout.freeHeightBelow <= 225;
   const popupPositionTop = showAbove
     ? layout.popupTop - (layout.popupMenuHeight + layout.popupBtnHeight)
     : layout.popupTop;
@@ -189,38 +224,41 @@ export const PopupMenu = ({
       <Pressable
         ref={popupBtnRef}
         style={[styles.container, style]}
-        onPress={() => {
-          if (!open) openDropdown();
-          else setOpen(false);
-        }}
+        onPress={onPopupPress}
         onLayout={() => {
           if (open) measureInputPosition();
         }}
       >
-        {before && children}
-        <View
-          style={styles.iconWrapper}
-          ref={iconRef}
-          onLayout={(event) => {
-            const { width } = event.nativeEvent.layout;
-            setLayout((prev) => ({
-              ...prev,
-              iconWidth: width,
-            }));
-          }}
-        >
-          <IconComponent
-            name={icon}
-            size={iconSize}
-            color={iconColor || Colors.black}
-          />
-        </View>
-        {!before && children}
+        {icon ? (
+  <>
+    {before && children}
+    <View
+      style={styles.iconWrapper}
+      ref={iconRef}
+      onLayout={(event) => {
+        const { width } = event.nativeEvent.layout;
+        setLayout((prev) => ({
+          ...prev,
+          iconWidth: width,
+        }));
+      }}
+    >
+      <IconComponent
+        name={icon}
+        size={iconSize}
+        color={iconColor || Colors.black}
+      />
+    </View>
+    {!before && children}
+  </>
+) : (
+  children
+)}
       </Pressable>
 
-      {open && (
+      {open && options && (
         <Portal>
-          <TouchableWithoutFeedback onPress={() => setOpen(false)}>
+          <TouchableWithoutFeedback onPress={onBackdropPress}>
             <View style={styles.backdrop} />
           </TouchableWithoutFeedback>
 
@@ -241,8 +279,8 @@ export const PopupMenu = ({
                 left: leftPosition,
                 width: computedWidth,
                 maxHeight: showAbove
-                  ? "auto"
-                  : Math.max(layout.freeHeight - keyboardHeight - 50, 0),
+                  ? layout.freeHeightAbove
+                  : Math.max(layout.freeHeightBelow - keyboardHeight - 50, 0),
                 maxWidth: screenWidth,
                 marginVertical: showAbove ? -4 : 4,
               },
@@ -269,7 +307,7 @@ export const PopupMenu = ({
                       styles.popupText,
                       selectedValue === item && {
                         fontWeight: "bold",
-                        color: Colors.primaryBlue,
+                        color: Colors.mrDBlue,
                       },
                       {
                         maxWidth:

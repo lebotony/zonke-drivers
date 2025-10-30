@@ -6,7 +6,6 @@ import { Colors } from "@/constants/ui";
 export const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.white,
-    marginHorizontal: 13,
     height: 60,
     borderRadius: 7,
     position: "relative",

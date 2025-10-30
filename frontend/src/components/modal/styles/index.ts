@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     zIndex: 100000,
+    elevation: 10000,
     flex: 1,
     flexDirection: 'column',
     justifyContent: 'flex-end',

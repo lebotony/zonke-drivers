@@ -48,11 +48,17 @@ export const Card = (props: CardProps) => {
     return !isEmpty(watchedValue) ? watchedValue : card.placeholder;
   };
 
-  return (
-    <PopupMenu onSelect={handleSetValue} options={card.options}>
-      <View style={styles.card}>
-        <View style={styles.iconWrapper}>{card.icon}</View>
+  const onDropdownPress = () => {
+    setDisplayDropdown(!displayDropdown)
 
+    if( isTransmission ) {
+      setChecked(!checked)
+    }
+  }
+
+  return (
+    <PopupMenu onSelect={handleSetValue} options={card.options} innerBtnFn={onDropdownPress} style={styles.card} >
+        <View style={styles.iconWrapper}>{card.icon}</View>
         <View style={{ flex: 1 }}>
           <Text style={{ fontSize: 13, fontWeight: 600 }}>{card.label}</Text>
           <Text
@@ -66,14 +72,12 @@ export const Card = (props: CardProps) => {
           </Text>
         </View>
 
-        <TouchableOpacity
-          onPress={() => setDisplayDropdown(!displayDropdown)}
+        <View
           style={styles.dropdowmIconWrapper}
         >
           {isTransmission ? (
             <Switch
               value={checked}
-              onValueChange={() => setChecked(!checked)}
               trackColor={{ false: "#D3D3D3", true: Colors.tealGreen }}
               thumbColor={checked ? "#fff" : "#f4f3f4"}
             />
@@ -85,8 +89,7 @@ export const Card = (props: CardProps) => {
               style={{ paddingTop: 1 }}
             />
           )}
-        </TouchableOpacity>
-      </View>
+        </View>
     </PopupMenu>
   );
 };

@@ -64,10 +64,10 @@ export const styles = StyleSheet.create({
   },
   dot: {
     borderWidth: 1,
-    borderColor: Colors.primaryBlue,
+    borderColor: Colors.mrDBlue,
     width: 6,
     height: 6,
     borderRadius: "50%",
-    backgroundColor: Colors.primaryBlue
+    backgroundColor: Colors.mrDBlue
   }
 });
