@@ -91,7 +91,7 @@ defmodule Backend.Messenger.Threads do
         | last_message: lm,
           unseen_msg_count: coalesce(uc.count, 0)
       })
-      |> order_by([last_message: lm], desc: lm.inserted_at)
+      |> order_by([last_message: lm], desc_nulls_last: lm.inserted_at)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     threads =
