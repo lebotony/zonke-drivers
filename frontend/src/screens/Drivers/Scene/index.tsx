@@ -188,20 +188,6 @@ export const Scene = () => {
         selectedPlatforms={selectedPlatforms}
         onClear={handleFilterReset}
       />
-      <View style={styles.drivers}>
-        <FlatList
-          data={drivers}
-          onEndReached={() => {
-            if (hasNextPage && !isFetchingNextPage) {
-              fetchNextPage();
-            }
-          }}
-          showsVerticalScrollIndicator={false}
-          keyExtractor={(item, index) => String(item?.id ?? index)}
-          renderItem={({ item }) => <DriverCard driver={item} />}
-          contentContainerStyle={{ gap: 15, paddingVertical: 15, marginHorizontal: 14  }}
-        />
-      </View>
 
       <FilterModal
         showReset={!isDefaultState}
