@@ -81,7 +81,7 @@ export const Card = (props: CardProps) => {
       </View>
       <View style={{ flexDirection: "row", justifyContent: "center" }}>
         <CustomButton
-          onPress={() => router.push(`/payments/${vehicleDriver.id}`)}
+          onPress={() => router.push(`/payments/${vehicleDriver?.id}`)}
           customStyle={{
             paddingTop: 10,
             paddingBottom: 12,
