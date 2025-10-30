@@ -79,14 +79,14 @@ export const Card = (props: CardProps) => {
           <Text style={styles.amountText}>$1050</Text>
         </View>
       </View>
-      <View style={{ flexDirection: "row", justifyContent: "center" }}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <CustomButton
           onPress={() => router.push(`/payments/${vehicleDriver.id}`)}
           customStyle={{
             paddingTop: 10,
             paddingBottom: 12,
             backgroundColor: Colors.lightGreen,
-            width: 200,
+            width: '48%',
             marginVertical: 10,
             ...shadowStyles,
           }}
@@ -98,6 +98,27 @@ export const Card = (props: CardProps) => {
             ]}
           >
             View Details
+          </Text>
+        </CustomButton>
+
+        <CustomButton
+          onPress={() => router.push(`/applicants/${vehicleDriver.id}`)}
+          customStyle={{
+            paddingTop: 10,
+            paddingBottom: 12,
+            backgroundColor: Colors.mrDBlue,
+            width: '48%',
+            marginVertical: 10,
+            ...shadowStyles,
+          }}
+        >
+          <Text
+            style={[
+              styles.name,
+              { fontWeight: 500, lineHeight: 17, color: Colors.white },
+            ]}
+          >
+            View Applicants
           </Text>
         </CustomButton>
       </View>

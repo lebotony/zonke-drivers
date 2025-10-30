@@ -5,7 +5,6 @@ import { Colors } from "@/constants/ui";
 export const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.white,
-    marginHorizontal: 14,
     shadowColor: "#888888",
     shadowOffset: {
       width: 0,

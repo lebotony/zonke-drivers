@@ -5,7 +5,12 @@ import { Colors } from "@/constants/ui";
 export const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.bg,
-    flex: 1
+    paddingTop: 30,
+    flex: 1,
+  },
+  mainContainer: {
+    paddingHorizontal: 14,
+    paddingTop: 12
   },
   headerText: {
     color: Colors.black,
@@ -14,10 +19,16 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     paddingTop: 28,
   },
+  addPaymentRow: {
+    borderWidth: 0.5,
+    borderColor: Colors.lightGrey,
+    borderRadius: 8,
+    padding: 10,
+    marginBottom: 12,
+  },
   addText: {
     color: Colors.mrDBlue,
-    fontSize: 19,
-    fontWeight: 600,
+    fontSize: 15,
   },
   addModal: {
     flexDirection: 'row',

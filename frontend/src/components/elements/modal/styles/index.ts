@@ -11,6 +11,7 @@ export const styles = StyleSheet.create({
     bottom: 0,
     flex: 1,
     flexDirection: 'column',
+    elevation: 10000
   },
   modalWrapper: {
     borderTopLeftRadius: 15,

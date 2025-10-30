@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FlatList, SafeAreaView, TouchableOpacity, View } from "react-native";
+import { FlatList, SafeAreaView, ScrollView } from "react-native";
 import { Text } from "react-native-paper";
 
 import { useLocalSearchParams } from "expo-router";
@@ -15,11 +15,44 @@ import { PaymentCard } from "./paymentCard";
 import { fetchPayments } from "../../actions";
 import { styles } from "../styles/payments";
 import { AddModal } from "./addModal";
+import { InlineSwitch } from "@/src/components/misc/inlineSwitch";
+import { Colors } from "@/constants/ui";
+import { switchItems } from "../constants";
+import { VehicleSelector } from "./vehicleSelector";
+import { CustomButton } from "@/src/components/elements/button";
 
 type PaymentsResponse = {
   data: Payment[];
   paginate: Paginate;
 };
+
+ const vehiclesData = [
+    {
+      id: '1',
+      model: 'Toyota Camry 2020',
+      image: 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
+      type: 'Sedan',
+      color: 'White',
+      applicants: 12,
+    },
+    {
+      id: '2',
+      model: 'Mercedes E-Class 2021',
+      image: 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80',
+      type: 'Luxury Sedan',
+      color: 'Black',
+      applicants: 8,
+    },
+    {
+      id: '3',
+      model: 'Toyota Harrier 2019',
+      image: 'https://images.unsplash.com/photo-1544636331-e26879cd4d9b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1074&q=80',
+      type: 'SUV',
+      color: 'Gray',
+      applicants: 5,
+    },
+  ];
+
 
 export const PaymentsScreen = () => {
   const { id } = useLocalSearchParams();
@@ -27,6 +60,8 @@ export const PaymentsScreen = () => {
 
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [showAddPayModal, setShowAddPayModal] = useState(false);
+  const [switchSelection, setSwitchSelection] = useState(switchItems[0].slug);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>(vehiclesData[0]);
 
   const { getCachedData } = useCustomQuery();
   const { vehicleDrivers, fetchedVehicleDriverIds, paymentsPagination } =
@@ -37,6 +72,8 @@ export const PaymentsScreen = () => {
     ]);
 
   const vehicleDriver = find(vehicleDrivers, { id: vehicleDriverId });
+
+  console.log("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", vehicleDriver.payments);
 
   const queryClient = useQueryClient();
   const { updatePaginatedObject, getUpdatedObjectSnapshot } =
@@ -87,37 +124,50 @@ export const PaymentsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.headerText}>Payments</Text>
+      <InlineSwitch
+        shadowColor={"#f2f2f2"}
+        items={switchItems}
+        selectedColor={Colors.mrDBlue}
+        value={switchSelection}
+        onChange={setSwitchSelection}
+      />
 
-      <View
-        style={{
-          alignItems: "flex-end",
-          marginRight: 15,
-        }}
-      >
-        <TouchableOpacity onPress={() => setShowAddPayModal(true)}>
-          <Text style={styles.addText}>+ Add</Text>
-        </TouchableOpacity>
-      </View>
+      <ScrollView style={styles.mainContainer} showsVerticalScrollIndicator={false}>
+        <VehicleSelector
+          vehicles={vehiclesData}
+          selectedVehicle={selectedVehicle}
+          onSelectVehicle={setSelectedVehicle}
+        />
+
+        {switchSelection === 'payments' && 
+        <>
+        <CustomButton onPress={() => setShowAddPayModal(true)} style={styles.addPaymentRow}>
+          <Text style={styles.addText}>+ ADD A PAYMENT</Text>
+        </CustomButton>
 
       <FlatList
         data={vehicleDriver?.payments}
+        scrollEnabled={false}
         onEndReached={() => {
           if (paymentsPagination?.page < paymentsPagination?.max_page) {
             handleFetchPayments();
           }
         }}
-        keyExtractor={({ id }, _index) => String(id)}
+        keyExtractor={({ id }, index) => String(id + index)}
         renderItem={({ item }) => (
           <PaymentCard payment={item} vehicleDriver={vehicleDriver} />
         )}
         contentContainerStyle={{ paddingVertical: 5 }}
         showsVerticalScrollIndicator={false}
       />
+        </>
+      
+      }
 
-      <Comments setShowCommentModal={() => setShowCommentModal(true)} />
+      {switchSelection === 'comments' &&<Comments setShowCommentModal={() => setShowCommentModal(true)} /> }
 
-      {showCommentModal && (
+      </ScrollView>
+    {showCommentModal && (
         <CommentModal setShowCommentModal={() => setShowCommentModal(false)} />
       )}
       {showAddPayModal && (
@@ -126,6 +176,7 @@ export const PaymentsScreen = () => {
           vehicleDriverId={vehicleDriverId}
         />
       )}
+      
     </SafeAreaView>
   );
 };

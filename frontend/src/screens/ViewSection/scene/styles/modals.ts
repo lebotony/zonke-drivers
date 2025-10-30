@@ -26,6 +26,17 @@ export const styles = StyleSheet.create({
     flex: 1,
     marginBottom: 25,
   },
+  comment: {
+  flex: 1,
+  justifyContent: 'space-between',
+},
+  commentInput: {
+  height: '85%',
+  fontSize: 15,
+  textAlignVertical: 'top',
+},
+
+
   username: {
     fontSize: 16,
     fontWeight: 700,
@@ -40,14 +51,6 @@ export const styles = StyleSheet.create({
     fontWeight: 600,
     color: Colors.dimGrey,
     marginTop: 5,
-  },
-  actions: {
-    flexDirection: 'row',
-    gap: 10,
-    alignItems: 'center',
-    position: 'absolute',
-    bottom: 10,
-    left: 15,
   },
   // RATE MODAL
   starsWrapper: {

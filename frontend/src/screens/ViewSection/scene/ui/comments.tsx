@@ -15,15 +15,15 @@ export const Comments = (props: CommentsProps) => {
 
   return (
     <View style={styles.commentsSection}>
-      <Text style={styles.commentsTitle}>Comments</Text>
       <CustomButton onPress={setShowCommentModal} style={styles.addCommentRow}>
         <Text style={styles.addCommentText}>+ ADD A COMMENT</Text>
       </CustomButton>
 
       <FlatList
+        scrollEnabled={false}
         showsVerticalScrollIndicator={false}
         showsHorizontalScrollIndicator={false}
-        data={[0, 1, 2, 3, 4]}
+        data={[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
         keyExtractor={(v, index) => String(index)}
         renderItem={({ item }) => <Comment />}
       />

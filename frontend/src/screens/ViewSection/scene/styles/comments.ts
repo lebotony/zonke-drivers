@@ -4,11 +4,6 @@ import { Colors } from '@/constants/ui';
 
 export const styles = StyleSheet.create({
   commentsSection: {
-    maxHeight: "50%",
-    paddingHorizontal: 20,
-    paddingTop: 4,
-    borderTopColor: Colors.greyLighter,
-    borderTopWidth: 1,
   },
   commentsTitle: {
     fontWeight: 600,
@@ -24,7 +19,7 @@ export const styles = StyleSheet.create({
     marginBottom: 12,
   },
   addCommentText: {
-    color: Colors.indigoBlue,
+    color: Colors.mrDBlue,
     fontSize: 15,
   },
 })
