@@ -8,6 +8,8 @@ import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 import { NoData } from "@/src/components/NoData";
 import { Spinner } from "@/src/components/elements/Spinner";
+import { DynamicHeader } from "@/src/components/dynamicHeader";
+import { Colors } from "@/constants/ui";
 
 import { fetchDrivers } from "../actions";
 import { Header } from "./ui/header";
@@ -175,11 +177,13 @@ export const Scene = () => {
   };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Header
-        setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
-        setSearchTerm={(value: string) => setSearchTerm(value)}
-      />
+    <View style={{ flex: 1, backgroundColor: Colors.bg }}>
+      <DynamicHeader headerBgColor={Colors.bg} header={
+        <View>
+          <Header
+            setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
+            setSearchTerm={(value: string) => setSearchTerm(value)}
+          />
       <QuickFilters
         showReset={!isDefaultState}
         onSetSelectedPlatforms={(value: string) =>
@@ -188,6 +192,32 @@ export const Scene = () => {
         selectedPlatforms={selectedPlatforms}
         onClear={handleFilterReset}
       />
+        </View>
+      }>
+      {isEmpty(drivers) && !isLoading ? (
+          <NoData />
+        ) : isLoading ? (
+          <Spinner />
+        ) : (
+          <View style={styles.drivers}>
+            <FlatList
+              scrollEnabled={false}
+              data={drivers}
+              onEndReached={() => {
+                if (hasNextPage && !isFetchingNextPage) {
+                  fetchNextPage();
+                }
+              }}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item, index) => String(item?.id ?? index)}
+              renderItem={({ item }) => <DriverCard driver={item} />}
+              contentContainerStyle={{ gap: 15, paddingVertical: 15 }}
+            />
+        </View>
+      )}
+
+      </DynamicHeader>
+
 
       <FilterModal
         showReset={!isDefaultState}
@@ -207,26 +237,7 @@ export const Scene = () => {
         onToggleLicences={handleSetSelectedLicences}
       />
 
-      {isEmpty(drivers) && !isLoading ? (
-        <NoData />
-      ) : isLoading ? (
-        <Spinner />
-      ) : (
-        <View style={styles.drivers}>
-          <FlatList
-            data={drivers}
-            onEndReached={() => {
-              if (hasNextPage && !isFetchingNextPage) {
-                fetchNextPage();
-              }
-            }}
-            showsVerticalScrollIndicator={false}
-            keyExtractor={(item, index) => String(item?.id ?? index)}
-            renderItem={({ item }) => <DriverCard driver={item} />}
-            contentContainerStyle={{ gap: 15, paddingVertical: 15 }}
-          />
-        </View>
-      )}
+     
     </View>
   );
 };

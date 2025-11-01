@@ -8,6 +8,8 @@ import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 import { NoData } from "@/src/components/NoData";
 import { Spinner } from "@/src/components/elements/Spinner";
+import { DynamicHeader } from "@/src/components/dynamicHeader";
+import { Colors } from "@/constants/ui";
 
 import { VehicleCard } from "./scene/ui/card";
 import { styles } from "./styles";
@@ -174,41 +176,79 @@ export const VehiclesScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Header
-        setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
-        setSearchTerm={(value: string) => setSearchTerm(value)}
-        isVehicleList
-      />
+      <DynamicHeader headerBgColor={Colors.bg} header={
+        <>
+          <Header
+            setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
+            setSearchTerm={(value: string) => setSearchTerm(value)}
+            isVehicleList
+          />
 
-      <View
-        style={{
-          flexDirection: "row",
-          justifyContent: "space-between",
-          alignItems: "center",
-        }}
-      >
-        <HeaderFilterPlatforms
-          onSetSelectedPlatforms={(value: string) =>
-            handleSetSelectedVehicleType(value)
-          }
-          selectedPlatforms={selectedVehicleTypes}
-        />
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <HeaderFilterPlatforms
+              onSetSelectedPlatforms={(value: string) =>
+                handleSetSelectedVehicleType(value)
+              }
+              selectedPlatforms={selectedVehicleTypes}
+            />
 
-        <HeaderFilter
-          setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
-          onReset={handleFilterReset}
-          toggleBrand={toggleBrand}
-          showReset={!isDefaultState && !showFilterModal}
-        />
-      </View>
+            <HeaderFilter
+              setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
+              onReset={handleFilterReset}
+              toggleBrand={toggleBrand}
+              showReset={!isDefaultState && !showFilterModal}
+            />
+          </View>
 
-      <View style={{ height: 80 }}>
-        <Brands
-          selectedBrands={selectedBrands}
-          toggleBrand={toggleBrand}
-          brands={BrandsList}
+          <View style={{ height: 80 }}>
+            <Brands
+              selectedBrands={selectedBrands}
+              toggleBrand={toggleBrand}
+              brands={BrandsList}
+            />
+          </View>
+        
+        </>
+
+      }>
+      {isEmpty(vehicles) && !isLoading ? (
+        <NoData />
+      ) : isLoading ? (
+        <Spinner />
+      ) : (
+        <FlatList
+          scrollEnabled={false}
+          data={vehicles}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
+            }
+          }}
+          keyExtractor={(i) => i?.id}
+          renderItem={({ item, index }) => {
+            const isLastItem = index === vehicles.length - 1;
+
+            return <VehicleCard vehicle={item} isLast={isLastItem} />;
+          }}
+          // renderItem={renderVehicle}
+
+          contentContainerStyle={{
+            gap: 12,
+            paddingHorizontal: 14,
+          }}
+          showsVerticalScrollIndicator={false}
         />
-      </View>
+      )}
+
+
+      </DynamicHeader>
+
 
       <FilterModal
         showReset={!isDefaultState}
@@ -233,33 +273,7 @@ export const VehiclesScreen = () => {
         onApply={handleApplyFilter}
       />
 
-      {isEmpty(vehicles) && !isLoading ? (
-        <NoData />
-      ) : isLoading ? (
-        <Spinner />
-      ) : (
-        <FlatList
-          data={vehicles}
-          onEndReached={() => {
-            if (hasNextPage && !isFetchingNextPage) {
-              fetchNextPage();
-            }
-          }}
-          keyExtractor={(i) => i?.id}
-          renderItem={({ item, index }) => {
-            const isLastItem = index === vehicles.length - 1;
 
-            return <VehicleCard vehicle={item} isLast={isLastItem} />;
-          }}
-          // renderItem={renderVehicle}
-
-          contentContainerStyle={{
-            gap: 12,
-            paddingHorizontal: 14,
-          }}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
     </SafeAreaView>
   );
 };
