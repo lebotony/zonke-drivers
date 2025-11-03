@@ -1,6 +1,6 @@
-defmodule Backend.Bookings.DriverBookings do
+defmodule Backend.Applications.DriverBookings do
   alias Ecto.Multi
-  alias Backend.Bookings.DriverBooking
+  alias Backend.Applications.DriverBooking
   alias Backend.Notifications.Notifications
   alias Backend.Bookings.Queries.DriverBookingBy
   alias Backend.{Repo, PaginateHelper}

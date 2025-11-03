@@ -21,7 +21,7 @@ export const PaymentCard = (props: PaymentCardProps) => {
 
       <View style={styles.header}>
         <Text style={styles.headerName}>
-          {vehicleDriver.first_name} {vehicleDriver.last_name}
+          {vehicleDriver?.driver?.first_name} {vehicleDriver?.driver?.last_name}
         </Text>
         <View style={styles.time}>
           <Ionicons name="time-outline" size={18} color={Colors.mediumGrey} />

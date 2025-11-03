@@ -1,11 +1,9 @@
 type VehicleDriver = {
   id: string;
-  driver: Driver;
-  vehicle: Vehicle;
-  rating: number;
-  asset_url: string;
   first_name: string;
   last_name: string;
+  driver: Driver;
+  payments: Payment[]
 };
 
 type Payment = {

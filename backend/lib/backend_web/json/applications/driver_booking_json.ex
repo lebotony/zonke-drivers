@@ -1,4 +1,4 @@
-defmodule BackendWeb.Bookings.DriverBookingJSON do
+defmodule BackendWeb.Applications.DriverBookingJSON do
   def index(%{driver_bookings: driver_bookings, paginate: paginate}) do
     %{
       paginate: paginate,

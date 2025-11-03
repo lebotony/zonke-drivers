@@ -10,28 +10,28 @@ import { Colors } from "@/constants/ui";
 import { CustomButton } from "@/src/components/elements/button";
 import { styles } from "../styles/card";
 import { shadowStyles } from "@/src/components/shadowStyles";
+import { capitalizeFirstLetter } from "@/src/utils";
 
 const ICON_SIZE = 14;
 
 type CardProps = {
-  vehicleDriver: VehicleDriver;
+  vehicle: Vehicle;
 };
 
 export const Card = (props: CardProps) => {
-  const { vehicleDriver } = props;
+  const { vehicle } = props;
 
   return (
     <View style={styles.card}>
       <View style={styles.body}>
         <Image
-          source={vehicleDriver.asset_url}
+          source={vehicle?.asset?.url}
           style={styles.image}
           contentFit="cover"
         />
         <View style={styles.details}>
           <Text style={styles.name}>
-            {" "}
-            {vehicleDriver.vehicle.brand} {vehicleDriver.vehicle.model}
+            {capitalizeFirstLetter(`${vehicle?.brand} ${vehicle?.model}`)}
           </Text>
 
           <View style={styles.ratingRow}>
@@ -39,22 +39,26 @@ export const Card = (props: CardProps) => {
               <AntDesign name="star" size={ICON_SIZE} color={Colors.yellow} />
             </View>
             <Text style={styles.ratingText}>
-              {vehicleDriver.rating}{" "}
+              {vehicle?.rating}{" "}
               <Text style={styles.ratingCreteria}>(200 payments)</Text>
             </Text>
           </View>
 
           <View style={styles.ratingRow}>
             <View style={styles.detailIcon}>
-              <Feather name="clock" size={13} color={Colors.checkers60Green} />
+              <MaterialIcons
+                name="event-seat"
+                size={18}
+                color={Colors.mrDBlue}
+              />
             </View>
 
             <Text style={styles.address} numberOfLines={1}>
-              1 years, 5 months
+              {`${vehicle?.passengers} passengers`}
             </Text>
           </View>
 
-          <View style={styles.ratingRow}>
+          {/* <View style={styles.ratingRow}>
             <View style={styles.detailIcon}>
               <MaterialIcons
                 name="location-pin"
@@ -65,7 +69,7 @@ export const Card = (props: CardProps) => {
             <Text style={styles.address} numberOfLines={1}>
               Soweto, Gauteng, South Africa
             </Text>
-          </View>
+          </View> */}
         </View>
       </View>
       <HorizontalDivider color="#ededed" />
@@ -81,12 +85,12 @@ export const Card = (props: CardProps) => {
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <CustomButton
-          onPress={() => router.push(`/payments/${vehicleDriver?.id}`)}
+          onPress={() => router.push(`/payments/${vehicle?.id}`)}
           customStyle={{
             paddingTop: 10,
             paddingBottom: 12,
             backgroundColor: Colors.lightGreen,
-            width: '48%',
+            width: "48%",
             marginVertical: 10,
             ...shadowStyles,
           }}
@@ -102,12 +106,12 @@ export const Card = (props: CardProps) => {
         </CustomButton>
 
         <CustomButton
-          onPress={() => router.push(`/applicants/${vehicleDriver.id}`)}
+          onPress={() => router.push(`/applicants/${vehicle.id}`)}
           customStyle={{
             paddingTop: 10,
             paddingBottom: 12,
             backgroundColor: Colors.mrDBlue,
-            width: '48%',
+            width: "48%",
             marginVertical: 10,
             ...shadowStyles,
           }}

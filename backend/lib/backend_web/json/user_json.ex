@@ -14,5 +14,7 @@ defmodule BackendWeb.UserJSON do
       location: user.location,
       asset: asset
     }
+    |> Enum.reject(fn {_k, v} -> is_nil(v) end)
+    |> Enum.into(%{})
   end
 end

@@ -44,3 +44,10 @@ type PriceFixed = {
   currency: string,
   value: number
 }
+
+type Asset = {
+  id: string,
+  copied: boolean,
+  meta: Record<string, any>,
+  url: string
+}

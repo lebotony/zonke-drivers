@@ -7,6 +7,12 @@ defmodule Backend.Ecto.EctoEnums do
     :member
   ])
 
+  defenum(ApplicationStatusEnum, :vehicle_application_status_enum, [
+    :accepted,
+    :rejected,
+    :pending
+  ])
+
   defenum(BookingStatusEnum, :booking_status_enum, [
     :accepted,
     :rejected,
@@ -14,7 +20,7 @@ defmodule Backend.Ecto.EctoEnums do
   ])
 
   defenum(NotificationsEnum, :notifications_enum, [
-    :booking,
+    :application,
     :review,
     :tag,
     :profile,

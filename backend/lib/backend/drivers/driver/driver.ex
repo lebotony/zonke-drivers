@@ -2,10 +2,11 @@ defmodule Backend.Drivers.Driver do
   use Backend, :model
 
   alias Backend.Accounts.{BusinessProfile, User}
-  alias Backend.Ecto.Embeds.{PriceRangeEmbed, PriceFixed, Licence}
+  alias Backend.Ecto.Embeds.{PriceFixed, Licence}
   alias Backend.Reviews.Review
   alias Backend.Vehicles.Vehicle
-  alias Backend.Bookings.DriverBooking
+  # alias Backend.Bookings.DriverBooking
+  alias Backend.Assets.Asset
 
   @required_fields [:user_id]
   @optional_fields [
@@ -44,8 +45,11 @@ defmodule Backend.Drivers.Driver do
 
     belongs_to(:user, User)
 
+    has_one(:asset, Asset)
+
     has_many(:reviews, Review)
-    has_many(:driver_bookings, DriverBooking)
+    # has_many(:driver_bookings, DriverBooking)
+
     many_to_many(:vehicles, Vehicle, join_through: VehicleDriver)
 
     timestamps()

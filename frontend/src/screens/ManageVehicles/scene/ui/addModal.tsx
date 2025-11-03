@@ -13,16 +13,19 @@ import { CustomButton } from "@/src/components/elements/button";
 import { addPayment } from "../../actions";
 import { AmountSchema } from "../../schema";
 import { styles } from "../styles/addModal";
+import { find } from "lodash";
 
 type AmountFormValues = z.infer<typeof AmountSchema>;
 
 type AddModalProps = {
-  vehicleDriverId: string;
+  vehicleId: string;
+  vehicleDriver: VehicleDriver;
+
   setShowAddPayModal: VoidCallback;
 };
 
 export const AddModal = (props: AddModalProps) => {
-  const { vehicleDriverId, setShowAddPayModal } = props;
+  const { vehicleDriver, vehicleId, setShowAddPayModal } = props;
 
   const { control, handleSubmit } = useForm<AmountFormValues>({
     resolver: zodResolver(AmountSchema),
@@ -33,7 +36,7 @@ export const AddModal = (props: AddModalProps) => {
 
   const onSubmit = (data: AmountFormValues) => {
     const params = {
-      vehicle_driver_id: vehicleDriverId,
+      vehicle_driver_id: vehicleDriver?.id,
       price_fixed: {
         value: data.amount,
         currency: "ZAR",
@@ -41,13 +44,16 @@ export const AddModal = (props: AddModalProps) => {
     };
 
     addPayment(params).then((response) => {
-      const vehicleDriver = getUpdatedObjectSnapshot(
-        "vehicleDrivers",
-        vehicleDriverId
-      );
+      const vehicle = getUpdatedObjectSnapshot("vehicle", vehicleId);
 
-      updatePaginatedObject("vehicleDrivers", vehicleDriverId, {
-        payments: [response, ...(vehicleDriver.payments || [])],
+      updatePaginatedObject("userVehicles", vehicleId, {
+        ...vehicle,
+        vehicle_drivers: [
+          {
+            ...vehicleDriver,
+            payments: [response, ...(vehicleDriver?.payments || [])],
+          },
+        ],
       });
 
       setShowAddPayModal();

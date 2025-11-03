@@ -8,10 +8,7 @@ defmodule Backend.Vehicles.VehicleDriver do
 
   schema "vehicle_drivers" do
     field(:accidents, :integer)
-
-    field(:asset_url, :string, virtual: true)
-    field(:first_name, :string, virtual: true)
-    field(:last_name, :string, virtual: true)
+    field(:active, :boolean)
 
     belongs_to(:driver, Driver)
     belongs_to(:vehicle, Vehicle)

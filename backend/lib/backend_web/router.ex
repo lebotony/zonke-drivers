@@ -53,6 +53,10 @@ defmodule BackendWeb.Router do
 
       resources("/vehicle_payments", Vehicles.PaymentController, except: @except_path_actions)
 
+      resources("/vehicle_applications", Applications.VehicleApplicationController,
+        except: @except_path_actions
+      )
+
       scope("/threads") do
         get("/user_threads", Messenger.ThreadController, :get_participant_threads)
         post("/messages_seen", Messenger.ThreadController, :set_seen_true)

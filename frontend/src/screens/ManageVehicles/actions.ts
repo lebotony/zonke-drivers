@@ -3,13 +3,13 @@ import axios from "axios";
 import { API_URL } from "@/constants/srcConstants";
 import { httpPost } from "@/src/requests";
 
-export const fetchManagementVehicles = ({ pageParam = 1 }) =>
+export const fetchUserVehicles = ({ pageParam = 1 }) =>
   axios
-    .get(`${API_URL}/vehicles/vehicle_drivers`, {
+    .get(`${API_URL}/vehicles`, {
     params: { page: pageParam, per_page: 5,  }
   })
     .then((response) => {
-      console.log("vehicle_drivers vehicle_drivers", response.data)
+      console.log("user_vehicle user_vehicle", response.data)
       return response.data
     })
     .catch((err) => err);
@@ -29,4 +29,14 @@ export const fetchPayments = ({ pageParam = 1, vehicleDriverId }: FetchPaymentsP
     })
     .catch((err) => err);
 
-export const addPayment = (params) => httpPost('/vehicle_payments', params)
+export const fetchApplications = ({ pageParam = 1, vehicleId }) =>
+  axios
+    .get(`${API_URL}/vehicle_applications`, {
+    params: { page: pageParam, page_size: 10, vehicle_id: vehicleId}
+  })
+    .then((response) => {
+      return response.data
+    })
+    .catch((err) => err);
+
+export const addPayment = (params: Partial<Payment>) => httpPost('/vehicle_payments', params)

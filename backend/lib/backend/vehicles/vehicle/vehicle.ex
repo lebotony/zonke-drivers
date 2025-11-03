@@ -6,7 +6,7 @@ defmodule Backend.Vehicles.Vehicle do
   alias Backend.Drivers.Driver
   alias Backend.Ecto.Embeds.PriceFixed
   alias Backend.Assets.Asset
-  alias Backend.Bookings.VehicleBooking
+  alias Backend.Applications.VehicleApplication
   alias Backend.Reviews.Review
   alias Backend.Ecto.EctoEnums.{VehicleTypeEnum, FuelTypeEnum}
 
@@ -45,7 +45,8 @@ defmodule Backend.Vehicles.Vehicle do
     belongs_to(:user, User)
 
     has_one(:asset, Asset)
-    has_many(:vehicle_bookings, VehicleBooking)
+    has_many(:vehicle_applications, VehicleApplication)
+    has_many(:vehicle_drivers, VehicleDriver)
     has_many(:reviews, Review)
 
     many_to_many(:drivers, Driver, join_through: VehicleDriver)
