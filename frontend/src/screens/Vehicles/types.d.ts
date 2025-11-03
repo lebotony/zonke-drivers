@@ -14,6 +14,9 @@ type Vehicle = {
   price_fixed: PriceFixed,
   price_range: PriceRange,
   user_id: string,
+  asset: Asset,
+  vehicle_drivers?: VehicleDriver[],
+  applications: Driver[],
   rating: number
 }
 

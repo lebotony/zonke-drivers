@@ -10,13 +10,13 @@ import { Spinner } from "@/src/components/elements/Spinner";
 
 import { Card } from "./scene/ui/card";
 import { styles } from "./styles";
-import { fetchManagementVehicles } from "./actions";
+import { fetchUserVehicles } from "./actions";
 
 export const ManageVehicles = () => {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
-      queryKey: ["vehicleDrivers"],
-      queryFn: fetchManagementVehicles,
+      queryKey: ["userVehicles"],
+      queryFn: fetchUserVehicles,
       getNextPageParam: (lastPage) => {
         const page = lastPage?.paginate?.page;
         const max_page = lastPage?.paginate?.max_page;
@@ -26,26 +26,26 @@ export const ManageVehicles = () => {
       initialPageParam: 1,
     });
 
-  const vehicleDrivers = data?.pages?.flatMap((page) => page?.data) ?? [];
+  const userVehicles = data?.pages?.flatMap((page) => page?.data) ?? [];
 
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.header}>Management</Text>
 
-      {isEmpty(vehicleDrivers) && !isLoading ? (
+      {isEmpty(userVehicles) && !isLoading ? (
         <NoData />
       ) : isLoading ? (
         <Spinner />
       ) : (
         <FlatList
-          data={vehicleDrivers}
+          data={userVehicles}
           onEndReached={() => {
             if (hasNextPage && !isFetchingNextPage) {
               fetchNextPage();
             }
           }}
-          keyExtractor={(index) => String(index)}
-          renderItem={({ item }) => <Card vehicleDriver={item} />}
+          keyExtractor={(item, index) => String(index)}
+          renderItem={({ item }) => <Card vehicle={item} />}
           contentContainerStyle={{ paddingVertical: 5 }}
           showsVerticalScrollIndicator={false}
         />

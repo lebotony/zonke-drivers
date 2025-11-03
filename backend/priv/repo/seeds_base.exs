@@ -5,14 +5,14 @@ alias Backend.Accounts.{User, BusinessProfile, Membership}
 alias Faker.{Person, Company, Internet, Address}
 alias Backend.Messenger.Schemas.{ThreadParticipant, Message}
 alias Backend.Messenger.Threads
-alias Backend.Bookings.Booking
+# alias Backend.Bookings.Booking
 alias Backend.Reviews.Review
 alias Backend.Tags.Tag
 alias Backend.TestExample.Participant
 alias Backend.Vehicles.{Vehicle, VehicleDriver, Payment}
 alias Backend.Drivers.Driver
-alias Backend.Bookings.{VehicleBooking, DriverBooking}
 alias Backend.Assets.Assets
+alias Backend.Applications.VehicleApplication
 # alias Backend.Posts.Post
 alias Backend.Ecto.EctoEnums
 
@@ -142,40 +142,43 @@ vehicle_types = ["bike", "passenger", "taxi", "truck", "lorry"]
 fuel_types = [:diesel, :petrol, :electric, :hybrid, :hydrogen]
 
 vehicles =
-  Enum.map(owners_users, fn user ->
+  Enum.flat_map(owners_users, fn user ->
     rand_number = Enum.random(1..length(vehicle_types))
 
-      {:ok, vehicle} =
-        %Vehicle{
-          type: Enum.random(vehicle_types),
-          brand: Enum.random(vehicle_brands),
-          model: Enum.random(vehicle_models),
-          manual: Enum.random([true, false]),
-          fuel_type: Enum.random(fuel_types),
-          model_year: Enum.random(2005..2024),
-          engine_capacity: 1.2,
-          passengers: Enum.random(2..40),
-          description: "Has suspension problems",
-          active: true,
-          mileage: Enum.random(10000..100000),
-          price_fixed: %{currency: "ZAR", value: Enum.random(20..60)},
-          user_id: user.id,
-        }
-        |> Repo.insert()
+    vehicles =
+      Enum.map(1..3, fn v ->
+        {:ok, vehicle} =
+          %Vehicle{
+            type: Enum.random(vehicle_types),
+            brand: Enum.random(vehicle_brands),
+            model: Enum.random(vehicle_models),
+            manual: Enum.random([true, false]),
+            fuel_type: Enum.random(fuel_types),
+            model_year: Enum.random(2005..2024),
+            engine_capacity: 1.2,
+            passengers: Enum.random(2..40),
+            description: "Has suspension problems",
+            active: true,
+            mileage: Enum.random(10000..100000),
+            price_fixed: %{currency: "ZAR", value: Enum.random(20..60)},
+            user_id: user.id,
+          }
+          |> Repo.insert()
 
-      # CREATE VEHICLE ASSET
-      asset_params = %{
-        file: %Plug.Upload{
-          path: Path.expand("priv/car-test.jpg"),
-          filename: "uploads/car-test.jpg",
-        },
-        vehicle_id: vehicle.id
-      }
+          # CREATE VEHICLE ASSET
+        asset_params = %{
+          file: %Plug.Upload{
+            path: Path.expand("priv/car-test.jpg"),
+            filename: "uploads/car-test.jpg",
+          },
+          vehicle_id: vehicle.id
+        }
 
       Assets.upload_and_save(asset_params)
 
       vehicle
     end)
+  end)
 
 ######################################################################################################
 
@@ -263,41 +266,42 @@ drivers =
 
 ######################################################################################################
 
-Logger.info("Creating vehicle_bookings")
+Logger.info("Creating vehicle_applications")
 
-vehicle_bookings =
-  Enum.map(Enum.zip(drivers_users, vehicles), fn {user, vehicle} ->
-      {:ok, vehicle_booking} =
-        %VehicleBooking{
-          # booked_date: ,
-          note: "can i book this car for the afternoon?",
-          price_fixed: %{currency: "dollars", value: 25},
-          user_id: user.id,
+vehicle_applications =
+  Enum.flat_map(vehicles, fn vehicle ->
+    three_drivers = Enum.take(drivers, 3)
+
+    Enum.map(three_drivers, fn driver ->
+      {:ok, vehicle_application} =
+        %VehicleApplication{
+          driver_id: driver.id,
           vehicle_id: vehicle.id,
         }
         |> Repo.insert()
 
-      vehicle_booking
+      vehicle_application
     end)
+  end)
 
 ######################################################################################################
 
-Logger.info("Creating driver_bookings")
+# Logger.info("Creating driver_bookings")
 
-driver_bookings =
-  Enum.map(Enum.zip(owners_users, drivers), fn {user, driver} ->
-      {:ok, driver_booking} =
-        %DriverBooking{
-          # booked_date: ,
-          note: "can you drive this truck?",
-          price_fixed: %{currency: "dollars", value: 25},
-          user_id: user.id,
-          driver_id: driver.id,
-        }
-        |> Repo.insert()
+# driver_bookings =
+#   Enum.map(Enum.zip(owners_users, drivers), fn {user, driver} ->
+#       {:ok, driver_booking} =
+#         %DriverBooking{
+#           # booked_date: ,
+#           note: "can you drive this truck?",
+#           price_fixed: %{currency: "dollars", value: 25},
+#           user_id: user.id,
+#           driver_id: driver.id,
+#         }
+#         |> Repo.insert()
 
-      driver_booking
-    end)
+#       driver_booking
+#     end)
 
 ######################################################################################################
 
@@ -439,8 +443,8 @@ messages =
 
 Logger.info("Seed data population completed successfully!")
 # Logger.info("Created: #{length(users)} users, #{length(business_profiles)} business profiles")
-Logger.info("Created: #{length(vehicle_bookings)} vehicle_bookings")
-Logger.info("Created: #{length(driver_bookings)} driver_bookings")
+Logger.info("Created: #{length(vehicle_applications)} vehicle_applications")
+# Logger.info("Created: #{length(driver_bookings)} driver_bookings")
 # Logger.info("Created: #{length(posts)} posts")
 Logger.info("Created: #{length(vehicles)} vehicles")
 Logger.info("Created: #{length(drivers)} drivers")

@@ -24,7 +24,7 @@ defmodule BackendWeb.Vehicles.VehicleController do
 
   def index(conn, params, session) do
     # with :ok <- Bodyguard.permit(Vehicles, :get_vehicles, %{id: profile_id}, session),
-    with {:ok, vehicles, paginate} <- Vehicles.get_vehicles(params) do
+    with {:ok, vehicles, paginate} <- Vehicles.get_vehicles(params, session) do
       render(conn, :index, %{vehicles: vehicles, paginate: paginate})
     end
   end

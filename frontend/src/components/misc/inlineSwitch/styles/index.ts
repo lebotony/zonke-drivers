@@ -21,7 +21,6 @@ export const styles = StyleSheet.create({
   },
   item: {
     borderRadius: 10,
-    paddingHorizontal: 48,
     paddingVertical: 11,
     flexGrow: 1,
     justifyContent: 'center',

@@ -39,19 +39,19 @@ defmodule Backend.Messenger.Threads do
       |> Repo.preload(
         thread_participants:
           {from(tp in ThreadParticipant,
-            join: p in assoc(tp, :participant),
-            join: a in Asset, on: p.id == a.user_id,
-            select: %ThreadParticipant{
-              id: tp.id,
-              participant: %Participant{
-                id: p.id,
-                first_name: p.first_name,
-                last_name: p.last_name,
-                asset_url: a.url
-              }
-            }
-          ),
-          []}
+             join: p in assoc(tp, :participant),
+             join: a in Asset,
+             on: p.id == a.user_id,
+             select: %ThreadParticipant{
+               id: tp.id,
+               participant: %Participant{
+                 id: p.id,
+                 first_name: p.first_name,
+                 last_name: p.last_name,
+                 asset_url: a.url
+               }
+             }
+           ), []}
       )
       |> format_thread()
   end
@@ -84,8 +84,14 @@ defmodule Backend.Messenger.Threads do
       ThreadBy.base_query()
       |> ThreadBy.by_participant(participant_id)
       |> build_search(params, participant_id)
-      |> join(:left_lateral, [thread: t], uc in subquery(unseen_messages_count_subquery), as: :unseen_count, on: true)
-      |> join(:left_lateral, [thread: t], lm in subquery(last_message_subquery), as: :last_message, on: true)
+      |> join(:left_lateral, [thread: t], uc in subquery(unseen_messages_count_subquery),
+        as: :unseen_count,
+        on: true
+      )
+      |> join(:left_lateral, [thread: t], lm in subquery(last_message_subquery),
+        as: :last_message,
+        on: true
+      )
       |> select_merge([thread: t, unseen_count: uc, last_message: lm], %{
         t
         | last_message: lm,
@@ -98,19 +104,19 @@ defmodule Backend.Messenger.Threads do
       Repo.preload(data.entries,
         thread_participants:
           {from(tp in ThreadParticipant,
-            join: p in assoc(tp, :participant),
-            join: a in Asset, on: p.id == a.user_id,
-            select: %ThreadParticipant{
-              id: tp.id,
-              participant: %Participant{
-                id: p.id,
-                first_name: p.first_name,
-                last_name: p.last_name,
-                asset_url: a.url
-              }
-            }
-          ),
-          []}
+             join: p in assoc(tp, :participant),
+             join: a in Asset,
+             on: p.id == a.user_id,
+             select: %ThreadParticipant{
+               id: tp.id,
+               participant: %Participant{
+                 id: p.id,
+                 first_name: p.first_name,
+                 last_name: p.last_name,
+                 asset_url: a.url
+               }
+             }
+           ), []}
       )
 
     {:ok, threads, PaginateHelper.prep_paginate(data)}

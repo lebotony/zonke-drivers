@@ -1,5 +1,5 @@
-defmodule Backend.Bookings.Queries.DriverBookingBy do
-  alias Backend.Bookings.DriverBooking
+defmodule Backend.Applications.Queries.DriverBookingBy do
+  alias Backend.Applications.DriverBooking
   import Ecto.Query
 
   def base_query do

@@ -1,10 +1,17 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, FlatList, Pressable } from 'react-native';
+import React, { useState } from "react";
+import {
+  View,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  Pressable,
+} from "react-native";
 
-import { styles } from '../styles/comment';
-import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-import { Colors } from '@/constants/ui';
-import { CustomButton } from '@/src/components/elements/button';
+import { styles } from "../styles/comment";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Colors } from "@/constants/ui";
+import { CustomButton } from "@/src/components/elements/button";
+import { Text } from "react-native-paper";
 
 type CommentProps = {
   comment?: CommentType;
@@ -14,33 +21,35 @@ export const Comment = (props: CommentProps) => {
   const { comment } = props;
 
   // dummy replies
-  const initialReplies =  [
-    { id: 'r1', name: 'Alex', date: '2d', text: 'Looks great!' },
-    { id: 'r2', name: 'Sam', date: '1d', text: 'How long did it take?' },
+  const initialReplies = [
+    { id: "r1", name: "Alex", date: "2d", text: "Looks great!" },
+    { id: "r2", name: "Sam", date: "1d", text: "How long did it take?" },
   ];
 
   const [showReplies, setShowReplies] = useState(false);
   const [replies, setReplies] = useState(initialReplies);
   const [replying, setReplying] = useState(false);
-  const [replyText, setReplyText] = useState('');
+  const [replyText, setReplyText] = useState("");
 
   const addReply = () => {
     if (!replyText.trim()) return;
     const newReply = {
       id: `${Date.now()}`,
-      name: 'You',
-      date: 'now',
+      name: "You",
+      date: "now",
       text: replyText.trim(),
     };
 
     setReplies((p) => [newReply, ...p]);
     setReplying(false);
-    setReplyText('');
+    setReplyText("");
   };
 
   const renderReply = ({ item }: any) => (
     <View style={styles.replyItem}>
-      <Text style={styles.replyName}>{item.name} <Text style={styles.smallText}>· {item.date}</Text></Text>
+      <Text style={styles.replyName}>
+        {item.name} <Text style={styles.smallText}>· {item.date}</Text>
+      </Text>
       <Text style={styles.replyText}>{item.text}</Text>
     </View>
   );
@@ -53,22 +62,31 @@ export const Comment = (props: CommentProps) => {
       </View>
       <Text style={styles.commentText}>He does a great job</Text>
 
-            <View style={styles.commentActions}>
-        <TouchableOpacity onPress={() => {setShowReplies((s) => !s), setReplying(false)}} style={styles.replies}>
-          <MaterialIcons name={showReplies ? "keyboard-arrow-down" : "keyboard-arrow-left"} size={18} color={showReplies ? Colors.mrDBlue : Colors.charcoalGray} />
+      <View style={styles.commentActions}>
+        <TouchableOpacity
+          onPress={() => {
+            (setShowReplies((s) => !s), setReplying(false));
+          }}
+          style={styles.replies}
+        >
+          <MaterialIcons
+            name={showReplies ? "keyboard-arrow-down" : "keyboard-arrow-left"}
+            size={18}
+            color={showReplies ? Colors.mrDBlue : Colors.charcoalGray}
+          />
           <Text style={[styles.viewText, showReplies && styles.replyToggle]}>
-            {showReplies ? `Hide replies (${replies.length})` : `View replies (${replies.length})`}
+            {showReplies
+              ? `Hide replies (${replies.length})`
+              : `View replies (${replies.length})`}
           </Text>
         </TouchableOpacity>
 
         <View style={styles.actionIcons}>
-
           <TouchableOpacity onPress={() => setReplying(!replying)}>
             <Text style={styles.commentAction}>💬 Reply</Text>
           </TouchableOpacity>
         </View>
       </View>
-     
 
       {showReplies && (
         <View style={styles.replyList}>
@@ -78,7 +96,6 @@ export const Comment = (props: CommentProps) => {
             renderItem={renderReply}
             scrollEnabled={false}
           />
-          
         </View>
       )}
 

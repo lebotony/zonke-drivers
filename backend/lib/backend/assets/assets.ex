@@ -125,6 +125,10 @@ defmodule Backend.Assets.Assets do
     |> ExAws.request(config: s3_config())
   end
 
+  # def get_asset_url(filename) do
+  #   S3.presigned_url(s3_config(), :get, @bucket, filename, expires_in: 3600)
+  # end
+
   def presigned_url(filename) do
     case S3.presigned_url(s3_config(), :get, @bucket, filename, expires_in: @expires_in) do
       {:ok, url} -> {:ok, url}

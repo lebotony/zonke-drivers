@@ -1,9 +1,10 @@
-import { View, Text, Pressable, Platform } from 'react-native';
+import { View, Pressable, Platform } from "react-native";
 
-import { Colors } from '@/constants/ui';
+import { Colors } from "@/constants/ui";
 
-import { styles } from './styles';
-import { Shadow } from '../../shadow';
+import { styles } from "./styles";
+import { Shadow } from "../../shadow";
+import { Text } from "react-native-paper";
 
 type Item = {
   slug: string;
@@ -29,15 +30,21 @@ export const InlineSwitch = ({
 }: InlineSwitch) => (
   <Shadow shadowColor={shadowColor}>
     <View style={[styles.switch, bgColor && { backgroundColor: bgColor }]}>
-
-      {Platform.OS === 'android' && <View style={styles.hideTopShadow}/>}
+      {Platform.OS === "android" && <View style={styles.hideTopShadow} />}
       {items.map(({ slug, label }) => (
         <Pressable
           key={slug}
-          style={[styles.item, slug === value && { backgroundColor: selectedColor }]}
+          style={[
+            styles.item,
+            slug === value && { backgroundColor: selectedColor },
+          ]}
           onPress={() => onChange(slug)}
         >
-          <Text style={[styles.label, slug === value && { color: Colors.white }]}>{label}</Text>
+          <Text
+            style={[styles.label, slug === value && { color: Colors.white }]}
+          >
+            {label}
+          </Text>
         </Pressable>
       ))}
     </View>

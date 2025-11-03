@@ -3,8 +3,6 @@ defmodule Backend.Accounts.User do
 
   alias Backend.Reviews.Review
   alias Backend.Vehicles.Vehicle
-  alias Backend.Bookings.DriverBooking
-  alias Backend.Bookings.VehicleBooking
   alias Backend.Ecto.EctoEnums.RoleEnum
   alias Backend.Assets.Asset
 
@@ -27,8 +25,6 @@ defmodule Backend.Accounts.User do
 
     has_many(:reviews, Review, foreign_key: :author_id)
     has_many(:vehicles, Vehicle)
-    has_many(:driver_bookings, DriverBooking)
-    has_many(:vehicle_bookings, VehicleBooking)
 
     timestamps()
   end
