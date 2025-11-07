@@ -1,17 +1,8 @@
 import React, { useState } from "react";
-import {
-  View,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  Pressable,
-} from "react-native";
+import { View } from "react-native";
+import { Text } from "react-native-paper";
 
 import { styles } from "../styles/comment";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { Colors } from "@/constants/ui";
-import { CustomButton } from "@/src/components/elements/button";
-import { Text } from "react-native-paper";
 
 type CommentProps = {
   comment?: CommentType;
@@ -20,30 +11,16 @@ type CommentProps = {
 export const Comment = (props: CommentProps) => {
   const { comment } = props;
 
-  // dummy replies
-  const initialReplies = [
-    { id: "r1", name: "Alex", date: "2d", text: "Looks great!" },
-    { id: "r2", name: "Sam", date: "1d", text: "How long did it take?" },
-  ];
-
   const [showReplies, setShowReplies] = useState(false);
-  const [replies, setReplies] = useState(initialReplies);
   const [replying, setReplying] = useState(false);
   const [replyText, setReplyText] = useState("");
 
-  const addReply = () => {
-    if (!replyText.trim()) return;
-    const newReply = {
-      id: `${Date.now()}`,
-      name: "You",
-      date: "now",
-      text: replyText.trim(),
-    };
+  // const addReply = () => {
+  //   if (!replyText.trim()) return;
 
-    setReplies((p) => [newReply, ...p]);
-    setReplying(false);
-    setReplyText("");
-  };
+  //   setReplying(false);
+  //   setReplyText("");
+  // };
 
   const renderReply = ({ item }: any) => (
     <View style={styles.replyItem}>
@@ -57,49 +34,51 @@ export const Comment = (props: CommentProps) => {
   return (
     <View style={styles.commentBox}>
       <View style={styles.commentHeader}>
-        <Text style={styles.commentName}>Lebohang Mdlongwa</Text>
-        <Text style={styles.commentDate}>27 Oct</Text>
+        <Text style={styles.commentName}>
+          {comment?.first_name} {comment?.last_name}
+        </Text>
+        <Text style={styles.commentDate}>{comment?.sent_at}</Text>
       </View>
-      <Text style={styles.commentText}>He does a great job</Text>
+      <Text style={styles.commentText}>{comment?.text}</Text>
 
-      <View style={styles.commentActions}>
+      {/* <View style={styles.commentActions}>
         <TouchableOpacity
           onPress={() => {
             (setShowReplies((s) => !s), setReplying(false));
           }}
           style={styles.replies}
-        >
-          <MaterialIcons
+        > */}
+      {/* <MaterialIcons
             name={showReplies ? "keyboard-arrow-down" : "keyboard-arrow-left"}
             size={18}
             color={showReplies ? Colors.mrDBlue : Colors.charcoalGray}
-          />
-          <Text style={[styles.viewText, showReplies && styles.replyToggle]}>
+          /> */}
+      {/* <Text style={[styles.viewText, showReplies && styles.replyToggle]}>
             {showReplies
               ? `Hide replies (${replies.length})`
               : `View replies (${replies.length})`}
-          </Text>
-        </TouchableOpacity>
+          </Text> */}
+      {/* </TouchableOpacity> */}
 
-        <View style={styles.actionIcons}>
+      {/* <View style={styles.actionIcons}>
           <TouchableOpacity onPress={() => setReplying(!replying)}>
             <Text style={styles.commentAction}>💬 Reply</Text>
           </TouchableOpacity>
-        </View>
-      </View>
+        </View> */}
+      {/* </View> */}
 
-      {showReplies && (
+      {/* {showReplies && (
         <View style={styles.replyList}>
           <FlatList
-            data={replies}
+            // data={replies}
             keyExtractor={(item) => item.id}
             renderItem={renderReply}
             scrollEnabled={false}
           />
         </View>
-      )}
+      )} */}
 
-      {replying && (
+      {/* {replying && (
         <View style={styles.replyBox}>
           <Text style={styles.replyTitle}>Reply Lebohang Mdlongwa</Text>
           <TextInput
@@ -113,7 +92,7 @@ export const Comment = (props: CommentProps) => {
             <Ionicons name="send" size={20} color="white" />
           </Pressable>
         </View>
-      )}
+      )} */}
     </View>
   );
 };

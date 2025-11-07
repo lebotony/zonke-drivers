@@ -2,8 +2,8 @@ defmodule Backend.Drivers.Driver do
   use Backend, :model
 
   alias Backend.Accounts.{BusinessProfile, User}
-  alias Backend.Ecto.Embeds.{PriceFixed, Licence}
-  alias Backend.Reviews.Review
+  alias Backend.Ecto.Embeds.{PriceFixed}
+  alias Backend.Reviews.{Review, Comment}
   alias Backend.Vehicles.Vehicle
   # alias Backend.Bookings.DriverBooking
   alias Backend.Assets.Asset
@@ -48,6 +48,7 @@ defmodule Backend.Drivers.Driver do
     has_one(:asset, Asset)
 
     has_many(:reviews, Review)
+    has_many(:comments, Comment)
     # has_many(:driver_bookings, DriverBooking)
 
     many_to_many(:vehicles, Vehicle, join_through: VehicleDriver)

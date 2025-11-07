@@ -4,6 +4,7 @@ import { Colors } from '@/constants/ui';
 
 export const styles = StyleSheet.create({
   commentsSection: {
+    flex: 1
   },
   commentsTitle: {
     fontWeight: 600,
@@ -16,7 +17,7 @@ export const styles = StyleSheet.create({
     borderColor: Colors.lightGrey,
     borderRadius: 8,
     padding: 10,
-    marginBottom: 12,
+    margin: 12,
   },
   addCommentText: {
     color: Colors.mrDBlue,

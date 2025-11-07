@@ -39,7 +39,6 @@ defmodule Backend.Vehicles.Vehicle do
 
     embeds_one(:price_fixed, PriceFixed, on_replace: :update)
 
-    field(:rating, :float, virtual: true)
     field(:rank_value, :decimal, virtual: true)
 
     belongs_to(:user, User)

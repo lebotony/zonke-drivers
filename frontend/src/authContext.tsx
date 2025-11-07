@@ -135,7 +135,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .catch((err) => {
         if (
           err?.response?.statusText == "Not Found" ||
-          err.response.status == 404
+          err?.response?.status == 404
         ) {
           logout();
         }

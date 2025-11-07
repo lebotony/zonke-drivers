@@ -1,8 +1,8 @@
 type CommentType = {
   id: string;
-  name: string;
-  date: string;
+  first_name: string;
+  last_name: string;
   text: string;
-  likes: number;
-  replies: number;
+  replys: number;
+  sent_at: string,
 };
