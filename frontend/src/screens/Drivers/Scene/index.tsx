@@ -178,12 +178,14 @@ export const Scene = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.bg }}>
-      <DynamicHeader headerBgColor={Colors.bg} header={
-        <View>
-          <Header
-            setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
-            setSearchTerm={(value: string) => setSearchTerm(value)}
-          />
+     <DynamicHeader
+  headerBgColor={Colors.bg}
+  header={
+    <View>
+      <Header
+        setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
+        setSearchTerm={(value: string) => setSearchTerm(value)}
+      />
       <QuickFilters
         showReset={!isDefaultState}
         onSetSelectedPlatforms={(value: string) =>
@@ -192,31 +194,35 @@ export const Scene = () => {
         selectedPlatforms={selectedPlatforms}
         onClear={handleFilterReset}
       />
-        </View>
-      }>
-      {isEmpty(drivers) && !isLoading ? (
-          <NoData />
-        ) : isLoading ? (
-          <Spinner />
-        ) : (
-          <View style={styles.drivers}>
-            <FlatList
-              scrollEnabled={false}
-              data={drivers}
-              onEndReached={() => {
-                if (hasNextPage && !isFetchingNextPage) {
-                  fetchNextPage();
-                }
-              }}
-              showsVerticalScrollIndicator={false}
-              keyExtractor={(item, index) => String(item?.id ?? index)}
-              renderItem={({ item }) => <DriverCard driver={item} />}
-              contentContainerStyle={{ gap: 15, paddingVertical: 15 }}
-            />
-        </View>
-      )}
-
-      </DynamicHeader>
+    </View>
+  }
+>
+  {({ onScroll, scrollEventThrottle, contentContainerStyle }) =>
+    isEmpty(drivers) && !isLoading ? (
+      <NoData />
+    ) : isLoading ? (
+      <Spinner />
+    ) : (
+      <FlatList
+        data={drivers}
+        onScroll={onScroll}
+        scrollEventThrottle={scrollEventThrottle}
+        onEndReached={() => {
+          if (hasNextPage && !isFetchingNextPage) {
+            fetchNextPage();
+          }
+        }}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item, index) => String(item?.id ?? index)}
+        renderItem={({ item }) => <DriverCard driver={item} />}
+        contentContainerStyle={[
+          contentContainerStyle,
+          { gap: 15, paddingVertical: 15 },
+        ]}
+      />
+    )
+  }
+</DynamicHeader>
 
 
       <FilterModal

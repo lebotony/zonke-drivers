@@ -98,7 +98,7 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: 'center',
     padding: 8,
-    marginBottom: 60,
+    marginBottom: 20,
   },
   statsWrapper: {
     flexDirection: "row",
@@ -130,6 +130,13 @@ export const styles = StyleSheet.create({
   buttonText: {
     color: Colors.white,
     marginLeft: 6
+  },
+  commentsSection: {
+    borderColor: Colors.lightGrey,
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 14
   },
   footer: {
     height: 60,

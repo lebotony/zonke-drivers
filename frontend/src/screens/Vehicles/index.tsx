@@ -217,13 +217,14 @@ export const VehiclesScreen = () => {
         </>
 
       }>
-      {isEmpty(vehicles) && !isLoading ? (
+      {({ onScroll, scrollEventThrottle, contentContainerStyle }) => isEmpty(vehicles) && !isLoading ? (
         <NoData />
       ) : isLoading ? (
         <Spinner />
       ) : (
         <FlatList
-          scrollEnabled={false}
+          onScroll={onScroll}
+          scrollEventThrottle={scrollEventThrottle}
           data={vehicles}
           onEndReached={() => {
             if (hasNextPage && !isFetchingNextPage) {
@@ -238,10 +239,10 @@ export const VehiclesScreen = () => {
           }}
           // renderItem={renderVehicle}
 
-          contentContainerStyle={{
+          contentContainerStyle={[contentContainerStyle,{
             gap: 12,
             paddingHorizontal: 14,
-          }}
+          }]}
           showsVerticalScrollIndicator={false}
         />
       )}

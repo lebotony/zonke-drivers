@@ -22,11 +22,11 @@ export const detailsDef = [
     label: "Accidents",
     icon: <FontAwesome5 name="car-crash" size={26} color="red" />,
   },
-  {
-    slug: "reviews",
-    label: "Comments",
-    icon: <FontAwesome name="comments" size={26} color="black" />,
-  },
+  // {
+  //   slug: "reviews",
+  //   label: "Comments",
+  //   icon: <FontAwesome name="comments" size={26} color="black" />,
+  // },
   {
     slug: "previous_vehicles",
     label: "Previous Vehicles",
