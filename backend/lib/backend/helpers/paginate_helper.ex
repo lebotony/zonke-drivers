@@ -8,7 +8,7 @@ defmodule Backend.PaginateHelper do
 
   """
   def prep_params(params) do
-    per_page = Map.get(params, :per_page, Map.get(params, "per_page", 20))
+    per_page = Map.get(params, :per_page, Map.get(params, "per_page", 7))
     final_per_page = if is_binary(per_page), do: String.to_integer(per_page), else: per_page
 
     %{

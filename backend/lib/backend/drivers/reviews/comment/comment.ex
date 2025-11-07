@@ -1,16 +1,18 @@
-defmodule Backend.Reviews.Review do
+defmodule Backend.Reviews.Comment do
   use Backend, :model
 
   alias Backend.Drivers.Driver
   alias Backend.Accounts.User
   # alias Backend.Reviews.Reply
 
-  @required_fields [:comment, :author_id, :driver_id]
+  @required_fields [:text, :author_id, :driver_id]
   @all_fields @required_fields
 
-  schema "reviews" do
-    field(:comment, :string)
-    field(:rating, :float)
+  schema "comments" do
+    field(:text, :string)
+
+    field(:first_name, :string, virtual: true)
+    field(:last_name, :string, virtual: true)
 
     belongs_to(:driver, Driver)
     belongs_to(:author, User)

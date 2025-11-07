@@ -100,7 +100,6 @@ defmodule Backend.Drivers.Drivers do
   def get_driver(id, :public) do
     DriverBy.base_query()
     |> DriverBy.by_id(id)
-    |> DriverBy.by_active_status()
     |> add_extra_fields()
     |> Repo.one()
     |> format_driver()

@@ -181,10 +181,6 @@ export const Scene = () => {
                 width={34}
                 source={require("@/assets/images/profile_pic.png")}
               />
-              <View style={styles.rating}>
-                <AntDesign name="star" size={16} color={Colors.yellow} />
-                <Text style={styles.ratingText}>4.5</Text>
-              </View>
             </View>
           </View>
 

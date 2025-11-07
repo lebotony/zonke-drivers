@@ -4,6 +4,12 @@ defmodule BackendWeb.Reviews.ReviewController do
 
   alias Backend.Reviews.{Reviews, Review}
 
+  def index(conn, params, session) do
+    with {:ok, reveiws, paginate} <- Reviews.get_driver_reviews(params.driver_id) do
+      render(conn, :index, %{reveiws: reveiws, paginate: paginate})
+    end
+  end
+
   def create(conn, params, %{user_id: user_id}) do
     with {:ok, _review} <- Reviews.create(params, user_id) do
       json(conn, :ok)

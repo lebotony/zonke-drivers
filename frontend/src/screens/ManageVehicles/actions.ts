@@ -22,9 +22,10 @@ type FetchPaymentsParams = {
 export const fetchPayments = ({ pageParam = 1, vehicleDriverId }: FetchPaymentsParams) =>
   axios
     .get(`${API_URL}/vehicle_payments`, {
-    params: { page: pageParam, page_size: 10, vehicle_driver_id: vehicleDriverId}
+    params: { page: pageParam, page_size: 5, vehicle_driver_id: vehicleDriverId}
   })
     .then((response) => {
+      console.log("PAYMENTS PAYMENTS PAYMENTS", response.data.paginate)
       return response.data
     })
     .catch((err) => err);
@@ -32,9 +33,10 @@ export const fetchPayments = ({ pageParam = 1, vehicleDriverId }: FetchPaymentsP
 export const fetchApplications = ({ pageParam = 1, vehicleId }) =>
   axios
     .get(`${API_URL}/vehicle_applications`, {
-    params: { page: pageParam, page_size: 10, vehicle_id: vehicleId}
+    params: { page: pageParam, page_size: 5, vehicle_id: vehicleId}
   })
     .then((response) => {
+      console.log("APPLICATIONS APPLICATIONS APPLICATIONS", response.data)
       return response.data
     })
     .catch((err) => err);

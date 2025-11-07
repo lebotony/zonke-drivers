@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
     height: 60,
     borderRadius: 7,
     position: "relative",
+    marginHorizontal: 15,
     marginBottom: 12,
     ...shadowStyles
   },

@@ -35,6 +35,7 @@ export const VehiclesScreen = () => {
   const [applyFilter, setApplyFilter] = useState<boolean>(false);
   const [reset, setReset] = useState<boolean>(false);
   const resetRef = useRef<boolean>(undefined);
+  const didMountRef = useRef(false);
 
   const [searchTerm, setSearchTerm] = useState<string>();
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
@@ -106,9 +107,13 @@ export const VehiclesScreen = () => {
   }, [applyFilter]);
 
   useEffect(() => {
-    if (!showFilterModal && resetRef.current !== true) {
-      queryClient.removeQueries({ queryKey });
-      refetch();
+    if (didMountRef.current) {
+      if (!showFilterModal && resetRef.current !== true) {
+        queryClient.removeQueries({ queryKey });
+        refetch();
+      }
+    } else {
+      didMountRef.current = true;
     }
   }, [selectedBrands, selectedVehicleTypes]);
 
@@ -176,79 +181,79 @@ export const VehiclesScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <DynamicHeader headerBgColor={Colors.bg} header={
-        <>
-          <Header
-            setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
-            setSearchTerm={(value: string) => setSearchTerm(value)}
-            isVehicleList
-          />
-
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <HeaderFilterPlatforms
-              onSetSelectedPlatforms={(value: string) =>
-                handleSetSelectedVehicleType(value)
-              }
-              selectedPlatforms={selectedVehicleTypes}
-            />
-
-            <HeaderFilter
+      <DynamicHeader
+        headerBgColor={Colors.bg}
+        header={
+          <>
+            <Header
               setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
-              onReset={handleFilterReset}
-              toggleBrand={toggleBrand}
-              showReset={!isDefaultState && !showFilterModal}
+              setSearchTerm={(value: string) => setSearchTerm(value)}
+              isVehicleList
             />
-          </View>
 
-          <View style={{ height: 80 }}>
-            <Brands
-              selectedBrands={selectedBrands}
-              toggleBrand={toggleBrand}
-              brands={BrandsList}
-            />
-          </View>
-        
-        </>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <HeaderFilterPlatforms
+                onSetSelectedPlatforms={(value: string) =>
+                  handleSetSelectedVehicleType(value)
+                }
+                selectedPlatforms={selectedVehicleTypes}
+              />
 
-      }>
-      {isEmpty(vehicles) && !isLoading ? (
-        <NoData />
-      ) : isLoading ? (
-        <Spinner />
-      ) : (
-        <FlatList
-          scrollEnabled={false}
-          data={vehicles}
-          onEndReached={() => {
-            if (hasNextPage && !isFetchingNextPage) {
-              fetchNextPage();
-            }
-          }}
-          keyExtractor={(i) => i?.id}
-          renderItem={({ item, index }) => {
-            const isLastItem = index === vehicles.length - 1;
+              <HeaderFilter
+                setShowFilterModal={(value: boolean) =>
+                  setShowFilterModal(value)
+                }
+                onReset={handleFilterReset}
+                toggleBrand={toggleBrand}
+                showReset={!isDefaultState && !showFilterModal}
+              />
+            </View>
 
-            return <VehicleCard vehicle={item} isLast={isLastItem} />;
-          }}
-          // renderItem={renderVehicle}
+            <View style={{ height: 80 }}>
+              <Brands
+                selectedBrands={selectedBrands}
+                toggleBrand={toggleBrand}
+                brands={BrandsList}
+              />
+            </View>
+          </>
+        }
+      >
+        {isEmpty(vehicles) && !isLoading ? (
+          <NoData />
+        ) : isLoading ? (
+          <Spinner />
+        ) : (
+          <FlatList
+            scrollEnabled={false}
+            data={vehicles}
+            onEndReached={() => {
+              if (hasNextPage && !isFetchingNextPage) {
+                fetchNextPage();
+              }
+            }}
+            keyExtractor={(i) => i?.id}
+            renderItem={({ item, index }) => {
+              const isLastItem = index === vehicles.length - 1;
 
-          contentContainerStyle={{
-            gap: 12,
-            paddingHorizontal: 14,
-          }}
-          showsVerticalScrollIndicator={false}
-        />
-      )}
+              return <VehicleCard vehicle={item} isLast={isLastItem} />;
+            }}
+            // renderItem={renderVehicle}
 
-
+            contentContainerStyle={{
+              gap: 12,
+              paddingHorizontal: 14,
+            }}
+            showsVerticalScrollIndicator={false}
+          />
+        )}
       </DynamicHeader>
-
 
       <FilterModal
         showReset={!isDefaultState}
@@ -272,8 +277,6 @@ export const VehiclesScreen = () => {
         onRatingSelect={setSelectedRating}
         onApply={handleApplyFilter}
       />
-
-
     </SafeAreaView>
   );
 };

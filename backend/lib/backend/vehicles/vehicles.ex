@@ -97,24 +97,13 @@ defmodule Backend.Vehicles.Vehicles do
   end
 
   def get_vehicles(params, :public) do
-    rating_subquery =
-      from(r in Review,
-        where: r.vehicle_id == parent_as(:vehicle).id,
-        select: %{avg_rating: fragment("ROUND(AVG(?)::numeric, 1)", r.rating)}
-      )
-
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()
       |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
-      |> join(:left_lateral, [vehicle: v], rating in subquery(rating_subquery),
-        as: :rating,
-        on: true
-      )
-      |> select_merge([vehicle: v, user: u, rating: rating], %{
+      |> select_merge([vehicle: v, user: u], %{
         v
-        | rating: coalesce(rating.avg_rating, 0),
-          user_id: u.id
+        | user_id: u.id
       })
       |> build_search(params)
       |> build_sort(params)
@@ -161,10 +150,6 @@ defmodule Backend.Vehicles.Vehicles do
           fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) >= ^min and
             fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) <= ^max
         )
-
-      {:rating_range, val}, query when is_binary(val) and val != "" ->
-        rating = String.to_integer(val)
-        where(query, [rating: r], coalesce(r.avg_rating, 0) >= ^rating)
 
       _, query ->
         query

@@ -46,10 +46,10 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
             <Ionicons name="arrow-forward" size={20} color={Colors.white} />
           </Pressable>
 
-          <View style={styles.rating}>
+          {/* <View style={styles.rating}>
             <AntDesign name="star" size={18} color={Colors.lightYellow} />
             <Text style={styles.ratingValue}> {vehicle?.rating}</Text>
-          </View>
+          </View> */}
         </View>
       </View>
 

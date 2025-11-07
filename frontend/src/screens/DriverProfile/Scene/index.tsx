@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Platform, ScrollView, View } from "react-native";
 import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -6,6 +7,8 @@ import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { find, isEmpty } from "lodash";
+
+import { useQueryClient } from "@tanstack/react-query";
 
 import { Avatar } from "@/src/components/visual/avatar";
 import { Colors } from "@/constants/ui";
@@ -19,7 +22,7 @@ import { Platforms } from "../../Drivers/Scene/ui/platforms";
 import { styles } from "./styles";
 import { Header } from "./ui/header";
 import { Licences } from "./ui/licences";
-import { createThread } from "../actions";
+import { createThread, fetchDriverProfile } from "../actions";
 import { detailsDef } from "./ui/detailsPill";
 
 export const Scene = () => {
@@ -28,17 +31,24 @@ export const Scene = () => {
 
   const { addItemToPaginatedList } = usePaginatedCache();
 
+  const queryClient = useQueryClient();
   const { getCachedData } = useCustomQuery();
   const {
     drivers,
     threads = [],
     driverProfile,
-  } = getCachedData(["drivers", "threads", "driverProfile"]);
+    applicationDrivers = [],
+  } = getCachedData([
+    "drivers",
+    "threads",
+    "driverProfile",
+    "applicationDrivers",
+  ]);
 
   const isUserProfile = driverProfile?.id === driverId;
-  const driver = isUserProfile
-    ? driverProfile
-    : find(drivers, { id: driverId });
+  let driver = isUserProfile ? driverProfile : find(drivers, { id: driverId });
+
+  if (!driver) driver = find(applicationDrivers, { id: driverId });
 
   const handleCreateThread = () =>
     createThread({ participant_id: driver.user_id }).then((response) => {
@@ -48,6 +58,21 @@ export const Scene = () => {
 
       router.push(`/chats/${response.id}`);
     });
+
+  useEffect(() => {
+    if (!driver) {
+      fetchDriverProfile(driverId).then((res) =>
+        queryClient.setQueryData(
+          ["applicationDrivers"],
+          (oldData: Driver[]) => {
+            if (!find(applicationDrivers, { id: driverId }))
+              return [...(oldData ?? []), res];
+            return oldData;
+          }
+        )
+      );
+    }
+  }, [driver]);
 
   return (
     <SafeAreaView>
