@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Platform, ScrollView, View } from "react-native";
 import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -21,8 +22,11 @@ import { Header } from "./ui/header";
 import { Licences } from "./ui/licences";
 import { createThread } from "../actions";
 import { detailsDef } from "./ui/detailsPill";
+import { Comments } from "../../ViewSection/scene/ui/comments";
 
 export const Scene = () => {
+  const [showCommentModal, setShowCommentModal] = useState(false);
+
   const { id } = useLocalSearchParams();
   const driverId = Array.isArray(id) ? id[0] : id;
 
@@ -130,6 +134,11 @@ export const Scene = () => {
                 </View>
               ))}
             </View>
+          </View>
+
+          <View style={styles.commentsSection}>
+            <Text style={styles.driverDetailsText}>Comments</Text>
+            <Comments setShowCommentModal={() => setShowCommentModal(true)} />
           </View>
         </View>
       </ScrollView>

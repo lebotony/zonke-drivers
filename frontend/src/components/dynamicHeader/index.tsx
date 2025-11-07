@@ -5,16 +5,23 @@ import {
   NativeSyntheticEvent,
   NativeScrollEvent,
   LayoutChangeEvent,
-  ScrollView,
   SafeAreaView,
   StatusBar,
 } from "react-native";
-import { styles } from "./styles";
+
 import { Colors } from "@/constants/ui";
+
+import { styles } from "./styles";
 
 type DynamicHeaderProps = {
   header: ReactNode;
-  children: ReactNode;
+  children:
+    | ReactNode
+    | ((scrollProps: {
+        onScroll: (e: NativeSyntheticEvent<NativeScrollEvent>) => void;
+        scrollEventThrottle: number;
+        contentContainerStyle: object;
+      }) => ReactNode);
   headerBgColor?: string;
   scrollThreshold?: number;
 };
@@ -39,7 +46,6 @@ export const DynamicHeader = ({
     const currentY = e.nativeEvent.contentOffset.y;
     const diff = currentY - lastScrollY.current;
 
-    // If header is scrolled completely off-screen and user scrolls up slightly -> show it
     if (diff < -scrollThreshold && currentY > headerHeight && isHidden.current) {
       Animated.timing(headerOffset, {
         toValue: 0,
@@ -49,7 +55,6 @@ export const DynamicHeader = ({
       isHidden.current = false;
     }
 
-    // If header has been scrolled off and user scrolls down -> keep it hidden
     if (diff > scrollThreshold && currentY > headerHeight && !isHidden.current) {
       Animated.timing(headerOffset, {
         toValue: -headerHeight,
@@ -78,15 +83,15 @@ export const DynamicHeader = ({
         {header}
       </Animated.View>
 
-      <ScrollView
-        scrollEventThrottle={16}
-        showsVerticalScrollIndicator={false}
-        onScroll={onScroll}
-        contentContainerStyle={[styles.contentContainer, {paddingTop: headerHeight}]}
-      >
-          {children}
-        
-      </ScrollView>
+      <View style={{ flex: 1 }}>
+        {typeof children === "function"
+          ? children({
+              onScroll,
+              scrollEventThrottle: 16,
+              contentContainerStyle: { paddingTop: headerHeight },
+            })
+          : children}
+      </View>
     </SafeAreaView>
   );
 };
