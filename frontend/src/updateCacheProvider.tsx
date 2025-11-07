@@ -13,6 +13,17 @@ const PaginatedCacheContext = createContext<
       ) => void;
       getUpdatedObjectSnapshot: GetUpdatedObjectSnapshot;
       addItemToPaginatedList: (queyKey: string, newItem: any) => void;
+      updateNestedPagination: (
+        itemId: string,
+        paginationName: string,
+        paginate: Record<string, any>
+      ) => unknown;
+      onFetchNestedPagination: (
+        id: string,
+        paginationName: string
+      ) => {
+        pageParam: any;
+      };
     }
   | undefined
 >(undefined);
@@ -130,11 +141,48 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
     return objectToUpdate;
   };
 
+  const updateNestedPagination = (
+    itemId: string,
+    paginationName: string,
+    paginate: Record<string, any>
+  ) =>
+    queryClient.setQueryData([paginationName], (oldData: any[]) => {
+      const data = oldData ?? [];
+
+      if (data.length === 0) return [{ id: itemId, paginate: paginate }];
+
+      if (!find(data, { id: itemId })) {
+        return [...data, { id: itemId, paginate: paginate }];
+      }
+
+      return data.map((item) => {
+        if (item.id !== itemId) return item;
+        return { id: itemId, paginate: paginate };
+      });
+    });
+
+  const handleFetchRecords = (id: string, paginationName: string) => {
+    const paginationArray: Record<string, any>[] | undefined =
+      queryClient.getQueryData([paginationName]);
+
+    const paginationObj = find(paginationArray, {
+      id: id,
+    })?.paginate;
+
+    const page = paginationObj?.page;
+    const max_page = paginationObj?.max_page;
+    const pageParam = page < max_page ? page + 1 : undefined;
+
+    return { pageParam };
+  };
+
   const value = {
     updatePaginatedObject,
     updateAndMoveObjectToTop,
     getUpdatedObjectSnapshot,
     addItemToPaginatedList,
+    updateNestedPagination,
+    onFetchNestedPagination: handleFetchRecords,
   };
 
   return (

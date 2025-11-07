@@ -1,76 +1,58 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { Text } from "react-native-paper";
-import { View, FlatList, Animated } from "react-native";
+import { View, FlatList } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+import { find, isEmpty } from "lodash";
 
 import { Ionicons } from "@expo/vector-icons";
-
-import { SearchComponent } from "@/src/components/searchBar";
-import { Colors } from "@/constants/ui";
-import { Modal } from "@/src/components/modal";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { DriverCard } from "@/src/screens/Drivers/Scene/ui/driverCard";
-import { PopupMenu } from "@/src/components/popup";
-import { useCustomQuery } from "@/src/useQueryContext";
 import { useLocalSearchParams } from "expo-router";
+
+import { DriverCard } from "@/src/screens/Drivers/Scene/ui/driverCard";
+import { useCustomQuery } from "@/src/useQueryContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 
-import { VehicleSelector } from "./vehicleSelector";
 import { styles } from "../styles/applicants";
 import { fetchApplications } from "../../actions";
-import { isEmpty } from "lodash";
 
 export const ApplicantsScreen = () => {
   const { id } = useLocalSearchParams();
   const vehicleId = Array.isArray(id) ? id[0] : id;
 
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFilter, setSelectedFilter] = useState("all");
-  const [selectedApplicant, setSelectedApplicant] = useState<Driver | null>(
-    null
-  );
-  const [fadeAnim] = useState(new Animated.Value(0));
-
-  const [showVehicleDropdown, setShowVehicleDropdown] = useState(false);
-  const [optionsVisible, setOptionsVisible] = useState(false);
-
   const queryClient = useQueryClient();
-  const { updatePaginatedObject, getUpdatedObjectSnapshot } =
-    usePaginatedCache();
+  const {
+    updatePaginatedObject,
+    getUpdatedObjectSnapshot,
+    onFetchNestedPagination,
+    updateNestedPagination,
+  } = usePaginatedCache();
 
   const { getCachedData } = useCustomQuery();
-  const {
-    userVehicles,
-    vehicleApplicationsPagination,
-    fetchedVehicleApplications,
-  } = getCachedData([
-    "userVehicles",
-    "vehicleApplicationsPagination",
-    "fetchedVehicleApplications",
-  ]);
+  const { userVehicles, applicationsPagination, fetchedVehicleApplications } =
+    getCachedData([
+      "userVehicles",
+      "applicationsPagination",
+      "fetchedVehicleApplications",
+    ]);
 
-  const initialVehicle =
-    userVehicles?.find((v) => v.id === vehicleId) || userVehicles?.[0] || null;
+  const vehicle = find(userVehicles, { id: vehicleId });
 
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(
-    initialVehicle
-  );
-
-  const loadVehicleApplications = (applicationsObj) => {
-    queryClient.setQueryData(
-      ["vehicleApplicationsPagination"],
+  const loadVehicleApplications = (applicationsObj: Record<string, any>) => {
+    updateNestedPagination(
+      vehicleId,
+      "applicationsPagination",
       applicationsObj.paginate
     );
 
     const vehicleApplications = applicationsObj?.data;
 
-    const vehicle = getUpdatedObjectSnapshot("vehicle", vehicleId);
+    const vehicle = getUpdatedObjectSnapshot("userVehicles", vehicleId);
 
     updatePaginatedObject("userVehicles", vehicleId, {
-      ...vehicle,
       applications: [
-        ...(vehicle?.vehicleApplications || []),
-        ...vehicleApplications,
+        ...(vehicle?.applications ?? []),
+        ...(vehicleApplications ?? []),
       ],
     });
   };
@@ -85,31 +67,25 @@ export const ApplicantsScreen = () => {
     );
 
   const handleFetchApplications = () => {
-    const page = vehicleApplicationsPagination?.page;
-    const max_page = vehicleApplicationsPagination?.max_page;
-    const pageParam = page < max_page ? page + 1 : undefined;
+    const { pageParam } = onFetchNestedPagination(
+      vehicleId,
+      "applicationsPagination"
+    );
 
-    fetchApplications({ pageParam, vehicleId }).then((res) => {
+    fetchApplications({
+      pageParam,
+      vehicleId,
+    }).then((res) => {
       loadVehicleApplications(res);
     });
   };
 
-  useEffect(
-    () =>
-      setSelectedVehicle(
-        userVehicles?.find((v) => v.id === vehicleId) ||
-          userVehicles?.[0] ||
-          null
-      ),
-    [userVehicles]
-  );
-
   useEffect(() => {
-    if (!fetchedVehicleApplications?.includes(vehicleId) || !selectedVehicle) {
+    if (!fetchedVehicleApplications?.includes(vehicleId) || !vehicle) {
       handleFetchApplications();
       handleSetFetchedVehicleApplications(vehicleId);
     }
-  }, [selectedVehicle]);
+  }, [vehicleId]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -117,21 +93,30 @@ export const ApplicantsScreen = () => {
         <Text style={styles.headerTitle}>Applicants</Text>
 
         {/* Vehicle Selector */}
-        <VehicleSelector
+        {/* <VehicleSelector
           vehicles={userVehicles}
-          selectedVehicle={selectedVehicle}
+          vehicle={vehicle}
           onSelectVehicle={setSelectedVehicle}
-        />
+        /> */}
 
         {/* Search Bar */}
         {/* <SearchComponent placeholder="Search applicants..." /> */}
       </View>
       <View style={styles.listContainer}>
-        {!isEmpty(selectedVehicle?.applications) ? (
+        {!isEmpty(vehicle?.applications) ? (
           <FlatList
-            data={selectedVehicle?.applications}
+            data={vehicle?.applications}
+            onEndReached={() => {
+              const paginationObj = find(applicationsPagination, {
+                id: vehicleId,
+              })?.paginate;
+
+              if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
+                handleFetchApplications();
+              }
+            }}
             renderItem={({ item }) => <DriverCard driver={item?.driver} />}
-            keyExtractor={(item) => item.id}
+            keyExtractor={({ id }, index) => String(id + index)}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.listContent}
           />
@@ -140,8 +125,8 @@ export const ApplicantsScreen = () => {
             <Ionicons name="people-outline" size={64} color="#ddd" />
             <Text style={styles.emptyStateTitle}>No applicants found</Text>
             <Text style={styles.emptyStateText}>
-              {selectedVehicle
-                ? `No applicants found yet for ${selectedVehicle.model}`
+              {vehicle
+                ? `No applicants found yet for ${vehicle.model}`
                 : "Select a vehicle to view applicants"}
             </Text>
           </View>

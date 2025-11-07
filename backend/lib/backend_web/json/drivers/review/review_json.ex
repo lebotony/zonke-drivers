@@ -1,4 +1,4 @@
-defmodule BackendWeb.Services.Reviews.ReviewJSON do
+defmodule BackendWeb.Reviews.ReviewJSON do
   def index(%{reviews: reviews, pagination: pagination}) do
     %{
       pagination: %{
@@ -16,9 +16,7 @@ defmodule BackendWeb.Services.Reviews.ReviewJSON do
   def show(%{review: review}) do
     Map.take(review, [
       :id,
-      :liked,
-      :user_id,
-      :service_id,
+      :rating,
       :inserted_at,
       :updated_at
     ])

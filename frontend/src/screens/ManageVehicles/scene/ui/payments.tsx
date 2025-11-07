@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FlatList, SafeAreaView, ScrollView } from "react-native";
+import { FlatList, SafeAreaView } from "react-native";
 import { Text } from "react-native-paper";
 
 import { useLocalSearchParams } from "expo-router";
@@ -19,7 +19,6 @@ import { fetchPayments } from "../../actions";
 import { styles } from "../styles/payments";
 import { AddModal } from "./addModal";
 import { switchItems } from "../constants";
-import { VehicleSelector } from "./vehicleSelector";
 
 type PaymentsResponse = {
   data: Payment[];
@@ -42,21 +41,25 @@ export const PaymentsScreen = () => {
       "fetchedVehicleDriverPayments",
     ]);
 
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>(
-    userVehicles[0]
-  );
-
   const vehicleDriver: VehicleDriver = find(userVehicles, { id: vehicleId })
     ?.vehicle_drivers?.[0];
 
   const queryClient = useQueryClient();
-  const { updatePaginatedObject, getUpdatedObjectSnapshot } =
-    usePaginatedCache();
+  const {
+    updatePaginatedObject,
+    getUpdatedObjectSnapshot,
+    updateNestedPagination,
+    onFetchNestedPagination,
+  } = usePaginatedCache();
 
   const loadDriverPayments = (paymentsObj: PaymentsResponse) => {
-    queryClient.setQueryData(["paymentsPagination"], paymentsObj.paginate);
+    updateNestedPagination(
+      vehicleDriver?.id,
+      "paymentsPagination",
+      paymentsObj.paginate
+    );
 
-    const payments = paymentsObj?.data;
+    const payments = paymentsObj?.data ?? [];
 
     const vehicle = getUpdatedObjectSnapshot("vehicle", vehicleId);
 
@@ -65,7 +68,7 @@ export const PaymentsScreen = () => {
       vehicle_drivers: [
         {
           ...vehicleDriver,
-          payments: [...(vehicle?.payments || []), ...payments],
+          payments: [...(vehicleDriver?.payments || []), ...payments],
         },
       ],
     });
@@ -81,9 +84,10 @@ export const PaymentsScreen = () => {
     );
 
   const handleFetchPayments = () => {
-    const page = paymentsPagination?.page;
-    const max_page = paymentsPagination?.max_page;
-    const pageParam = page < max_page ? page + 1 : undefined;
+    const { pageParam } = onFetchNestedPagination(
+      vehicleDriver?.id,
+      "paymentsPagination"
+    );
 
     fetchPayments({ pageParam, vehicleDriverId: vehicleDriver?.id }).then(
       (res: PaymentsResponse) => {
@@ -102,56 +106,61 @@ export const PaymentsScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <InlineSwitch
-        shadowColor={"#f2f2f2"}
+        shadowColor={Colors.whiteSmoke}
         items={switchItems}
         selectedColor={Colors.mrDBlue}
         value={switchSelection}
         onChange={setSwitchSelection}
       />
 
-      <ScrollView
-        style={styles.mainContainer}
-        showsVerticalScrollIndicator={false}
-      >
-        <VehicleSelector
+      {/* <VehicleSelector
           vehicles={userVehicles}
           selectedVehicle={selectedVehicle}
           onSelectVehicle={setSelectedVehicle}
+        /> */}
+
+      {switchSelection === "payments" && (
+        <>
+          <CustomButton
+            onPress={() => setShowAddPayModal(true)}
+            style={styles.addPaymentRow}
+          >
+            <Text style={styles.addText}>+ ADD A PAYMENT</Text>
+          </CustomButton>
+
+          <FlatList
+            data={vehicleDriver?.payments}
+            onEndReached={() => {
+              const paginationObj = find(paymentsPagination, {
+                id: vehicleDriver?.id,
+              })?.paginate;
+
+              if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
+                handleFetchPayments();
+              }
+            }}
+            keyExtractor={({ id }, index) => String(id + index)}
+            renderItem={({ item }) => (
+              <PaymentCard payment={item} vehicleDriver={vehicleDriver} />
+            )}
+            contentContainerStyle={{ paddingVertical: 5 }}
+            showsVerticalScrollIndicator={false}
+          />
+        </>
+      )}
+
+      {switchSelection === "comments" && (
+        <Comments
+          driverId={vehicleDriver?.driver?.id}
+          vehicleId={vehicleId}
+          setShowCommentModal={() => setShowCommentModal(true)}
         />
-
-        {switchSelection === "payments" && (
-          <>
-            <CustomButton
-              onPress={() => setShowAddPayModal(true)}
-              style={styles.addPaymentRow}
-            >
-              <Text style={styles.addText}>+ ADD A PAYMENT</Text>
-            </CustomButton>
-
-            <FlatList
-              data={vehicleDriver?.payments}
-              scrollEnabled={false}
-              onEndReached={() => {
-                if (paymentsPagination?.page < paymentsPagination?.max_page) {
-                  handleFetchPayments();
-                }
-              }}
-              keyExtractor={({ id }, index) => String(id + index)}
-              renderItem={({ item }) => (
-                <PaymentCard payment={item} vehicleDriver={vehicleDriver} />
-              )}
-              contentContainerStyle={{ paddingVertical: 5 }}
-              showsVerticalScrollIndicator={false}
-            />
-          </>
-        )}
-
-        {switchSelection === "comments" && (
-          <Comments setShowCommentModal={() => setShowCommentModal(true)} />
-        )}
-      </ScrollView>
+      )}
       {showCommentModal && (
-        <CommentModal setShowCommentModal={() => setShowCommentModal(false)} />
+        <CommentModal
+          driverId={vehicleDriver?.driver?.id}
+          setShowCommentModal={() => setShowCommentModal(false)}
+        />
       )}
       {showAddPayModal && (
         <AddModal

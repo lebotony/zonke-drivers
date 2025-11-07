@@ -35,6 +35,7 @@ defmodule BackendWeb.Router do
 
       scope("/drivers") do
         get("/public", Drivers.DriverController, :public_index)
+        get("/show_public", Drivers.DriverController, :show_public)
         get("/user_driver", Drivers.DriverController, :fetch_user_driver)
         post("/upsert", Drivers.DriverController, :upsert)
       end
@@ -56,6 +57,12 @@ defmodule BackendWeb.Router do
       resources("/vehicle_applications", Applications.VehicleApplicationController,
         except: @except_path_actions
       )
+
+      resources("/reviews", Reviews.ReviewController, except: @except_path_actions)
+
+      resources("/comments", Reviews.CommentController, except: @except_path_actions)
+
+      resources("/replys", Reviews.ReplyController, except: @except_path_actions)
 
       scope("/threads") do
         get("/user_threads", Messenger.ThreadController, :get_participant_threads)

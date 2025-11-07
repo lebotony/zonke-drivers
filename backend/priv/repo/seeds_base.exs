@@ -6,13 +6,14 @@ alias Faker.{Person, Company, Internet, Address}
 alias Backend.Messenger.Schemas.{ThreadParticipant, Message}
 alias Backend.Messenger.Threads
 # alias Backend.Bookings.Booking
-alias Backend.Reviews.Review
+alias Backend.Reviews.{Review, Reply}
 alias Backend.Tags.Tag
 alias Backend.TestExample.Participant
 alias Backend.Vehicles.{Vehicle, VehicleDriver, Payment}
 alias Backend.Drivers.Driver
 alias Backend.Assets.Assets
 alias Backend.Applications.VehicleApplication
+alias Backend.Reviews.Comment
 # alias Backend.Posts.Post
 alias Backend.Ecto.EctoEnums
 
@@ -270,9 +271,7 @@ Logger.info("Creating vehicle_applications")
 
 vehicle_applications =
   Enum.flat_map(vehicles, fn vehicle ->
-    three_drivers = Enum.take(drivers, 3)
-
-    Enum.map(three_drivers, fn driver ->
+    Enum.map(drivers, fn driver ->
       {:ok, vehicle_application} =
         %VehicleApplication{
           driver_id: driver.id,
@@ -326,7 +325,7 @@ Logger.info("Creating payments")
 
 payments =
   Enum.flat_map(Enum.zip(vehicle_drivers, 1..20), fn {vehicle_driver, price} ->
-    Enum.map(1..10, fn v ->
+    Enum.map(1..20, fn v ->
       {:ok, payment} =
         %Payment{
           price_fixed: %{currency: "dollars", value: price * v},
@@ -339,28 +338,6 @@ payments =
   end)
 ######################################################################################################
 
-Logger.info("Creating vehicle reviews")
-
-vehicle_reviews =
-  Enum.flat_map(vehicles, fn vehicle ->
-    Enum.map(drivers, fn driver ->
-      user = Enum.find(users, fn user -> user.id == driver.user_id end)
-
-      {:ok, review} =
-        %Review{
-          comment: "This is a good vehicle",
-          author_id: user.id,
-          vehicle_id: vehicle.id,
-          rating: (:rand.uniform(39) + 10) / 10
-        }
-        |> Repo.insert()
-
-        review
-    end)
-  end)
-
-######################################################################################################
-
 Logger.info("Creating driver reviews")
 
 driver_reviews =
@@ -368,7 +345,6 @@ driver_reviews =
     Enum.map(owners_users, fn owner ->
       {:ok, review} =
         %Review{
-          comment: "This is a good driver",
           author_id: owner.id,
           driver_id: driver.id,
           rating: (:rand.uniform(39) + 10) / 10
@@ -381,18 +357,42 @@ driver_reviews =
 
 ######################################################################################################
 
-# Logger.info("Creating tags")
+Logger.info("Creating driver comments")
 
-# tags =
-#   Enum.map(Enum.zip(vehicle_owners, drivers_users), fn {customer, provider} ->
-#     {:ok, tag} =
-#       %Tag{
-#         tagged_id: customer.id,
-#         tagger_id: provider.id
-#       }
-#       |> Repo.insert()
+driver_comments =
+  Enum.flat_map(drivers, fn driver ->
+    Enum.map(owners_users, fn owner ->
+      {:ok, comment} =
+        %Comment{
+          text: "#{driver.id} is not a good driver",
+          author_id: owner.id,
+          driver_id: driver.id,
+        }
+        |> Repo.insert()
 
-#     tag
+        comment
+    end)
+  end)
+
+######################################################################################################
+
+# Logger.info("Creating reviews replys")
+
+# [_first, second, third | rest] = owners_users
+
+# comments_replys =
+#   Enum.flat_map(driver_comments, fn comment ->
+#     Enum.map([second, third], fn owner ->
+#       {:ok, reply} =
+#         %Reply{
+#           text: "What did he do?",
+#           author_id: owner.id,
+#           comment_id: comment.id,
+#         }
+#         |> Repo.insert()
+
+#         reply
+#     end)
 #   end)
 
 ######################################################################################################
@@ -450,6 +450,5 @@ Logger.info("Created: #{length(vehicles)} vehicles")
 Logger.info("Created: #{length(drivers)} drivers")
 Logger.info("Created: #{length(vehicle_drivers)} vehicle_drivers")
 Logger.info("Created: #{length(payments)} payments")
-Logger.info("Created: #{length(vehicle_reviews)} vehicle_reviews")
-Logger.info("Created: #{length(driver_reviews)} driver_reviews")
+Logger.info("Created: #{length(driver_comments)} driver_comments")
 Logger.info("Created: #{length(threads)} threads, #{length(messages)} messages")

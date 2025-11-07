@@ -1,33 +1,34 @@
-import { View, Text, TextInput, Keyboard, Platform } from 'react-native';
-import { useState, useRef, useEffect } from 'react';
-import { FontAwesome6 } from '@expo/vector-icons';
+import { View, Text, TextInput, Keyboard, Platform } from "react-native";
+import { useState, useRef, useEffect } from "react";
+import { FontAwesome6 } from "@expo/vector-icons";
 
-import { Colors } from '@/constants/ui';
-import { Modal } from '@/src/components/modal';
-import { CustomButton } from '@/src/components/elements/button';
-import { styles } from '../styles/modals';
+import { Colors } from "@/constants/ui";
+import { Modal } from "@/src/components/modal";
+import { CustomButton } from "@/src/components/elements/button";
+import { styles } from "../styles/modals";
 
 type CommentModalProps = {
   setShowCommentModal: () => void;
+  driverId: string;
 };
 
 export const CommentModal = ({ setShowCommentModal }: CommentModalProps) => {
-  const [comment, setComment] = useState('');
+  const [comment, setComment] = useState("");
   const [commentHeight, setCommentHeight] = useState(0);
   const inputRef = useRef<TextInput>(null);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   useEffect(() => {
     const showSub = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillShow' : 'keyboardDidShow',
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
       () => setKeyboardOpen(true)
     );
     const hideSub = Keyboard.addListener(
-      Platform.OS === 'ios' ? 'keyboardWillHide' : 'keyboardDidHide',
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
       () => {
-        setKeyboardOpen(false)
-        inputRef.current?.blur()
-      }  
+        setKeyboardOpen(false);
+        inputRef.current?.blur();
+      }
     );
 
     return () => {
@@ -36,11 +37,10 @@ export const CommentModal = ({ setShowCommentModal }: CommentModalProps) => {
     };
   }, []);
 
-
   const handleKeyboardIcon = () => {
     if (!keyboardOpen) {
       inputRef.current?.focus();
-    }  
+    }
   };
 
   return (
@@ -48,13 +48,13 @@ export const CommentModal = ({ setShowCommentModal }: CommentModalProps) => {
       <View style={[styles.container, { height: commentHeight + 250 }]}>
         <Text style={styles.title}>Add Comment</Text>
 
-        <View style={[styles.commentBox ]}>
+        <View style={[styles.commentBox]}>
           <Text style={styles.username}>Jabulani Nkomo</Text>
 
           <View style={[styles.comment]}>
             <TextInput
               ref={inputRef}
-              style={[styles.commentInput, {height: '85%'}]}
+              style={[styles.commentInput, { height: "85%" }]}
               placeholder="Write your comment..."
               placeholderTextColor="#999"
               value={comment}
@@ -76,10 +76,10 @@ export const CommentModal = ({ setShowCommentModal }: CommentModalProps) => {
         </View>
 
         <CustomButton
-          customStyle={{ width: '100%' }}
+          customStyle={{ width: "100%" }}
           color="primaryBlue"
           onPress={() => {
-            console.log('Posting comment:', comment);
+            console.log("Posting comment:", comment);
             setShowCommentModal();
           }}
         >

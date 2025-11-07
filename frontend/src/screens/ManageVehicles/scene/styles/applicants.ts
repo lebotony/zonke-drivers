@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/ui";
+import { topOffset } from "@/src/components/appStyles";
 import { shadowStyles } from "@/src/components/shadowStyles";
 import { StyleSheet } from "react-native";
 
@@ -6,14 +7,11 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.bg,
+    ...topOffset
   },
   header: {
     backgroundColor: Colors.white,
     paddingHorizontal: 14,
-    paddingBottom: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e9ecef',
-    ...shadowStyles
   },
   backButton: {
     padding: 4,
@@ -22,7 +20,6 @@ export const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: '600',
     margin: 'auto',
-    marginBottom: 16,
   },
   menuButton: {
     padding: 4,

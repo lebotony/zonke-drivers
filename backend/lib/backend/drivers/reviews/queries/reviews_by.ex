@@ -4,17 +4,15 @@ defmodule Backend.Reviews.Queries.ReviewBy do
 
   def base_query() do
     from(r in Review,
-      as: :review,
-      join: s in assoc(r, :service),
-      as: :service
+      as: :review
     )
   end
 
-  def by_service_id(query, id) do
-    where(query, [review: r], r.service_id == ^id)
+  def by_driver(query, id) do
+    where(query, [review: r], r.driver_id == ^id)
   end
 
-  def by_user_id(query, id) do
+  def by_user(query, id) do
     where(query, [review: r], r.user_id == ^id)
   end
 end
