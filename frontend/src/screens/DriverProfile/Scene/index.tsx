@@ -17,6 +17,7 @@ import { useCustomQuery } from "@/src/useQueryContext";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { shadowStyles } from "@/src/components/shadowStyles";
 import { calculateAge } from "@/src/helpers/calculateAge";
+import { Spinner } from "@/src/components/elements/Spinner";
 
 import { Platforms } from "../../Drivers/Scene/ui/platforms";
 import { styles } from "./styles";
@@ -76,6 +77,8 @@ export const Scene = () => {
       );
     }
   }, [driver]);
+
+  if (!driver) return <Spinner />;
 
   return (
     <SafeAreaView>
@@ -162,7 +165,6 @@ export const Scene = () => {
 
           <View style={styles.commentsSection}>
             <Text style={styles.driverDetailsText}>Comments</Text>
-            <Comments setShowCommentModal={() => setShowCommentModal(true)} />
           </View>
         </View>
       </ScrollView>
