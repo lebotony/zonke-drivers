@@ -25,7 +25,7 @@ import { Header } from "./ui/header";
 import { Licences } from "./ui/licences";
 import { createThread, fetchDriverProfile } from "../actions";
 import { detailsDef } from "./ui/detailsPill";
-import { Comments } from "../../ViewSection/scene/ui/comments";
+import { Comments } from "./ui/comments";
 
 export const Scene = () => {
   const [showCommentModal, setShowCommentModal] = useState(false);
@@ -165,6 +165,7 @@ export const Scene = () => {
 
           <View style={styles.commentsSection}>
             <Text style={styles.driverDetailsText}>Comments</Text>
+            <Comments driver={driver} />
           </View>
         </View>
       </ScrollView>

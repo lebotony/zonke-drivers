@@ -41,6 +41,8 @@ export const PaymentsScreen = () => {
       "fetchedVehicleDriverPayments",
     ]);
 
+  const vehicle: Vehicle = find(userVehicles, { id: vehicleId });
+
   const vehicleDriver: VehicleDriver = find(userVehicles, { id: vehicleId })
     ?.vehicle_drivers?.[0];
 
@@ -61,10 +63,7 @@ export const PaymentsScreen = () => {
 
     const payments = paymentsObj?.data ?? [];
 
-    const vehicle = getUpdatedObjectSnapshot("vehicle", vehicleId);
-
     updatePaginatedObject("userVehicles", vehicleId, {
-      ...vehicle,
       vehicle_drivers: [
         {
           ...vehicleDriver,
@@ -159,6 +158,7 @@ export const PaymentsScreen = () => {
       {showCommentModal && (
         <CommentModal
           driverId={vehicleDriver?.driver?.id}
+          vehicle={vehicle}
           setShowCommentModal={() => setShowCommentModal(false)}
         />
       )}

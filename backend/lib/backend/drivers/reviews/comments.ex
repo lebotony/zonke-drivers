@@ -6,12 +6,18 @@ defmodule Backend.Reviews.Comments do
 
   import Ecto.Query
 
-  def create(params, %{user_id: user_id}) do
+  def create(params, user_id) do
     params = Map.put(params, :author_id, user_id)
 
-    %Comment{}
-    |> Comment.changeset(params)
-    |> Repo.insert()
+    case %Comment{}
+        |> Comment.changeset(params)
+        |> Repo.insert() do
+      {:ok, comment} ->
+        {:ok, Repo.one(CommentsBy.by_id_with_author(comment.id))}
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   def get_comment(id) do
@@ -33,6 +39,7 @@ defmodule Backend.Reviews.Comments do
         | first_name: a.first_name,
           last_name: a.last_name
       })
+      |> order_by([c], desc: c.inserted_at)
       # |> preload(:replys)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 

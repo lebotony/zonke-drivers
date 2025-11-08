@@ -1,22 +1,47 @@
-import { View, Text, TextInput, Keyboard, Platform } from "react-native";
 import { useState, useRef, useEffect } from "react";
+import { View, TextInput, Keyboard, Platform } from "react-native";
+import { Text } from "react-native-paper";
+
 import { FontAwesome6 } from "@expo/vector-icons";
+
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
 
 import { Colors } from "@/constants/ui";
 import { Modal } from "@/src/components/modal";
 import { CustomButton } from "@/src/components/elements/button";
+
 import { styles } from "../styles/modals";
+import { CommentSchema } from "../schema";
+import { createComment } from "../../actions";
+import { usePaginatedCache } from "@/src/updateCacheProvider";
+
+type CommentFormValues = z.infer<typeof CommentSchema>;
 
 type CommentModalProps = {
   setShowCommentModal: () => void;
   driverId: string;
+  vehicle: Vehicle;
 };
 
-export const CommentModal = ({ setShowCommentModal }: CommentModalProps) => {
-  const [comment, setComment] = useState("");
+export const CommentModal = ({
+  setShowCommentModal,
+  driverId,
+  vehicle,
+}: CommentModalProps) => {
   const [commentHeight, setCommentHeight] = useState(0);
   const inputRef = useRef<TextInput>(null);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
+
+  const { control, handleSubmit, reset, watch, setValue } =
+    useForm<CommentFormValues>({
+      resolver: zodResolver(CommentSchema),
+    });
+
+  const { updatePaginatedObject } = usePaginatedCache();
+
+  const commentValue = watch("text");
 
   useEffect(() => {
     const showSub = Keyboard.addListener(
@@ -43,6 +68,28 @@ export const CommentModal = ({ setShowCommentModal }: CommentModalProps) => {
     }
   };
 
+  const handleSubmitComment = () => {
+    handleSubmit((formData) => {
+      createComment({ driver_id: driverId, ...formData })
+        .then((response) => {
+          updatePaginatedObject("userVehicles", vehicle?.id, {
+            vehicle_drivers: vehicle?.vehicle_drivers?.map((vd) => {
+              if (vd?.driver.id !== driverId) return vd;
+
+              return {
+                ...vd,
+                comments: [response, ...(vd?.comments ?? [])],
+              };
+            }),
+          });
+
+          reset();
+        })
+        .catch((err) => err);
+    })();
+    setShowCommentModal();
+  };
+
   return (
     <Modal onDismiss={setShowCommentModal}>
       <View style={[styles.container, { height: commentHeight + 250 }]}>
@@ -57,8 +104,8 @@ export const CommentModal = ({ setShowCommentModal }: CommentModalProps) => {
               style={[styles.commentInput, { height: "85%" }]}
               placeholder="Write your comment..."
               placeholderTextColor="#999"
-              value={comment}
-              onChangeText={setComment}
+              value={commentValue}
+              onChangeText={(value) => setValue("text", value)}
               multiline
               onContentSizeChange={(event) =>
                 setCommentHeight(event.nativeEvent.contentSize.height)
@@ -78,10 +125,7 @@ export const CommentModal = ({ setShowCommentModal }: CommentModalProps) => {
         <CustomButton
           customStyle={{ width: "100%" }}
           color="primaryBlue"
-          onPress={() => {
-            console.log("Posting comment:", comment);
-            setShowCommentModal();
-          }}
+          onPress={handleSubmitComment}
         >
           <Text style={styles.postBtnText}>POST</Text>
         </CustomButton>

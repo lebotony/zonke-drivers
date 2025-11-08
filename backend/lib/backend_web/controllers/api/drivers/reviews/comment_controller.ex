@@ -11,8 +11,8 @@ defmodule BackendWeb.Reviews.CommentController do
   end
 
   def create(conn, params, %{user_id: user_id}) do
-    with {:ok, _comment} <- Comments.create(params, user_id) do
-      json(conn, :ok)
+    with {:ok, comment} <- Comments.create(params, user_id) do
+      render(conn, :show, %{comment: comment})
     end
   end
 end

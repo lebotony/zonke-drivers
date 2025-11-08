@@ -58,7 +58,7 @@ export const VehiclesScreen = () => {
     return {};
   };
 
-  const queryKey = ["vehicles", debouncedSearchTerm];
+  const queryKey = ["vehicles"];
 
   const queryFn = ({ pageParam = 1 }) => {
     const filters = {
@@ -95,9 +95,15 @@ export const VehiclesScreen = () => {
   });
 
   const vehicles = data?.pages.flatMap((page) => page?.data) ?? [];
-  queryClient.setQueryData(["vehicles"], vehicles);
 
   // useEffects responsible for triggering refetch
+  useEffect(() => {
+    if (debouncedSearchTerm !== undefined) {
+      queryClient.removeQueries({ queryKey });
+      refetch();
+    }
+  }, [debouncedSearchTerm]);
+
   useEffect(() => {
     if (applyFilter) {
       queryClient.removeQueries({ queryKey });

@@ -52,7 +52,7 @@ export const Scene = () => {
     return {};
   };
 
-  const queryKey = ["drivers", debouncedSearchTerm];
+  const queryKey = ["drivers"];
 
   const queryFn = ({ pageParam = 1 }) => {
     const filters = {
@@ -89,9 +89,15 @@ export const Scene = () => {
   });
 
   const drivers = data?.pages.flatMap((page) => page.data) ?? [];
-  queryClient.setQueryData(["drivers"], drivers);
 
   // useEffects responsible for triggering refetch
+  useEffect(() => {
+    if (debouncedSearchTerm !== undefined) {
+      queryClient.removeQueries({ queryKey });
+      refetch();
+    }
+  }, [debouncedSearchTerm]);
+
   useEffect(() => {
     if (applyFilter) {
       queryClient.removeQueries({ queryKey });
@@ -178,52 +184,51 @@ export const Scene = () => {
 
   return (
     <View style={{ flex: 1, backgroundColor: Colors.bg }}>
-     <DynamicHeader
-  headerBgColor={Colors.bg}
-  header={
-    <View>
-      <Header
-        setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
-        setSearchTerm={(value: string) => setSearchTerm(value)}
-      />
-      <QuickFilters
-        showReset={!isDefaultState}
-        onSetSelectedPlatforms={(value: string) =>
-          handleSetSelectedPlatforms(value)
+      <DynamicHeader
+        headerBgColor={Colors.bg}
+        header={
+          <View>
+            <Header
+              setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
+              setSearchTerm={(value: string) => setSearchTerm(value)}
+            />
+            <QuickFilters
+              showReset={!isDefaultState}
+              onSetSelectedPlatforms={(value: string) =>
+                handleSetSelectedPlatforms(value)
+              }
+              selectedPlatforms={selectedPlatforms}
+              onClear={handleFilterReset}
+            />
+          </View>
         }
-        selectedPlatforms={selectedPlatforms}
-        onClear={handleFilterReset}
-      />
-    </View>
-  }
->
-  {({ onScroll, scrollEventThrottle, contentContainerStyle }) =>
-    isEmpty(drivers) && !isLoading ? (
-      <NoData />
-    ) : isLoading ? (
-      <Spinner />
-    ) : (
-      <FlatList
-        data={drivers}
-        onScroll={onScroll}
-        scrollEventThrottle={scrollEventThrottle}
-        onEndReached={() => {
-          if (hasNextPage && !isFetchingNextPage) {
-            fetchNextPage();
-          }
-        }}
-        showsVerticalScrollIndicator={false}
-        keyExtractor={(item, index) => String(item?.id ?? index)}
-        renderItem={({ item }) => <DriverCard driver={item} />}
-        contentContainerStyle={[
-          contentContainerStyle,
-          { gap: 15, paddingVertical: 15 },
-        ]}
-      />
-    )
-  }
-</DynamicHeader>
-
+      >
+        {({ onScroll, scrollEventThrottle, contentContainerStyle }) =>
+          isEmpty(drivers) && !isLoading ? (
+            <NoData />
+          ) : isLoading ? (
+            <Spinner />
+          ) : (
+            <FlatList
+              data={drivers}
+              onScroll={onScroll}
+              scrollEventThrottle={scrollEventThrottle}
+              onEndReached={() => {
+                if (hasNextPage && !isFetchingNextPage) {
+                  fetchNextPage();
+                }
+              }}
+              showsVerticalScrollIndicator={false}
+              keyExtractor={(item, index) => String(item?.id ?? index)}
+              renderItem={({ item }) => <DriverCard driver={item} />}
+              contentContainerStyle={[
+                contentContainerStyle,
+                { gap: 15, paddingVertical: 15 },
+              ]}
+            />
+          )
+        }
+      </DynamicHeader>
 
       <FilterModal
         showReset={!isDefaultState}
@@ -242,8 +247,6 @@ export const Scene = () => {
         onTogglePlatforms={handleSetSelectedPlatforms}
         onToggleLicences={handleSetSelectedLicences}
       />
-
-     
     </View>
   );
 };

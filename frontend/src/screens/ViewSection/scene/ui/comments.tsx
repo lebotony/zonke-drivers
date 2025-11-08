@@ -44,19 +44,18 @@ export const Comments = (props: CommentsProps) => {
     (vd: VehicleDriver) => vd?.driver?.id === driverId
   );
 
-  const loadDriverComments = (applicationsObj: Record<string, any>) => {
+  const loadDriverComments = (commentsObj: Record<string, any>) => {
     updateNestedPagination(
       vehicleDriver?.id,
       "commentsPagination",
-      applicationsObj.paginate
+      commentsObj.paginate
     );
 
-    const driverComments = applicationsObj?.data;
+    const driverComments = commentsObj?.data;
 
     const vehicle = getUpdatedObjectSnapshot("userVehicles", vehicleId);
 
     updatePaginatedObject("userVehicles", vehicleId, {
-      ...vehicle,
       vehicle_drivers: vehicle?.vehicle_drivers?.map((vd) => {
         if (vd?.driver.id !== driverId) return vd;
 

@@ -134,7 +134,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       handleSubmit((formData) =>
         updateDriver(formData)
           .then((response) => {
-            console.log("33333333333333333", response.user);
+            // console.log("33333333333333333", response.user);
             queryClient.setQueryData(["user"], response.user);
             queryClient.setQueryData(["driverProfile"], response);
           })

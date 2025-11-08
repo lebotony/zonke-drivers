@@ -3,7 +3,8 @@ type VehicleDriver = {
   first_name: string;
   last_name: string;
   driver: Driver;
-  payments: Payment[]
+  payments: Payment[],
+  comments?: CommentType[]
 };
 
 type Payment = {
