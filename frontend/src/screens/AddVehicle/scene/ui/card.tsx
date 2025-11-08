@@ -77,6 +77,7 @@ export const Card = (props: CardProps) => {
         >
           {isTransmission ? (
             <Switch
+              onValueChange={() => setChecked(!checked)}
               value={checked}
               trackColor={{ false: "#D3D3D3", true: Colors.tealGreen }}
               thumbColor={checked ? "#fff" : "#f4f3f4"}

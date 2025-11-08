@@ -83,7 +83,7 @@ export const DynamicHeader = ({
         {header}
       </Animated.View>
 
-      <View style={{ flex: 1 }}>
+      <View style={styles.contentContainer}>
         {typeof children === "function"
           ? children({
               onScroll,

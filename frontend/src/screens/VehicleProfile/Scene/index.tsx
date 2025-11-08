@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import {
   SafeAreaView,
   ScrollView,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   LayoutAnimation,
+  StatusBar,
 } from "react-native";
 import { Text } from "react-native-paper";
 
@@ -38,7 +39,7 @@ export const Scene = () => {
   const vehicleId = Array.isArray(id) ? id[0] : id;
 
   const [expanded, setExpanded] = useState(false);
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showReadMore, setShowReadMore] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
   const { addItemToPaginatedList } = usePaginatedCache();
@@ -52,20 +53,12 @@ export const Scene = () => {
   const heroRef = useRef<any>(null);
   const modalRef = useRef<any>(null);
 
-  useEffect(() => {
-    if (expanded && modalRef.current) {
-      setTimeout(() => {
-        modalRef.current.scrollTo?.({
-          x: currentIndex * width,
-          animated: false,
-        });
-      }, 50);
-    }
-  }, [expanded, currentIndex, width]);
+  const toggleExpanded = () => setIsDescriptionExpanded((prev) => !prev);
 
-  const toggleDescription = () => {
-    LayoutAnimation.easeInEaseOut();
-    setIsDescriptionExpanded(!isDescriptionExpanded);
+   const onTextLayout = (e: any) => {
+    if (e.nativeEvent.lines.length > 2) {
+      setShowReadMore(true);
+    }
   };
 
   const handleCreateThread = () =>
@@ -83,20 +76,7 @@ export const Scene = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ position: "relative" }}>
-          <ScrollView
-            horizontal
-            pagingEnabled
-            showsHorizontalScrollIndicator={false}
-            ref={heroRef}
-            onMomentumScrollEnd={(e) => {
-              const idx = Math.round(e.nativeEvent.contentOffset.x / width);
-              setCurrentIndex(idx);
-            }}
-          >
-            {IMAGES.map((img, i) => (
-              <Image key={i} source={img} style={[styles.hero, { width }]} />
-            ))}
-          </ScrollView>
+          <Image source={carPic} style={[styles.hero, { width }]} />
 
           <View
             style={{
@@ -131,32 +111,6 @@ export const Scene = () => {
             </View>
           </View>
 
-          <View
-            style={{
-              position: "absolute",
-              bottom: 12,
-              left: 0,
-              right: 0,
-              alignItems: "center",
-            }}
-          >
-            <View style={{ flexDirection: "row", gap: 8 }}>
-              {IMAGES.map((_, i) => (
-                <View
-                  key={i}
-                  style={{
-                    width: currentIndex === i ? 18 : 6,
-                    height: 6,
-                    borderRadius: 6,
-                    backgroundColor:
-                      currentIndex === i
-                        ? Colors.mrDBlue
-                        : "rgba(255,255,255,0.6)",
-                  }}
-                />
-              ))}
-            </View>
-          </View>
         </View>
 
         <ScrollView style={styles.meta}>
@@ -188,22 +142,19 @@ export const Scene = () => {
             <Text
               style={styles.descriptionText}
               numberOfLines={isDescriptionExpanded ? undefined : 2}
+               onTextLayout={onTextLayout}
             >
               {vehicle?.description}
             </Text>
 
-            {!isDescriptionExpanded && (
-              <TouchableOpacity onPress={toggleDescription}>
-                <Text style={styles.readText}>Read more</Text>
-              </TouchableOpacity>
-            )}
+               {showReadMore && (
+        <TouchableOpacity onPress={toggleExpanded}>
+          <Text style={{ color: "blue", marginTop: 4 }}>
+            {isDescriptionExpanded ? "Read less" : "Read more"}
+          </Text>
+        </TouchableOpacity>
+      )}
           </View>
-
-          {isDescriptionExpanded && (
-            <TouchableOpacity onPress={toggleDescription}>
-              <Text style={styles.readText}>Read less</Text>
-            </TouchableOpacity>
-          )}
 
           <Text style={styles.title}>Overview</Text>
 
@@ -340,6 +291,7 @@ export const Scene = () => {
             zIndex: 1000,
           }}
         >
+          <StatusBar barStyle="light-content" backgroundColor={Colors.black} />
           <SafeAreaView style={{ flex: 1, backgroundColor: Colors.black }}>
             <TouchableOpacity
               onPress={() => setExpanded(false)}
