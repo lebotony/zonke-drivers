@@ -11,10 +11,11 @@ export const styles = StyleSheet.create({
     left: 0,
     right: 0,
     zIndex: 100,
-    elevation: 100,
+    elevation: 6,
     justifyContent: "center",
   },
   contentContainer: {
-    flexGrow: 1
+    flex: 1,
+    marginTop: 14,
   }
 });

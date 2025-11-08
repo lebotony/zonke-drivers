@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Image, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { PopupMenu } from "@/src/components/popup";
@@ -20,17 +20,20 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
   const [optionsVisible, setOptionsVisible] = useState(false);
 
   const handleSelect = (model: string) => {
-    const vehicle = vehicles?.find((v) => v.model === model);
-    if (vehicle) onSelectVehicle(vehicle);
+    const vehicle = vehicles?.find((v) => ((v.brand + " " + v.model) === model));
+
+    if (vehicle) {
+      onSelectVehicle(vehicle);
+    }
     setOptionsVisible(false);
   };
 
   return (
     <PopupMenu
       style={styles.vehicleSelector}
-      options={vehicles?.map((vehicle) => vehicle.model)}
+      options={vehicles?.map((vehicle) => (vehicle.brand + " " + vehicle.model))}
       innerBtnFn={() => setOptionsVisible(!optionsVisible)}
-      selectedValue={selectedVehicle ? selectedVehicle.model : "Select Vehicle"}
+      selectedValue={selectedVehicle ? selectedVehicle.brand + " " + selectedVehicle.model : "Select Vehicle"}
       onSelect={handleSelect}
     >
       <View style={styles.vehicleSelectorLeft}>

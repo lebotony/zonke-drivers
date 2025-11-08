@@ -94,16 +94,6 @@ export const ApplicantsScreen = () => {
     });
   };
 
-  useEffect(
-    () =>
-      setSelectedVehicle(
-        userVehicles?.find((v) => v.id === vehicleId) ||
-          userVehicles?.[0] ||
-          null
-      ),
-    [userVehicles]
-  );
-
   useEffect(() => {
     if (!fetchedVehicleApplications?.includes(vehicleId) || !selectedVehicle) {
       handleFetchApplications();

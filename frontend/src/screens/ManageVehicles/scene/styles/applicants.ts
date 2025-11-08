@@ -5,6 +5,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    gap: 8,
     backgroundColor: Colors.bg,
   },
   header: {
@@ -131,7 +132,7 @@ export const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    padding: 16,
+    paddingVertical: 8,
   },
   resultsCount: {
     fontSize: 14,
@@ -157,7 +158,6 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     color: '#999',
     textAlign: 'center',
-    paddingHorizontal: 40,
   },
   applicantCard: {
     backgroundColor: '#fff',

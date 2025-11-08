@@ -88,7 +88,7 @@ export const styles = StyleSheet.create({
   },
 
   descriptionContainer: {
-    marginTop: 8,
+    marginVertical: 8,
     flexDirection: "row",
     flexWrap: "wrap",
     alignItems: "flex-end",
@@ -144,7 +144,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 8,
     borderRadius: 10,
-    width: 125,
+    minWidth: 125,
   },
 
   footerRow: {
