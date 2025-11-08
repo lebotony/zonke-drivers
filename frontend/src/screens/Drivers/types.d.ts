@@ -16,7 +16,8 @@ type Driver = {
   last_name: string,
   username: string,
   location: string,
-  asset_url: string
+  asset_url: string,
+  comments: CommentType[]
 }
 
 type Filters = {
