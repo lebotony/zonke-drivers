@@ -8,7 +8,7 @@ defmodule BackendWeb.Reviews.ReplyJSON do
       id: reply.id,
       text: reply.text,
       updated_at: reply.updated_at,
-      inserted_at: reply.inserted_at,
+      inserted_at: reply.inserted_at
     }
   end
 end

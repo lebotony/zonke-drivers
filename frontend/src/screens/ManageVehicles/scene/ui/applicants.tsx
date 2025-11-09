@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Text } from "react-native-paper";
 import { View, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -15,10 +15,14 @@ import { usePaginatedCache } from "@/src/updateCacheProvider";
 
 import { styles } from "../styles/applicants";
 import { fetchApplications } from "../../actions";
+import { VehicleDriverModal } from "./vehicleDriverModal";
 
 export const ApplicantsScreen = () => {
   const { id } = useLocalSearchParams();
   const vehicleId = Array.isArray(id) ? id[0] : id;
+
+  const [showVehicleDriverModal, setShowVehicleDriverModal] = useState(false);
+  const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
   const {
@@ -98,9 +102,6 @@ export const ApplicantsScreen = () => {
           vehicle={vehicle}
           onSelectVehicle={setSelectedVehicle}
         /> */}
-
-        {/* Search Bar */}
-        {/* <SearchComponent placeholder="Search applicants..." /> */}
       </View>
       <View style={styles.listContainer}>
         {!isEmpty(vehicle?.applications) ? (
@@ -115,7 +116,16 @@ export const ApplicantsScreen = () => {
                 handleFetchApplications();
               }
             }}
-            renderItem={({ item }) => <DriverCard driver={item?.driver} />}
+            renderItem={({ item }) => (
+              <DriverCard
+                applicant
+                driver={item?.driver}
+                setSelectedDriverId={(val: string) => setSelectedDriverId(val)}
+                setShowVehicleDriverModal={(val: boolean) =>
+                  setShowVehicleDriverModal(val)
+                }
+              />
+            )}
             keyExtractor={({ id }, index) => String(id + index)}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={styles.listContent}
@@ -132,6 +142,14 @@ export const ApplicantsScreen = () => {
           </View>
         )}
       </View>
+      {showVehicleDriverModal && (
+        <VehicleDriverModal
+          setShowVehicleDriverModal={setShowVehicleDriverModal}
+          setSelectedDriverId={setSelectedDriverId}
+          driverId={selectedDriverId as string}
+          vehicleId={vehicleId}
+        />
+      )}
     </SafeAreaView>
   );
 };

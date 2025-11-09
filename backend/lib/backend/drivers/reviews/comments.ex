@@ -10,8 +10,8 @@ defmodule Backend.Reviews.Comments do
     params = Map.put(params, :author_id, user_id)
 
     case %Comment{}
-        |> Comment.changeset(params)
-        |> Repo.insert() do
+         |> Comment.changeset(params)
+         |> Repo.insert() do
       {:ok, comment} ->
         {:ok, Repo.one(CommentsBy.by_id_with_author(comment.id))}
 

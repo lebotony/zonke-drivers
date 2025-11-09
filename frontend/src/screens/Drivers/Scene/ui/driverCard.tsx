@@ -14,19 +14,27 @@ import { Colors } from "@/constants/ui";
 import { HorizontalDivider } from "@/src/components/shapes/divider";
 import { CustomButton } from "@/src/components/elements/button";
 import { calculateAge } from "@/src/helpers/calculateAge";
+import { Spinner } from "@/src/components/elements/Spinner";
 
 import { styles } from "../styles/driverCard";
 import { Platforms } from "./platforms";
-import { Spinner } from "@/src/components/elements/Spinner";
 
 const ICON_SIZE = 14;
 
 type DriverProps = {
   driver: Driver;
+  applicant: boolean;
+  setSelectedDriverId?: (val: string) => void;
+  setShowVehicleDriverModal: (val: boolean) => void;
 };
 
 export const DriverCard = (props: DriverProps) => {
-  const { driver } = props;
+  const {
+    driver,
+    applicant = false,
+    setSelectedDriverId,
+    setShowVehicleDriverModal,
+  } = props;
 
   if (!driver) return <Spinner />;
 
@@ -92,15 +100,49 @@ export const DriverCard = (props: DriverProps) => {
       )}
       <HorizontalDivider color="#ededed" />
 
-      <CustomButton
-        color="white"
-        onPress={() => router.push(`/drivers/${driver?.id}`)}
-        customStyle={{ paddingVertical: 1 }}
+      <View
+        style={
+          applicant && {
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }
+        }
       >
-        <Text style={[styles.name, { fontWeight: 500, lineHeight: 17 }]}>
-          View profile
-        </Text>
-      </CustomButton>
+        <CustomButton
+          color="white"
+          onPress={() => router.push(`/drivers/${driver?.id}`)}
+          customStyle={[applicant && styles.cardBtns, { paddingVertical: 1 }]}
+        >
+          <Text
+            style={[
+              styles.name,
+              applicant && { color: Colors.white },
+              { fontWeight: 500, lineHeight: 17 },
+            ]}
+          >
+            View profile
+          </Text>
+        </CustomButton>
+        {applicant && (
+          <CustomButton
+            color="white"
+            onPress={() => {
+              setSelectedDriverId!(driver?.id);
+              setShowVehicleDriverModal(true);
+            }}
+            customStyle={[styles.cardBtns, { backgroundColor: Colors.mrDBlue }]}
+          >
+            <Text
+              style={[
+                styles.name,
+                { fontWeight: 500, lineHeight: 17, color: Colors.white },
+              ]}
+            >
+              Add driver
+            </Text>
+          </CustomButton>
+        )}
+      </View>
     </View>
   );
 };

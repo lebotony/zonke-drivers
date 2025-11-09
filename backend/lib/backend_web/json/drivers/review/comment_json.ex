@@ -20,7 +20,7 @@ defmodule BackendWeb.Reviews.CommentJSON do
       first_name: comment.first_name,
       last_name: comment.last_name,
       updated_at: comment.updated_at,
-      inserted_at: comment.inserted_at,
+      inserted_at: comment.inserted_at
       # replys: ReplyJSON.index(%{replys: comment.replys})
     }
     |> Map.merge(%{sent_at: DateTimeHelper.date_time(comment.inserted_at)})
