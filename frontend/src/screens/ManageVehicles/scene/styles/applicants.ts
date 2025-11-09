@@ -6,13 +6,11 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 8,
     backgroundColor: Colors.bg,
-    ...topOffset
   },
   header: {
-    backgroundColor: Colors.white,
     paddingHorizontal: 14,
+    ...topOffset
   },
   backButton: {
     padding: 4,

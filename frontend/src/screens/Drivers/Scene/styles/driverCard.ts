@@ -1,6 +1,7 @@
 import { StyleSheet } from "react-native";
 
 import { Colors } from "@/constants/ui";
+import { shadowStyles } from "@/src/components/shadowStyles";
 
 export const styles = StyleSheet.create({
   container: {
@@ -83,5 +84,12 @@ export const styles = StyleSheet.create({
     width: 83,
     height: 83,
     borderRadius: 10,
+  },
+  cardBtns: {
+    paddingTop: 10,
+    paddingBottom: 12,
+    backgroundColor: Colors.lightGreen,
+    width: "48%",
+    ...shadowStyles,
   }
 });

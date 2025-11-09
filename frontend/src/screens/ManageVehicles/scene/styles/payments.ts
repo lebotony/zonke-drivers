@@ -12,19 +12,29 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingTop: 12
   },
-  headerText: {
+  driver: {
+    flexDirection: 'row',
+    borderWidth: 0.5,
+    borderColor: Colors.lightGrey,
+    borderRadius: 8,
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    margin: 15,
+    alignItems: 'center'
+  },
+  nameText: {
     color: Colors.black,
-    fontSize: 22,
+    fontSize: 17,
     fontWeight: 600,
-    textAlign: "center",
-    paddingTop: 28,
+    marginLeft: 18
   },
   addPaymentRow: {
     borderWidth: 0.5,
     borderColor: Colors.lightGrey,
     borderRadius: 8,
     padding: 10,
-    margin: 15,
+    marginHorizontal: 15,
+    marginBottom: 15
   },
   addText: {
     color: Colors.mrDBlue,

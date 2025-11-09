@@ -72,20 +72,21 @@ defmodule Backend.Vehicles.Vehicles do
 
   def get_vehicles(params, %{user_id: user_id}) do
     driver_query =
-      from d in Driver,
+      from(d in Driver,
         join: u in assoc(d, :user),
+        left_join: a in assoc(u, :asset),
         select: %{
           id: d.id,
           first_name: u.first_name,
-          last_name: u.last_name
+          last_name: u.last_name,
+          asset_url: a.url
         }
+      )
 
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_user(user_id)
-      |> join(:left, [v], vd in VehicleDriver,
-        on: v.id == vd.vehicle_id and vd.active == true
-      )
+      |> join(:left, [v], vd in VehicleDriver, on: v.id == vd.vehicle_id and vd.active == true)
       |> preload([
         :asset,
         vehicle_drivers: [:driver]

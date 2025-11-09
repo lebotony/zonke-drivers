@@ -1,5 +1,7 @@
 defmodule Backend.Vehicles.Queries.VehicleDriverBy do
   alias Backend.Vehicles.VehicleDriver
+  alias Backend.Drivers.Driver
+
   import Ecto.Query
 
   def base_query do
@@ -10,6 +12,24 @@ defmodule Backend.Vehicles.Queries.VehicleDriverBy do
 
   def by_id(query, id) do
     where(query, [vehicle_driver: vd], vd.id == ^id)
+  end
+
+  def by_id_with_preloads(id) do
+    driver_query =
+      from(d in Driver,
+        join: u in assoc(d, :user),
+        left_join: a in assoc(u, :asset),
+        select: %{
+          id: d.id,
+          first_name: u.first_name,
+          last_name: u.last_name,
+          asset_url: a.url
+        }
+      )
+
+    base_query()
+    |> by_id(id)
+    |> preload(driver: ^driver_query)
   end
 
   def by_vehicle_owner(query, id) do

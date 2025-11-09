@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FlatList, SafeAreaView } from "react-native";
+import { FlatList, SafeAreaView, View } from "react-native";
 import { Text } from "react-native-paper";
 
 import { useLocalSearchParams } from "expo-router";
@@ -13,6 +13,7 @@ import { CommentModal } from "@/src/screens/ViewSection/scene/ui/commentModal";
 import { InlineSwitch } from "@/src/components/misc/inlineSwitch";
 import { Colors } from "@/constants/ui";
 import { CustomButton } from "@/src/components/elements/button";
+import { Avatar } from "@/src/components/visual/avatar";
 
 import { PaymentCard } from "./paymentCard";
 import { fetchPayments } from "../../actions";
@@ -111,6 +112,12 @@ export const PaymentsScreen = () => {
         value={switchSelection}
         onChange={setSwitchSelection}
       />
+      <View style={styles.driver}>
+        <Avatar source={vehicleDriver?.driver?.asset_url} width={50} round />
+        <Text style={styles.nameText}>
+          {vehicleDriver?.driver?.first_name} {vehicleDriver?.driver?.last_name}
+        </Text>
+      </View>
 
       {/* <VehicleSelector
           vehicles={userVehicles}

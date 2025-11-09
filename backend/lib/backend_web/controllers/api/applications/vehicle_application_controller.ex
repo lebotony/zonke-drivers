@@ -5,7 +5,8 @@ defmodule BackendWeb.Applications.VehicleApplicationController do
   alias Backend.Applications.VehicleApplications
 
   def index(conn, params, session) do
-    with {:ok, vehicle_applications, paginate} <- VehicleApplications.get_vehicle_applications(params) do
+    with {:ok, vehicle_applications, paginate} <-
+           VehicleApplications.get_vehicle_applications(params) do
       render(conn, :index, %{vehicle_applications: vehicle_applications, paginate: paginate})
     end
   end
