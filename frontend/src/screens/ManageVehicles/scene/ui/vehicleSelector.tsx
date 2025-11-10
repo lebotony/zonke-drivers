@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View } from "react-native";
+import { Image } from "expo-image";
+
 import { Ionicons } from "@expo/vector-icons";
 import { PopupMenu } from "@/src/components/popup";
 import { styles } from "../styles/applicants";

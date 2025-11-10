@@ -1,6 +1,7 @@
 import React from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
+import { Image } from "expo-image";
 
 import { router } from "expo-router";
 
