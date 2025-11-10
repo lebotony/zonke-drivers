@@ -13,7 +13,6 @@ import { CustomButton } from "@/src/components/elements/button";
 import { addPayment } from "../../actions";
 import { AmountSchema } from "../../schema";
 import { styles } from "../styles/addModal";
-import { find } from "lodash";
 
 type AmountFormValues = z.infer<typeof AmountSchema>;
 
@@ -51,6 +50,11 @@ export const AddModal = (props: AddModalProps) => {
         vehicle_drivers: [
           {
             ...vehicleDriver,
+            last_payment: response.price_fixed.value,
+            payment_count: vehicleDriver?.payment_count + 1,
+            total_payments:
+              Number(vehicleDriver.total_payments) +
+              Number(response.price_fixed.value),
             payments: [response, ...(vehicleDriver?.payments || [])],
           },
         ],
