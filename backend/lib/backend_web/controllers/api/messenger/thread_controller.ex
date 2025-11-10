@@ -35,7 +35,7 @@ defmodule BackendWeb.Messenger.ThreadController do
 
   def set_seen_true(conn, %{thread_id: thread_id}, _session) do
     with {:ok, _count} <- Threads.mark_messages_as_seen(thread_id) do
-      json(conn, :ok)
+      json(conn, %{status: "ok"})
     end
   end
 end
