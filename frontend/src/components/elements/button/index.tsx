@@ -15,7 +15,7 @@ type CustomButtonProps = {
   type?: "normal";
   color?: ColorsType;
   haptics?: `${Haptics.ImpactFeedbackStyle}`;
-  customStyle?: ViewStyle;
+  customStyle?: ViewStyle | ViewStyle[];
   onPress: ((event: GestureResponderEvent) => void) | undefined;
 } & TouchableOpacityProps;
 
@@ -43,7 +43,7 @@ export const CustomButton = (props: CustomButtonProps) => {
       style={[
         styles.basic,
         styles[type],
-        color && { backgroundColor: Colors[color] || color },
+        color && { backgroundColor: Colors[color as keyof typeof Colors] || color },
         customStyle,
       ]}
       {...pressableProps}

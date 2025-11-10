@@ -50,14 +50,12 @@ export const Card = (props: CardProps) => {
                 size={18}
                 color={Colors.mrDBlue}
               />
-            </View>
-
-            <Text style={styles.address} numberOfLines={1}>
+            <Text style={styles.passText}>
               {`${vehicle?.passengers} passengers`}
             </Text>
           </View>
 
-          {/* <View style={styles.ratingRow}>
+          {/* <View style={styles.rowInfo}>
             <View style={styles.detailIcon}>
               <MaterialIcons
                 name="location-pin"
