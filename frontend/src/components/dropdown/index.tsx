@@ -261,7 +261,7 @@ export const DropdownInput = <T extends FieldValues>({
         </View>
       </Pressable>
 
-      {open && ((results || options).length !==0) && (
+      {open && (
         <Portal>
           <TouchableWithoutFeedback onPress={() => setOpen(false)}>
             <View style={styles.backdrop} />

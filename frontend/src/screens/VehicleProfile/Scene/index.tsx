@@ -3,18 +3,20 @@ import {
   SafeAreaView,
   ScrollView,
   View,
+  Image,
   TouchableOpacity,
   Dimensions,
+  LayoutAnimation,
   StatusBar,
 } from "react-native";
 import { Text } from "react-native-paper";
 
-import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { find } from "lodash";
 
 import {
   Ionicons,
+  AntDesign,
   MaterialIcons,
   FontAwesome5,
 } from "@expo/vector-icons";
