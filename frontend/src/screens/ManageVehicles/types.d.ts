@@ -4,6 +4,9 @@ type VehicleDriver = {
   last_name: string;
   driver: Driver;
   payments: Payment[],
+  total_payments: number,
+  last_payment: number,
+  payment_count: number,
   comments?: CommentType[]
 };
 

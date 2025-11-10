@@ -320,6 +320,7 @@ vehicle_drivers =
           accidents: Enum.random(1..3),
           vehicle_id: vehicle.id,
           driver_id: driver.id,
+          active: true,
         }
         |> Repo.insert()
 
@@ -333,10 +334,16 @@ Logger.info("Creating payments")
 payments =
   Enum.flat_map(Enum.zip(vehicle_drivers, 1..20), fn {vehicle_driver, price} ->
     Enum.map(1..20, fn v ->
+      inserted_at =
+        NaiveDateTime.utc_now()
+        |> Timex.shift(minutes: -(v * 1300))
+        |> NaiveDateTime.truncate(:second)
+
       {:ok, payment} =
         %Payment{
           price_fixed: %{currency: "dollars", value: price * v},
           vehicle_driver_id: vehicle_driver.id,
+          inserted_at: inserted_at
         }
         |> Repo.insert()
 

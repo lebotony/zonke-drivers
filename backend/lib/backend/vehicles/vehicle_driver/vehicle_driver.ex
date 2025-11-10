@@ -4,11 +4,17 @@ defmodule Backend.Vehicles.VehicleDriver do
   alias Backend.Vehicles.{Vehicle, Payment}
   alias Backend.Drivers.Driver
 
-  @params [:driver_id, :vehicle_id]
+  @required_params [:driver_id, :vehicle_id]
+  @optional_params [:active]
+  @all_params @optional_params ++ @required_params
 
   schema "vehicle_drivers" do
     field(:accidents, :integer)
-    field(:active, :boolean)
+    field(:active, :boolean, default: false)
+
+    field(:total_payments, :decimal, virtual: true)
+    field(:last_payment, :decimal, virtual: true)
+    field(:payment_count, :integer, virtual: true)
 
     belongs_to(:driver, Driver)
     belongs_to(:vehicle, Vehicle)
@@ -20,9 +26,9 @@ defmodule Backend.Vehicles.VehicleDriver do
 
   def changeset(struct, attrs) do
     struct
-    |> cast(attrs, @params)
+    |> cast(attrs, @all_params)
     |> assoc_constraint(:driver)
     |> assoc_constraint(:vehicle)
-    |> validate_required(@params)
+    |> validate_required(@required_params)
   end
 end

@@ -83,6 +83,26 @@ defmodule Backend.Vehicles.Vehicles do
         }
       )
 
+    total_query =
+      from(p in Payment,
+        group_by: p.vehicle_driver_id,
+        select: %{
+          vehicle_driver_id: p.vehicle_driver_id,
+          total_amount: sum(fragment("CAST(?->>'value' AS DECIMAL)", p.price_fixed)),
+          payment_count: count(p.id)
+        }
+      )
+
+    last_payment_query =
+      from(p in Payment,
+        distinct: p.vehicle_driver_id,
+        order_by: [desc: p.inserted_at],
+        select: %{
+          vehicle_driver_id: p.vehicle_driver_id,
+          last_payment: fragment("CAST(?->>'value' AS DECIMAL)", p.price_fixed)
+        }
+      )
+
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_user(user_id)
@@ -94,7 +114,40 @@ defmodule Backend.Vehicles.Vehicles do
       |> preload(vehicle_drivers: [driver: ^driver_query])
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
-    {:ok, data, PaginateHelper.prep_paginate(data)}
+    updated_data = %{data | entries: load_vehicle_drivers_with_payments(total_query, last_payment_query, data.entries)}
+
+    {:ok, updated_data, PaginateHelper.prep_paginate(data)}
+  end
+
+  defp load_vehicle_drivers_with_payments(total_query, last_payment_query, data) do
+    totals_map =
+      total_query
+      |> Repo.all()
+      |> Map.new(fn %{vehicle_driver_id: id, total_amount: total, payment_count: count} ->
+        {id, %{total: total || Decimal.new(0), count: count || 0}}
+      end)
+
+    last_payments_map =
+      last_payment_query
+      |> Repo.all()
+      |> Map.new(fn %{vehicle_driver_id: id, last_payment: val} ->
+        {id, val || Decimal.new(0)}
+      end)
+
+    Enum.map(data, fn vehicle ->
+      vehicle_drivers =
+        Enum.map(vehicle.vehicle_drivers, fn vd ->
+          totals = Map.get(totals_map, vd.id, %{total: Decimal.new(0), count: 0})
+          last_payment = Map.get(last_payments_map, vd.id, Decimal.new(0))
+
+          vd
+          |> Map.put(:total_payments, totals.total)
+          |> Map.put(:payment_count, totals.count)
+          |> Map.put(:last_payment, last_payment)
+        end)
+
+      %{vehicle | vehicle_drivers: vehicle_drivers}
+    end)
   end
 
   def get_vehicles(params, :public) do

@@ -40,7 +40,7 @@ export const styles = StyleSheet.create({
   username: {
     fontSize: 16,
     fontWeight: 700,
-    color: Colors.dimGrey,
+    color: Colors.black,
   },
   postBtnText: {
     color: Colors.white,

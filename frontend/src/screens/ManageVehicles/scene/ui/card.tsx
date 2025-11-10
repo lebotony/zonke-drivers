@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import { Text } from "react-native-paper";
 
-import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 
@@ -12,14 +12,14 @@ import { styles } from "../styles/card";
 import { shadowStyles } from "@/src/components/shadowStyles";
 import { capitalizeFirstLetter } from "@/src/utils";
 
-const ICON_SIZE = 14;
-
 type CardProps = {
   vehicle: Vehicle;
 };
 
 export const Card = (props: CardProps) => {
   const { vehicle } = props;
+
+  const vehicleDriver = vehicle.vehicle_drivers?.[0];
 
   return (
     <View style={styles.card}>
@@ -34,17 +34,16 @@ export const Card = (props: CardProps) => {
             {capitalizeFirstLetter(`${vehicle?.brand} ${vehicle?.model}`)}
           </Text>
 
-          <View style={styles.ratingRow}>
+          <View style={styles.detailsRow}>
             <View style={styles.detailIcon}>
-              <AntDesign name="star" size={ICON_SIZE} color={Colors.yellow} />
+              <MaterialIcons name="payment" size={15} color="black" />
             </View>
-            <Text style={styles.ratingText}>
-              {vehicle?.rating}{" "}
-              <Text style={styles.ratingCreteria}>(200 payments)</Text>
-            </Text>
+            <Text
+              style={styles.paymentCountText}
+            >{`(${vehicleDriver?.payment_count} payments)`}</Text>
           </View>
 
-          <View style={styles.ratingRow}>
+          <View style={styles.detailsRow}>
             <View style={styles.detailIcon}>
               <MaterialIcons
                 name="event-seat"
@@ -75,12 +74,14 @@ export const Card = (props: CardProps) => {
       <HorizontalDivider color="#ededed" />
       <View style={styles.payments}>
         <View style={styles.paymentCard}>
-          <Text style={styles.paymentText}>Recent Payed</Text>
-          <Text style={styles.amountText}>$45</Text>
+          <Text style={styles.paymentText}>Recent Paid</Text>
+          <Text style={styles.amountText}>R{vehicleDriver?.last_payment}</Text>
         </View>
         <View style={styles.paymentCard}>
-          <Text style={styles.paymentText}>Total Payed</Text>
-          <Text style={styles.amountText}>$1050</Text>
+          <Text style={styles.paymentText}>Total Paid</Text>
+          <Text style={styles.amountText}>
+            R{vehicleDriver?.total_payments}
+          </Text>
         </View>
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
