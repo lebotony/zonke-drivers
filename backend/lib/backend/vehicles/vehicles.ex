@@ -102,9 +102,13 @@ defmodule Backend.Vehicles.Vehicles do
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()
       |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
-      |> select_merge([vehicle: v, user: u], %{
+      |>join(:left, [user: u], a in assoc(u, :asset), as: :asset)
+      |> select_merge([vehicle: v, user: u, asset: a], %{
         v
-        | user_id: u.id
+        | user: %{
+            id: u.id,
+            asset_url: a.url
+          }
       })
       |> build_search(params)
       |> build_sort(params)

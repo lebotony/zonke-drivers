@@ -261,44 +261,6 @@ export const FilterModal: React.FC<FilterModalProps> = ({
             </View>
           </View>
 
-          {/* Rating */}
-          <View style={styles.reviewContainer}>
-            <Text style={styles.reviewText}>Customer Review</Text>
-            <View style={{ gap: 12 }}>
-              {[4, 3, 2].map((r) => (
-                <TouchableOpacity
-                  key={r}
-                  style={styles.ratingBtn}
-                  onPress={() => onRatingSelect(r)}
-                >
-                  <View style={styles.ratingText}>
-                    {Array.from({ length: r }).map((_, idx) => (
-                      <AntDesign
-                        key={idx}
-                        name="star"
-                        size={18}
-                        color={Colors.yellow}
-                      />
-                    ))}
-                    <Text style={{ color: Colors.mediumGrey }}>& up</Text>
-                  </View>
-                  <View
-                    style={[
-                      styles.radio,
-                      selectedRating === r
-                        ? styles.activeRadio
-                        : styles.inactiveRadio,
-                    ]}
-                  >
-                    {selectedRating === r ? (
-                      <View style={styles.activeDot} />
-                    ) : null}
-                  </View>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
           <View style={styles.footer}>
             <TouchableOpacity onPress={onApply} style={styles.footerBtn}>
               <Text style={styles.footerText}>Show results</Text>

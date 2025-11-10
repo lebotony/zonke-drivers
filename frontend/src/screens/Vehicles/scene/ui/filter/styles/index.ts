@@ -44,6 +44,7 @@ export const styles = StyleSheet.create({
   chipFlatlist: {
     paddingVertical: 8,
     paddingHorizontal: 16,
+    marginBottom: 10
   },
   chipBtn: {
     paddingHorizontal: 12,
@@ -59,7 +60,8 @@ export const styles = StyleSheet.create({
   },
   fuelOptions: {
     flexDirection: 'row',
-    paddingTop: 8
+    paddingTop: 8,
+    marginBottom: 10
   },
   checkbox: {
     marginRight: 22,

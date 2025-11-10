@@ -17,7 +17,8 @@ export const styles = StyleSheet.create({
     borderColor: Colors.lightGrey,
     borderRadius: 8,
     padding: 10,
-    margin: 12,
+    marginHorizontal: 12,
+    marginBottom: 12
   },
   addCommentText: {
     color: Colors.mrDBlue,
