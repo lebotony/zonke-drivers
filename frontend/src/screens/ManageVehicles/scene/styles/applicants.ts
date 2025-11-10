@@ -1,5 +1,4 @@
 import { Colors } from "@/constants/ui";
-import { topOffset } from "@/src/components/appStyles";
 import { shadowStyles } from "@/src/components/shadowStyles";
 import { StyleSheet } from "react-native";
 

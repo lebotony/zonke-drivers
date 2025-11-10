@@ -21,6 +21,7 @@ export const styles = StyleSheet.create({
   },
   centerModal: {
     padding: 20,
+    marginHorizontal: 15,
     backgroundColor: Colors.white,
     borderRadius: 15
   }

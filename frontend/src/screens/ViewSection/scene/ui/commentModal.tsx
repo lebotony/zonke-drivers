@@ -111,19 +111,11 @@ export const CommentModal = ({
                 setCommentHeight(event.nativeEvent.contentSize.height)
               }
             />
-            <View>
-              <FontAwesome6
-                name="keyboard"
-                size={21}
-                color={Colors.mediumGrey}
-                onPress={handleKeyboardIcon}
-              />
-            </View>
           </View>
         </View>
 
         <CustomButton
-          customStyle={{ width: "100%" }}
+          customStyle={{ width: "100%", marginBottom: 20, paddingVertical: 10 }}
           color="primaryBlue"
           onPress={handleSubmitComment}
         >

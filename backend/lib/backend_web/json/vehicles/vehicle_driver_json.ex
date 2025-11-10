@@ -16,6 +16,10 @@ defmodule BackendWeb.Vehicles.VehicleDriverJSON do
     %{
       id: vehicle_driver.id,
       driver: vehicle_driver.driver,
+      active: vehicle_driver.active,
+      payment_count: vehicle_driver.payment_count,
+      total_payments: vehicle_driver.total_payments,
+      last_payment: vehicle_driver.last_payment,
       inserted_at: vehicle_driver.inserted_at,
       updated_at: vehicle_driver.updated_at
     }

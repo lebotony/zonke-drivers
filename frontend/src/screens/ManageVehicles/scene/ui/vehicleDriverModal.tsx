@@ -35,7 +35,15 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
     createVehicleDriver(params)
       .then((res) => {
         updatePaginatedObject("userVehicles", vehicleId, {
-          vehicle_drivers: [res],
+          vehicle_drivers: [
+            {
+              ...res,
+              last_payment: 0,
+              payment_count: 0,
+              total_payments: 0,
+              payments: [],
+            },
+          ],
         });
       })
       .catch((err) => {

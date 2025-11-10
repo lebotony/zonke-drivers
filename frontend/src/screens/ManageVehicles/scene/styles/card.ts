@@ -74,25 +74,18 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 3
   },
-  rowInfo: {
+  detailsRow: {
     gap: 4,
     flexDirection: "row",
-    alignItems: "center"
+    alignItems: "center",
   },
-  ratingText: {
-    fontSize: 13,
-    fontWeight: 700,
-    textAlignVertical: "center",
-    color: "rgba(0, 0, 0, 0.69)"
-  },
-  ratingCreteria: {
-    width: 120,
+  paymentCountText: {
     fontSize: 11,
+    marginLeft: 22,
     fontWeight: 400,
     color: Colors.mediumGrey,
     textAlignVertical: "center",
     position: 'absolute',
-    top: 2.1,
   },
   address: {
     color: Colors.mediumGrey,
