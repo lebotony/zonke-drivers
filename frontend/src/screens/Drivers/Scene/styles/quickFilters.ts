@@ -11,7 +11,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 15,
+    paddingHorizontal: 14,
   },
   heading: {
     fontSize: 14,
@@ -25,7 +25,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    paddingHorizontal: 14,
   },
   platformFilter: {
     marginTop: 7,

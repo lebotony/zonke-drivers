@@ -1,6 +1,8 @@
 import React, { ReactNode, useRef } from 'react';
-import { Animated, Dimensions, PanResponder, Pressable, View } from 'react-native';
+import { Animated, Dimensions, PanResponder, Pressable, StatusBar } from 'react-native';
 import { BlurView } from 'expo-blur';
+
+import { Colors } from '@/constants/ui';
 
 import { styles } from './styles';
 import { BarLine } from './bar';
@@ -55,6 +57,7 @@ export const Modal = (props: ModalProps) => {
 
   return (
     <BlurView intensity={60} tint="dark" style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor={Colors.grey}/>
       <Pressable style={styles.backdrop} onPress={dismissWithAnimation} />
 
       <Animated.View

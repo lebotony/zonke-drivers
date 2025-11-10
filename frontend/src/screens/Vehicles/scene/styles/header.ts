@@ -25,7 +25,8 @@ export const styles = StyleSheet.create({
   },
   filterContainer: {
     flexDirection: "row",
-    alignItems: 'center'
+    alignItems: 'center',
+    gap: 10,
   },
   resetBtn: {
     flexDirection: "row",
