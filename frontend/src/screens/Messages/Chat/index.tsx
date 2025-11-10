@@ -73,22 +73,22 @@ export const ChatScreen = () => {
       ]
     );
 
-  const resetUnseenCountMutation = useMutation({
-    mutationFn: setSeenTrue,
-    onSuccess: (_data, variables: Thread["id"]) => {
-      updatePaginatedObject("threads", variables, { unseen_msg_count: 0 });
-
-      if (threadChannels?.[variables]) {
-        threadChannels[variables].push("msg_seen_status_changed", {
-          thread_id: variables,
-        });
-      } else {
-        console.warn(`No channel for thread ${variables} to mark seen`);
-      }
-    },
-  });
   const onResetUnseenCount = (threadId: string) =>
-    resetUnseenCountMutation.mutate(threadId);
+    setSeenTrue(threadId)
+      .then((res) => {
+        updatePaginatedObject("threads", threadId, { unseen_msg_count: 0 });
+
+        if (threadChannels?.[threadId]) {
+          threadChannels[threadId].push("msg_seen_status_changed", {
+            thread_id: threadId,
+          });
+        } else {
+          console.warn(`No channel for thread ${threadId} to mark seen`);
+        }
+      })
+      .catch((err) => {
+        throw new Error(err);
+      });
 
   useEffect(() => {
     if (isNewThread) {
