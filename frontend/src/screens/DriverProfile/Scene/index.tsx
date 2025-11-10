@@ -28,8 +28,6 @@ import { detailsDef } from "./ui/detailsPill";
 import { Comments } from "./ui/comments";
 
 export const Scene = () => {
-  const [showCommentModal, setShowCommentModal] = useState(false);
-
   const { id } = useLocalSearchParams();
   const driverId = Array.isArray(id) ? id[0] : id;
 
@@ -170,29 +168,35 @@ export const Scene = () => {
         </View>
       </ScrollView>
 
-      <View style={styles.footer}>
-        <CustomButton
-          color={Colors.emeraldGreen}
-          onPress={handleCreateThread}
-          customStyle={{
-            flex: 1,
-            borderRadius: 13,
-            ...shadowStyles,
-          }}
-        >
-          <Text
-            style={{
-              color: Colors.white,
-              marginRight: 5,
-              fontSize: 15,
-              fontWeight: 600,
+      {!isUserProfile && (
+        <View style={styles.footer}>
+          <CustomButton
+            color={Colors.emeraldGreen}
+            onPress={handleCreateThread}
+            customStyle={{
+              flex: 1,
+              borderRadius: 13,
+              ...shadowStyles,
             }}
           >
-            Message
-          </Text>
-          <Ionicons name="chatbubble-outline" size={20} color={Colors.white} />
-        </CustomButton>
-      </View>
+            <Text
+              style={{
+                color: Colors.white,
+                marginRight: 5,
+                fontSize: 15,
+                fontWeight: 600,
+              }}
+            >
+              Message
+            </Text>
+            <Ionicons
+              name="chatbubble-outline"
+              size={20}
+              color={Colors.white}
+            />
+          </CustomButton>
+        </View>
+      )}
     </SafeAreaView>
   );
 };

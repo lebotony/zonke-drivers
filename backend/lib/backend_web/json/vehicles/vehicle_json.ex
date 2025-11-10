@@ -22,6 +22,13 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
         []
       end
 
+    user =
+      case Map.get(vehicle, :user) do
+        %Ecto.Association.NotLoaded{} -> nil
+        user when is_map(user) -> user
+        _ -> nil
+      end
+
     %{
       id: vehicle.id,
       model: vehicle.model,
@@ -36,7 +43,7 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
       passengers: vehicle.passengers,
       model_year: vehicle.model_year,
       price_fixed: vehicle.price_fixed,
-      user: vehicle.user,
+      user: user,
       inserted_at: vehicle.inserted_at,
       updated_at: vehicle.updated_at,
       asset: AssetJSON.show(%{asset: vehicle.asset}),

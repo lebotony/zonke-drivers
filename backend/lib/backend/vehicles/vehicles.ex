@@ -110,6 +110,7 @@ defmodule Backend.Vehicles.Vehicles do
             asset_url: a.url
           }
       })
+      |> preload(:asset)
       |> build_search(params)
       |> build_sort(params)
       |> Repo.paginate(PaginateHelper.prep_params(params))

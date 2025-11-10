@@ -62,7 +62,7 @@ export const Scene = () => {
   };
 
   const handleCreateThread = () => {
-    console.log("participant_id:", vehicle);
+    console.log("participant_id:", vehicle.user?.id);
     createThread({ participant_id: vehicle.user?.id })
       .then((response) => {
         if (!find(threads, { id: response.id })) {
@@ -78,7 +78,7 @@ export const Scene = () => {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ position: "relative" }}>
-          <Image source={carPic} style={[styles.hero, { width }]} />
+          <Image source={vehicle.asset?.url} style={[styles.hero, { width }]} />
 
           <View
             style={{
@@ -120,19 +120,8 @@ export const Scene = () => {
               {capitalizeFirstLetter(vehicle?.brand)}{" "}
               {capitalizeFirstLetter(vehicle?.model)}
             </Text>
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 8,
-                backgroundColor: Colors.white,
-                paddingHorizontal: 12,
-                paddingVertical: 4,
-                borderRadius: 20,
-              }}
-            >
-              <Avatar round width={34} source={vehicle.user?.asset_url} />
-            </View>
+
+            <Avatar round width={40} source={vehicle.user?.asset_url} />
           </View>
 
           <View style={styles.descriptionContainer}>
@@ -249,32 +238,17 @@ export const Scene = () => {
           </SafeAreaView>
         </ScrollView>
 
-        <View style={{ flexDirection: "row", gap: 15 }}>
-          <CustomButton
-            onPress={() => null}
-            customStyle={{
-              marginBottom: 20,
-              marginLeft: 15,
-              flex: 1,
-              ...shadowStyles,
-            }}
-          >
-            <Text style={{ color: Colors.white }}>Apply</Text>
-          </CustomButton>
-
-          <CustomButton
-            color={Colors.emeraldGreen}
-            onPress={handleCreateThread}
-            customStyle={{
-              marginBottom: 20,
-              marginRight: 15,
-              flex: 1,
-              ...shadowStyles,
-            }}
-          >
-            <Text style={{ color: Colors.white }}>Message</Text>
-          </CustomButton>
-        </View>
+        <CustomButton
+          color={Colors.emeraldGreen}
+          onPress={handleCreateThread}
+          customStyle={{
+            marginBottom: 20,
+            marginHorizontal: 15,
+            ...shadowStyles,
+          }}
+        >
+          <Text style={{ color: Colors.white }}>Message</Text>
+        </CustomButton>
       </ScrollView>
 
       {expanded && (
@@ -303,13 +277,10 @@ export const Scene = () => {
               showsHorizontalScrollIndicator={false}
               ref={modalRef}
             >
-              {IMAGES.map((img, i) => (
-                <Image
-                  key={i}
-                  source={img}
-                  style={{ width, height: "100%", resizeMode: "contain" }}
-                />
-              ))}
+              <Image
+                source={vehicle.asset?.url}
+                style={{ width, height: "100%", resizeMode: "contain" }}
+              />
             </ScrollView>
           </SafeAreaView>
         </View>

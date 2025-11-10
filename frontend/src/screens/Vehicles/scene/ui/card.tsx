@@ -58,7 +58,7 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
         onPress={() => router.push(`/vehicles/${vehicle?.id}`)}
       >
         <Image
-          source={carPic}
+          source={vehicle?.asset?.url}
           style={{
             width: "100%",
             height: "100%",
