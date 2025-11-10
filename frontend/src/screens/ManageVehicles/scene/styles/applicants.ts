@@ -10,13 +10,21 @@ export const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 14,
-    ...topOffset
-  },
-  backButton: {
-    padding: 4,
+    backgroundColor: Colors.white,
+    ...topOffset,
+    ...shadowStyles
   },
   headerTitle: {
-    fontSize: 20,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 14
+  },
+  backButton: {
+    marginBottom: 4
+  },
+  headerText: {
+    fontSize: 22,
     fontWeight: '600',
     margin: 'auto',
   },
@@ -127,7 +135,6 @@ export const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    paddingVertical: 8,
   },
   resultsCount: {
     fontSize: 14,

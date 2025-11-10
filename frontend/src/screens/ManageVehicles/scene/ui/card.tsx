@@ -34,7 +34,7 @@ export const Card = (props: CardProps) => {
             {capitalizeFirstLetter(`${vehicle?.brand} ${vehicle?.model}`)}
           </Text>
 
-          <View style={styles.ratingRow}>
+          <View style={styles.rowInfo}>
             <View style={styles.detailIcon}>
               <AntDesign name="star" size={ICON_SIZE} color={Colors.yellow} />
             </View>
@@ -44,21 +44,18 @@ export const Card = (props: CardProps) => {
             </Text>
           </View>
 
-          <View style={styles.ratingRow}>
-            <View style={styles.detailIcon}>
+          <View style={styles.rowInfo}>
               <MaterialIcons
                 name="event-seat"
                 size={18}
                 color={Colors.mrDBlue}
               />
-            </View>
-
-            <Text style={styles.address} numberOfLines={1}>
+            <Text style={styles.passText}>
               {`${vehicle?.passengers} passengers`}
             </Text>
           </View>
 
-          {/* <View style={styles.ratingRow}>
+          {/* <View style={styles.rowInfo}>
             <View style={styles.detailIcon}>
               <MaterialIcons
                 name="location-pin"

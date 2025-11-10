@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   },
   details: {
     justifyContent: "space-between",
-    gap: 10,
+    gap: 8,
   },
   detailIcon: {
     width: 15,
@@ -74,7 +74,7 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     marginRight: 3
   },
-  ratingRow: {
+  rowInfo: {
     gap: 4,
     flexDirection: "row",
     alignItems: "center"
@@ -98,6 +98,12 @@ export const styles = StyleSheet.create({
     color: Colors.mediumGrey,
     fontSize: 13,
     maxWidth: "85%",
-    fontWeight: 400
+    fontWeight: 400,
   },
+  passText: {
+    color: Colors.mediumGrey,
+    fontSize: 13,
+    fontWeight: 400,
+    marginLeft: 3
+  }
 });

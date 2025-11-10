@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
-import { View, Image, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { Image } from "expo-image";
+import { Text } from "react-native-paper";
+
+import { capitalizeFirstLetter } from "@/src/utils";
 import { PopupMenu } from "@/src/components/popup";
 import { styles } from "../styles/applicants";
-import { Text } from "react-native-paper";
-import { capitalizeFirstLetter } from "@/src/utils";
 
 interface VehicleSelectorProps {
   vehicles: Vehicle[];
