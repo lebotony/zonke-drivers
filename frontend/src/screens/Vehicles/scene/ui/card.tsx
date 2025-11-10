@@ -2,7 +2,7 @@
 import React from "react";
 import { Text } from "react-native-paper";
 import { View, Pressable } from "react-native";
-
+import { Image } from "expo-image";
 import { router } from "expo-router";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 
@@ -10,7 +10,7 @@ import carPic from "@/assets/images/car-test.jpg";
 
 import { Colors } from "../../../../../constants/ui";
 import { styles } from "../styles/card";
-import { Image } from "expo-image";
+
 import { capitalizeFirstLetter } from "@/src/utils";
 
 type Props = {

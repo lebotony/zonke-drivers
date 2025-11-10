@@ -3,14 +3,13 @@ import {
   SafeAreaView,
   ScrollView,
   View,
-  Image,
   TouchableOpacity,
   Dimensions,
   LayoutAnimation,
   StatusBar,
 } from "react-native";
 import { Text } from "react-native-paper";
-
+import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
 import { find } from "lodash";
 
@@ -33,6 +32,7 @@ import { CustomButton } from "@/src/components/elements/button";
 import { styles } from "./styles/index";
 import { createThread } from "../../DriverProfile/actions";
 import { shadowStyles } from "@/src/components/shadowStyles";
+
 
 export const Scene = () => {
   const { id } = useLocalSearchParams();

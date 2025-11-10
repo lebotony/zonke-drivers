@@ -1,4 +1,5 @@
 import { Colors } from "@/constants/ui";
+import { topOffset } from "@/src/components/appStyles";
 import { shadowStyles } from "@/src/components/shadowStyles";
 import { StyleSheet } from "react-native";
 
@@ -9,11 +10,20 @@ export const styles = StyleSheet.create({
   },
   header: {
     paddingHorizontal: 14,
-  },
-  backButton: {
-    padding: 4,
+    backgroundColor: Colors.white,
+    ...topOffset,
+    ...shadowStyles
   },
   headerTitle: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 14
+  },
+  backButton: {
+    marginBottom: 4
+  },
+  headerText: {
     fontSize: 20,
     fontWeight: '600',
     margin: 'auto',
@@ -125,7 +135,6 @@ export const styles = StyleSheet.create({
   },
   listContainer: {
     flex: 1,
-    paddingVertical: 8,
   },
   resultsCount: {
     fontSize: 14,
