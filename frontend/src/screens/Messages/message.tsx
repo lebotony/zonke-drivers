@@ -1,7 +1,7 @@
 import React from "react";
-import { View, TouchableOpacity } from "react-native";
+import { View, Image, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
-import { Image } from "expo-image";
+
 import { router } from "expo-router";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";

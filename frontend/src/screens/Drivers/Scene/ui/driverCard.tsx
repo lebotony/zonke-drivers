@@ -111,12 +111,12 @@ export const DriverCard = (props: DriverProps) => {
         <CustomButton
           color="white"
           onPress={() => router.push(`/drivers/${driver?.id}`)}
-          customStyle={[...(applicant ? [styles.cardBtns] : []), { paddingVertical: 1 }]}
+          customStyle={[applicant && styles.cardBtns, { paddingVertical: 1 }]}
         >
           <Text
             style={[
               styles.name,
-              applicant ? { color: Colors.white } : undefined,
+              applicant && { color: Colors.white },
               { fontWeight: 500, lineHeight: 17 },
             ]}
           >

@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
   },
   details: {
     justifyContent: "space-between",
-    gap: 8,
+    gap: 10,
   },
   detailIcon: {
     width: 15,
@@ -91,12 +91,6 @@ export const styles = StyleSheet.create({
     color: Colors.mediumGrey,
     fontSize: 13,
     maxWidth: "85%",
-    fontWeight: 400,
+    fontWeight: 400
   },
-  passText: {
-    color: Colors.mediumGrey,
-    fontSize: 13,
-    fontWeight: 400,
-    marginLeft: 3
-  }
 });

@@ -9,10 +9,9 @@ export const styles = StyleSheet.create({
   },
   header: {
     color: Colors.black,
-    fontSize: 22,
+    fontSize: 18,
     fontWeight: "600",
-    marginBottom: 12,
-    marginTop: 16,
+    marginVertical: 12,
     textAlign: "center",
   },
 });
