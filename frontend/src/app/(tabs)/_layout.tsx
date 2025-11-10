@@ -84,7 +84,7 @@ export default function TabLayout() {
           title: "Messages",
           tabBarIcon: ({ color, size }) => (
             <View style={{ position: "relative" }}>
-              <Ionicons name="chatbubble-outline" size={23} color={color} />
+              <Ionicons name="chatbubbles-outline" size={25} color={color} />
               {unseen_msg_count > 0 && (
                 <View style={styles.unreadBadge}>
                   <Text style={styles.unreadBadgeText}>{unseen_msg_count}</Text>

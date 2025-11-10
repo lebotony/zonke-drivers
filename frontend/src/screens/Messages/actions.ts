@@ -13,10 +13,11 @@ export const fetchUserThreads = async ({ pageParam = 1 }, filters) => {
         qs.stringify(params, { arrayFormat: "brackets" }),
     })
       .then((response) => {
-        console.log("IIIIIIIIIIIIIIII", response.data)
         return response.data
       })
-      .catch((err) => err);
+      .catch((err) => {
+        throw new Error("Error while fetching messages: ", err)
+      });
 }
 
 export const fetchThreadMessages = async (threadId: string) => httpGet('/messages', { thread_id: threadId })

@@ -141,6 +141,10 @@ vehicle_brands = ["bmw", "nissan", "volkswagen", "audi", "toyota", "mercedes", "
 vehicle_models = ["Civic", "Corolla", "Accord", "Camry", "Model S", "Mustang", "Golf", "A4", "CX-5", "Elantra", "Tucson", "X5", "C-Class", "E-Class", "Altima", "Forester"]
 vehicle_types = ["bike", "passenger", "taxi", "truck", "lorry"]
 fuel_types = [:diesel, :petrol, :electric, :hybrid, :hydrogen]
+vehicle_images = 1..7 |> Enum.to_list() # car1.jpg ... car7.jpg
+
+counter = :atomics.new(1, signed: true)
+:atomics.put(counter, 1, 0) # initial value 0
 
 vehicles =
   Enum.flat_map(owners_users, fn user ->
@@ -167,10 +171,13 @@ vehicles =
           |> Repo.insert()
 
           # CREATE VEHICLE ASSET
+        count = :atomics.add_get(counter, 1, 1) # atomically increment
+        image_index = rem(count - 1, length(vehicle_images)) + 1
+
         asset_params = %{
           file: %Plug.Upload{
-            path: Path.expand("priv/car-test.jpg"),
-            filename: "uploads/car-test.jpg",
+            path: Path.expand("priv/vehicles/car#{image_index}.jpg"),
+            filename: "uploads/car#{image_index}.jpg",
           },
           vehicle_id: vehicle.id
         }
@@ -185,7 +192,7 @@ vehicles =
 
 Logger.info("Creating drivers")
 
-driver_platforms = ["bike", "passenger", "taxi", "truck", "uber", "bolt", "uber_eats", "checkers", "mr_d_food"]
+driver_platforms = ["bike", "passenger", "taxi", "truck", "lorry", "uber", "bolt", "uber_eats", "checkers", "mr_d_food"]
 
 descriptions = [
   "I drive trucks all over the city",

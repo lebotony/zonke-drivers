@@ -1,7 +1,8 @@
 import { useEffect } from "react";
 import { View, FlatList } from "react-native";
+import { Text } from "react-native-paper";
 
-import { find } from "lodash";
+import { find, isEmpty } from "lodash";
 
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -76,24 +77,28 @@ export const Comments = (props: CommentsProps) => {
 
   return (
     <View style={styles.commentsSection}>
-      <FlatList
-        nestedScrollEnabled
-        showsVerticalScrollIndicator={true}
-        showsHorizontalScrollIndicator={false}
-        data={driver?.comments}
-        onEndReached={() => {
-          const paginationObj = find(driversCommentsPagination, {
-            id: driver?.id,
-          })?.paginate;
+      {isEmpty(driver?.comments) ? (
+        <Text style={{ fontSize: 15, margin: "auto" }}>No comments</Text>
+      ) : (
+        <FlatList
+          nestedScrollEnabled
+          showsVerticalScrollIndicator={true}
+          showsHorizontalScrollIndicator={false}
+          data={driver?.comments}
+          onEndReached={() => {
+            const paginationObj = find(driversCommentsPagination, {
+              id: driver?.id,
+            })?.paginate;
 
-          if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
-            handleFetchComments();
-          }
-        }}
-        keyExtractor={(v, index) => String(index)}
-        renderItem={({ item }) => <Comment comment={item} />}
-        style={{ maxHeight: 400 }}
-      />
+            if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
+              handleFetchComments();
+            }
+          }}
+          keyExtractor={(v, index) => String(index)}
+          renderItem={({ item }) => <Comment comment={item} />}
+          style={{ maxHeight: 400 }}
+        />
+      )}
     </View>
   );
 };

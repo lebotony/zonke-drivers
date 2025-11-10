@@ -23,9 +23,9 @@ const ICON_SIZE = 14;
 
 type DriverProps = {
   driver: Driver;
-  applicant: boolean;
+  applicant?: boolean;
   setSelectedDriverId?: (val: string) => void;
-  setShowVehicleDriverModal: (val: boolean) => void;
+  setShowVehicleDriverModal?: (val: boolean) => void;
 };
 
 export const DriverCard = (props: DriverProps) => {
@@ -128,7 +128,7 @@ export const DriverCard = (props: DriverProps) => {
             color="white"
             onPress={() => {
               setSelectedDriverId!(driver?.id);
-              setShowVehicleDriverModal(true);
+              setShowVehicleDriverModal!(true);
             }}
             customStyle={[styles.cardBtns, { backgroundColor: Colors.mrDBlue }]}
           >

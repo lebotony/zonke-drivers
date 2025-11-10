@@ -1,6 +1,5 @@
+import React, { useEffect, useState } from "react";
 import { Text } from "react-native-paper";
-
-import { useQuery } from "@tanstack/react-query";
 
 import { View } from "@/src/components/Themed";
 import { Colors } from "@/constants/ui";
@@ -9,18 +8,37 @@ import { Spinner } from "@/src/components/elements/Spinner";
 
 import { fetchDriverProfile } from "../ProfileSetUp/actions";
 import { DriverCard } from "../Drivers/Scene/ui/driverCard";
+import { useQueryClient } from "@tanstack/react-query";
+import { useCustomQuery } from "@/src/useQueryContext";
 
 export const PreviewCard = () => {
-  const {
-    data: driverProfile,
-    isLoading,
-    isError,
-  } = useQuery({
-    queryKey: ["driverProfile"],
-    queryFn: fetchDriverProfile,
-  });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<Record<string, any> | null>(null);
 
-  if (isLoading) {
+  const queryClient = useQueryClient();
+  const { getCachedData } = useCustomQuery();
+  const { driverProfile } = getCachedData(["driverProfile"]);
+
+  useEffect(() => {
+    if (!driverProfile) {
+      setLoading(true);
+
+      fetchDriverProfile()
+        .then((profile) => {
+          queryClient.setQueryData(["driverProfile"], profile);
+        })
+        .catch((err) => {
+          if (err.response?.status === 404) {
+            setError({ message: "Profile not found" });
+          }
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, [driverProfile]);
+
+  if (loading) {
     return (
       <View
         style={{
@@ -31,12 +49,11 @@ export const PreviewCard = () => {
         }}
       >
         <Spinner />
-        <Text style={{ marginTop: 10 }}>Loading driver profile...</Text>
       </View>
     );
   }
 
-  if (isError || !driverProfile) {
+  if ((error || !driverProfile) && !loading) {
     return (
       <View
         style={{
@@ -46,7 +63,7 @@ export const PreviewCard = () => {
           backgroundColor: Colors.bg,
         }}
       >
-        <Text>Error loading driver profile</Text>
+        <Text style={{ fontSize: 18 }}>{error?.message}</Text>
       </View>
     );
   }
