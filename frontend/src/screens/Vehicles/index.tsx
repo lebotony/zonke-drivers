@@ -186,11 +186,11 @@ export const VehiclesScreen = () => {
   }, []);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <DynamicHeader
         headerBgColor={Colors.bg}
         header={
-          <>
+          <View>
             <Header
               setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
               setSearchTerm={(value: string) => setSearchTerm(value)}
@@ -202,6 +202,7 @@ export const VehiclesScreen = () => {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
+                overflow: 'hidden'
               }}
             >
               <HeaderFilterPlatforms
@@ -228,7 +229,7 @@ export const VehiclesScreen = () => {
                 brands={BrandsList}
               />
             </View>
-          </>
+          </View>
         }
       >
         {({ onScroll, scrollEventThrottle, contentContainerStyle }) =>
@@ -289,6 +290,6 @@ export const VehiclesScreen = () => {
         onRatingSelect={setSelectedRating}
         onApply={handleApplyFilter}
       />
-    </SafeAreaView>
+    </View>
   );
 };

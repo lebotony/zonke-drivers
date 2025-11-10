@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Text } from "react-native-paper";
-import { View, FlatList } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { View, FlatList, SafeAreaView } from "react-native";
 
 import { find, isEmpty } from "lodash";
 
