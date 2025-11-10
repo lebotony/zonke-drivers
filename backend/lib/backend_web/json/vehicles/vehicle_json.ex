@@ -36,6 +36,7 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
       passengers: vehicle.passengers,
       model_year: vehicle.model_year,
       price_fixed: vehicle.price_fixed,
+      user: vehicle.user,
       inserted_at: vehicle.inserted_at,
       updated_at: vehicle.updated_at,
       asset: AssetJSON.show(%{asset: vehicle.asset}),

@@ -55,14 +55,15 @@ export const Scene = () => {
 
   const toggleExpanded = () => setIsDescriptionExpanded((prev) => !prev);
 
-   const onTextLayout = (e: any) => {
+  const onTextLayout = (e: any) => {
     if (e.nativeEvent.lines.length > 2) {
       setShowReadMore(true);
     }
   };
 
-  const handleCreateThread = () =>
-    createThread({ participant_id: vehicle.user_id })
+  const handleCreateThread = () => {
+    console.log("participant_id:", vehicle);
+    createThread({ participant_id: vehicle.user?.id })
       .then((response) => {
         if (!find(threads, { id: response.id })) {
           addItemToPaginatedList("threads", response);
@@ -71,6 +72,7 @@ export const Scene = () => {
         router.push(`/chats/${response.id}`);
       })
       .catch((err) => err);
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -110,7 +112,6 @@ export const Scene = () => {
               </TouchableOpacity>
             </View>
           </View>
-
         </View>
 
         <ScrollView style={styles.meta}>
@@ -130,11 +131,7 @@ export const Scene = () => {
                 borderRadius: 20,
               }}
             >
-              <Avatar
-                round
-                width={34}
-                source={require("@/assets/images/profile_pic.png")}
-              />
+              <Avatar round width={34} source={vehicle.user?.asset_url} />
             </View>
           </View>
 
@@ -142,18 +139,18 @@ export const Scene = () => {
             <Text
               style={styles.descriptionText}
               numberOfLines={isDescriptionExpanded ? undefined : 2}
-               onTextLayout={onTextLayout}
+              onTextLayout={onTextLayout}
             >
               {vehicle?.description}
             </Text>
 
-               {showReadMore && (
-        <TouchableOpacity onPress={toggleExpanded}>
-          <Text style={{ color: "blue", marginTop: 4 }}>
-            {isDescriptionExpanded ? "Read less" : "Read more"}
-          </Text>
-        </TouchableOpacity>
-      )}
+            {showReadMore && (
+              <TouchableOpacity onPress={toggleExpanded}>
+                <Text style={{ color: "blue", marginTop: 4 }}>
+                  {isDescriptionExpanded ? "Read less" : "Read more"}
+                </Text>
+              </TouchableOpacity>
+            )}
           </View>
 
           <Text style={styles.title}>Overview</Text>
