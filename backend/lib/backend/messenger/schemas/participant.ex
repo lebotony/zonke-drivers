@@ -12,6 +12,7 @@ defmodule Backend.Messenger.Schemas.Participant do
     field(:location, :map)
 
     field(:asset_url, :string, virtual: true)
+    field(:asset_filename, :string, virtual: true)
 
     has_one(:asset, Asset)
 

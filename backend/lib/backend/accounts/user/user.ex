@@ -20,6 +20,8 @@ defmodule Backend.Accounts.User do
     field(:role, RoleEnum)
 
     field(:password, :string, virtual: true)
+    field(:asset_url, :string, virtual: true)
+    field(:asset_filename, :string, virtual: true)
 
     has_one(:asset, Asset)
 

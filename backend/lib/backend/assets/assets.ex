@@ -25,14 +25,10 @@ defmodule Backend.Assets.Assets do
     #   :ok
     # end)
     |> Multi.run(:asset, fn _repo, _changes ->
-      with {:ok, url} <- presigned_url(filename) do
         params
-        |> Map.merge(%{url: url, filename: filename})
+        |> Map.merge(%{filename: filename})
         |> Map.delete(:file)
         |> create_asset()
-      else
-        {:error, reason} -> {:error, {:presigned_url_failed, reason}}
-      end
     end)
     |> Repo.transaction()
     |> case do
@@ -69,16 +65,12 @@ defmodule Backend.Assets.Assets do
       end
     end)
     |> Multi.run(:updated_asset, fn _repo, _changes ->
-      with {:ok, url} <- presigned_url(filename) do
         asset_params =
           params
-          |> Map.merge(%{url: url, filename: filename})
+          |> Map.merge(%{filename: filename})
           |> Map.delete(:file)
 
         update_asset(asset, asset_params)
-      else
-        {:error, reason} -> {:error, {:presigned_url_failed, reason}}
-      end
     end)
     |> Repo.transaction()
     |> case do
@@ -124,10 +116,6 @@ defmodule Backend.Assets.Assets do
     S3.delete_object(@bucket, filename)
     |> ExAws.request(config: s3_config())
   end
-
-  # def get_asset_url(filename) do
-  #   S3.presigned_url(s3_config(), :get, @bucket, filename, expires_in: 3600)
-  # end
 
   def presigned_url(filename) do
     case S3.presigned_url(s3_config(), :get, @bucket, filename, expires_in: @expires_in) do

@@ -2,6 +2,7 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
   alias BackendWeb.Vehicles.VehicleDriverJSON
   alias BackendWeb.Applications.VehicleApplicationJSON
   alias BackendWeb.Assets.AssetJSON
+  alias BackendWeb.UserJSON
 
   def index(%{vehicles: vehicles, paginate: paginate}) do
     %{
@@ -23,10 +24,10 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
       end
 
     user =
-      case Map.get(vehicle, :user) do
-        %Ecto.Association.NotLoaded{} -> nil
-        user when is_map(user) -> user
-        _ -> nil
+      if is_map(vehicle.user) do
+        UserJSON.show(%{user: vehicle.user})
+      else
+        nil
       end
 
     %{
