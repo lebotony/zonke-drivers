@@ -22,6 +22,8 @@ defmodule Backend.Accounts.Users do
   def update(%User{} = user, params) do
     {asset_params, user_params} = Map.pop(params, :asset)
 
+    IO.inspect(asset_params, label: "ASSET_PARAMS ASSET_PARAMS")
+
     with {:ok, _asset} <- maybe_handle_asset(user, asset_params),
          {:ok, _user} <- maybe_update_user(user, user_params),
          updated_user <- Repo.get(User, user.id) |> Repo.preload(:asset) do

@@ -79,7 +79,7 @@ defmodule Backend.Vehicles.Vehicles do
           id: d.id,
           first_name: u.first_name,
           last_name: u.last_name,
-          asset_filename: a.filename
+          asset_url: a.url
         }
       )
 
@@ -160,7 +160,7 @@ defmodule Backend.Vehicles.Vehicles do
         v
         | user: %{
             id: u.id,
-            asset_filename: a.filename
+            asset_url: a.url
           }
       })
       |> preload(:asset)
