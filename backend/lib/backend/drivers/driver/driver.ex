@@ -42,6 +42,7 @@ defmodule Backend.Drivers.Driver do
     field(:previous_vehicles, :integer, virtual: true)
     field(:total_accidents, :integer, virtual: true)
     field(:asset_url, :string, virtual: true)
+    field(:asset_filename, :string, virtual: true)
 
     belongs_to(:user, User)
 
