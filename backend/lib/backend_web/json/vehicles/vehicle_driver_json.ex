@@ -15,7 +15,7 @@ defmodule BackendWeb.Vehicles.VehicleDriverJSON do
   def show(%{vehicle_driver: vehicle_driver}) do
     %{
       id: vehicle_driver.id,
-      driver: vehicle_driver.driver,
+      driver: DriverJSON.show(%{driver: vehicle_driver.driver}),
       active: vehicle_driver.active,
       payment_count: vehicle_driver.payment_count,
       total_payments: vehicle_driver.total_payments,

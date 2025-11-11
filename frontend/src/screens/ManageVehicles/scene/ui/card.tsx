@@ -4,6 +4,7 @@ import { Text } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { isEmpty } from "lodash";
 
 import { HorizontalDivider } from "@/src/components/shapes/divider";
 import { Colors } from "@/constants/ui";
@@ -20,6 +21,7 @@ export const Card = (props: CardProps) => {
   const { vehicle } = props;
 
   const vehicleDriver = vehicle.vehicle_drivers?.[0];
+  const noVehicleDrivers = isEmpty(vehicle?.vehicle_drivers);
 
   return (
     <View style={styles.card}>
@@ -31,7 +33,9 @@ export const Card = (props: CardProps) => {
         />
         <View style={styles.details}>
           <Text style={styles.name}>
-            {capitalizeFirstLetter(`${vehicle?.brand} ${vehicle?.model}`)}
+            {capitalizeFirstLetter(
+              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`
+            )}
           </Text>
 
           <View style={styles.detailsRow}>
@@ -40,7 +44,7 @@ export const Card = (props: CardProps) => {
             </View>
             <Text
               style={styles.paymentCountText}
-            >{`(${vehicleDriver?.payment_count} payments)`}</Text>
+            >{`(${vehicleDriver?.payment_count ?? 0} payments)`}</Text>
           </View>
 
           <View style={styles.detailsRow}>
@@ -53,7 +57,7 @@ export const Card = (props: CardProps) => {
             </View>
 
             <Text style={styles.address} numberOfLines={1}>
-              {`${vehicle?.passengers} passengers`}
+              {vehicle?.passengers ? `${vehicle?.passengers} passengers` : "NA"}
             </Text>
           </View>
 
@@ -75,36 +79,40 @@ export const Card = (props: CardProps) => {
       <View style={styles.payments}>
         <View style={styles.paymentCard}>
           <Text style={styles.paymentText}>Recent Paid</Text>
-          <Text style={styles.amountText}>R{vehicleDriver?.last_payment}</Text>
+          <Text style={styles.amountText}>
+            R{vehicleDriver?.last_payment ?? 0}
+          </Text>
         </View>
         <View style={styles.paymentCard}>
           <Text style={styles.paymentText}>Total Paid</Text>
           <Text style={styles.amountText}>
-            R{vehicleDriver?.total_payments}
+            R{vehicleDriver?.total_payments ?? 0}
           </Text>
         </View>
       </View>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-        <CustomButton
-          onPress={() => router.push(`/payments/${vehicle?.id}`)}
-          customStyle={{
-            paddingTop: 10,
-            paddingBottom: 12,
-            backgroundColor: Colors.lightGreen,
-            width: "48%",
-            marginVertical: 10,
-            ...shadowStyles,
-          }}
-        >
-          <Text
-            style={[
-              styles.name,
-              { fontWeight: 500, lineHeight: 17, color: Colors.white },
-            ]}
+        {!noVehicleDrivers && (
+          <CustomButton
+            onPress={() => router.push(`/payments/${vehicle?.id}`)}
+            customStyle={{
+              paddingTop: 10,
+              paddingBottom: 12,
+              backgroundColor: Colors.lightGreen,
+              width: "48%",
+              marginVertical: 10,
+              ...shadowStyles,
+            }}
           >
-            View Details
-          </Text>
-        </CustomButton>
+            <Text
+              style={[
+                styles.name,
+                { fontWeight: 500, lineHeight: 17, color: Colors.white },
+              ]}
+            >
+              View Details
+            </Text>
+          </CustomButton>
+        )}
 
         <CustomButton
           onPress={() => router.push(`/applicants/${vehicle.id}`)}
@@ -112,7 +120,7 @@ export const Card = (props: CardProps) => {
             paddingTop: 10,
             paddingBottom: 12,
             backgroundColor: Colors.mrDBlue,
-            width: "48%",
+            width: noVehicleDrivers ? "100%" : "48%",
             marginVertical: 10,
             ...shadowStyles,
           }}

@@ -48,7 +48,7 @@ defmodule Backend.Messenger.Threads do
                  id: p.id,
                  first_name: p.first_name,
                  last_name: p.last_name,
-                 asset_url: a.url
+                 asset_filename: a.filename
                }
              }
            ), []}
@@ -113,7 +113,7 @@ defmodule Backend.Messenger.Threads do
                  id: p.id,
                  first_name: p.first_name,
                  last_name: p.last_name,
-                 asset_url: a.url
+                 asset_filename: a.filename
                }
              }
            ), []}
