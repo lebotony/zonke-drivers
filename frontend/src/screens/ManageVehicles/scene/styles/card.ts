@@ -86,6 +86,7 @@ export const styles = StyleSheet.create({
     color: Colors.mediumGrey,
     textAlignVertical: "center",
     position: 'absolute',
+    width: 150,
   },
   address: {
     color: Colors.mediumGrey,

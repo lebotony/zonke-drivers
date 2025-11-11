@@ -1,4 +1,6 @@
 defmodule BackendWeb.Assets.AssetJSON do
+  alias Backend.Assets.Assets
+
   def index(%{assets: assets, paginate: paginate}) do
     %{
       paginate: paginate,
@@ -11,13 +13,21 @@ defmodule BackendWeb.Assets.AssetJSON do
   end
 
   def show(%{asset: asset}) do
-    Map.take(asset, [
-      :id,
-      :copied,
-      :meta,
-      :url,
-      :inserted_at,
-      :updated_at
-    ])
+    %{
+      id: asset.id,
+      copied: asset.copied,
+      meta: asset.meta,
+      filename: asset.filename,
+      url: prepare_url(asset.filename),
+      inserted_at: asset.inserted_at,
+      updated_at: asset.updated_at
+    }
+  end
+
+  defp prepare_url(filename) do
+    case Assets.presigned_url(filename) do
+      {:ok, url} -> url
+      _ -> nil
+    end
   end
 end
