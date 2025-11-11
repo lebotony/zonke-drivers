@@ -15,7 +15,6 @@ import { fetchDrivers } from "../actions";
 import { Header } from "./ui/header";
 import { QuickFilters } from "./ui/quickFilters";
 import { DriverCard } from "./ui/driverCard";
-import { styles } from "./styles/index";
 import { FilterModal } from "./ui/filter";
 
 export const Scene = () => {
@@ -219,7 +218,7 @@ export const Scene = () => {
                 }
               }}
               showsVerticalScrollIndicator={false}
-              keyExtractor={(item, index) => String(item?.id ?? index)}
+              keyExtractor={(item, index) => String(item?.id + index)}
               renderItem={({ item }) => <DriverCard driver={item} />}
               contentContainerStyle={[
                 contentContainerStyle,

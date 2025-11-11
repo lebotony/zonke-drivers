@@ -1,4 +1,4 @@
-import { ReactNode, useRef, useState } from "react";
+import { ReactNode, useCallback, useRef, useState } from "react";
 import {
   Animated,
   View,
@@ -8,6 +8,7 @@ import {
   SafeAreaView,
   StatusBar,
 } from "react-native";
+import { useFocusEffect } from "expo-router";
 
 import { Colors } from "@/constants/ui";
 
@@ -37,6 +38,32 @@ export const DynamicHeader = ({
   const lastScrollY = useRef(0);
   const isHidden = useRef(false);
 
+    const showHeader = useCallback(() => {
+    Animated.timing(headerOffset, {
+      toValue: 0,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+    isHidden.current = false;
+  }, [headerOffset]);
+
+  const hideHeader = useCallback(() => {
+    Animated.timing(headerOffset, {
+      toValue: -headerHeight,
+      duration: 200,
+      useNativeDriver: true,
+    }).start();
+    isHidden.current = true;
+  }, [headerHeight, headerOffset]);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (isHidden.current) {
+        showHeader();
+      }
+    }, [showHeader])
+  );
+
   const onHeaderLayout = (e: LayoutChangeEvent) => {
     const { height } = e.nativeEvent.layout;
     if (height !== headerHeight) setHeaderHeight(height);
@@ -47,21 +74,11 @@ export const DynamicHeader = ({
     const diff = currentY - lastScrollY.current;
 
     if (diff < -scrollThreshold && currentY > headerHeight && isHidden.current) {
-      Animated.timing(headerOffset, {
-        toValue: 0,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
-      isHidden.current = false;
+      showHeader();
     }
 
     if (diff > scrollThreshold && currentY > headerHeight && !isHidden.current) {
-      Animated.timing(headerOffset, {
-        toValue: -headerHeight,
-        duration: 200,
-        useNativeDriver: true,
-      }).start();
-      isHidden.current = true;
+      hideHeader();
     }
 
     lastScrollY.current = currentY;

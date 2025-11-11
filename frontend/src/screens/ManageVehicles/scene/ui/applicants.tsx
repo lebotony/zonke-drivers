@@ -17,6 +17,7 @@ import { styles } from "../styles/applicants";
 import { fetchApplications } from "../../actions";
 import { VehicleDriverModal } from "./vehicleDriverModal";
 import { VehicleSelector } from "./vehicleSelector";
+import { Spinner } from "@/src/components/elements/Spinner";
 
 export const ApplicantsScreen = () => {
   const { id } = useLocalSearchParams();
@@ -75,6 +76,7 @@ export const ApplicantsScreen = () => {
     );
 
   const handleFetchApplications = () => {
+    setLoading(true)
     const vehicleId = selectedVehicle?.id;
     const { pageParam } = onFetchNestedPagination(
       vehicleId,
@@ -86,6 +88,7 @@ export const ApplicantsScreen = () => {
       vehicleId,
     }).then((res) => {
       loadVehicleApplications(res);
+      setLoading(false)
     });
   };
 
@@ -100,6 +103,8 @@ export const ApplicantsScreen = () => {
   }, [selectedVehicle]);
 
    const currentVehicle = find(userVehicles, { id: selectedVehicle?.id });
+
+   const [loading, setLoading] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -120,7 +125,7 @@ export const ApplicantsScreen = () => {
           onSelectVehicle={setSelectedVehicle}
         />
       </View>
-      <View style={styles.listContainer}>
+      { !loading && <View style={styles.listContainer}>
         {!isEmpty(currentVehicle?.applications) ? (
           <FlatList
             data={currentVehicle?.applications}
@@ -159,7 +164,20 @@ export const ApplicantsScreen = () => {
             </Text>
           </View>
         )}
-      </View>
+      </View>}
+      {loading && 
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: Colors.bg,
+          }}
+        >
+          <Spinner />
+        </View>
+      }
+      
       {showVehicleDriverModal && (
         <VehicleDriverModal
           setShowVehicleDriverModal={setShowVehicleDriverModal}
