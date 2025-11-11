@@ -23,7 +23,7 @@ defmodule Backend.Vehicles.Queries.VehicleDriverBy do
           id: d.id,
           first_name: u.first_name,
           last_name: u.last_name,
-          asset_filename: a.filename
+          asset_url: a.url
         }
       )
 

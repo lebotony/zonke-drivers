@@ -224,7 +224,7 @@ defmodule Backend.Drivers.Drivers do
         previous_vehicles: vd_stats.previous_vehicles,
         total_accidents: vd_stats.total_accidents,
         rating: coalesce(rating.avg_rating, 0),
-        asset_filename: a.filename
+        asset_url: a.url
     })
   end
 

@@ -4,7 +4,7 @@ defmodule Backend.Assets.Asset do
   alias Backend.Accounts.BusinessProfile
   alias Backend.Vehicles.Vehicle
 
-  @required_fields [:filename]
+  @required_fields [:url, :filename]
   @optional_fields [:copied, :meta, :vehicle_id, :user_id]
   @all_fields @required_fields ++ @optional_fields
 
@@ -12,8 +12,7 @@ defmodule Backend.Assets.Asset do
     field(:copied, :boolean)
     field(:meta, :map)
     field(:filename, :string)
-
-    field(:url, :string, virtual: true)
+    field(:url, :string)
 
     belongs_to(:vehicle, Vehicle)
     belongs_to(:user, User)
