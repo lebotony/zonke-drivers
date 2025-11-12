@@ -8,6 +8,7 @@ import { CustomButton } from "@/src/components/elements/button";
 
 import { createVehicleDriver } from "../../actions";
 import { styles } from "../styles/vehicleDriverModal";
+import { AppToast } from "@/src/components/CustomToast/customToast";
 
 type AddVehicleDriverModalProps = {
   vehicleId: string;
@@ -34,6 +35,8 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
 
     createVehicleDriver(params)
       .then((res) => {
+        AppToast("Vehicle Driver added successfully", true);
+
         updatePaginatedObject("userVehicles", vehicleId, {
           vehicle_drivers: [
             {
@@ -47,6 +50,7 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
         });
       })
       .catch((err) => {
+        AppToast();
         throw new Error("Error while creating vehicle_driver: ", err);
       });
 

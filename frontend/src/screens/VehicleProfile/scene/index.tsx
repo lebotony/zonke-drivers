@@ -25,13 +25,13 @@ import { useCustomQuery } from "@/src/useQueryContext";
 import { Circle } from "@/src/components/shapes/circle";
 import { Colors } from "@/constants/ui";
 import { Avatar } from "@/src/components/visual/avatar";
-import carPic from "@/assets/images/car-test.jpg";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { CustomButton } from "@/src/components/elements/button";
+import { AppToast } from "@/src/components/CustomToast/customToast";
+import { shadowStyles } from "@/src/components/shadowStyles";
 
 import { styles } from "./styles/index";
 import { createThread } from "../../DriverProfile/actions";
-import { shadowStyles } from "@/src/components/shadowStyles";
 import { applyForVehicle } from "../actions";
 import { NoProfileModal } from "./noProfileModal";
 
@@ -77,7 +77,7 @@ export const Scene = () => {
   const handleApply = () =>
     applyForVehicle({ vehicle_id: vehicleId })
       .then(() => {
-        console.log("Application submitted successfully!");
+        AppToast("Application sent successfully", true);
       })
       .catch((err) => {
         const errorKey = err.response?.data?.error;
@@ -85,6 +85,7 @@ export const Scene = () => {
         if (errorKey === "no_driver_profile") {
           setShowNoProfileModal(true);
         } else {
+          AppToast();
           throw new Error("Application error:", err);
         }
       });
