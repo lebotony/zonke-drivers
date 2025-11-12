@@ -17,6 +17,7 @@ import { CustomButton } from "@/src/components/elements/button";
 import { Colors } from "@/constants/ui";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { useCustomQuery } from "@/src/useQueryContext";
+import { AppToast } from "@/src/components/CustomToast/customToast";
 
 import { styles } from "../styles/addVehicle";
 import { CardFormDef } from "../utils/cardFormDef";
@@ -89,16 +90,29 @@ export const AddVehicle = () => {
 
   const upsertVehicle = (params: AddVehicleFormValues) => {
     if (vehicle) {
-      return updateVehicle({ ...params, id: vehicleId }).then((res) =>
-        updatePaginatedObject("userVehicles", vehicleId, {
-          ...res,
-          vehicle_drivers: vehicle?.vehicle_drivers,
+      return updateVehicle({ ...params, id: vehicleId })
+        .then((res) => {
+          AppToast("Vehicle updated successfully", true);
+
+          updatePaginatedObject("userVehicles", vehicleId, {
+            ...res,
+            vehicle_drivers: vehicle?.vehicle_drivers,
+          });
         })
-      );
+        .catch((err) => {
+          AppToast();
+          throw new Error("Error while creating vehicle: ", err);
+        });
     } else {
-      return createVehicle(params).then((res) =>
-        addItemToPaginatedList("userVehicles", res)
-      );
+      return createVehicle(params)
+        .then((res) => {
+          AppToast("Vehicle created successfully", true);
+          addItemToPaginatedList("userVehicles", res);
+        })
+        .catch((err) => {
+          AppToast();
+          throw new Error("Error while creating vehicle: ", err);
+        });
     }
   };
 

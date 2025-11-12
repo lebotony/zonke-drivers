@@ -2,8 +2,6 @@ import { useState, useRef, useEffect } from "react";
 import { View, TextInput, Keyboard, Platform } from "react-native";
 import { Text } from "react-native-paper";
 
-import { FontAwesome6 } from "@expo/vector-icons";
-
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
@@ -11,11 +9,12 @@ import z from "zod";
 import { Colors } from "@/constants/ui";
 import { Modal } from "@/src/components/modal";
 import { CustomButton } from "@/src/components/elements/button";
+import { AppToast } from "@/src/components/CustomToast/customToast";
+import { usePaginatedCache } from "@/src/updateCacheProvider";
 
 import { styles } from "../styles/modals";
 import { CommentSchema } from "../schema";
 import { createComment } from "../../actions";
-import { usePaginatedCache } from "@/src/updateCacheProvider";
 
 type CommentFormValues = z.infer<typeof CommentSchema>;
 
@@ -72,6 +71,8 @@ export const CommentModal = ({
     handleSubmit((formData) => {
       createComment({ driver_id: driverId, ...formData })
         .then((response) => {
+          AppToast("Comment added successfully", true);
+
           updatePaginatedObject("userVehicles", vehicle?.id, {
             vehicle_drivers: vehicle?.vehicle_drivers?.map((vd) => {
               if (vd?.driver.id !== driverId) return vd;
@@ -85,7 +86,10 @@ export const CommentModal = ({
 
           reset();
         })
-        .catch((err) => err);
+        .catch((err) => {
+          AppToast();
+          throw new Error("Error while creating comment");
+        });
     })();
     setShowCommentModal();
   };

@@ -5,6 +5,7 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
+import { AppToast } from "@/src/components/CustomToast/customToast";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { Modal } from "@/src/components/elements/modal";
 import { Colors } from "@/constants/ui";
@@ -42,26 +43,33 @@ export const AddModal = (props: AddModalProps) => {
       },
     };
 
-    addPayment(params).then((response) => {
-      const vehicle = getUpdatedObjectSnapshot("vehicle", vehicleId);
+    addPayment(params)
+      .then((response) => {
+        AppToast("Payment added successfully", true);
 
-      updatePaginatedObject("userVehicles", vehicleId, {
-        ...vehicle,
-        vehicle_drivers: [
-          {
-            ...vehicleDriver,
-            last_payment: response.price_fixed.value,
-            payment_count: vehicleDriver?.payment_count + 1,
-            total_payments:
-              Number(vehicleDriver.total_payments) +
-              Number(response.price_fixed.value),
-            payments: [response, ...(vehicleDriver?.payments || [])],
-          },
-        ],
+        const vehicle = getUpdatedObjectSnapshot("vehicle", vehicleId);
+
+        updatePaginatedObject("userVehicles", vehicleId, {
+          ...vehicle,
+          vehicle_drivers: [
+            {
+              ...vehicleDriver,
+              last_payment: response.price_fixed.value,
+              payment_count: vehicleDriver?.payment_count + 1,
+              total_payments:
+                Number(vehicleDriver.total_payments) +
+                Number(response.price_fixed.value),
+              payments: [response, ...(vehicleDriver?.payments || [])],
+            },
+          ],
+        });
+
+        setShowAddPayModal();
+      })
+      .catch((err) => {
+        AppToast();
+        throw new Error("Error while adding payment: ", err);
       });
-
-      setShowAddPayModal();
-    });
   };
 
   return (

@@ -1,6 +1,8 @@
 import { useEffect } from "react";
 import "react-native-reanimated";
 
+import Toast from "react-native-toast-message";
+
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import {
   DarkTheme,
@@ -26,6 +28,7 @@ import { AuthScreen } from "../screens/SignUp";
 import { UseCustomQueryProvider } from "../useQueryContext";
 import { PaginatedCacheProvider } from "../updateCacheProvider";
 import { MessagesProvider } from "../screens/Messages/MessagesProvider";
+import { CustomToast } from "../components/CustomToast";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -107,6 +110,12 @@ function RootLayoutNav() {
             <MessagesProvider>
               <PaperProvider theme={theme}>
                 <Layout />
+                <Toast
+                  config={{
+                    customToast: (props) => <CustomToast {...props} />,
+                  }}
+                  visibilityTime={2500}
+                />
               </PaperProvider>
             </MessagesProvider>
           </AuthProvider>
