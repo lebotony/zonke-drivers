@@ -14,17 +14,17 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 30,
-    paddingLeft: 12
+    paddingLeft: 12,
   },
   amountText: {
     color: Colors.black,
     fontSize: 15,
   },
   inputWrapper: {
-    flexDirection: 'row'
+    flexDirection: 'row',
   },
   textInput: {
-    height: 40,
+    lineHeight: 20,
     color: Colors.black,
     fontSize: 14,
     paddingRight: 12,

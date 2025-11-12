@@ -25,10 +25,10 @@ defmodule Backend.Assets.Asset do
     asset
     |> cast(attrs, @all_fields)
     |> validate_required(@required_fields)
-    |> validate_vehicle_or_business()
+    |> validate_vehicle_or_user()
   end
 
-  defp validate_vehicle_or_business(changeset) do
+  defp validate_vehicle_or_user(changeset) do
     vehicle_id = get_field(changeset, :vehicle_id)
     user_id = get_field(changeset, :user_id)
 

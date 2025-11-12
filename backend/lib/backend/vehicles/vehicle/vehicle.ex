@@ -10,9 +10,8 @@ defmodule Backend.Vehicles.Vehicle do
   alias Backend.Reviews.Review
   alias Backend.Ecto.EctoEnums.{VehicleTypeEnum, FuelTypeEnum}
 
-  @required_fields [:user_id, :type, :brand, :fuel_type, :manual]
+  @required_fields [:user_id, :type, :brand, :model, :fuel_type, :manual]
   @optional_fields [
-    :model,
     :description,
     :mileage,
     :active,

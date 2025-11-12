@@ -54,7 +54,7 @@ export const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 600,
     color: Colors.darkCharcoalGrey,
-    lineHeight: 14,
+    lineHeight: 20,
   },
   age: {
     fontWeight: 400,
@@ -68,11 +68,9 @@ export const styles = StyleSheet.create({
     gap: 10,
   },
   detailIcon: {
-    width: 15,
-    height: 15,
+    width: 20,
+    height: 20,
     alignItems: "center",
-    justifyContent: 'center',
-    marginRight: 3
   },
   detailsRow: {
     gap: 4,

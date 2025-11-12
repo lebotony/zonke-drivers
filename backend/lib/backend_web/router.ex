@@ -44,13 +44,11 @@ defmodule BackendWeb.Router do
 
       scope("/vehicles") do
         get("/vehicle_drivers", Vehicles.VehicleController, :index_management_vehicle)
+        get("/public", Vehicles.VehicleController, :index_public)
+        post("/update", Vehicles.VehicleController, :update_vehicle)
       end
 
       resources("/vehicle_drivers", Vehicles.VehicleDriverController, except: @except_path_actions)
-
-      scope("/vehicles") do
-        get("/public", Vehicles.VehicleController, :index_public)
-      end
 
       resources("/vehicles", Vehicles.VehicleController, except: @except_path_actions)
 

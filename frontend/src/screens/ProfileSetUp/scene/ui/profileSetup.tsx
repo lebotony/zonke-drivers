@@ -201,7 +201,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       <Fieldset
         label="Email"
         name="email"
-        inputIcon="person-outline"
+        inputIcon="mail"
         control={control}
         placeholder="Doe"
         errors={errors}

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 
 import { MaterialIcons } from "@expo/vector-icons";
@@ -25,7 +25,10 @@ export const Card = (props: CardProps) => {
 
   return (
     <View style={styles.card}>
-      <View style={styles.body}>
+      <TouchableOpacity
+        onPress={() => router.push(`/(tabs)/vehicle/${vehicle?.id}`)}
+        style={styles.body}
+      >
         <Image
           source={vehicle?.asset?.url}
           style={styles.image}
@@ -74,7 +77,7 @@ export const Card = (props: CardProps) => {
             </Text>
           </View> */}
         </View>
-      </View>
+      </TouchableOpacity>
       <HorizontalDivider color="#ededed" />
       <View style={styles.payments}>
         <View style={styles.paymentCard}>

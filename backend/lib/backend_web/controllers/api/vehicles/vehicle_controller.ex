@@ -44,15 +44,15 @@ defmodule BackendWeb.Vehicles.VehicleController do
   end
 
   def show(conn, %{id: id}, session) do
-    with {:ok, vehicle} <- Vehicles.get_vehicle(id),
-         :ok <- Bodyguard.permit(Vehicles, :show, vehicle, session) do
-      render(conn, :show, vehicle: vehicle)
+    with {:ok, vehicle} <- Vehicles.get_vehicle(id) do
+        #  :ok <- Bodyguard.permit(Vehicles, :show, vehicle, session) do
+      render(conn, :show, %{vehicle: vehicle})
     end
   end
 
-  def update(conn, %{id: id} = params, session) do
+  def update_vehicle(conn, %{id: id} = params, session) do
     with {:ok, vehicle} <- Vehicles.get_vehicle(id),
-         :ok <- Bodyguard.permit(Vehicles, :update, vehicle, session),
+        #  :ok <- Bodyguard.permit(Vehicles, :update, vehicle, session),
          {:ok, vehicle} <- Vehicles.update(vehicle, params) do
       render(conn, :show, vehicle: vehicle)
     end

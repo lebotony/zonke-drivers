@@ -22,7 +22,7 @@ defmodule Backend.Vehicles.Vehicles do
     vehicle_params =
       decoded_params
       |> Map.delete(:asset)
-      |> Map.put(:user_id, user_id)
+      |> Map.merge(%{user_id: user_id, active: true})
 
     Multi.new()
     |> Multi.insert(
@@ -48,9 +48,55 @@ defmodule Backend.Vehicles.Vehicles do
   end
 
   def update(%Vehicle{} = vehicle, params) do
-    vehicle
-    |> Vehicle.changeset(params)
-    |> Repo.update()
+    {asset_params, vehicle_params} = Map.pop(params, :asset)
+
+    with {:ok, _asset} <- maybe_handle_asset(vehicle, asset_params),
+         {:ok, _vehicle} <- maybe_update_vehicle(vehicle, vehicle_params),
+         updated_vehicle <- Repo.get(Vehicle, vehicle.id) |> Repo.preload(:asset) do
+      # IO.inspect(updated_vehicle)
+      {:ok, updated_vehicle}
+    else
+      {:error, reason} -> {:error, reason}
+    end
+  end
+
+  defp maybe_handle_asset(_vehicle, nil), do: {:ok, :no_asset}
+
+  defp maybe_handle_asset(vehicle, %{file: _} = asset_params),
+    do: update_vehicle_asset(vehicle.id, asset_params)
+
+  defp maybe_handle_asset(_vehicle, _), do: {:ok, :no_file_in_asset}
+
+  def update_vehicle_asset(vehicle_id, params) do
+    get_vehicle_asset(vehicle_id)
+    |> Assets.update_asset_with_file(params)
+  end
+
+  defp maybe_update_vehicle(vehicle, params) do
+    cleaned_params =
+      params
+      |> Enum.reject(fn {_k, v} -> is_nil(v) or v == "" end)
+      |> Enum.into(%{})
+
+    if map_size(cleaned_params) > 0 do
+      decoded_params =
+        Map.update(cleaned_params, :price_fixed, %{}, fn val ->
+          if is_binary(val), do: Jason.decode!(val), else: val
+        end)
+
+      vehicle
+      |> Vehicle.changeset(decoded_params)
+      |> Repo.update()
+    else
+      {:ok, vehicle}
+    end
+  end
+
+  def get_vehicle_asset(vehicle_id) do
+    from(a in Asset,
+      where: a.vehicle_id == ^vehicle_id
+    )
+    |> Repo.one()
   end
 
   def delete(%Vehicle{id: id} = vehicle) do
@@ -155,7 +201,9 @@ defmodule Backend.Vehicles.Vehicles do
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()
       |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
-      |>join(:left, [user: u], a in assoc(u, :asset), as: :asset)
+      |> join(:left, [user: u], a in assoc(u, :asset), as: :asset)
+      |> join(:left, [v], vd in VehicleDriver, on: v.id == vd.vehicle_id and vd.active == true, as: :vehicle_driver)
+      |> where([vehicle: v, vehicle_driver: vd], is_nil(vd.id))
       |> select_merge([vehicle: v, user: u, asset: a], %{
         v
         | user: %{
