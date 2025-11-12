@@ -13,13 +13,16 @@ import {
   Platform,
   BackHandler,
 } from "react-native";
+import { Portal, Text } from "react-native-paper";
+
 import {
   Feather,
   MaterialIcons,
   FontAwesome,
   AntDesign,
 } from "@expo/vector-icons";
-import { Portal, Text } from "react-native-paper";
+
+import { capitalizeFirstLetter } from "@/src/utils";
 
 import { Colors } from "../../../constants/ui";
 import { styles } from "./styles";
@@ -324,7 +327,7 @@ export const PopupMenu = ({
                       }));
                     }}
                   >
-                    {item}
+                    {capitalizeFirstLetter(item)}
                   </Text>
                 </Pressable>
               )}

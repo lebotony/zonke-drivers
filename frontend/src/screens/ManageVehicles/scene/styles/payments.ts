@@ -29,12 +29,12 @@ export const styles = StyleSheet.create({
     marginLeft: 18
   },
   addPaymentRow: {
-    borderWidth: 0.5,
+    borderWidth: 0.6,
     borderColor: Colors.lightGrey,
     borderRadius: 8,
     padding: 10,
-    marginHorizontal: 15,
-    marginBottom: 15
+    marginHorizontal: 14,
+    marginBottom: 8
   },
   addText: {
     color: Colors.mrDBlue,

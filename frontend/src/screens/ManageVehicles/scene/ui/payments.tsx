@@ -20,6 +20,7 @@ import { fetchPayments } from "../../actions";
 import { styles } from "../styles/payments";
 import { AddModal } from "./addModal";
 import { switchItems } from "../constants";
+import { VehicleSelector } from "./vehicleSelector";
 
 type PaymentsResponse = {
   data: Payment[];
@@ -28,11 +29,7 @@ type PaymentsResponse = {
 
 export const PaymentsScreen = () => {
   const { id } = useLocalSearchParams();
-  const vehicleId = Array.isArray(id) ? id[0] : id;
-
-  const [showCommentModal, setShowCommentModal] = useState(false);
-  const [showAddPayModal, setShowAddPayModal] = useState(false);
-  const [switchSelection, setSwitchSelection] = useState(switchItems[0].slug);
+  const initialVehicleId = Array.isArray(id) ? id[0] : id;
   const { getCachedData } = useCustomQuery();
 
   const { userVehicles, fetchedVehicleDriverPayments, paymentsPagination } =
@@ -42,9 +39,13 @@ export const PaymentsScreen = () => {
       "fetchedVehicleDriverPayments",
     ]);
 
-  const vehicle: Vehicle = find(userVehicles, { id: vehicleId });
+  const initialVehicle: Vehicle = find(userVehicles, { id: initialVehicleId });
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [showAddPayModal, setShowAddPayModal] = useState(false);
+  const [switchSelection, setSwitchSelection] = useState(switchItems[0].slug);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>(initialVehicle);
 
-  const vehicleDriver: VehicleDriver = find(userVehicles, { id: vehicleId })
+  const vehicleDriver: VehicleDriver = find(userVehicles, { id: selectedVehicle.id })
     ?.vehicle_drivers?.[0];
 
   const queryClient = useQueryClient();
@@ -56,6 +57,7 @@ export const PaymentsScreen = () => {
   } = usePaginatedCache();
 
   const loadDriverPayments = (paymentsObj: PaymentsResponse) => {
+    const vehicleId = selectedVehicle?.id;
     updateNestedPagination(
       vehicleDriver?.id,
       "paymentsPagination",
@@ -112,21 +114,19 @@ export const PaymentsScreen = () => {
         value={switchSelection}
         onChange={setSwitchSelection}
       />
-      <View style={styles.driver}>
-        <Avatar source={vehicleDriver?.driver?.asset_url} width={50} round />
-        <Text style={styles.nameText}>
-          {vehicleDriver?.driver?.first_name} {vehicleDriver?.driver?.last_name}
-        </Text>
+
+
+      <View style={{paddingHorizontal: 14,marginTop: 8, backgroundColor: Colors.white}}>
+        <VehicleSelector
+            vehicles={userVehicles}
+            selectedVehicle={selectedVehicle}
+            onSelectVehicle={setSelectedVehicle}
+        />
       </View>
 
-      {/* <VehicleSelector
-          vehicles={userVehicles}
-          selectedVehicle={selectedVehicle}
-          onSelectVehicle={setSelectedVehicle}
-        /> */}
 
       {switchSelection === "payments" && (
-        <>
+        <View style={{marginTop: 8}}>
           <CustomButton
             onPress={() => setShowAddPayModal(true)}
             style={styles.addPaymentRow}
@@ -152,27 +152,27 @@ export const PaymentsScreen = () => {
             contentContainerStyle={{ paddingVertical: 5 }}
             showsVerticalScrollIndicator={false}
           />
-        </>
+        </View>
       )}
 
       {switchSelection === "comments" && (
         <Comments
           driverId={vehicleDriver?.driver?.id}
-          vehicleId={vehicleId}
+          vehicleId={selectedVehicle.id}
           setShowCommentModal={() => setShowCommentModal(true)}
         />
       )}
       {showCommentModal && (
         <CommentModal
           driverId={vehicleDriver?.driver?.id}
-          vehicle={vehicle}
+          vehicle={selectedVehicle}
           setShowCommentModal={() => setShowCommentModal(false)}
         />
       )}
       {showAddPayModal && (
         <AddModal
           setShowAddPayModal={() => setShowAddPayModal(false)}
-          vehicleId={vehicleId}
+          vehicleId={selectedVehicle.id}
           vehicleDriver={vehicleDriver}
         />
       )}
