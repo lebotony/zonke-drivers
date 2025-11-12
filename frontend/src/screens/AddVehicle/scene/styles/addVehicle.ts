@@ -51,11 +51,6 @@ export const styles = StyleSheet.create({
     borderColor: Colors.lightGrey,
     borderStyle: "dashed",
   },
-  addVehicleText: {
-    fontSize: 16,
-    fontWeight: 500,
-    paddingHorizontal: 14,
-  },
   addVehicleSubText: {
     fontSize: 14,
     fontWeight: 500,

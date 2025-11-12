@@ -58,10 +58,7 @@ export const DriverCard = (props: DriverProps) => {
             <View style={styles.detailIcon}>
               <AntDesign name="star" size={ICON_SIZE} color={Colors.yellow} />
             </View>
-            <Text style={styles.ratingText}>
-              {driver?.rating}{" "}
-              <Text style={styles.ratingCreteria}>(200 payments)</Text>
-            </Text>
+            <Text style={styles.ratingText}>{driver?.rating} rating</Text>
           </View>
 
           <View style={styles.ratingRow}>

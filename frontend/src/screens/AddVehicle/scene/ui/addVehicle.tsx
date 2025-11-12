@@ -1,56 +1,118 @@
+import { useEffect } from "react";
 import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 
 import { Image } from "expo-image";
-import * as ImagePicker from "expo-image-picker";
+import { useLocalSearchParams } from "expo-router";
+import { AntDesign } from "@expo/vector-icons";
+
+import { find, isEmpty } from "lodash";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
-import carPic from "@/assets/images/audi.png";
 import { pickImage } from "@/src/helpers/pickImage";
+import { CustomButton } from "@/src/components/elements/button";
+import { Colors } from "@/constants/ui";
+import { usePaginatedCache } from "@/src/updateCacheProvider";
+import { useCustomQuery } from "@/src/useQueryContext";
 
 import { styles } from "../styles/addVehicle";
 import { CardFormDef } from "../utils/cardFormDef";
 import { Card } from "./card";
 import { FormSchema } from "../../schema";
 import { AddVehicleForm } from "./form";
-import { CustomButton } from "@/src/components/elements/button";
-import { Colors } from "@/constants/ui";
-import { createVehicle } from "../../actions";
-import { AntDesign } from "@expo/vector-icons";
-import { isEmpty } from "lodash";
+import { createVehicle, updateVehicle } from "../../actions";
 
 export type AddVehicleFormValues = z.infer<typeof FormSchema>;
 
 export const AddVehicle = () => {
+  const { id } = useLocalSearchParams();
+  const vehicleId = Array.isArray(id) ? id[0] : id;
+
+  const { updatePaginatedObject, addItemToPaginatedList } = usePaginatedCache();
+
+  const { getCachedData } = useCustomQuery();
+  const { userVehicles } = getCachedData(["userVehicles"]);
+
+  const vehicle =
+    vehicleId !== "new" ? find(userVehicles, { id: vehicleId }) : undefined;
+
+  const formValues = {
+    model: vehicle?.model || "",
+    description: vehicle?.description || "",
+    mileage: (vehicle?.mileage && String(vehicle?.mileage)) || undefined,
+    type: vehicle?.type || "",
+    brand: vehicle?.brand || "",
+    manual: vehicle?.manual ?? false,
+    fuel_type: vehicle?.fuel_type || "",
+    engine_capacity:
+      (vehicle?.engine_capacity && String(vehicle?.engine_capacity)) ||
+      undefined,
+    passengers:
+      (vehicle?.passengers && String(vehicle?.passengers)) || undefined,
+    // model_year: vehicle?.model_year || "",
+    asset:
+      (vehicle?.asset && {
+        file_path: "",
+        filename: vehicle?.asset?.filename,
+      }) ||
+      "",
+    price_fixed: vehicle?.price_fixed?.value || "",
+  };
+
   const {
     control,
     handleSubmit,
     setValue,
     watch,
+    reset,
     formState: { errors },
   } = useForm<AddVehicleFormValues>({
     resolver: zodResolver(FormSchema),
   });
 
+  useEffect(() => {
+    if (vehicle) {
+      reset(formValues);
+    }
+  }, [vehicle]);
+
   const pickedAsset = watch("asset");
 
-  const isVehiclePicPresent = !isEmpty(pickedAsset?.file_path);
+  const isNewVehiclePic = !isEmpty(pickedAsset?.file_path);
+  const isVehiclePic = !isEmpty(pickedAsset?.filename);
+  const vehicleImage = isNewVehiclePic
+    ? { uri: pickedAsset?.file_path }
+    : vehicle?.asset?.url;
 
-  const create = (data) => {
+  const upsertVehicle = (params: AddVehicleFormValues) => {
+    if (vehicle) {
+      return updateVehicle({ ...params, id: vehicleId }).then((res) =>
+        updatePaginatedObject("userVehicles", vehicleId, {
+          ...res,
+          vehicle_drivers: vehicle?.vehicle_drivers,
+        })
+      );
+    } else {
+      return createVehicle(params).then((res) =>
+        addItemToPaginatedList("userVehicles", res)
+      );
+    }
+  };
+
+  const create = (data: AddVehicleFormValues) => {
     const params = {
       ...data,
+      asset: !isEmpty(data.asset?.file_path) ? data.asset : "",
       price_fixed: {
         value: data.price_fixed,
         currency: "Rand",
       },
     };
 
-    console.log("QQQQQQQQQQQQQQQQQQQQQQ", params);
-
-    createVehicle(params);
+    upsertVehicle(params);
   };
 
   return (
@@ -73,22 +135,21 @@ export const AddVehicle = () => {
               <AntDesign name="plus" size={24} color={Colors.white} />
             </TouchableOpacity>
             <Image
-              source={isVehiclePicPresent && { uri: pickedAsset?.file_path }}
+              source={vehicleImage}
               style={[
                 styles.imageStyles,
-                !isVehiclePicPresent && styles.defaultImageStyles,
+                !isVehiclePic && styles.defaultImageStyles,
               ]}
               contentFit="contain"
             />
           </TouchableOpacity>
-          {!isVehiclePicPresent && (
+          {!isVehiclePic && (
             <Text style={styles.imageText}>Add Vehicle image</Text>
           )}
         </View>
 
-        <Text style={styles.addVehicleText}>Add a Vehicle</Text>
         <Text style={styles.addVehicleSubText}>
-          Add your vehicle details below
+          {`${vehicle ? "Edit" : "Add"} your vehicle details below`}
         </Text>
 
         {CardFormDef.map((card, index) => (
@@ -113,7 +174,7 @@ export const AddVehicle = () => {
           }}
         >
           <Text style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}>
-            Add Vehicle
+            {`${vehicle ? "Edit" : "Add"} Vehicle`}
           </Text>
         </CustomButton>
       </ScrollView>

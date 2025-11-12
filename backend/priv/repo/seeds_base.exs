@@ -314,7 +314,7 @@ vehicle_applications =
 Logger.info("Creating vehicle_drivers")
 
 vehicle_drivers =
-  Enum.map(Enum.zip(drivers, vehicles), fn {driver, vehicle} ->
+  Enum.map(Enum.zip(Enum.take(drivers, 10), Enum.take(vehicles, 10)), fn {driver, vehicle} ->
       {:ok, vehicle_driver} =
         %VehicleDriver{
           accidents: Enum.random(1..3),
@@ -332,7 +332,7 @@ vehicle_drivers =
 Logger.info("Creating payments")
 
 payments =
-  Enum.flat_map(Enum.zip(vehicle_drivers, 1..20), fn {vehicle_driver, price} ->
+  Enum.flat_map(Enum.zip(vehicle_drivers, 1..10), fn {vehicle_driver, price} ->
     Enum.map(1..20, fn v ->
       inserted_at =
         NaiveDateTime.utc_now()

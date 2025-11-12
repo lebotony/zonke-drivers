@@ -85,7 +85,7 @@ export const AddModal = (props: AddModalProps) => {
                 return (
                   <TextInput
                     style={styles.textInput}
-                    placeholder="value..."
+                    placeholder="..."
                     placeholderTextColor="#888"
                     value={value || ""}
                     onChangeText={onChange}

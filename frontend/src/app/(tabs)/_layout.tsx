@@ -70,7 +70,7 @@ export default function TabLayout() {
         options={{
           headerShown: false,
           title: "Vehicle",
-          href: isDriver ? null : "/(tabs)/vehicle",
+          href: isDriver ? null : "/(tabs)/vehicle/new",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="commute" size={25} color={color} />
           ),

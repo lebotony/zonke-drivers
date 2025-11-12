@@ -26,6 +26,7 @@ const addFormDef = [
     label: "Car Model",
     icon: "directions-car",
     iconSize: 22,
+    required: true,
   },
   {
     name: "mileage",
@@ -42,7 +43,7 @@ const addFormDef = [
     iconSize: 22,
   },
   {
-    name: "passenger",
+    name: "passengers",
     placeholder: "3",
     label: "Passengers",
     icon: "people",

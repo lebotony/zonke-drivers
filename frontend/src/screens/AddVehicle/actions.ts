@@ -44,3 +44,46 @@ export const createVehicle = async (params: AddVehicleFormValues) => {
     throw error;
   }
 };
+
+export const updateVehicle = async (params: Partial<AddVehicleFormValues>) => {
+  const { asset, ...rest } = params as any;
+
+  const form = new FormData();
+
+  Object.entries(rest).forEach(([key, value]) => {
+    if (value === undefined || value === null) return;
+
+    if (Array.isArray(value)) {
+      value.forEach((v) => form.append(`${key}[]`, v));
+    } else if (typeof value === "object") {
+      form.append(key, JSON.stringify(value));
+    } else {
+      form.append(key, String(value));
+    }
+  });
+
+  try {
+    if (asset && asset.file_path) {
+      const uri = asset.file_path;
+      const name = asset.filename || uri.split("/").pop();
+      const ext = name?.split(".").pop()?.toLowerCase() || "jpg";
+      const mime = ext === "png" ? "image/png" : "image/jpeg";
+
+      form.append("asset[file]", {
+        uri,
+        name,
+        type: mime,
+      } as any);
+    }
+
+    const response = await axios.post(`${API_URL}/vehicles/update`, form, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error updating vehicle:", error);
+    throw error;
+  }
+}
