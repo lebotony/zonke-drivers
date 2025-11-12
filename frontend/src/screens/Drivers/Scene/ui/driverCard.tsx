@@ -26,11 +26,13 @@ type DriverProps = {
   applicant?: boolean;
   setSelectedDriverId?: (val: string) => void;
   setShowVehicleDriverModal?: (val: boolean) => void;
+  seen?: boolean;
 };
 
 export const DriverCard = (props: DriverProps) => {
   const {
     driver,
+    seen,
     applicant = false,
     setSelectedDriverId,
     setShowVehicleDriverModal,
@@ -39,7 +41,7 @@ export const DriverCard = (props: DriverProps) => {
   if (!driver) return <Spinner />;
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container]}>
       <View style={styles.row}>
         {driver?.asset_url ? (
           <Avatar source={driver?.asset_url} radius shadow width={83} />

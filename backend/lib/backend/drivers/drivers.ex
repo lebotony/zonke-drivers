@@ -228,6 +228,6 @@ defmodule Backend.Drivers.Drivers do
     })
   end
 
-  defp format_driver(%Driver{} = driver), do: {:ok, driver}
-  defp format_driver(nil), do: {:error, :not_found}
+  def format_driver(%Driver{} = driver), do: {:ok, driver}
+  def format_driver(nil), do: {:error, :not_found}
 end

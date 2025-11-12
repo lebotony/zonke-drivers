@@ -92,4 +92,19 @@ export const styles = StyleSheet.create({
     maxWidth: "85%",
     fontWeight: 400
   },
+  unreadBadge: {
+    backgroundColor: Colors.lightRed,
+    width: 18,
+    height: 18,
+    borderRadius: "50%",
+    alignItems: "center",
+    justifyContent: "center",
+    position: "absolute",
+    top: 5,
+    right: -3,
+  },
+  unreadBadgeText: {
+    color: Colors.white,
+    fontSize: 10,
+  },
 });

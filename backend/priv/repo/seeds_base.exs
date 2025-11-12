@@ -278,11 +278,19 @@ Logger.info("Creating vehicle_applications")
 
 vehicle_applications =
   Enum.flat_map(vehicles, fn vehicle ->
-    Enum.map(drivers, fn driver ->
+    Enum.map(Enum.zip(drivers, 1..20), fn {driver, index} ->
+      seen = if index < 11, do: false, else: true
+
+      inserted_at =
+        NaiveDateTime.utc_now()
+        |> Timex.shift(minutes: -(index * 170))
+        |> NaiveDateTime.truncate(:second)
+
       {:ok, vehicle_application} =
         %VehicleApplication{
           driver_id: driver.id,
           vehicle_id: vehicle.id,
+          seen: seen
         }
         |> Repo.insert()
 

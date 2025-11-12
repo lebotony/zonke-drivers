@@ -32,7 +32,8 @@ import { CustomButton } from "@/src/components/elements/button";
 import { styles } from "./styles/index";
 import { createThread } from "../../DriverProfile/actions";
 import { shadowStyles } from "@/src/components/shadowStyles";
-
+import { applyForVehicle } from "../actions";
+import { NoProfileModal } from "./noProfileModal";
 
 export const Scene = () => {
   const { id } = useLocalSearchParams();
@@ -41,6 +42,7 @@ export const Scene = () => {
   const [expanded, setExpanded] = useState(false);
   const [showReadMore, setShowReadMore] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [showNoProfileModal, setShowNoProfileModal] = useState(false);
 
   const { addItemToPaginatedList } = usePaginatedCache();
 
@@ -49,8 +51,6 @@ export const Scene = () => {
   const vehicle: Vehicle = find(vehicles, { id: vehicleId });
 
   const width = Dimensions.get("window").width;
-  const IMAGES = [carPic, carPic, carPic];
-  const heroRef = useRef<any>(null);
   const modalRef = useRef<any>(null);
 
   const toggleExpanded = () => setIsDescriptionExpanded((prev) => !prev);
@@ -74,11 +74,29 @@ export const Scene = () => {
       .catch((err) => err);
   };
 
+  const handleApply = () =>
+    applyForVehicle({ vehicle_id: vehicleId })
+      .then(() => {
+        console.log("Application submitted successfully!");
+      })
+      .catch((err) => {
+        const errorKey = err.response?.data?.error;
+
+        if (errorKey === "no_driver_profile") {
+          setShowNoProfileModal(true);
+        } else {
+          throw new Error("Application error:", err);
+        }
+      });
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ position: "relative" }}>
-          <Image source={vehicle.asset?.url} style={[styles.hero, { width }]} />
+          <Image
+            source={vehicle?.asset?.url}
+            style={[styles.hero, { width }]}
+          />
 
           <View
             style={{
@@ -121,7 +139,7 @@ export const Scene = () => {
               {capitalizeFirstLetter(vehicle?.model)}
             </Text>
 
-            <Avatar round width={40} source={vehicle.user?.asset_url} />
+            <Avatar round width={40} source={vehicle?.user?.asset_url} />
           </View>
 
           <View style={styles.descriptionContainer}>
@@ -237,18 +255,32 @@ export const Scene = () => {
             </View>
           </SafeAreaView>
         </ScrollView>
+        <View style={{ flexDirection: "row", gap: 16, paddingHorizontal: 15 }}>
+          <CustomButton
+            color={Colors.mrDBlue}
+            onPress={handleApply}
+            customStyle={{
+              marginBottom: 20,
+              flex: 1,
+              ...shadowStyles,
+            }}
+          >
+            <Text style={{ color: Colors.white }}>Apply</Text>
+          </CustomButton>
 
-        <CustomButton
-          color={Colors.emeraldGreen}
-          onPress={handleCreateThread}
-          customStyle={{
-            marginBottom: 20,
-            marginHorizontal: 15,
-            ...shadowStyles,
-          }}
-        >
-          <Text style={{ color: Colors.white }}>Message</Text>
-        </CustomButton>
+          <CustomButton
+            color={Colors.emeraldGreen}
+            onPress={handleCreateThread}
+            customStyle={{
+              marginBottom: 20,
+              flex: 1,
+
+              ...shadowStyles,
+            }}
+          >
+            <Text style={{ color: Colors.white }}>Message</Text>
+          </CustomButton>
+        </View>
       </ScrollView>
 
       {expanded && (
@@ -284,6 +316,9 @@ export const Scene = () => {
             </ScrollView>
           </SafeAreaView>
         </View>
+      )}
+      {showNoProfileModal && (
+        <NoProfileModal setShowNoProfileModal={setShowNoProfileModal} />
       )}
     </SafeAreaView>
   );

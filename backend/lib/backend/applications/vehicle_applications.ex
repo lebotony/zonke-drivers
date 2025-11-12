@@ -3,15 +3,32 @@ defmodule Backend.Applications.VehicleApplications do
   alias Backend.Applications.VehicleApplication
   alias Backend.Notifications.Notifications
   alias Backend.Applications.Queries.VehicleApplicationBy
-  alias Backend.Drivers.Drivers
+  alias Backend.Drivers.{Drivers, Driver}
   alias Backend.{Repo, PaginateHelper}
 
   import Ecto.Query
 
-  def create(params) do
-    %VehicleApplication{}
-    |> VehicleApplication.changeset(params)
-    |> Repo.insert()
+  def create(params, %{user_id: user_id}) do
+    case get_user_driver(user_id) do
+      {:ok, driver} ->
+        updated_params = Map.put(params, :driver_id, driver.id)
+
+        %VehicleApplication{}
+        |> VehicleApplication.changeset(updated_params)
+        |> Repo.insert()
+
+      {:error, :not_found} ->
+        {:error, :no_driver_profile}
+    end
+  end
+
+  defp get_user_driver(user_id) do
+    from(d in Driver,
+      as: :driver,
+      where: d.user_id == ^user_id
+    )
+    |> Repo.one()
+    |> Drivers.format_driver()
   end
 
   def update(%VehicleApplication{} = vehicle_application, params) do
@@ -33,7 +50,8 @@ defmodule Backend.Applications.VehicleApplications do
     data =
       VehicleApplicationBy.base_query()
       |> VehicleApplicationBy.by_vehicle(params.vehicle_id)
-      |> build_sort_all()
+      # |> build_sort_all()
+      |> order_by([va], desc: va.inserted_at)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     applications_with_drivers =
@@ -43,6 +61,18 @@ defmodule Backend.Applications.VehicleApplications do
       end)
 
     {:ok, applications_with_drivers, PaginateHelper.prep_paginate(data)}
+  end
+
+  def set_va_seen_true(va_id) do
+    {count, _} =
+      from(va in VehicleApplication,
+        where: va.vehicle_id == ^va_id,
+        where: va.seen == false,
+        update: [set: [seen: true]]
+      )
+      |> Repo.update_all([])
+
+    {:ok, count}
   end
 
   # def get_vehicle_applications(params, %{user_id: user_id}, :owner) do
@@ -73,28 +103,28 @@ defmodule Backend.Applications.VehicleApplications do
   #   |> Repo.all()
   # end
 
-  def build_sort_all(query) do
-    query
-    |> order_by(
-      [vehicle_applications: va],
-      [
-        fragment(
-          "CASE
-          WHEN ? = ? THEN 1
-          WHEN ? = ? THEN 2
-          WHEN ? = ? THEN 3
-        END",
-          va.status,
-          "pending",
-          va.status,
-          "accepted",
-          va.status,
-          "rejected"
-        ),
-        desc: va.inserted_at
-      ]
-    )
-  end
+  # def build_sort_all(query) do
+  #   query
+  #   |> order_by(
+  #     [vehicle_applications: va],
+  #     [
+  #       fragment(
+  #         "CASE
+  #         WHEN ? = ? THEN 1
+  #         WHEN ? = ? THEN 2
+  #         WHEN ? = ? THEN 3
+  #       END",
+  #         va.status,
+  #         "pending",
+  #         va.status,
+  #         "accepted",
+  #         va.status,
+  #         "rejected"
+  #       ),
+  #       desc: va.inserted_at
+  #     ]
+  #   )
+  # end
 
   defp format_vehicle_application(%VehicleApplication{} = vehicle_application),
     do: {:ok, vehicle_application}

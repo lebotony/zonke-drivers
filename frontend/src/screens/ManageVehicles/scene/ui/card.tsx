@@ -117,26 +117,39 @@ export const Card = (props: CardProps) => {
           </CustomButton>
         )}
 
-        <CustomButton
-          onPress={() => router.push(`/applicants/${vehicle.id}`)}
-          customStyle={{
-            paddingTop: 10,
-            paddingBottom: 12,
-            backgroundColor: Colors.mrDBlue,
+        <View
+          style={{
+            position: "relative",
             width: noVehicleDrivers ? "100%" : "48%",
-            marginVertical: 10,
-            ...shadowStyles,
           }}
         >
-          <Text
-            style={[
-              styles.name,
-              { fontWeight: 500, lineHeight: 17, color: Colors.white },
-            ]}
+          <CustomButton
+            onPress={() => router.push(`/applicants/${vehicle.id}`)}
+            customStyle={{
+              paddingTop: 10,
+              paddingBottom: 12,
+              backgroundColor: Colors.mrDBlue,
+              marginVertical: 10,
+              ...shadowStyles,
+            }}
           >
-            View Applicants
-          </Text>
-        </CustomButton>
+            <Text
+              style={[
+                styles.name,
+                { fontWeight: 500, lineHeight: 17, color: Colors.white },
+              ]}
+            >
+              View Applicants
+            </Text>
+          </CustomButton>
+          {(vehicle?.unseen_applications_count ?? 0) > 0 && (
+            <View style={styles.unreadBadge}>
+              <Text style={styles.unreadBadgeText}>
+                {vehicle?.unseen_applications_count}
+              </Text>
+            </View>
+          )}
+        </View>
       </View>
     </View>
   );
