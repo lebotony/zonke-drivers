@@ -149,10 +149,26 @@ defmodule Backend.Vehicles.Vehicles do
         }
       )
 
+    unseen_va_count_subquery =
+      from(va in VehicleApplication,
+        where:
+          va.seen == false and
+            va.vehicle_id == parent_as(:vehicle).id,
+        select: %{count: count(va.id)}
+      )
+
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_user(user_id)
       |> join(:left, [v], vd in VehicleDriver, on: v.id == vd.vehicle_id and vd.active == true)
+      |> join(:left_lateral, [v], uc in subquery(unseen_va_count_subquery),
+        as: :unseen_count,
+        on: true
+      )
+      |> select_merge([vehicle: v, unseen_count: uc], %{
+        v
+        | unseen_applications_count: coalesce(uc.count, 0)
+      })
       |> preload([
         :asset,
         vehicle_drivers: [:driver]

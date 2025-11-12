@@ -17,7 +17,8 @@ type Vehicle = {
   asset: Asset,
   vehicle_drivers?: VehicleDriver[],
   applications: Driver[],
-  rating: number
+  rating: number,
+  unseen_applications_count?: number
 }
 
 type VehileType = "bike" | "passenger" | "taxi" | "truck" | "lorry"

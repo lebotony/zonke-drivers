@@ -10,6 +10,13 @@ type VehicleDriver = {
   comments?: CommentType[]
 };
 
+type VehicleApplication = {
+  id: string;
+  driver: Driver;
+  seen: boolean;
+  status?: 'pending' | 'accepted' | 'rejected'
+};
+
 type Payment = {
   id: string;
   paid_at: string;

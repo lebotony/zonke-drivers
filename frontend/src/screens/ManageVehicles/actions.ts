@@ -41,6 +41,8 @@ export const fetchApplications = ({ pageParam = 1, vehicleId }) =>
     })
     .catch((err) => err);
 
+export const setApplicationsSeen = (vehicleId: string) => httpPost('/vehicle_applications/application_seen', {id: vehicleId})
+
 export const addPayment = (params: Partial<Payment>) => httpPost('/vehicle_payments', params)
 
 export const createVehicleDriver = (params: {driver_id: string, vehicle_id: string}) => httpPost('/vehicle_drivers', params)

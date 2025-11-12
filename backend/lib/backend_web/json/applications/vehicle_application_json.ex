@@ -23,6 +23,7 @@ defmodule BackendWeb.Applications.VehicleApplicationJSON do
     %{
       id: vehicle_application.id,
       status: vehicle_application.status,
+      seen: vehicle_application.seen,
       driver: DriverJSON.show(%{driver: vehicle_application.driver}),
       inserted_at: vehicle_application.inserted_at,
       updated_at: vehicle_application.updated_at

@@ -12,12 +12,12 @@ import { useCustomQuery } from "@/src/useQueryContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { Colors } from "@/constants/ui";
+import { Spinner } from "@/src/components/elements/Spinner";
 
 import { styles } from "../styles/applicants";
-import { fetchApplications } from "../../actions";
+import { fetchApplications, setApplicationsSeen } from "../../actions";
 import { VehicleDriverModal } from "./vehicleDriverModal";
 import { VehicleSelector } from "./vehicleSelector";
-import { Spinner } from "@/src/components/elements/Spinner";
 
 export const ApplicantsScreen = () => {
   const { id } = useLocalSearchParams();
@@ -34,7 +34,8 @@ export const ApplicantsScreen = () => {
   const [showVehicleDriverModal, setShowVehicleDriverModal] = useState(false);
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
 
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>(initialVehicle);
+  const [selectedVehicle, setSelectedVehicle] =
+    useState<Vehicle>(initialVehicle);
 
   const queryClient = useQueryClient();
   const {
@@ -56,14 +57,15 @@ export const ApplicantsScreen = () => {
 
     const vehicle = getUpdatedObjectSnapshot("userVehicles", vehicleId);
 
-    
-
     updatePaginatedObject("userVehicles", vehicleId, {
+      unseen_applications_count: 0,
       applications: [
         ...(vehicle?.applications ?? []),
         ...(vehicleApplications ?? []),
       ],
     });
+
+    setApplicationsSeen(vehicleId);
   };
 
   const handleSetFetchedVehicleApplications = (id: string) =>
@@ -76,7 +78,7 @@ export const ApplicantsScreen = () => {
     );
 
   const handleFetchApplications = () => {
-    setLoading(true)
+    setLoading(true);
     const vehicleId = selectedVehicle?.id;
     const { pageParam } = onFetchNestedPagination(
       vehicleId,
@@ -88,12 +90,12 @@ export const ApplicantsScreen = () => {
       vehicleId,
     }).then((res) => {
       loadVehicleApplications(res);
-      setLoading(false)
+      setLoading(false);
     });
   };
 
   useEffect(() => {
-     const vehicleId = selectedVehicle?.id;
+    const vehicleId = selectedVehicle?.id;
     if (!vehicleId) return;
 
     if (!fetchedVehicleApplications?.includes(vehicleId)) {
@@ -102,17 +104,23 @@ export const ApplicantsScreen = () => {
     }
   }, [selectedVehicle]);
 
-   const currentVehicle = find(userVehicles, { id: selectedVehicle?.id });
+  const currentVehicle = find(userVehicles, { id: selectedVehicle?.id });
 
-   const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-
         <View style={styles.headerTitle}>
-          <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-            <MaterialIcons name="arrow-back-ios" size={22} color={Colors.dimGrey} />
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => router.back()}
+          >
+            <MaterialIcons
+              name="arrow-back-ios"
+              size={22}
+              color={Colors.dimGrey}
+            />
           </TouchableOpacity>
 
           <Text style={styles.headerText}>Applicants</Text>
@@ -125,47 +133,58 @@ export const ApplicantsScreen = () => {
           onSelectVehicle={setSelectedVehicle}
         />
       </View>
-      { !loading && <View style={styles.listContainer}>
-        {!isEmpty(currentVehicle?.applications) ? (
-          <FlatList
-            data={currentVehicle?.applications}
-            onEndReached={() => {
-              const paginationObj = find(applicationsPagination, {
-                id: selectedVehicle?.id,
-              })?.paginate;
+      {!loading && (
+        <View style={styles.listContainer}>
+          {!isEmpty(currentVehicle?.applications) ? (
+            <FlatList
+              data={currentVehicle?.applications}
+              onEndReached={() => {
+                const paginationObj = find(applicationsPagination, {
+                  id: selectedVehicle?.id,
+                })?.paginate;
 
-              if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
-                handleFetchApplications();
-              }
-            }}
-            renderItem={({ item }) => (
-              <DriverCard
-                applicant
-                driver={item?.driver}
-                setSelectedDriverId={(val: string) => setSelectedDriverId(val)}
-                setShowVehicleDriverModal={(val: boolean) =>
-                  setShowVehicleDriverModal(val)
+                if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
+                  handleFetchApplications();
                 }
-              />
-            )}
-            keyExtractor={({ id }, index) => String(id + index)}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.listContent}
-            style={{marginTop: 10}}
-          />
-        ) : (
-          <View style={styles.emptyState}>
-            <Ionicons name="people-outline" size={64} color="#ddd" />
-            <Text style={styles.emptyStateTitle}>No applicants found</Text>
-            <Text style={styles.emptyStateText}>
-              {selectedVehicle
-                ? `No applicants found yet for ${selectedVehicle.model}`
-                : "Select a vehicle to view applicants"}
-            </Text>
-          </View>
-        )}
-      </View>}
-      {loading && 
+              }}
+              renderItem={({ item }) => (
+                <View
+                  style={[
+                    { paddingVertical: 7 },
+                    // !item?.seen && { backgroundColor: Colors.whiteSmoke },
+                  ]}
+                >
+                  <DriverCard
+                    applicant
+                    seen={item?.seen}
+                    driver={item?.driver}
+                    setSelectedDriverId={(val: string) =>
+                      setSelectedDriverId(val)
+                    }
+                    setShowVehicleDriverModal={(val: boolean) =>
+                      setShowVehicleDriverModal(val)
+                    }
+                  />
+                </View>
+              )}
+              keyExtractor={({ id }, index) => String(id + index)}
+              showsVerticalScrollIndicator={false}
+              style={{ marginTop: 10 }}
+            />
+          ) : (
+            <View style={styles.emptyState}>
+              <Ionicons name="people-outline" size={64} color="#ddd" />
+              <Text style={styles.emptyStateTitle}>No applicants found</Text>
+              <Text style={styles.emptyStateText}>
+                {selectedVehicle
+                  ? `No applicants found yet for ${selectedVehicle.model}`
+                  : "Select a vehicle to view applicants"}
+              </Text>
+            </View>
+          )}
+        </View>
+      )}
+      {loading && (
         <View
           style={{
             flex: 1,
@@ -176,8 +195,8 @@ export const ApplicantsScreen = () => {
         >
           <Spinner />
         </View>
-      }
-      
+      )}
+
       {showVehicleDriverModal && (
         <VehicleDriverModal
           setShowVehicleDriverModal={setShowVehicleDriverModal}

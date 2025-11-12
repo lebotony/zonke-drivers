@@ -20,7 +20,7 @@ import { FilterModal } from "./ui/filter";
 export const Scene = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
 
-  const [searchTerm, setSearchTerm] = useState<string>();
+  const [searchTerm, setSearchTerm] = useState<string | null>(null);
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
 
   const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
@@ -32,6 +32,7 @@ export const Scene = () => {
   const [applyFilter, setApplyFilter] = useState<boolean>(false);
   const [reset, setReset] = useState<boolean>(false);
   const resetRef = useRef<boolean>(undefined);
+  const didMountRef = useRef(false);
 
   const queryClient = useQueryClient();
 
@@ -106,9 +107,13 @@ export const Scene = () => {
   }, [applyFilter]);
 
   useEffect(() => {
-    if (!showFilterModal && resetRef.current !== true) {
-      queryClient.removeQueries({ queryKey });
-      refetch();
+    if (didMountRef.current) {
+      if (!showFilterModal && resetRef.current !== true) {
+        queryClient.removeQueries({ queryKey });
+        refetch();
+      }
+    } else {
+      didMountRef.current = true;
     }
   }, [selectedPlatforms]);
 

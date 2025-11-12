@@ -54,6 +54,10 @@ defmodule BackendWeb.Router do
 
       resources("/vehicle_payments", Vehicles.PaymentController, except: @except_path_actions)
 
+      scope("/vehicle_applications") do
+        post("/application_seen", Applications.VehicleApplicationController, :set_seen_true)
+      end
+
       resources("/vehicle_applications", Applications.VehicleApplicationController,
         except: @except_path_actions
       )

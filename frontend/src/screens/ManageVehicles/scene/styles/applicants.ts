@@ -141,9 +141,6 @@ export const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 12,
   },
-  listContent: {
-    gap: 14,
-  },
   emptyState: {
     flex: 1,
     justifyContent: 'center',

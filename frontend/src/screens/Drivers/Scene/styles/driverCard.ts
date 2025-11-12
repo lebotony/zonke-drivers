@@ -40,6 +40,7 @@ export const styles = StyleSheet.create({
     marginLeft: 4,
     justifyContent: "space-evenly",
     gap: 2,
+    flex: 1,
   },
   detailIcon: {
     width: 15,
