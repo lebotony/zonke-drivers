@@ -116,7 +116,7 @@ export const CommentModal = ({
 
         <CustomButton
           customStyle={{ width: "100%", marginBottom: 20, paddingVertical: 10 }}
-          color="primaryBlue"
+          color={Colors.mrDBlue}
           onPress={handleSubmitComment}
         >
           <Text style={styles.postBtnText}>POST</Text>

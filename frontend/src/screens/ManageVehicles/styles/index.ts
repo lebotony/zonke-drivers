@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
   },
   header: {
     color: Colors.black,
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: "600",
     marginVertical: 12,
     textAlign: "center",

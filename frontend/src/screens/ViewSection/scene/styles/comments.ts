@@ -4,7 +4,8 @@ import { Colors } from '@/constants/ui';
 
 export const styles = StyleSheet.create({
   commentsSection: {
-    flex: 1
+    flex: 1,
+    marginTop: 8
   },
   commentsTitle: {
     fontWeight: 600,
@@ -13,11 +14,11 @@ export const styles = StyleSheet.create({
     color: Colors.veryDarkGrey,
   },
   addCommentRow: {
-    borderWidth: 0.5,
+    borderWidth: 0.6,
     borderColor: Colors.lightGrey,
     borderRadius: 8,
     padding: 10,
-    marginHorizontal: 12,
+    marginHorizontal: 14,
     marginBottom: 12
   },
   addCommentText: {
