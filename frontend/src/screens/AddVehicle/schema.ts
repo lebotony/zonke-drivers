@@ -1,28 +1,26 @@
-import { number, z } from "zod";
+import { z } from 'zod';
 
 export const fieldValidators = {
-  model: z.string().min(4, "Model must be at least 1 character").optional(),
+  model: z.string().min(1, 'Model must be at least 1 character').optional(),
   description: z.string().optional(),
-  mileage: z.coerce
-    .number()
-    .int()
-    .min(1, "Mileage must be at least 1 digit")
-    .optional(),
+  mileage: z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z.coerce.number().int().min(1, "Mileage must be at least 1 digit").optional()
+  ),
   type: z.string(),
   brand: z.string(),
   manual: z.boolean(),
   fuel_type: z.string(),
-  engine_capacity: z.coerce
-    .number()
-    .min(1, "Engine capacity must be at least 1 digit")
-    .optional(),
-  passengers: z.coerce
-    .number()
-    .int()
-    .min(1, "Passengers count must be at least 1 digit")
-    .optional(),
+  engine_capacity: z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z.coerce.number().min(1, 'Engine capacity must be at least 1 digit').optional()),
+  passengers: z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z.coerce.number().int().min(1, 'Passengers count must be at least 1 digit').optional()),
   // model_year: z.string().optional(),
-  price_fixed: z.string(),
+  price_fixed: z.preprocess(
+    (val) => (val === "" ? undefined : val),
+    z.coerce.number().min(1, 'Engine capacity must be at least 1 digit').optional()),
   asset: z
     .object({
       file_path: z.string().optional(),

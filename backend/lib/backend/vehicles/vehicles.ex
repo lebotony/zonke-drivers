@@ -171,9 +171,8 @@ defmodule Backend.Vehicles.Vehicles do
       })
       |> preload([
         :asset,
-        vehicle_drivers: [:driver]
+        vehicle_drivers: ^from(vd in VehicleDriver, where: vd.active == true, preload: [driver: ^driver_query])
       ])
-      |> preload(vehicle_drivers: [driver: ^driver_query])
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     updated_data = %{data | entries: load_vehicle_drivers_with_payments(total_query, last_payment_query, data.entries)}
@@ -224,7 +223,7 @@ defmodule Backend.Vehicles.Vehicles do
         v
         | user: %{
             id: u.id,
-            asset_filename: a.filename
+            asset: a
           }
       })
       |> preload(:asset)

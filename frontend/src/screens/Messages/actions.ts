@@ -11,13 +11,14 @@ export const fetchUserThreads = ({ pageParam = 1 }, filters) => {
       paramsSerializer: (params) =>
         qs.stringify(params, { arrayFormat: "brackets" }),
     })
-    .then((response) => {
-      return response.data;
-    })
-    .catch((err) => {
-      throw new Error("Error while fetching messages: ", err);
-    });
-};
+      .then((response) => {
+        console.log("THRAEDS THRAEDS THRAEDS", response.data)
+        return response.data
+      })
+      .catch((err) => {
+        throw new Error("Error while fetching messages: ", err)
+      });
+}
 
 export const fetchThreadMessages = (threadId: string) =>
   httpGet("/messages", { thread_id: threadId });

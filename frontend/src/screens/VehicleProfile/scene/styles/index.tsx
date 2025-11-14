@@ -120,7 +120,6 @@ export const styles = StyleSheet.create({
   infoText: {
     fontSize: 16,
     fontWeight: "bold",
-    textTransform: "capitalize",
   },
   stat: {
     alignItems: "center",

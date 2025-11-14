@@ -2,6 +2,7 @@ defmodule Backend.Vehicles.VehicleDrivers do
   alias Backend.{Repo, PaginateHelper}
   alias Backend.Vehicles.VehicleDriver
   alias Backend.Vehicles.Queries.VehicleDriverBy
+  alias Backend.Applications.VehicleApplications
 
   import Ecto.Query
 
@@ -14,16 +15,27 @@ defmodule Backend.Vehicles.VehicleDrivers do
         |> VehicleDriver.changeset(Map.put(params, :active, true))
         |> Repo.insert()
 
-      disable_vehicle_drivers(%{
-        vehicle_id: vehicle_driver.vehicle_id,
-        driver_id: vehicle_driver.driver_id
-      })
+      vehicle_id = vehicle_driver.vehicle_id
+      driver_id = vehicle_driver.driver_id
+
+      disable_vehicle_drivers(vehicle_id, driver_id)
+
+      delete_associated_application(vehicle_id, driver_id)
 
       Repo.one(VehicleDriverBy.by_id_with_preloads(vehicle_driver.id))
     end)
   end
 
-  def disable_vehicle_drivers(%{vehicle_id: vehicle_id, driver_id: driver_id}) do
+  def delete_associated_application(vehicle_id, driver_id) do
+    case VehicleApplications.get_application_by_vehicle_driver(vehicle_id, driver_id) do
+      {:ok, application} ->
+        VehicleApplications.delete(application)
+
+      {:error, error} -> {:error, error}
+    end
+  end
+
+  def disable_vehicle_drivers(vehicle_id, driver_id) do
     VehicleDriverBy.base_query()
     |> where([vd], vd.vehicle_id == ^vehicle_id and vd.driver_id != ^driver_id)
     |> update(set: [active: false])

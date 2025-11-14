@@ -18,16 +18,9 @@ defmodule BackendWeb.Assets.AssetJSON do
       copied: asset.copied,
       meta: asset.meta,
       filename: asset.filename,
-      url: prepare_url(asset.filename),
+      url: Assets.prepare_url(asset.filename),
       inserted_at: asset.inserted_at,
       updated_at: asset.updated_at
     }
-  end
-
-  defp prepare_url(filename) do
-    case Assets.presigned_url(filename) do
-      {:ok, url} -> url
-      _ -> nil
-    end
   end
 end

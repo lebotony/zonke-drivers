@@ -33,7 +33,7 @@ export const settingsItemsDef = [
   // },
   {
     slug: "card",
-    label: "Preview Driver Card",
+    label: "Preview Your Driver Card",
     icon: <FontAwesome5 name="id-card" size={19} color={Colors.white} />,
     iconWrapperColor: Colors.uberEatsGreen,
   },

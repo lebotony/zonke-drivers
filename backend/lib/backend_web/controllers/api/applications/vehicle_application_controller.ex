@@ -21,7 +21,7 @@ defmodule BackendWeb.Applications.VehicleApplicationController do
   def create(conn, params, session) do
     case VehicleApplications.create(params, session) do
       {:ok, vehicle_application} ->
-        render(conn, :show, %{vehicle_application: vehicle_application})
+        json(conn, %{status: "ok"})
 
       {:error, :no_driver_profile} ->
         conn

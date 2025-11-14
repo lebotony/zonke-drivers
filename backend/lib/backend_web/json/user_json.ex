@@ -3,7 +3,12 @@ defmodule BackendWeb.UserJSON do
   alias Backend.Assets.Assets
 
   def show(%{user: user}) do
-    asset = if Map.has_key?(user, :asset) and user.asset, do: AssetJSON.show(%{asset: user.asset}), else: nil
+    asset =
+      if Ecto.assoc_loaded?(user.asset) and user.asset do
+        AssetJSON.show(%{asset: user.asset})
+      else
+        nil
+      end
 
     %{
       id: Map.get(user, :id),
@@ -13,17 +18,10 @@ defmodule BackendWeb.UserJSON do
       email: Map.get(user, :email),
       role: Map.get(user, :role),
       location: Map.get(user, :location),
-      asset_url: Map.get(user, :asset_filename) |> prepare_url(),
+      asset_url: Map.get(user, :asset_filename) |> Assets.prepare_url(),
       asset: asset
     }
     |> Enum.reject(fn {_k, v} -> is_nil(v) end)
     |> Enum.into(%{})
-  end
-
-  defp prepare_url(filename) do
-    case Assets.presigned_url(filename) do
-      {:ok, url} -> url
-      _ -> nil
-    end
   end
 end

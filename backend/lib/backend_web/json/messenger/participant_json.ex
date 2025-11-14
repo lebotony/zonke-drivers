@@ -10,14 +10,7 @@ defmodule BackendWeb.Messenger.ParticipantJSON do
       id: participant.id,
       first_name: participant.first_name,
       last_name: participant.last_name,
-      asset_url: prepare_url(participant.asset_filename)
+      asset_url: Assets.prepare_url(participant.asset_filename)
     }
-  end
-
-  defp prepare_url(filename) do
-    case Assets.presigned_url(filename) do
-      {:ok, url} -> url
-      _ -> nil
-    end
   end
 end

@@ -23,17 +23,20 @@ export const styles = StyleSheet.create({
     height: 125,
     borderRadius: "50%",
   },
+  nameAgeWrapper: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "row",
+  },
   name: {
     fontWeight: "700",
     fontSize: 20,
   },
   age: {
-    width: "100%",
     fontWeight: "400",
     fontSize: 14,
     color: Colors.mediumGrey,
-    position: "absolute",
-    bottom: 2,
   },
   description: {
     marginHorizontal: "auto",

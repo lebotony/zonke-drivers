@@ -42,7 +42,7 @@ export const Settings = () => {
             ]}
           >
             <Avatar
-              source={isProfilePicPresent && user.asset.url}
+              source={isProfilePicPresent && user?.asset?.url}
               round
               width={60}
             />

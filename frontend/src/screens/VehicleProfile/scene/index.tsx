@@ -62,8 +62,8 @@ export const Scene = () => {
   };
 
   const handleCreateThread = () => {
-    console.log("participant_id:", vehicle.user?.id);
-    createThread({ participant_id: vehicle.user?.id })
+    console.log("participant_id:", vehicle.user.id);
+    createThread({ participant_id: vehicle.user.id })
       .then((response) => {
         if (!find(threads, { id: response.id })) {
           addItemToPaginatedList("threads", response);
@@ -140,7 +140,7 @@ export const Scene = () => {
               {capitalizeFirstLetter(vehicle?.model)}
             </Text>
 
-            <Avatar round width={40} source={vehicle?.user?.asset_url} />
+            <Avatar round width={40} source={vehicle?.user?.asset?.url} />
           </View>
 
           <View style={styles.descriptionContainer}>
@@ -196,7 +196,9 @@ export const Scene = () => {
 
                 <Text style={styles.infoTitle}>Passangers</Text>
 
-                <Text style={styles.infoText}>{vehicle?.passengers}</Text>
+                <Text style={styles.infoText}>
+                  {vehicle?.passengers ?? "NA"}
+                </Text>
               </View>
 
               <View style={styles.infoItem}>
@@ -230,7 +232,7 @@ export const Scene = () => {
 
                 <Text style={styles.infoTitle}>Mileage</Text>
 
-                <Text style={styles.infoText}>{vehicle?.mileage}</Text>
+                <Text style={styles.infoText}>{vehicle?.mileage ?? "NA"}</Text>
               </View>
               <View style={styles.infoItem}>
                 <View style={styles.xIconWrapper}>
@@ -245,9 +247,11 @@ export const Scene = () => {
 
                 <Text style={styles.infoTitle}>Engine Capacity</Text>
 
-                <Text
-                  style={styles.infoText}
-                >{`${vehicle?.engine_capacity} litre`}</Text>
+                <Text style={styles.infoText}>
+                  {vehicle?.engine_capacity
+                    ? `${vehicle?.engine_capacity} litre`
+                    : "NA"}
+                </Text>
               </View>
 
               <View

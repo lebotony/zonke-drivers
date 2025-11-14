@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
-import { MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
 
 import { Colors } from "@/constants/ui";
@@ -24,6 +24,7 @@ import {
 import { pickImage } from "@/src/helpers/pickImage";
 import { ModalDatePicker } from "@/src/components/elements/datePicker";
 import { useCustomQuery } from "@/src/useQueryContext";
+import { AppToast } from "@/src/components/CustomToast/customToast";
 
 import { styles } from "../styles/profileSetup";
 import { DriverProfileSchema, OwnerProfileSchema } from "../schema";
@@ -76,9 +77,9 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   });
 
   useEffect(() => {
-    if (isDriver) {
+    if (isDriver && !driverProfile) {
       fetchDriverProfile().then((response) =>
-        queryClient.setQueryData(["driverProfile"], response),
+        queryClient.setQueryData(["driverProfile"], response)
       );
     }
   }, [isDriver]);
@@ -94,7 +95,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const pickedAsset = watch("asset");
 
   const isProfilePicPresent =
-    !isEmpty(pickedAsset?.file_path) || !isEmpty(user.asset.url);
+    !isEmpty(pickedAsset?.file_path) || !isEmpty(user?.asset?.url);
 
   const handleAddPlatform = (item: string) => {
     const selectedValue = PLATFORM_FILTERS.filter((p) => p.slug === item)[0]
@@ -108,7 +109,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleRemovePlatform = (item: string) => {
     setValue(
       "platforms",
-      selectedPlatforms?.filter((platform) => platform !== item),
+      selectedPlatforms?.filter((platform) => platform !== item)
     );
   };
 
@@ -123,28 +124,35 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleRemoveLicences = (item: string) => {
     setValue(
       "licences",
-      selectedLicences?.filter((licence) => licence !== item),
+      selectedLicences?.filter((licence) => licence !== item)
     );
   };
 
   const handleEditProfile = () => {
-    console.log(watch());
-
     if (isDriver) {
       handleSubmit((formData) =>
         updateDriver(formData)
           .then((response) => {
-            // console.log("33333333333333333", response.user);
-            queryClient.setQueryData(["user"], response.user);
-            queryClient.setQueryData(["driverProfile"], response);
+            AppToast("Driver profile updated successfully", true);
+
+            const { user, ...otherParams } = response;
+
+            queryClient.setQueryData(["user"], user);
+            queryClient.setQueryData(["driverProfile"], otherParams);
           })
-          .catch((err) => err),
+          .catch((err) => err)
       )();
     } else {
       handleSubmit((formData) =>
         updateVehicleUser(user.id, formData)
-          .then((response) => queryClient.setQueryData(["user"], response))
-          .catch((err) => err),
+          .then((response) => {
+            AppToast("Profile updated successfully", true);
+            queryClient.setQueryData(["user"], response);
+          })
+          .catch((err) => {
+            AppToast();
+            throw new Error("Error while updating user: ", err);
+          })
       )();
     }
   };
@@ -162,7 +170,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
         <Avatar
           width={130}
           source={
-            isProfilePicPresent && (pickedAsset?.file_path || user.asset.url)
+            isProfilePicPresent && (pickedAsset?.file_path || user?.asset?.url)
           }
           round
         />
@@ -208,31 +216,6 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
         required
       />
 
-      {isDriver && (
-        <View
-          style={{
-            borderColor: Colors.tealGreen,
-            borderWidth: 2,
-            borderRadius: 10,
-            paddingVertical: 10,
-            paddingHorizontal: 18,
-            marginBottom: 10,
-          }}
-        >
-          <Fieldset
-            label="Date of Birth"
-            name="dob"
-            inputIcon="event"
-            control={control}
-            placeholder="20/10/2001"
-            errors={errors}
-            required
-          />
-
-          <ModalDatePicker setValue={setValue} />
-        </View>
-      )}
-
       <DropdownInput
         name="location"
         required
@@ -244,6 +227,37 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
 
       {isDriver && (
         <>
+          <View style={{ flexDirection: "row", gap: 7 }}>
+            <Text style={styles.driverProfileText}>Driver Profile Fields</Text>
+            <Ionicons
+              name="speedometer"
+              size={23}
+              color={Colors.mediumDarkGrey}
+            />
+          </View>
+          <View
+            style={{
+              borderColor: Colors.tealGreen,
+              borderWidth: 2,
+              borderRadius: 10,
+              paddingVertical: 10,
+              paddingHorizontal: 18,
+              marginBottom: 10,
+            }}
+          >
+            <Fieldset
+              label="Date of Birth"
+              name="dob"
+              inputIcon="event"
+              control={control}
+              placeholder="20/10/2001"
+              errors={errors}
+              required
+            />
+
+            <ModalDatePicker setValue={setValue} />
+          </View>
+
           <SelectLicenceArea
             onAddItem={(value: string) => handleAddLicence(value)}
             onRemoveItem={handleRemoveLicences}

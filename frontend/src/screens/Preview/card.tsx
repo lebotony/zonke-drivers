@@ -72,13 +72,13 @@ export const PreviewCard = () => {
     <View
       style={{
         backgroundColor: Colors.bg,
-        paddingHorizontal: 10,
         flex: 1,
-        alignItems: "center",
         ...topOffset,
       }}
     >
-      <Text style={{ fontSize: 17, marginBottom: 20 }}>Preview Card</Text>
+      <View style={{ alignItems: "center", backgroundColor: Colors.bg }}>
+        <Text style={{ fontSize: 20, marginBottom: 15 }}>Preview Card</Text>
+      </View>
       <DriverCard driver={driverProfile} />
     </View>
   );
