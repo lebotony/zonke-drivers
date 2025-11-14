@@ -51,15 +51,6 @@ export const styles = StyleSheet.create({
     height: 36,
     borderRadius: "50%",
   },
-  skipBtn: {
-    color: Colors.primaryBlue,
-    position: "absolute",
-    justifyContent: "center",
-    top: "50%",
-    right: 35,
-    fontWeight: 800,
-    fontSize: 16,
-  },
   inputContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -88,4 +79,9 @@ export const styles = StyleSheet.create({
     borderRadius: 8,
     textAlignVertical: "top",
   },
-});
+  driverProfileText: {
+    fontSize: 17,
+    fontWeight: 600,
+    marginBottom: 3
+  }
+})

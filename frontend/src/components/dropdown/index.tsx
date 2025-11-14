@@ -243,7 +243,8 @@ export const DropdownInput = <T extends FieldValues>({
         <TextInput
           value={query}
           onChangeText={handleChange}
-          numberOfLines={1}
+          // numberOfLines={1}
+          multiline
           placeholderTextColor={placeholderTextColor}
           placeholder={placeholder}
           style={[

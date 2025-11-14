@@ -72,6 +72,7 @@ export const AddVehicle = () => {
     formState: { errors },
   } = useForm<AddVehicleFormValues>({
     resolver: zodResolver(FormSchema),
+    defaultValues: formValues,
   });
 
   useEffect(() => {

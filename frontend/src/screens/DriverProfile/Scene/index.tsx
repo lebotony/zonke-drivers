@@ -101,12 +101,14 @@ export const Scene = () => {
               </View>
             )}
 
-            <Text style={styles.name}>
-              {driver?.first_name} {driver?.last_name}{" "}
+            <View style={styles.nameAgeWrapper}>
+              <Text style={styles.name}>
+                {driver?.first_name} {driver?.last_name}{" "}
+              </Text>
               <Text
                 style={styles.age}
               >{`(${calculateAge(driver?.dob)}) yrs`}</Text>
-            </Text>
+            </View>
 
             <View style={styles.headerLocation}>
               <MaterialIcons

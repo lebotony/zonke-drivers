@@ -16,14 +16,14 @@ defmodule BackendWeb.Drivers.DriverJSON do
   def show(%{driver: driver}) do
     user_map = Map.get(driver, :user)
     user =
-      if user_map != nil do
+      if Ecto.assoc_loaded?(user_map) and not is_nil(user_map) do
         UserJSON.show(%{user: user_map})
       else
         nil
       end
 
     asset_url =
-      if Map.has_key?(driver, :asset_filename), do: prepare_url(driver.asset_filename), else: nil
+      if Map.has_key?(driver, :asset_filename), do: Assets.prepare_url(driver.asset_filename), else: nil
 
     %{
       id: Map.get(driver, :id),
@@ -49,12 +49,5 @@ defmodule BackendWeb.Drivers.DriverJSON do
     }
     |> Enum.reject(fn {_k, v} -> is_nil(v) end)
     |> Enum.into(%{})
-  end
-
-  defp prepare_url(filename) do
-    case Assets.presigned_url(filename) do
-      {:ok, url} -> url
-      _ -> nil
-    end
   end
 end

@@ -31,6 +31,14 @@ defmodule Backend.Applications.VehicleApplications do
     |> Drivers.format_driver()
   end
 
+  def get_application_by_vehicle_driver(vehicle_id, driver_id) do
+    VehicleApplicationBy.base_query()
+    |> VehicleApplicationBy.by_vehicle(vehicle_id)
+    |> VehicleApplicationBy.by_driver(driver_id)
+    |> Repo.one()
+    |> format_vehicle_application()
+  end
+
   def update(%VehicleApplication{} = vehicle_application, params) do
     vehicle_application
     |> VehicleApplication.changeset(params)

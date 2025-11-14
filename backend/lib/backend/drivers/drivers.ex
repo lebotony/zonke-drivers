@@ -10,7 +10,7 @@ defmodule Backend.Drivers.Drivers do
   defdelegate authorize(action, params, session), to: Policy
 
   @user_fields [:asset, :first_name, :last_name, :email]
-  @driver_preloads [user: :asset]
+  @user_preloads [user: :asset]
 
   def create(params, %{user_id: user_id}) do
     params =
@@ -26,10 +26,8 @@ defmodule Backend.Drivers.Drivers do
     {user_params, driver_params} = Map.split(params, @user_fields)
 
     with {:ok, _user} <- maybe_update_user(user_id, user_params),
-         {:ok, driver} <- maybe_update_driver(user_id, driver_params),
-         updated_driver <- Repo.get(Driver, driver.id) |> Repo.preload(@driver_preloads) do
-      # IO.inspect(updated_driver)
-      {:ok, updated_driver}
+         {:ok, driver} <- maybe_update_driver(user_id, driver_params) do
+      {:ok, Repo.preload(driver, @user_preloads)}
     else
       {:error, reason} -> {:error, reason}
     end
@@ -60,13 +58,19 @@ defmodule Backend.Drivers.Drivers do
     case get_user_driver(user_id) do
       {:ok, driver} ->
         if map_size(decoded_params) > 0 do
-          update_driver(driver, decoded_params)
+          case update_driver(driver, decoded_params) do
+            {:ok, driver} -> get_driver(driver.id, :public)
+            {:error, error} -> {:error, error}
+          end
         else
           {:ok, driver}
         end
 
       {:error, :not_found} ->
-        create(decoded_params, %{user_id: user_id})
+        case create(decoded_params, %{user_id: user_id}) do
+          {:ok, driver} -> get_driver(driver.id, :public)
+          {:error, error} -> {:error, error}
+        end
     end
   end
 

@@ -25,7 +25,8 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
     setSelectedDriverId,
   } = props;
 
-  const { updatePaginatedObject } = usePaginatedCache();
+  const { updatePaginatedObject, getUpdatedObjectSnapshot } =
+    usePaginatedCache();
 
   const handleAddVehicleDriver = () => {
     const params = {
@@ -33,11 +34,17 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
       vehicle_id: vehicleId,
     };
 
+    const vehicle = getUpdatedObjectSnapshot("userVehicles", vehicleId);
+
     createVehicleDriver(params)
       .then((res) => {
         AppToast("Vehicle Driver added successfully", true);
 
         updatePaginatedObject("userVehicles", vehicleId, {
+          applications: vehicle?.applications?.filter(
+            (application: VehicleApplication) =>
+              application?.driver?.id !== driverId
+          ),
           vehicle_drivers: [
             {
               ...res,

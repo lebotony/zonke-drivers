@@ -124,6 +124,18 @@ defmodule Backend.Assets.Assets do
     end
   end
 
+  def prepare_url(filename) do
+    case filename do
+      nil -> nil
+
+      filename ->
+        case presigned_url(filename) do
+          {:ok, url} -> url
+          _ -> nil
+        end
+    end
+  end
+
   def s3_config() do
     if Mix.env() == :dev do
       ExAws.Config.new(:s3,

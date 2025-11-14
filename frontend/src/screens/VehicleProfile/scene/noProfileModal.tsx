@@ -18,8 +18,8 @@ export const NoProfileModal = (props: NoProfileModalModalProps) => {
   return (
     <Modal fn={() => setShowNoProfileModal(false)}>
       <Text style={styles.messageText}>
-        You do not have a driver profile yet, press the create button to create
-        one.
+        You do not have a driver profile yet. Press the create button and be
+        re-directed to the create page.
       </Text>
       <View
         style={{

@@ -169,7 +169,7 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
     if (!user || !socket || !userChannel) return;
 
     const handleNewThread = (payload: Thread) => {
-      console.log("New thread received: ", payload);
+      console.log("New THREAD received: ", payload);
 
       const cachedThreadChannels: any = queryClient.getQueryData([
         "threadChannels",

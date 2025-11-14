@@ -12,13 +12,13 @@ defmodule Backend.Applications.Queries.VehicleApplicationBy do
     where(query, [vehicle_applications: va], va.id == ^id)
   end
 
-  def by_vehicle(query, id) do
-    where(query, [vehicle_applications: va], va.vehicle_id == ^id)
+  def by_vehicle(query, vehicle_id) do
+    where(query, [vehicle_applications: va], va.vehicle_id == ^vehicle_id)
   end
 
-  def by_driver(query, id) do
+  def by_driver(query, driver_id) do
     query
-    |> where([vehicle_applications: va], va.user_id == ^id)
+    |> where([vehicle_applications: va], va.driver_id == ^driver_id)
   end
 
   def by_vehicle_owner(query, id) do

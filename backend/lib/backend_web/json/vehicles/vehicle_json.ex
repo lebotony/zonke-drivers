@@ -3,6 +3,7 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
   alias BackendWeb.Applications.VehicleApplicationJSON
   alias BackendWeb.Assets.AssetJSON
   alias BackendWeb.UserJSON
+  alias Backend.Assets.Asset
 
   def index(%{vehicles: vehicles, paginate: paginate}) do
     %{
@@ -24,10 +25,22 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
       end
 
     user =
-      if is_map(vehicle.user) do
-        UserJSON.show(%{user: vehicle.user})
-      else
-        nil
+      cond do
+        is_struct(vehicle.user) and Ecto.assoc_loaded?(vehicle.user) ->
+          UserJSON.show(%{user: vehicle.user})
+
+        is_map(vehicle.user) ->
+          filename =
+            case Map.get(vehicle.user, :asset) do
+              %Asset{filename: f} when is_binary(f) and f != "" -> f
+              %{filename: f} when is_binary(f) and f != "" -> f
+              _ -> nil
+            end
+
+          if filename, do: UserJSON.show(%{user: vehicle.user}), else: nil
+
+        true ->
+          nil
       end
 
     %{

@@ -2,16 +2,15 @@
 import React from "react";
 import { Text } from "react-native-paper";
 import { View, Pressable } from "react-native";
+
 import { Image } from "expo-image";
 import { router } from "expo-router";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 
-import carPic from "@/assets/images/car-test.jpg";
+import { capitalizeFirstLetter } from "@/src/utils";
 
 import { Colors } from "../../../../../constants/ui";
 import { styles } from "../styles/card";
-
-import { capitalizeFirstLetter } from "@/src/utils";
 
 type Props = {
   vehicle: Vehicle;
@@ -29,7 +28,7 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
           </Text>
           <Text
             style={styles.model}
-          >{`Model year: ${vehicle?.model_year}`}</Text>
+          >{`Model year: ${vehicle?.model_year ?? "NA"}`}</Text>
           <View style={styles.priceContainer}>
             <Text
               style={styles.price}

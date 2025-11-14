@@ -40,7 +40,7 @@ defmodule Backend.Messenger.Threads do
         thread_participants:
           {from(tp in ThreadParticipant,
              join: p in assoc(tp, :participant),
-             join: a in Asset,
+             left_join: a in Asset,
              on: p.id == a.user_id,
              select: %ThreadParticipant{
                id: tp.id,
@@ -105,7 +105,7 @@ defmodule Backend.Messenger.Threads do
         thread_participants:
           {from(tp in ThreadParticipant,
              join: p in assoc(tp, :participant),
-             join: a in Asset,
+             left_join: a in Asset,
              on: p.id == a.user_id,
              select: %ThreadParticipant{
                id: tp.id,
