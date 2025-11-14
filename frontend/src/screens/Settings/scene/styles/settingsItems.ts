@@ -12,8 +12,8 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   settingsItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     height: 55,
     paddingLeft: 15,
   },
@@ -31,12 +31,12 @@ export const styles = StyleSheet.create({
     width: 35,
     height: 35,
     padding: 5,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   forwardArrow: {
     color: Colors.lightGrey,
-    position: 'absolute',
-    right: 15
+    position: "absolute",
+    right: 15,
   },
-})
+});

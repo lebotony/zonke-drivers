@@ -7,16 +7,16 @@ import { topOffset } from "@/src/components/appStyles";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    ...topOffset
+    ...topOffset,
   },
   headerWrapper: {
-    alignItems: 'center',
-    marginBottom: 20
+    alignItems: "center",
+    marginBottom: 20,
   },
   header: {
     fontSize: 20,
     fontWeight: 600,
-    marginBottom: 10
+    marginBottom: 10,
   },
   plusBtn: {
     backgroundColor: Colors.mrDBlue,
@@ -32,7 +32,7 @@ export const styles = StyleSheet.create({
   },
   imageWrapper: {
     width: "88%",
-    aspectRatio: 16/12,
+    aspectRatio: 16 / 12,
     borderRadius: 12,
   },
   imageStyles: {
@@ -43,7 +43,7 @@ export const styles = StyleSheet.create({
   imageText: {
     color: Colors.mediumGrey,
     fontSize: 20,
-    position: 'absolute',
+    position: "absolute",
     top: "50%",
   },
   defaultImageStyles: {
@@ -56,35 +56,35 @@ export const styles = StyleSheet.create({
     fontWeight: 500,
     paddingHorizontal: 14,
     color: Colors.mediumGrey,
-    marginBottom: 12
+    marginBottom: 12,
   },
   card: {
     backgroundColor: Colors.white,
     marginHorizontal: 13,
     borderRadius: 18,
     padding: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 10,
-    ...shadowStyles
+    ...shadowStyles,
   },
   iconWrapper: {
     width: 36,
     height: 36,
     borderRadius: 18,
     backgroundColor: "#E8F5F0",
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
   },
   dropdowmIconWrapper: {
     width: 22,
     height: 22,
     borderRadius: 11,
     backgroundColor: Colors.whiteSmoke,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
-})
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

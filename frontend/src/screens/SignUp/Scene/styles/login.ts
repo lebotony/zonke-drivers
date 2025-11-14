@@ -1,5 +1,5 @@
-import { Colors } from '@/constants/ui';
-import { StyleSheet } from 'react-native';
+import { Colors } from "@/constants/ui";
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
@@ -7,15 +7,15 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.bg,
     paddingHorizontal: 20,
     paddingTop: 15,
-    position: 'relative',
+    position: "relative",
   },
   goBack: {
     height: 40,
     width: 40,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: '50%',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: "50%",
     shadowColor: Colors.darkGrey,
     shadowOffset: {
       width: 0,
@@ -25,18 +25,18 @@ export const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 4,
     backgroundColor: Colors.whiteSmoke,
-    position: 'absolute',
+    position: "absolute",
     top: 4,
     left: 4,
   },
   logoContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 25,
   },
   switch: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginBottom: 18,
-    gap: 10
+    gap: 10,
   },
   switchBtns: {
     borderColor: Colors.lightGrey,
@@ -44,12 +44,12 @@ export const styles = StyleSheet.create({
     borderRadius: 6,
     paddingVertical: 7,
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   activeSwitchBtn: {
     borderWidth: 0,
-    backgroundColor: Colors.mrDBlue
+    backgroundColor: Colors.mrDBlue,
   },
   switchText: {
     color: Colors.black,
@@ -57,14 +57,14 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: '600',
+    fontWeight: "600",
     marginBottom: 15,
     color: Colors.black,
-    textAlign: 'center',
+    textAlign: "center",
   },
   policy: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingLeft: 15,
   },
   policyText: {
@@ -73,11 +73,11 @@ export const styles = StyleSheet.create({
   buttonText: {
     color: Colors.white,
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: "800",
   },
   dividerRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginVertical: 18,
   },
   divider: {
@@ -98,22 +98,22 @@ export const styles = StyleSheet.create({
   googleText: {
     fontSize: 17,
     color: Colors.black,
-    fontWeight: '700',
+    fontWeight: "700",
   },
   signupRow: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginTop: 20,
   },
   signupText: {
     color: Colors.mrDBlue,
-    fontWeight: '500',
+    fontWeight: "500",
     marginLeft: 5,
   },
   copyright: {
     color: Colors.grey,
     fontSize: 12,
     marginTop: 18,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });

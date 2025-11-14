@@ -4,9 +4,9 @@ export const shadowStyles = {
   shadowColor: Colors.darkGrey,
   shadowOffset: {
     width: 0,
-    height: 3
+    height: 3,
   },
   shadowOpacity: 0.19,
   shadowRadius: 5.62,
-  elevation: 2
-}
+  elevation: 2,
+};

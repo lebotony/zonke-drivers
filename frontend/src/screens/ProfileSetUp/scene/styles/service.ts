@@ -1,12 +1,12 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { Colors } from '@/constants/ui';
+import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   resultItem: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
     backgroundColor: Colors.lighterBlue,
     borderRadius: 10,
     marginBottom: 12,
@@ -22,7 +22,7 @@ export const styles = StyleSheet.create({
     height: 25,
     borderRadius: 8,
     borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
 });

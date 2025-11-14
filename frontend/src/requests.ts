@@ -1,29 +1,19 @@
 import { API_URL } from "@/constants/srcConstants";
 import axios from "axios";
 
-export const httpGet = (
-  path: string,
-  params?: unknown
-) =>
+export const httpGet = (path: string, params?: unknown) =>
   axios
     .get(`${API_URL}${path}`, { params: params })
     .then((response) => response.data)
     .catch((err) => Promise.reject(err));
 
-export const httpPost = (
-  path: string,
-  params: object | string,
-) =>
+export const httpPost = (path: string, params: object | string) =>
   axios
     .post(`${API_URL}${path}`, params)
     .then((response) => response.data)
     .catch((err) => Promise.reject(err));
 
-export const httpPut = (
-  path: string,
-  id: string,
-  params: object | string
-) =>
+export const httpPut = (path: string, id: string, params: object | string) =>
   axios
     .put(`${API_URL}${path}/${id}`, params)
     .then((response) => response.data)

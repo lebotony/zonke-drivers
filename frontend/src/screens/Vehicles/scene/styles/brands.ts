@@ -5,7 +5,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   brands: {
     gap: 6,
-    paddingBottom: 5
+    paddingBottom: 5,
   },
   chip: {
     flexDirection: "column",
@@ -27,5 +27,5 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: "600",
     color: Colors.darkCharcoalGrey,
-  }
-})
+  },
+});

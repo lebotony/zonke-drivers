@@ -15,10 +15,4 @@ export const BrandsList = [
   { id: "volvo", label: "Volvo", icon: "siVolvo" },
 ];
 
-export const VEHICLE_TYPES = [
-  "Bike",
-  "Passenger",
-  "Taxi",
-  "Truck",
-  "Lorry",
-];
+export const VEHICLE_TYPES = ["Bike", "Passenger", "Taxi", "Truck", "Lorry"];

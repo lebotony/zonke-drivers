@@ -1,11 +1,17 @@
-import React, { ReactNode, useRef } from 'react';
-import { Animated, Dimensions, PanResponder, Pressable, StatusBar } from 'react-native';
-import { BlurView } from 'expo-blur';
+import React, { ReactNode, useRef } from "react";
+import {
+  Animated,
+  Dimensions,
+  PanResponder,
+  Pressable,
+  StatusBar,
+} from "react-native";
+import { BlurView } from "expo-blur";
 
-import { Colors } from '@/constants/ui';
+import { Colors } from "@/constants/ui";
 
-import { styles } from './styles';
-import { BarLine } from './bar';
+import { styles } from "./styles";
+import { BarLine } from "./bar";
 
 type ModalProps = {
   children?: ReactNode;
@@ -49,19 +55,22 @@ export const Modal = (props: ModalProps) => {
           }).start();
         }
       },
-    })
+    }),
   ).current;
 
   const screenHeight = Dimensions.get("window").height;
-  
 
   return (
     <BlurView intensity={60} tint="dark" style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={Colors.grey}/>
+      <StatusBar barStyle="dark-content" backgroundColor={Colors.grey} />
       <Pressable style={styles.backdrop} onPress={dismissWithAnimation} />
 
       <Animated.View
-        style={[styles.modalWrapper, { transform: [{ translateY: pan.y }] }, {maxHeight: 0.8*screenHeight}]}
+        style={[
+          styles.modalWrapper,
+          { transform: [{ translateY: pan.y }] },
+          { maxHeight: 0.8 * screenHeight },
+        ]}
         {...panResponder.panHandlers}
       >
         <BarLine />

@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingRight: 10,
-    paddingTop: 5
+    paddingTop: 5,
   },
   filterBtn: {
     flexDirection: "row",
@@ -25,7 +25,7 @@ export const styles = StyleSheet.create({
   },
   filterContainer: {
     flexDirection: "row",
-    alignItems: 'center',
+    alignItems: "center",
     gap: 10,
   },
   resetBtn: {
@@ -33,4 +33,4 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     gap: 6,
   },
-})
+});

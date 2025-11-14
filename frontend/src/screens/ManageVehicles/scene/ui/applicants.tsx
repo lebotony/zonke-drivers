@@ -1,9 +1,7 @@
 import { useEffect, useState } from "react";
 import { Text } from "react-native-paper";
 import { View, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
-
 import { find, isEmpty } from "lodash";
-
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 
@@ -30,12 +28,15 @@ export const ApplicantsScreen = () => {
       "applicationsPagination",
       "fetchedVehicleApplications",
     ]);
-  const initialVehicle = find(userVehicles, { id: initialVehicleId });
-  const [showVehicleDriverModal, setShowVehicleDriverModal] = useState(false);
-  const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
+
+  const initialVehicle =
+    find(userVehicles, { id: initialVehicleId }) || userVehicles?.[0];
 
   const [selectedVehicle, setSelectedVehicle] =
     useState<Vehicle>(initialVehicle);
+  const [showVehicleDriverModal, setShowVehicleDriverModal] = useState(false);
+  const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
 
   const queryClient = useQueryClient();
   const {
@@ -45,71 +46,81 @@ export const ApplicantsScreen = () => {
     updateNestedPagination,
   } = usePaginatedCache();
 
+  // 🧠 Helper: update vehicle applications + mark seen
   const loadVehicleApplications = (applicationsObj: Record<string, any>) => {
     const vehicleId = selectedVehicle?.id;
+    if (!vehicleId) return;
+
     updateNestedPagination(
       vehicleId,
       "applicationsPagination",
-      applicationsObj.paginate
+      applicationsObj.paginate,
     );
 
-    const vehicleApplications = applicationsObj?.data;
-
-    const vehicle = getUpdatedObjectSnapshot("userVehicles", vehicleId);
+    const vehicleApplications = applicationsObj?.data ?? [];
+    const vehicleSnapshot = getUpdatedObjectSnapshot("userVehicles", vehicleId);
 
     updatePaginatedObject("userVehicles", vehicleId, {
       unseen_applications_count: 0,
       applications: [
-        ...(vehicle?.applications ?? []),
-        ...(vehicleApplications ?? []),
+        ...(vehicleSnapshot?.applications ?? []),
+        ...vehicleApplications,
       ],
     });
 
+    // mark seen
     setApplicationsSeen(vehicleId);
   };
 
+  // 🧠 Cache fetched vehicle IDs to avoid refetch
   const handleSetFetchedVehicleApplications = (id: string) =>
     queryClient.setQueryData(
       ["fetchedVehicleApplications"],
-      (fetchedVehicleApplications: Vehicle["id"][]) => [
-        ...(fetchedVehicleApplications ?? []),
-        id,
-      ]
+      (prev: Vehicle["id"][] = []) => {
+        if (prev.includes(id)) return prev;
+        return [...prev, id];
+      },
     );
 
+  // 🔁 Fetch applications for a given vehicle
   const handleFetchApplications = () => {
-    setLoading(true);
-    const vehicleId = selectedVehicle?.id;
+    if (!selectedVehicle?.id) return;
+    // setLoading(true);
+
     const { pageParam } = onFetchNestedPagination(
-      vehicleId,
-      "applicationsPagination"
+      selectedVehicle.id,
+      "applicationsPagination",
     );
 
     fetchApplications({
       pageParam,
-      vehicleId,
+      vehicleId: selectedVehicle.id,
     }).then((res) => {
       loadVehicleApplications(res);
-      setLoading(false);
     });
+    // .finally(() => setLoading(false));
   };
 
+  // ⚡ On vehicle change, fetch if not cached yet
   useEffect(() => {
-    const vehicleId = selectedVehicle?.id;
-    if (!vehicleId) return;
+    if (!selectedVehicle?.id) return;
 
-    if (!fetchedVehicleApplications?.includes(vehicleId)) {
+    const alreadyFetched = fetchedVehicleApplications?.includes(
+      selectedVehicle.id,
+    );
+
+    if (!alreadyFetched) {
       handleFetchApplications();
-      handleSetFetchedVehicleApplications(vehicleId);
+      handleSetFetchedVehicleApplications(selectedVehicle.id);
     }
-  }, [selectedVehicle]);
+  }, [selectedVehicle?.id]);
 
+  // 🧠 Derived current vehicle snapshot
   const currentVehicle = find(userVehicles, { id: selectedVehicle?.id });
-
-  const [loading, setLoading] = useState(false);
 
   return (
     <SafeAreaView style={styles.container}>
+      {/* 🔹 Header */}
       <View style={styles.header}>
         <View style={styles.headerTitle}>
           <TouchableOpacity
@@ -126,14 +137,21 @@ export const ApplicantsScreen = () => {
           <Text style={styles.headerText}>Applicants</Text>
         </View>
 
-        {/* Vehicle Selector */}
-        <VehicleSelector
-          vehicles={userVehicles}
-          selectedVehicle={selectedVehicle}
-          onSelectVehicle={setSelectedVehicle}
-        />
+        {/* 🚗 Vehicle Selector */}
+        <View style={{ marginTop: 8 }}>
+          <VehicleSelector
+            vehicles={userVehicles}
+            selectedVehicle={selectedVehicle}
+            onSelectVehicle={(vehicle: Vehicle) => {
+              // reset pagination data for clarity if switching vehicles
+              setSelectedVehicle(vehicle);
+            }}
+          />
+        </View>
       </View>
-      {!loading && (
+
+      {/* 🔹 Applicants List */}
+      {
         <View style={styles.listContainer}>
           {!isEmpty(currentVehicle?.applications) ? (
             <FlatList
@@ -148,12 +166,7 @@ export const ApplicantsScreen = () => {
                 }
               }}
               renderItem={({ item }) => (
-                <View
-                  style={[
-                    { paddingVertical: 7 },
-                    // !item?.seen && { backgroundColor: Colors.whiteSmoke },
-                  ]}
-                >
+                <View style={{ paddingVertical: 7 }}>
                   <DriverCard
                     applicant
                     seen={item?.seen}
@@ -183,20 +196,9 @@ export const ApplicantsScreen = () => {
             </View>
           )}
         </View>
-      )}
-      {loading && (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: Colors.bg,
-          }}
-        >
-          <Spinner />
-        </View>
-      )}
+      }
 
+      {/* 🔹 Vehicle Driver Modal */}
       {showVehicleDriverModal && (
         <VehicleDriverModal
           setShowVehicleDriverModal={setShowVehicleDriverModal}

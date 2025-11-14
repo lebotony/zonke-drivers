@@ -7,6 +7,3 @@ export const Label = ({ text }: { text: string }) => (
     <Text style={styles.text}>{text}</Text>
   </View>
 );
-
-
-

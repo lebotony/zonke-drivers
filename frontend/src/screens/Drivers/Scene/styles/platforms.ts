@@ -14,12 +14,12 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     borderRadius: 7,
     ...shadowStyles,
-    shadowOpacity: 0.3
+    shadowOpacity: 0.3,
   },
   justIconPlatform: {
     width: 35,
     justifyContent: "center",
     flexDirection: "row",
     alignItems: "center",
-  }
+  },
 });

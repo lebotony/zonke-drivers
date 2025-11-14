@@ -7,7 +7,7 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.bg,
-    ...topOffset
+    ...topOffset,
   },
   header: {
     fontSize: 22,
@@ -17,27 +17,26 @@ export const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: Colors.lightGrey,
     borderStyle: "dashed",
-    justifyContent: 'center',
-    borderRadius: "50%"
+    justifyContent: "center",
+    borderRadius: "50%",
   },
   addText: {
     fontSize: 13,
-    position: 'absolute',
+    position: "absolute",
     color: Colors.mediumGrey,
-    alignItems: 'center',
-    left: 16
+    alignItems: "center",
+    left: 16,
   },
   userWrapper: {
     backgroundColor: Colors.white,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 15,
     paddingVertical: 10,
     marginTop: 5,
     borderRadius: 7,
   },
-  infowrapper: {
-  },
+  infowrapper: {},
   userText: {
     fontSize: 18,
     marginLeft: 20,
@@ -45,12 +44,12 @@ export const styles = StyleSheet.create({
   descriptionText: {
     fontSize: 15,
     marginLeft: 20,
-    color: Colors.mediumGrey
+    color: Colors.mediumGrey,
   },
   forwardArrow: {
     color: Colors.lightGrey,
-    position: 'absolute',
-    right: 15
+    position: "absolute",
+    right: 15,
   },
   body: {
     marginTop: 35,
@@ -61,8 +60,8 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   settingsItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     height: 52,
     paddingLeft: 15,
   },
@@ -80,7 +79,7 @@ export const styles = StyleSheet.create({
     width: 35,
     height: 35,
     padding: 5,
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-})
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});

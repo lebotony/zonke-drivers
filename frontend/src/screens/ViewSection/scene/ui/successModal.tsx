@@ -1,11 +1,11 @@
-import { View, Text } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Text } from "react-native";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { CustomButton } from '@/src/components/elements/button';
-import { Colors } from '@/constants/ui';
-import { Modal } from '@/src/components/elements/modal';
+import { CustomButton } from "@/src/components/elements/button";
+import { Colors } from "@/constants/ui";
+import { Modal } from "@/src/components/elements/modal";
 
-import { styles } from '../styles/modals';
+import { styles } from "../styles/modals";
 
 export const SuccessModal = () => {
   return (
@@ -13,7 +13,11 @@ export const SuccessModal = () => {
       <View style={styles.container}>
         <Text style={styles.title}>Your booking was Successful</Text>
         <View style={{ marginVertical: 15 }}>
-          <MaterialCommunityIcons name="shield-check" size={50} color={Colors.mediumGreen} />
+          <MaterialCommunityIcons
+            name="shield-check"
+            size={50}
+            color={Colors.mediumGreen}
+          />
         </View>
         <Text style={styles.thanksText}>
           You successfully booked the makeup service from
@@ -24,7 +28,12 @@ export const SuccessModal = () => {
           <Text style={styles.boldText}> 15:00</Text>
         </Text>
         <CustomButton
-          customStyle={{ position: 'absolute', bottom: 35, width: '100%', paddingVertical: 13 }}
+          customStyle={{
+            position: "absolute",
+            bottom: 35,
+            width: "100%",
+            paddingVertical: 13,
+          }}
           color="primaryBlue"
           onPress={() => null}
         >

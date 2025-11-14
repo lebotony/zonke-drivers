@@ -3,18 +3,18 @@ type VehicleDriver = {
   first_name: string;
   last_name: string;
   driver: Driver;
-  payments: Payment[],
-  total_payments: number,
-  last_payment: number,
-  payment_count: number,
-  comments?: CommentType[]
+  payments: Payment[];
+  total_payments: number;
+  last_payment: number;
+  payment_count: number;
+  comments?: CommentType[];
 };
 
 type VehicleApplication = {
   id: string;
   driver: Driver;
   seen: boolean;
-  status?: 'pending' | 'accepted' | 'rejected'
+  status?: "pending" | "accepted" | "rejected";
 };
 
 type Payment = {

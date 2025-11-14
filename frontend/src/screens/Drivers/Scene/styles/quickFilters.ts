@@ -40,9 +40,9 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.4,
   },
   platformText: {
-    color: Colors.white
+    color: Colors.white,
   },
   filterIcon: {
-    marginRight: 3
-  }
+    marginRight: 3,
+  },
 });

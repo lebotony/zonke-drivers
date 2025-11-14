@@ -66,7 +66,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   const renderRailSelected = useCallback(() => <RailSelected />, []);
   const renderLabel = useCallback(
     (value: number) => <Label text={`${value} yrs`} />,
-    []
+    [],
   );
 
   if (!visible) return null;

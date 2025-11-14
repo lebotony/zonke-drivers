@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const fieldValidators = {
   first_name: z.string().optional(),
@@ -8,7 +8,8 @@ export const fieldValidators = {
       address: z.string().optional(),
       lon: z.number().optional(),
       lat: z.number().optional(),
-    }).optional(),
+    })
+    .optional(),
   email: z.string().optional(),
   dob: z.string().optional(),
   description: z.string().optional(),
@@ -18,7 +19,8 @@ export const fieldValidators = {
     .object({
       file_path: z.string().optional(),
       filename: z.string().optional(),
-    }).optional()
+    })
+    .optional(),
 };
 
 export const DriverProfileSchema = z.object({

@@ -1,15 +1,15 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { Colors } from '../../../../constants/ui';
+import { Colors } from "../../../../constants/ui";
 
 export const styles = StyleSheet.create({
   container: {},
   inputWrapper: {
-    backgroundColor: 'rgba(0, 0, 0, 0.06)',
+    backgroundColor: "rgba(0, 0, 0, 0.06)",
     flex: 1,
     borderRadius: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 10,
     gap: 4,
   },

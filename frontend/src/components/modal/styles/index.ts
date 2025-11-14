@@ -1,10 +1,10 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { Colors } from '../../../../constants/ui';
+import { Colors } from "../../../../constants/ui";
 
 export const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
@@ -12,8 +12,8 @@ export const styles = StyleSheet.create({
     zIndex: 100000,
     elevation: 10000,
     flex: 1,
-    flexDirection: 'column',
-    justifyContent: 'flex-end',
+    flexDirection: "column",
+    justifyContent: "flex-end",
   },
   modalWrapper: {
     position: "absolute",
@@ -26,6 +26,6 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   backdrop: {
-  ...StyleSheet.absoluteFillObject,
-},
+    ...StyleSheet.absoluteFillObject,
+  },
 });

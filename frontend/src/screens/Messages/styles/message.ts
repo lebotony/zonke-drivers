@@ -1,10 +1,10 @@
-import { StyleSheet } from 'react-native';
-import { Colors } from '@/constants/ui';
+import { StyleSheet } from "react-native";
+import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   messageItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingVertical: 12,
     backgroundColor: Colors.white,
     paddingHorizontal: 12,
@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.lightGrey,
   },
   avatarStatus: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 2,
     right: 10,
     width: 12,
@@ -33,9 +33,9 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   messageNameRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   messageName: {
     fontSize: 15,
@@ -45,30 +45,30 @@ export const styles = StyleSheet.create({
   messageTime: {
     fontSize: 13,
     color: Colors.darkCharcoal,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   messageTextRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   messageText: {
     fontSize: 14,
     color: Colors.slateGray,
     marginTop: 2,
-    maxWidth: '90%',
+    maxWidth: "90%",
   },
   unreadBadge: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: "#4CAF50",
     width: 20,
     height: 20,
     borderRadius: 10,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   unreadBadgeText: {
     color: Colors.white,
-    fontWeight: '600',
+    fontWeight: "600",
     fontSize: 13,
   },
 });

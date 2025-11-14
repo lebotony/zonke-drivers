@@ -3,7 +3,7 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    flexDirection: 'column',
+    flexDirection: "column",
   },
   headerContainer: {
     position: "absolute",
@@ -17,5 +17,5 @@ export const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     marginTop: 14,
-  }
+  },
 });

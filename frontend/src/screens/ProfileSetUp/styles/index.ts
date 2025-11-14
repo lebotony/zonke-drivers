@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { Colors } from '@/constants/ui';
+import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   container: {
@@ -8,6 +8,6 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.bg,
     paddingHorizontal: 24,
     paddingTop: 15,
-    position: 'relative',
+    position: "relative",
   },
 });

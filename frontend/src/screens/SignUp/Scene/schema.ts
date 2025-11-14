@@ -1,11 +1,11 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const fieldValidators = {
   first_name: z.string(),
   last_name: z.string(),
-  username: z.string().min(3, 'Username must be at least 3 characters'),
+  username: z.string().min(3, "Username must be at least 3 characters"),
   email: z.any(),
-  password: z.string().min(6, 'Password must be at least 6 characters'),
+  password: z.string().min(6, "Password must be at least 6 characters"),
   confirm_password: z.string(),
 };
 
@@ -20,7 +20,7 @@ export const SignUpSchema = z
   })
   .refine((data) => data.password === data.confirm_password, {
     message: "Passwords don't match",
-    path: ['confirm_password'],
+    path: ["confirm_password"],
   });
 
 export const SignInSchema = z.object({

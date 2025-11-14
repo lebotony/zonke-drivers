@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { FlatList, SafeAreaView, View } from "react-native";
 import { Text } from "react-native-paper";
-
 import { useLocalSearchParams } from "expo-router";
 import { find } from "lodash";
 import { useQueryClient } from "@tanstack/react-query";
@@ -13,14 +12,13 @@ import { CommentModal } from "@/src/screens/ViewSection/scene/ui/commentModal";
 import { InlineSwitch } from "@/src/components/misc/inlineSwitch";
 import { Colors } from "@/constants/ui";
 import { CustomButton } from "@/src/components/elements/button";
-import { Avatar } from "@/src/components/visual/avatar";
 
+import { VehicleSelector } from "./vehicleSelector";
 import { PaymentCard } from "./paymentCard";
 import { fetchPayments } from "../../actions";
 import { styles } from "../styles/payments";
 import { AddModal } from "./addModal";
 import { switchItems } from "../constants";
-import { VehicleSelector } from "./vehicleSelector";
 
 type PaymentsResponse = {
   data: Payment[];
@@ -30,6 +28,12 @@ type PaymentsResponse = {
 export const PaymentsScreen = () => {
   const { id } = useLocalSearchParams();
   const initialVehicleId = Array.isArray(id) ? id[0] : id;
+
+  const [showCommentModal, setShowCommentModal] = useState(false);
+  const [showAddPayModal, setShowAddPayModal] = useState(false);
+  const [switchSelection, setSwitchSelection] = useState(switchItems[0].slug);
+  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
+
   const { getCachedData } = useCustomQuery();
 
   const { userVehicles, fetchedVehicleDriverPayments, paymentsPagination } =
@@ -39,34 +43,35 @@ export const PaymentsScreen = () => {
       "fetchedVehicleDriverPayments",
     ]);
 
-  const initialVehicle: Vehicle = find(userVehicles, { id: initialVehicleId });
-  const [showCommentModal, setShowCommentModal] = useState(false);
-  const [showAddPayModal, setShowAddPayModal] = useState(false);
-  const [switchSelection, setSwitchSelection] = useState(switchItems[0].slug);
-  const [selectedVehicle, setSelectedVehicle] = useState<Vehicle>(initialVehicle);
-
-  const vehicleDriver: VehicleDriver = find(userVehicles, { id: selectedVehicle.id })
-    ?.vehicle_drivers?.[0];
+  useEffect(() => {
+    if (!selectedVehicle && userVehicles?.length) {
+      const initial =
+        find(userVehicles, { id: initialVehicleId }) || userVehicles[0];
+      setSelectedVehicle(initial);
+    }
+  }, [userVehicles, selectedVehicle, initialVehicleId]);
 
   const queryClient = useQueryClient();
   const {
     updatePaginatedObject,
-    getUpdatedObjectSnapshot,
     updateNestedPagination,
     onFetchNestedPagination,
   } = usePaginatedCache();
 
+  const vehicleDriver: VehicleDriver = find(userVehicles, {
+    id: selectedVehicle?.id,
+  })?.vehicle_drivers?.[0];
+
   const loadDriverPayments = (paymentsObj: PaymentsResponse) => {
-    const vehicleId = selectedVehicle?.id;
     updateNestedPagination(
       vehicleDriver?.id,
       "paymentsPagination",
-      paymentsObj.paginate
+      paymentsObj.paginate,
     );
 
     const payments = paymentsObj?.data ?? [];
 
-    updatePaginatedObject("userVehicles", vehicleId, {
+    updatePaginatedObject("userVehicles", selectedVehicle?.id!, {
       vehicle_drivers: [
         {
           ...vehicleDriver,
@@ -79,31 +84,36 @@ export const PaymentsScreen = () => {
   const handleSetFetchedVehicleDriverPayments = (id: string) =>
     queryClient.setQueryData(
       ["fetchedVehicleDriverPayments"],
-      (fetchedVehicleDriverPayments: VehicleDriver["id"][]) => [
-        ...(fetchedVehicleDriverPayments ?? []),
-        id,
-      ]
+      (prev: VehicleDriver["id"][] = []) => {
+        if (prev.includes(id)) return prev;
+        return [...prev, id];
+      },
     );
 
   const handleFetchPayments = () => {
     const { pageParam } = onFetchNestedPagination(
       vehicleDriver?.id,
-      "paymentsPagination"
+      "paymentsPagination",
     );
 
     fetchPayments({ pageParam, vehicleDriverId: vehicleDriver?.id }).then(
       (res: PaymentsResponse) => {
         loadDriverPayments(res);
-      }
+      },
     );
   };
 
   useEffect(() => {
-    if (!fetchedVehicleDriverPayments?.includes(vehicleDriver?.id)) {
+    if (!vehicleDriver?.id) return;
+
+    const alreadyFetched = fetchedVehicleDriverPayments?.includes(
+      vehicleDriver.id,
+    );
+    if (!alreadyFetched) {
       handleFetchPayments();
-      handleSetFetchedVehicleDriverPayments(vehicleDriver?.id);
+      handleSetFetchedVehicleDriverPayments(vehicleDriver.id);
     }
-  }, [userVehicles]);
+  }, [vehicleDriver?.id]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -115,18 +125,24 @@ export const PaymentsScreen = () => {
         onChange={setSwitchSelection}
       />
 
-
-      <View style={{paddingHorizontal: 14,marginTop: 8, backgroundColor: Colors.white}}>
+      <View
+        style={{
+          paddingHorizontal: 14,
+          marginTop: 8,
+          backgroundColor: Colors.white,
+        }}
+      >
         <VehicleSelector
-            vehicles={userVehicles}
-            selectedVehicle={selectedVehicle}
-            onSelectVehicle={setSelectedVehicle}
+          vehicles={userVehicles}
+          selectedVehicle={selectedVehicle}
+          onSelectVehicle={(vehicle: Vehicle) => {
+            setSelectedVehicle(vehicle);
+          }}
         />
       </View>
 
-
       {switchSelection === "payments" && (
-        <View style={{marginTop: 8}}>
+        <>
           <CustomButton
             onPress={() => setShowAddPayModal(true)}
             style={styles.addPaymentRow}
@@ -145,6 +161,7 @@ export const PaymentsScreen = () => {
                 handleFetchPayments();
               }
             }}
+            onEndReachedThreshold={0.4}
             keyExtractor={({ id }, index) => String(id + index)}
             renderItem={({ item }) => (
               <PaymentCard payment={item} vehicleDriver={vehicleDriver} />
@@ -152,24 +169,29 @@ export const PaymentsScreen = () => {
             contentContainerStyle={{ paddingVertical: 5 }}
             showsVerticalScrollIndicator={false}
           />
-        </View>
+        </>
       )}
 
-      {switchSelection === "comments" && (
-        <Comments
-          driverId={vehicleDriver?.driver?.id}
-          vehicleId={selectedVehicle.id}
-          setShowCommentModal={() => setShowCommentModal(true)}
-        />
-      )}
-      {showCommentModal && (
+      {switchSelection === "comments" &&
+        vehicleDriver?.driver?.id &&
+        selectedVehicle?.id && (
+          <Comments
+            driverId={vehicleDriver.driver.id}
+            vehicleId={selectedVehicle.id}
+            setShowCommentModal={() => setShowCommentModal(true)}
+          />
+        )}
+
+      {showCommentModal && vehicleDriver?.driver?.id && selectedVehicle && (
         <CommentModal
-          driverId={vehicleDriver?.driver?.id}
+          driverId={vehicleDriver.driver.id}
           vehicle={selectedVehicle}
           setShowCommentModal={() => setShowCommentModal(false)}
         />
       )}
-      {showAddPayModal && (
+
+      {/* ➕ ADD PAYMENT MODAL */}
+      {showAddPayModal && selectedVehicle?.id && (
         <AddModal
           setShowAddPayModal={() => setShowAddPayModal(false)}
           vehicleId={selectedVehicle.id}
