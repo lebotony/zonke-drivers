@@ -1,6 +1,6 @@
-import React from 'react';
+import React from "react";
 
-import { LoginScreen } from './Scene/ui/login';
+import { LoginScreen } from "./Scene/ui/login";
 
 type AuthScreenProps = {};
 

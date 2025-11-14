@@ -44,11 +44,14 @@ export const updateDriver = async (params: DriverFormValues) => {
     console.error("Error updating driver:", error);
     throw error;
   }
-}
+};
 
-export const fetchDriverProfile = () => httpGet('/drivers/user_driver')
+export const fetchDriverProfile = () => httpGet("/drivers/user_driver");
 
-export const updateVehicleUser = async (id: string, params: OwnerFormValues) => {
+export const updateVehicleUser = async (
+  id: string,
+  params: OwnerFormValues,
+) => {
   const { asset, ...rest } = params as any;
 
   const form = new FormData();
@@ -89,4 +92,4 @@ export const updateVehicleUser = async (id: string, params: OwnerFormValues) => 
     console.error("Error creating user image:", error);
     throw error;
   }
-}
+};

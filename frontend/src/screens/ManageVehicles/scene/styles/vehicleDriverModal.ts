@@ -8,12 +8,12 @@ export const styles = StyleSheet.create({
     fontSize: 15,
   },
   inputWrapper: {
-    flexDirection: 'row'
+    flexDirection: "row",
   },
   textInput: {
     height: 40,
     color: Colors.black,
     fontSize: 14,
     paddingRight: 12,
-  }
+  },
 });

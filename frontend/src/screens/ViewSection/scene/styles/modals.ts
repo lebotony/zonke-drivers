@@ -1,22 +1,22 @@
-import { Colors } from '@/constants/ui';
-import { StyleSheet } from 'react-native';
+import { Colors } from "@/constants/ui";
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   container: {
     padding: 20,
-    flexDirection: 'column',
-    alignItems: 'center',
+    flexDirection: "column",
+    alignItems: "center",
     height: 290,
   },
   title: {
     fontWeight: 700,
     fontSize: 20,
     color: Colors.black,
-    textAlign: 'center',
+    textAlign: "center",
   },
   // COMMENT MODAL
   commentBox: {
-    width: '100%',
+    width: "100%",
     marginTop: 20,
     paddingVertical: 10,
     paddingHorizontal: 15,
@@ -27,15 +27,14 @@ export const styles = StyleSheet.create({
     marginBottom: 25,
   },
   comment: {
-  flex: 1,
-  justifyContent: 'space-between',
-},
+    flex: 1,
+    justifyContent: "space-between",
+  },
   commentInput: {
-  height: '85%',
-  fontSize: 15,
-  textAlignVertical: 'top',
-},
-
+    height: "85%",
+    fontSize: 15,
+    textAlignVertical: "top",
+  },
 
   username: {
     fontSize: 16,
@@ -55,14 +54,14 @@ export const styles = StyleSheet.create({
   // RATE MODAL
   starsWrapper: {
     marginVertical: 25,
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     gap: 12,
   },
   thanksText: {
     fontSize: 16,
     color: Colors.mediumDarkGrey,
-    textAlign: 'center',
+    textAlign: "center",
   },
   // SUCCESS MODAL
   boldText: {

@@ -41,7 +41,7 @@ export const UseCustomQueryProvider: FC<UseQueryProviderProps> = (props) => {
           return acc;
         }
       },
-      {} as Record<string, any>
+      {} as Record<string, any>,
     );
   };
 
@@ -56,7 +56,7 @@ export const useCustomQuery = () => {
   const context = useContext(UseQueryContext);
   if (context === undefined) {
     throw new Error(
-      "useCustomQuery must be used within a UseCustomQueryProvider"
+      "useCustomQuery must be used within a UseCustomQueryProvider",
     );
   }
   return context;

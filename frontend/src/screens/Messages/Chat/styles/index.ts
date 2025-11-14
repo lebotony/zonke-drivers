@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-import { Colors } from '@/constants/ui';
+import { StyleSheet } from "react-native";
+import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   container: {
@@ -7,8 +7,8 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.white,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 12,
     paddingBottom: 10,
     borderBottomWidth: 1,
@@ -24,7 +24,7 @@ export const styles = StyleSheet.create({
   },
   name: {
     fontSize: 18,
-    fontWeight: '700',
+    fontWeight: "700",
     color: Colors.darkBlue,
   },
   status: {
@@ -36,7 +36,7 @@ export const styles = StyleSheet.create({
     flex: 1,
   },
   dateDivider: {
-    alignSelf: 'center',
+    alignSelf: "center",
     paddingVertical: 4,
     color: Colors.grayishRed,
     fontSize: 13,

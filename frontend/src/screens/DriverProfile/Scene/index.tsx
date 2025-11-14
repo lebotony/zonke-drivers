@@ -70,8 +70,8 @@ export const Scene = () => {
             if (!find(applicationDrivers, { id: driverId }))
               return [...(oldData ?? []), res];
             return oldData;
-          }
-        )
+          },
+        ),
       );
     }
   }, [driver]);

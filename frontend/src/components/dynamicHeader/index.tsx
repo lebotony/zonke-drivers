@@ -38,7 +38,7 @@ export const DynamicHeader = ({
   const lastScrollY = useRef(0);
   const isHidden = useRef(false);
 
-    const showHeader = useCallback(() => {
+  const showHeader = useCallback(() => {
     Animated.timing(headerOffset, {
       toValue: 0,
       duration: 200,
@@ -61,7 +61,7 @@ export const DynamicHeader = ({
       if (isHidden.current) {
         showHeader();
       }
-    }, [showHeader])
+    }, [showHeader]),
   );
 
   const onHeaderLayout = (e: LayoutChangeEvent) => {
@@ -73,11 +73,19 @@ export const DynamicHeader = ({
     const currentY = e.nativeEvent.contentOffset.y;
     const diff = currentY - lastScrollY.current;
 
-    if (diff < -scrollThreshold && currentY > headerHeight && isHidden.current) {
+    if (
+      diff < -scrollThreshold &&
+      currentY > headerHeight &&
+      isHidden.current
+    ) {
       showHeader();
     }
 
-    if (diff > scrollThreshold && currentY > headerHeight && !isHidden.current) {
+    if (
+      diff > scrollThreshold &&
+      currentY > headerHeight &&
+      !isHidden.current
+    ) {
       hideHeader();
     }
 

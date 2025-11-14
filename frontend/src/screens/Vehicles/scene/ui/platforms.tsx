@@ -54,7 +54,7 @@ export const HeaderFilterPlatforms = (props: PlatformsProps) => {
               <Text style={[styles.platformText, { color }]}>{slug}</Text>
             )}
           </CustomButton>
-        )
+        ),
       )}
     </ScrollView>
   );

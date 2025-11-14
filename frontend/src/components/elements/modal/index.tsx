@@ -49,7 +49,7 @@ export const Modal = (props: ModalProps) => {
           }).start();
         }
       },
-    })
+    }),
   ).current;
 
   return (

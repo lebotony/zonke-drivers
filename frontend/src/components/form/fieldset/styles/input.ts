@@ -1,5 +1,5 @@
-import { Colors } from '../../../../../constants/ui';
-import { StyleSheet } from 'react-native';
+import { Colors } from "../../../../../constants/ui";
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   label: {
@@ -7,11 +7,11 @@ export const styles = StyleSheet.create({
 
     marginBottom: 6,
     marginLeft: 2,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.whiteSmoke,
     borderRadius: 6,
     paddingHorizontal: 12,
@@ -34,7 +34,7 @@ export const styles = StyleSheet.create({
   },
   textArea: {
     minHeight: 65,
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     includeFontPadding: false,
     paddingTop: 0,
   },

@@ -19,9 +19,9 @@ export const styles = StyleSheet.create({
     borderRadius: 7,
     paddingVertical: 10,
     paddingHorizontal: 20,
-    alignItems: 'center',
+    alignItems: "center",
     gap: 4,
-    ...shadowStyles
+    ...shadowStyles,
   },
   heading: {
     fontSize: 15.5,
@@ -36,9 +36,9 @@ export const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
     gap: 10,
     justifyContent: "center",
-    marginBottom: VERTIAL_MARGIN
-  }
-})
+    marginBottom: VERTIAL_MARGIN,
+  },
+});

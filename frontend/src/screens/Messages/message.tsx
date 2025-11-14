@@ -23,7 +23,7 @@ export const Message = (props: MessageProps) => {
   const isAuthor = thread?.last_message?.author_id === user?.id;
   const thd_participants = thread?.thread_participants;
   const recipient = thd_participants?.filter(
-    (thd_part) => thd_part.participant.id != user?.id
+    (thd_part) => thd_part.participant.id != user?.id,
   )[0].participant;
   const tickColor = thread?.last_message?.seen
     ? Colors.blueTicksColor

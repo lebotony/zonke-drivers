@@ -4,6 +4,6 @@ export const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
-    position: 'absolute',
-  }
+    position: "absolute",
+  },
 });

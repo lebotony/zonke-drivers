@@ -4,5 +4,5 @@ type CommentType = {
   last_name: string;
   text: string;
   replys: number;
-  sent_at: string,
+  sent_at: string;
 };

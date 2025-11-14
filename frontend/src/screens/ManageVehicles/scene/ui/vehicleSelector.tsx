@@ -22,7 +22,7 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
   const [optionsVisible, setOptionsVisible] = useState(false);
 
   const handleSelect = (model: string) => {
-    const vehicle = vehicles?.find((v) => ((v.brand + " " + v.model) === model));
+    const vehicle = vehicles?.find((v) => v.brand + " " + v.model === model);
 
     if (vehicle) {
       onSelectVehicle(vehicle);
@@ -33,9 +33,13 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
   return (
     <PopupMenu
       style={styles.vehicleSelector}
-      options={vehicles?.map((vehicle) => (vehicle.brand + " " + vehicle.model))}
+      options={vehicles?.map((vehicle) => vehicle.brand + " " + vehicle.model)}
       innerBtnFn={() => setOptionsVisible(!optionsVisible)}
-      selectedValue={selectedVehicle ? selectedVehicle.brand + " " + selectedVehicle.model : "Select Vehicle"}
+      selectedValue={
+        selectedVehicle
+          ? selectedVehicle.brand + " " + selectedVehicle.model
+          : "Select Vehicle"
+      }
       onSelect={handleSelect}
     >
       <View style={styles.vehicleSelectorLeft}>
@@ -50,7 +54,7 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
           <Text style={styles.vehicleSelectorModel}>
             {selectedVehicle
               ? capitalizeFirstLetter(
-                  `${selectedVehicle.brand} ${selectedVehicle.model}`
+                  `${selectedVehicle.brand} ${selectedVehicle.model}`,
                 )
               : "Select a vehicle"}
           </Text>

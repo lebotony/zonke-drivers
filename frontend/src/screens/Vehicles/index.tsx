@@ -29,7 +29,7 @@ export const VehiclesScreen = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 235]);
   const [selectedFuelTypes, setSelectedFuelTypes] = useState<string[]>([]);
   const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>(
-    []
+    [],
   );
 
   const [applyFilter, setApplyFilter] = useState<boolean>(false);
@@ -141,7 +141,7 @@ export const VehiclesScreen = () => {
 
   const toggleBrand = (id: string) => {
     setSelectedBrands((s) =>
-      s.includes(id) ? s.filter((x) => x !== id) : [...s, id]
+      s.includes(id) ? s.filter((x) => x !== id) : [...s, id],
     );
   };
 
@@ -202,7 +202,7 @@ export const VehiclesScreen = () => {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                overflow: 'hidden'
+                overflow: "hidden",
               }}
             >
               <HeaderFilterPlatforms
@@ -283,7 +283,7 @@ export const VehiclesScreen = () => {
         onToggleBrand={toggleBrand}
         onFuelToggle={(f) =>
           setSelectedFuelTypes((s) =>
-            s.includes(f) ? s.filter((x) => x !== f) : [...s, f]
+            s.includes(f) ? s.filter((x) => x !== f) : [...s, f],
           )
         }
         onPriceChange={handleValueChange}

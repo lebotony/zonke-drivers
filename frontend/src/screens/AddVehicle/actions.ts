@@ -86,4 +86,4 @@ export const updateVehicle = async (params: Partial<AddVehicleFormValues>) => {
     console.error("Error updating vehicle:", error);
     throw error;
   }
-}
+};

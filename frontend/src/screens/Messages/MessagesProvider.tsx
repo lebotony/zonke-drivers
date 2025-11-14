@@ -36,7 +36,7 @@ const MessagesContext = createContext<
       initiateChannels: (threads: Thread[]) => void;
       onSetSearchTerm: (value: string) => void;
       fetchNextPage: (
-        options?: FetchNextPageOptions | undefined
+        options?: FetchNextPageOptions | undefined,
       ) => Promise<
         InfiniteQueryObserverResult<InfiniteData<any, unknown>, Error>
       >;
@@ -150,12 +150,12 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
         channel,
         payload,
         user?.id,
-        currentThreadRef.current
-      )
+        currentThreadRef.current,
+      ),
     );
 
     channel.on("message_seen", (payload: { thread_id: string }) =>
-      messageSeen(updatePaginatedObject, getUpdatedObjectSnapshot, payload)
+      messageSeen(updatePaginatedObject, getUpdatedObjectSnapshot, payload),
     );
   };
 
@@ -185,7 +185,7 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
           cachedThreadChannels?.[payload?.id as string],
           payload.last_message,
           user?.id,
-          currentThreadRef.current
+          currentThreadRef.current,
         );
       } else {
         addItemToPaginatedList("threads", payload);

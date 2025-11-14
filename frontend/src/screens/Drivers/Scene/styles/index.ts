@@ -4,5 +4,5 @@ export const styles = StyleSheet.create({
   drivers: {
     flex: 1,
     gap: 12,
-  }
+  },
 });

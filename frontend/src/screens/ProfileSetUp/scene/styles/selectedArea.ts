@@ -13,20 +13,20 @@ export const styles = StyleSheet.create({
   },
   selected: {
     minHeight: 40,
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
     paddingHorizontal: 5,
     paddingVertical: 8,
     marginBottom: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.white,
     borderColor: Colors.lightGrey,
     borderRadius: 10,
     borderWidth: 1,
   },
   selectedItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.skyBlue,
     borderRadius: 50,
     paddingHorizontal: 8,
@@ -50,7 +50,7 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   platformText: {
-    color: Colors.white
+    color: Colors.white,
   },
   closeIcon: {
     position: "absolute",
@@ -62,5 +62,5 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.whiteSmoke,
     justifyContent: "center",
     alignItems: "center",
-  }
-})
+  },
+});

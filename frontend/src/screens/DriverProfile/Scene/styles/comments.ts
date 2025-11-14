@@ -1,6 +1,6 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { Colors } from '@/constants/ui';
+import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   commentsSection: {
@@ -23,4 +23,4 @@ export const styles = StyleSheet.create({
     color: Colors.mrDBlue,
     fontSize: 15,
   },
-})
+});

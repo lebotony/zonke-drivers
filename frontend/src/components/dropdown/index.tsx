@@ -135,14 +135,14 @@ export const DropdownInput = <T extends FieldValues>({
       (e) => {
         setKeyboardHeight(e.endCoordinates.height);
         if (open) measureInputPosition();
-      }
+      },
     );
     const kbHideSub = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
       () => {
         setKeyboardHeight(0);
         if (open) measureInputPosition();
-      }
+      },
     );
 
     return () => {
@@ -163,7 +163,7 @@ export const DropdownInput = <T extends FieldValues>({
 
     const subscription = BackHandler.addEventListener(
       "hardwareBackPress",
-      onBackPress
+      onBackPress,
     );
 
     return () => {
@@ -261,7 +261,7 @@ export const DropdownInput = <T extends FieldValues>({
         </View>
       </Pressable>
 
-      {open && (results || options).length !==0 && (
+      {open && (results || options).length !== 0 && (
         <Portal>
           <TouchableWithoutFeedback onPress={() => setOpen(false)}>
             <View style={styles.backdrop} />
@@ -283,7 +283,7 @@ export const DropdownInput = <T extends FieldValues>({
                 top: dropdownPositionTop,
                 left: Math.max(
                   layout.dropdownLeft + layout.inputWidth - computedWidth,
-                  0
+                  0,
                 ),
                 width: computedWidth,
                 maxWidth:

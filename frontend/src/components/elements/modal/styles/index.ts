@@ -1,28 +1,28 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
 
-import { Colors } from '@/constants/ui';
+import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   container: {
-    position: 'absolute',
+    position: "absolute",
     top: 0,
     left: 0,
     right: 0,
     bottom: 0,
     flex: 1,
-    flexDirection: 'column',
-    elevation: 10000
+    flexDirection: "column",
+    elevation: 10000,
   },
   modalWrapper: {
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
-    width: '100%',
+    width: "100%",
     backgroundColor: Colors.white,
   },
   centerModal: {
     padding: 20,
     marginHorizontal: 15,
     backgroundColor: Colors.white,
-    borderRadius: 15
-  }
+    borderRadius: 15,
+  },
 });

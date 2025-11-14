@@ -11,10 +11,10 @@ export const styles = StyleSheet.create({
     position: "relative",
     marginHorizontal: 15,
     marginBottom: 12,
-    ...shadowStyles
+    ...shadowStyles,
   },
   addText: {
-    color: Colors.skyBlue
+    color: Colors.skyBlue,
   },
   header: {
     paddingVertical: 4,
@@ -25,19 +25,19 @@ export const styles = StyleSheet.create({
     borderColor: Colors.greyLighter,
     alignItems: "center",
     justifyContent: "space-between",
-    flexDirection: 'row'
+    flexDirection: "row",
   },
   body: {
     marginLeft: 20,
     marginRight: 15,
-    flexDirection: 'row',
+    flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
   amountText: {
     color: Colors.lightGreen,
     fontSize: 15,
-    fontWeight: 700
+    fontWeight: 700,
   },
   headerName: {
     color: Colors.black,
@@ -46,10 +46,10 @@ export const styles = StyleSheet.create({
   },
   time: {
     flexDirection: "row",
-    gap: 5
+    gap: 5,
   },
   timeText: {
-    color: Colors.mediumGrey
+    color: Colors.mediumGrey,
   },
   leftBadge: {
     position: "absolute",
@@ -59,6 +59,6 @@ export const styles = StyleSheet.create({
     width: 10,
     height: 60,
     backgroundColor: Colors.lightGreen,
-    marginRight: 10
-  }
+    marginRight: 10,
+  },
 });

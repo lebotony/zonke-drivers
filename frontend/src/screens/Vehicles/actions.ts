@@ -3,18 +3,18 @@ import qs from "qs";
 
 import { API_URL } from "@/constants/srcConstants";
 
-export const fetchVehicles = async ({ pageParam = 1 }, filters) => 
+export const fetchVehicles = async ({ pageParam = 1 }, filters) =>
   axios
     .get(`${API_URL}/vehicles/public`, {
       params: { page: pageParam, per_page: 5, filters },
       paramsSerializer: (params) =>
         qs.stringify(params, { arrayFormat: "brackets" }),
     })
-      .then((response) => {
-        console.log('SSSSSSSSSSSSSSSSSSSS', response.data.paginate);
-        return response.data;
-      })
-      .catch((err) => {
-        console.error("fetchVehicles error:", err);
-        throw err;
-      });
+    .then((response) => {
+      console.log("SSSSSSSSSSSSSSSSSSSS", response.data.paginate);
+      return response.data;
+    })
+    .catch((err) => {
+      console.error("fetchVehicles error:", err);
+      throw err;
+    });

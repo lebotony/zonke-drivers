@@ -25,7 +25,7 @@ export default function TabLayout() {
 
   const unseen_msg_count = threads?.reduce(
     (sum: number, thread: Thread) => sum + thread?.unseen_msg_count,
-    0
+    0,
   );
 
   return (

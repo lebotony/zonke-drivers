@@ -9,9 +9,9 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 7,
     paddingBottom: 5,
     flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingRight: 10
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingRight: 10,
   },
   platformButton: {
     borderRadius: 5,
@@ -20,6 +20,6 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.4,
   },
   platformText: {
-    color: Colors.white
+    color: Colors.white,
   },
 });

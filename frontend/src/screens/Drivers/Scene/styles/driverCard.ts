@@ -9,7 +9,7 @@ export const styles = StyleSheet.create({
     shadowColor: "#888888",
     shadowOffset: {
       width: 0,
-      height: 1
+      height: 1,
     },
     shadowOpacity: 0.16,
     shadowRadius: 1.51,
@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
   },
   row: {
     flexDirection: "row",
-    gap: 10
+    gap: 10,
   },
   name: {
     fontSize: 16,
@@ -33,8 +33,8 @@ export const styles = StyleSheet.create({
     fontWeight: "400",
     fontSize: 12,
     color: Colors.mediumGrey,
-    position: 'absolute',
-    top: 0
+    position: "absolute",
+    top: 0,
   },
   details: {
     marginLeft: 4,
@@ -45,8 +45,8 @@ export const styles = StyleSheet.create({
   detailIcon: {
     width: 15,
     alignItems: "center",
-    justifyContent: 'center',
-    marginRight: 3
+    justifyContent: "center",
+    marginRight: 3,
   },
   ratingRow: {
     gap: 4,
@@ -57,7 +57,7 @@ export const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: 700,
     textAlignVertical: "center",
-    color: "rgba(0, 0, 0, 0.69)"
+    color: "rgba(0, 0, 0, 0.69)",
   },
   ratingCreteria: {
     width: 120,
@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
     fontWeight: 400,
     color: Colors.mediumGrey,
     textAlignVertical: "center",
-    position: 'absolute',
+    position: "absolute",
     top: 2.1,
   },
   address: {
@@ -76,7 +76,8 @@ export const styles = StyleSheet.create({
   },
   save: {
     position: "absolute",
-    right: 10, top: 8
+    right: 10,
+    top: 8,
   },
   defaultPic: {
     backgroundColor: Colors.whiteSmoke,
@@ -92,5 +93,5 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.lightGreen,
     width: "48%",
     ...shadowStyles,
-  }
+  },
 });

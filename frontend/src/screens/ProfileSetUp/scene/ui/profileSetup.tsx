@@ -78,7 +78,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   useEffect(() => {
     if (isDriver) {
       fetchDriverProfile().then((response) =>
-        queryClient.setQueryData(["driverProfile"], response)
+        queryClient.setQueryData(["driverProfile"], response),
       );
     }
   }, [isDriver]);
@@ -108,7 +108,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleRemovePlatform = (item: string) => {
     setValue(
       "platforms",
-      selectedPlatforms?.filter((platform) => platform !== item)
+      selectedPlatforms?.filter((platform) => platform !== item),
     );
   };
 
@@ -123,7 +123,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleRemoveLicences = (item: string) => {
     setValue(
       "licences",
-      selectedLicences?.filter((licence) => licence !== item)
+      selectedLicences?.filter((licence) => licence !== item),
     );
   };
 
@@ -138,13 +138,13 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
             queryClient.setQueryData(["user"], response.user);
             queryClient.setQueryData(["driverProfile"], response);
           })
-          .catch((err) => err)
+          .catch((err) => err),
       )();
     } else {
       handleSubmit((formData) =>
         updateVehicleUser(user.id, formData)
           .then((response) => queryClient.setQueryData(["user"], response))
-          .catch((err) => err)
+          .catch((err) => err),
       )();
     }
   };

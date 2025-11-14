@@ -78,18 +78,18 @@ export const newMessage = (
   userId: string,
   activeThreadId?: string,
 ) => {
-  if (payload.author_id === userId) return
+  if (payload.author_id === userId) return;
 
-  console.log('New message received: ', activeThreadId, payload.thread_id);
+  console.log("New message received: ", activeThreadId, payload.thread_id);
 
   const isMessageFromActiveThread = payload?.thread_id === activeThreadId;
 
   if (isMessageFromActiveThread) {
     setSeenTrue(payload?.thread_id);
-    channel?.push('msg_seen_status_changed', { thread_id: payload?.thread_id });
+    channel?.push("msg_seen_status_changed", { thread_id: payload?.thread_id });
   }
 
-  const thread = getUpdatedObjectSnapshot('threads', payload?.thread_id)
+  const thread = getUpdatedObjectSnapshot("threads", payload?.thread_id);
 
   const baseMessages = isArray(thread?.messages)
     ? thread.messages.map((msg: Message) =>
@@ -97,7 +97,7 @@ export const newMessage = (
       )
     : [];
 
-  updateAndMoveObjectToTop('threads', payload?.thread_id, {
+  updateAndMoveObjectToTop("threads", payload?.thread_id, {
     unseen_msg_count: !isMessageFromActiveThread
       ? thread.unseen_msg_count + 1
       : thread.unseen_msg_count,
@@ -106,22 +106,24 @@ export const newMessage = (
       ...baseMessages,
       isMessageFromActiveThread ? { ...payload, seen: true } : payload,
     ],
-  })
-}
+  });
+};
 
 export const messageSeen = (
   updatePaginatedObject: UpdatePaginatedObjectType,
   getUpdatedObjectSnapshot: GetUpdatedObjectSnapshot,
-  payload: {thread_id: string},
+  payload: { thread_id: string },
 ) => {
   // console.log(`Message from Thread ${payload.thread_id} seen`);
 
-  const thread = getUpdatedObjectSnapshot('threads', payload?.thread_id)
+  const thread = getUpdatedObjectSnapshot("threads", payload?.thread_id);
 
-  updatePaginatedObject('threads', payload?.thread_id, {
+  updatePaginatedObject("threads", payload?.thread_id, {
     last_message: { ...thread.last_message, seen: true },
     messages: isArray(thread?.messages)
-      ? thread.messages.map((msg: Message) => (msg.seen ? msg : { ...msg, seen: true }))
+      ? thread.messages.map((msg: Message) =>
+          msg.seen ? msg : { ...msg, seen: true },
+        )
       : [],
-  })
-}
+  });
+};

@@ -37,7 +37,7 @@ export const Card = (props: CardProps) => {
         <View style={styles.details}>
           <Text style={styles.name}>
             {capitalizeFirstLetter(
-              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`
+              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`,
             )}
           </Text>
 

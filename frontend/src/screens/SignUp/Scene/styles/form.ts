@@ -1,17 +1,17 @@
-import { Colors } from '@/constants/ui';
-import { StyleSheet } from 'react-native';
+import { Colors } from "@/constants/ui";
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   label: {
     fontSize: 15,
-    fontWeight: '500',
+    fontWeight: "500",
     color: Colors.black,
     marginBottom: 6,
     marginLeft: 2,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: Colors.bg,
     borderRadius: 6,
     paddingHorizontal: 12,
@@ -30,18 +30,18 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.bg,
   },
   forgotPasswordWrapper: {
-    position: 'absolute',
+    position: "absolute",
     right: 0,
   },
   forgotPassword: {
     color: Colors.mrDBlue,
     fontSize: 13,
-    fontWeight: '400',
+    fontWeight: "400",
     marginBottom: 6,
   },
   buttonText: {
     color: Colors.white,
     fontSize: 17,
-    fontWeight: '800',
+    fontWeight: "800",
   },
 });

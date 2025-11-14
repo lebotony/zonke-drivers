@@ -12,6 +12,6 @@ export const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 18,
     marginBottom: 20,
-    ...shadowStyles
+    ...shadowStyles,
   },
-})
+});

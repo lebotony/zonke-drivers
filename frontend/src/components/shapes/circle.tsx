@@ -17,6 +17,6 @@ const styles = StyleSheet.create({
     aspectRatio: 1,
     alignItems: "center",
     justifyContent: "center",
-    padding: 3
-  }
+    padding: 3,
+  },
 });

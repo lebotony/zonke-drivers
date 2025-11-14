@@ -1,5 +1,5 @@
-import { Colors } from '@/constants/ui';
-import { StyleSheet } from 'react-native';
+import { Colors } from "@/constants/ui";
+import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
   commentBox: {
@@ -12,8 +12,8 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
   },
   commentHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
     marginBottom: 4,
   },
   commentName: {
@@ -31,27 +31,27 @@ export const styles = StyleSheet.create({
     marginBottom: 6,
   },
   commentActions: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
   commentAction: {
     color: Colors.dimGrey,
     fontSize: 14,
   },
   actionIcons: {
-    flexDirection: 'row',
+    flexDirection: "row",
     gap: 15,
   },
   replies: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   viewText: {
     fontSize: 12,
   },
 
   replyToggle: {
-    color: Colors.mrDBlue
+    color: Colors.mrDBlue,
   },
   replyList: {
     marginTop: 10,
@@ -95,17 +95,17 @@ export const styles = StyleSheet.create({
     fontSize: 14,
   },
   replyTitle: {
-    fontWeight: 500
+    fontWeight: 500,
   },
   replySend: {
     marginTop: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'flex-end',
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "flex-end",
     backgroundColor: Colors.mrDBlue,
     width: 34,
     height: 34,
-    borderRadius: '50%',
+    borderRadius: "50%",
   },
   replySendText: {
     color: Colors.white,

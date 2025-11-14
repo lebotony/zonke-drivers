@@ -6,12 +6,12 @@ import { httpPost } from "@/src/requests";
 export const fetchComments = ({ pageParam = 1, driverId }) =>
   axios
     .get(`${API_URL}/comments`, {
-      params: { page: pageParam, per_page: 5, driver_id: driverId},
+      params: { page: pageParam, driver_id: driverId },
     })
-      .then((response) => {
-        console.log("COMMENTS COMMENTS COMMENTS", response.data.paginate)
-        return response.data
-      })
-      .catch((err) => err);
+    .then((response) => {
+      console.log("COMMENTS COMMENTS COMMENTS", response.data.paginate);
+      return response.data;
+    })
+    .catch((err) => err);
 
-export const createComment = (params) => httpPost("/comments", params)
+export const createComment = (params) => httpPost("/comments", params);

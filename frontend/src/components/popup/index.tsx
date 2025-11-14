@@ -32,7 +32,7 @@ type PopupMenuProps = {
   options: string[];
   selectedValue?: string | null;
   onSelect: (value: string) => void;
-  innerBtnFn?: () => void
+  innerBtnFn?: () => void;
   menuWidth?: "auto" | number;
   style?: StyleProp<ViewStyle>;
   iconSize?: number;
@@ -110,25 +110,21 @@ export const PopupMenu = ({
   };
 
   const onPopupPress = () => {
-
-    if(innerBtnFn !== undefined){
+    if (innerBtnFn !== undefined) {
       innerBtnFn();
     }
-    
 
     if (!open) openDropdown();
-          else setOpen(false);
-
-  }
+    else setOpen(false);
+  };
 
   const onBackdropPress = () => {
     setOpen(false);
 
-    if (innerBtnFn !== undefined){
+    if (innerBtnFn !== undefined) {
       innerBtnFn();
     }
-    
-  }
+  };
 
   useEffect(() => {
     const dimSub = Dimensions.addEventListener("change", () => {
@@ -140,14 +136,14 @@ export const PopupMenu = ({
       (e) => {
         setKeyboardHeight(e.endCoordinates.height);
         if (open) measureInputPosition();
-      }
+      },
     );
     const kbHideSub = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
       () => {
         setKeyboardHeight(0);
         if (open) measureInputPosition();
-      }
+      },
     );
 
     return () => {
@@ -162,18 +158,18 @@ export const PopupMenu = ({
 
     const onBackPress = () => {
       setOpen(false);
-      
-    if(innerBtnFn !== undefined){
-      innerBtnFn();
-    }
-    
+
+      if (innerBtnFn !== undefined) {
+        innerBtnFn();
+      }
+
       Keyboard.dismiss();
       return true;
     };
 
     const subscription = BackHandler.addEventListener(
       "hardwareBackPress",
-      onBackPress
+      onBackPress,
     );
 
     return () => {
@@ -184,11 +180,10 @@ export const PopupMenu = ({
   const handleSelect = (value: string) => {
     onSelect(value);
     setOpen(false);
-   
-    if(innerBtnFn !== undefined){
+
+    if (innerBtnFn !== undefined) {
       innerBtnFn();
     }
-    
   };
 
   let computedWidth: number;
@@ -205,7 +200,7 @@ export const PopupMenu = ({
 
   const leftPosition = Math.max(
     layout.popupLeft + layout.width - computedWidth,
-    0
+    0,
   );
 
   const showAbove = layout.freeHeightBelow <= 225;
@@ -233,30 +228,30 @@ export const PopupMenu = ({
         }}
       >
         {icon ? (
-  <>
-    {before && children}
-    <View
-      style={styles.iconWrapper}
-      ref={iconRef}
-      onLayout={(event) => {
-        const { width } = event.nativeEvent.layout;
-        setLayout((prev) => ({
-          ...prev,
-          iconWidth: width,
-        }));
-      }}
-    >
-      <IconComponent
-        name={icon}
-        size={iconSize}
-        color={iconColor || Colors.black}
-      />
-    </View>
-    {!before && children}
-  </>
-) : (
-  children
-)}
+          <>
+            {before && children}
+            <View
+              style={styles.iconWrapper}
+              ref={iconRef}
+              onLayout={(event) => {
+                const { width } = event.nativeEvent.layout;
+                setLayout((prev) => ({
+                  ...prev,
+                  iconWidth: width,
+                }));
+              }}
+            >
+              <IconComponent
+                name={icon}
+                size={iconSize}
+                color={iconColor || Colors.black}
+              />
+            </View>
+            {!before && children}
+          </>
+        ) : (
+          children
+        )}
       </Pressable>
 
       {open && options && (

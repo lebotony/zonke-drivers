@@ -101,7 +101,7 @@ export const QuickFilters = (props: QuickFiltersProps) => {
                   <Text style={[styles.platformText, { color }]}>{slug}</Text>
                 )}
               </CustomButton>
-            )
+            ),
           )}
         </ScrollView>
       </View>

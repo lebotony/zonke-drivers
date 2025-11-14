@@ -1,7 +1,8 @@
 import axios from "axios";
 import { debounce } from "lodash";
 
-  export const fetchSuggestions = debounce((text: string, onSetResults, onOpen) => {
+export const fetchSuggestions = debounce(
+  (text: string, onSetResults, onOpen) => {
     const mapboxToken = process.env.EXPO_PUBLIC_MAPBOX_TOKEN;
 
     if (text.length < 3) {
@@ -12,7 +13,7 @@ import { debounce } from "lodash";
     axios
       .get(
         `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-          text
+          text,
         )}.json`,
         {
           params: {
@@ -20,15 +21,15 @@ import { debounce } from "lodash";
             autocomplete: true,
             limit: 5,
           },
-        }
+        },
       )
       .then((res) => {
         const places = res.data.features.map(
           (feature: Record<string, any>) => ({
             address: feature.place_name,
             lon: feature.center[0],
-            lat: feature.center[1]
-          })
+            lat: feature.center[1],
+          }),
         );
 
         onSetResults(places);
@@ -38,4 +39,6 @@ import { debounce } from "lodash";
         console.error("Mapbox fetch error:", err.message);
         onSetResults([]);
       });
-  }, 400)
+  },
+  400,
+);

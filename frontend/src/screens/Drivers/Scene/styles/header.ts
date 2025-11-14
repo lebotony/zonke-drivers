@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     shadowColor: Colors.darkGrey,
     shadowOffset: {
       width: 0,
-      height: 3
+      height: 3,
     },
     shadowOpacity: 0.19,
     shadowRadius: 5.62,
@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: Colors.white,
     paddingHorizontal: 15,
-    gap: 10
+    gap: 10,
   },
   inputWrapper: {
     backgroundColor: "rgba(0, 0, 0, 0.06)",
@@ -33,13 +33,13 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 10,
-    gap: 8
+    gap: 8,
   },
   textInput: {
     flex: 1,
     fontSize: 15,
     color: Colors.black,
     height: 34,
-    paddingVertical: 0
-  }
+    paddingVertical: 0,
+  },
 });

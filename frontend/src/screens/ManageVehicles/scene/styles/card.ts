@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 13,
     flexDirection: "row",
     gap: 13,
-    alignItems: "center"
+    alignItems: "center",
   },
   image: {
     width: 100,
@@ -37,18 +37,18 @@ export const styles = StyleSheet.create({
     paddingVertical: 7,
     borderRadius: 7,
     backgroundColor: Colors.bg,
-    ...shadowStyles
+    ...shadowStyles,
   },
   paymentText: {
     color: Colors.lightGreen,
     fontSize: 15,
     fontWeight: 700,
-    textAlign: "center"
+    textAlign: "center",
   },
   amountText: {
     textAlign: "center",
     fontWeight: 700,
-    fontSize: 16
+    fontSize: 16,
   },
   name: {
     fontSize: 16,
@@ -60,8 +60,8 @@ export const styles = StyleSheet.create({
     fontWeight: 400,
     fontSize: 12,
     color: Colors.mediumGrey,
-    position: 'absolute',
-    top: 0
+    position: "absolute",
+    top: 0,
   },
   details: {
     justifyContent: "space-between",
@@ -83,14 +83,14 @@ export const styles = StyleSheet.create({
     fontWeight: 400,
     color: Colors.mediumGrey,
     textAlignVertical: "center",
-    position: 'absolute',
+    position: "absolute",
     width: 150,
   },
   address: {
     color: Colors.mediumGrey,
     fontSize: 13,
     maxWidth: "85%",
-    fontWeight: 400
+    fontWeight: 400,
   },
   unreadBadge: {
     backgroundColor: Colors.lightRed,
