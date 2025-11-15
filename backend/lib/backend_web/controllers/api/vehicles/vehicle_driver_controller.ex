@@ -26,6 +26,13 @@ defmodule BackendWeb.Vehicles.VehicleDriverController do
     end
   end
 
+  def increment_accidents(conn, %{id: id} = params, session) do
+    with {1, _nil} <- VehicleDrivers.increment_accidents_count(id) do
+         #  :ok <- Bodyguard.permit(VehicleDrivers, :update, vehicle_driver, session),
+      json(conn, :ok)
+    end
+  end
+
   def delete(conn, %{id: id}, session) do
     with {:ok, vehicle_driver} <- VehicleDrivers.get_vehicle_driver(id),
          #  :ok <- Bodyguard.permit(VehicleDrivers, :delete, vehicle_driver, session),

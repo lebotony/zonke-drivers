@@ -10,6 +10,7 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     borderRadius: 7,
     backgroundColor: Colors.white,
+    position: 'relative',
     ...shadowStyles,
   },
   body: {

@@ -8,3 +8,14 @@ export const switchItems = [
     label: "COMMENTS",
   },
 ];
+
+export const MANAGEMENT_OPTIONS = [
+  {
+    slug: "search",
+    label: "Search driver",
+  },
+  {
+    slug: "accident",
+    label: "Add accident",
+  },
+];

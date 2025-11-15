@@ -57,6 +57,12 @@ defmodule Backend.Vehicles.VehicleDrivers do
     |> format_vehicle_driver()
   end
 
+  def increment_accidents_count(id) do
+    VehicleDriverBy.base_query()
+    |> VehicleDriverBy.by_id(id)
+    |> Repo.update_all(inc: [accidents: 1])
+  end
+
   defp format_vehicle_driver(%VehicleDriver{} = vehicle_driver), do: {:ok, vehicle_driver}
   defp format_vehicle_driver(nil), do: {:error, :not_found}
 end
