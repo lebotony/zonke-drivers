@@ -150,6 +150,13 @@ defmodule Backend.Drivers.Drivers do
           fragment("? @@ websearch_to_tsquery(?)", s.searchable_document, ^value)
         )
 
+      {:name, value}, query when is_binary(value) and value != "" ->
+        where(query,
+          [driver: d],
+          ilike(d.first_name, ^"%#{value}%") or
+            ilike(d.last_name, ^"%#{value}%")
+        )
+
       {:age_range, [min, max]}, query when min != "18" or max != "70" ->
         min = String.to_integer(min)
         max = String.to_integer(max)

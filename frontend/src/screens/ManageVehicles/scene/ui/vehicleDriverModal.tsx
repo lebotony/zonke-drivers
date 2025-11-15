@@ -1,32 +1,45 @@
 import { View } from "react-native";
 import { Text } from "react-native-paper";
 
+import { find } from "lodash";
+
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { Modal } from "@/src/components/elements/modal";
 import { Colors } from "@/constants/ui";
 import { CustomButton } from "@/src/components/elements/button";
-
-import { createVehicleDriver } from "../../actions";
-import { styles } from "../styles/vehicleDriverModal";
 import { AppToast } from "@/src/components/CustomToast/customToast";
+import { useCustomQuery } from "@/src/useQueryContext";
+
+import { createVehicleDriver, updateVehicleDriver } from "../../actions";
+import { styles } from "../styles/vehicleDriverModal";
 
 type AddVehicleDriverModalProps = {
-  vehicleId: string;
-  driverId: string;
+  vehicleId?: string;
+  driverId?: string;
+  accident?: boolean;
   setShowVehicleDriverModal: (value: any) => void;
-  setSelectedDriverId: (value: any) => void;
+  setSelectedDriverId?: (value: any) => void;
 };
 
 export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
   const {
     driverId,
     vehicleId,
+    accident,
     setShowVehicleDriverModal,
     setSelectedDriverId,
   } = props;
 
+  const { getCachedData } = useCustomQuery();
+
   const { updatePaginatedObject, getUpdatedObjectSnapshot } =
     usePaginatedCache();
+
+  const { userVehicles } = getCachedData(["userVehicles"]);
+
+  const vehicleDriver: VehicleDriver = find(userVehicles, {
+    id: vehicleId,
+  })?.vehicle_drivers?.[0];
 
   const handleAddVehicleDriver = () => {
     const params = {
@@ -34,13 +47,16 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
       vehicle_id: vehicleId,
     };
 
-    const vehicle = getUpdatedObjectSnapshot("userVehicles", vehicleId);
+    const vehicle = getUpdatedObjectSnapshot(
+      "userVehicles",
+      vehicleId as string
+    );
 
     createVehicleDriver(params)
       .then((res) => {
         AppToast("Vehicle Driver added successfully", true);
 
-        updatePaginatedObject("userVehicles", vehicleId, {
+        updatePaginatedObject("userVehicles", vehicleId as string, {
           applications: vehicle?.applications?.filter(
             (application: VehicleApplication) =>
               application?.driver?.id !== driverId
@@ -62,15 +78,47 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
       });
 
     setShowVehicleDriverModal(false);
-    setSelectedDriverId(null);
+    setSelectedDriverId!(null);
+  };
+
+  const handleAddAccident = () => {
+    updateVehicleDriver(vehicleDriver?.id)
+      .then((res) => {
+        AppToast("Driver accident added", true);
+
+        updatePaginatedObject("userVehicles", vehicleId as string, {
+          vehicle_drivers: [
+            {
+              ...vehicleDriver,
+              accidents: (vehicleDriver?.accidents ?? 0) + 1,
+            },
+          ],
+        });
+      })
+      .catch((err) => {
+        AppToast();
+        throw new Error("Error while adding driver accident: ", err);
+      });
+
+    setShowVehicleDriverModal(false);
   };
 
   return (
     <Modal fn={() => setShowVehicleDriverModal(false)}>
-      <Text style={styles.messageText}>
-        Accepting this driver will remove the existing vehicle driver, if there
-        is one. Are you sure you want to proceed?
-      </Text>
+      {!accident ? (
+        <Text style={styles.messageText}>
+          Accepting this driver will remove the existing vehicle driver, if
+          there is one. Are you sure you want to proceed?
+        </Text>
+      ) : (
+        <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
+          <Text>Are you sure you want to add an accident for: </Text>
+          <Text style={{ fontWeight: 700, fontSize: 16 }}>
+            {vehicleDriver?.driver?.first_name}{" "}
+            {vehicleDriver?.driver?.last_name}
+          </Text>
+        </View>
+      )}
       <View
         style={{
           flexDirection: "row",
@@ -95,7 +143,7 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
           </Text>
         </CustomButton>
         <CustomButton
-          onPress={handleAddVehicleDriver}
+          onPress={accident ? handleAddAccident : handleAddVehicleDriver}
           color={Colors.lightGreen}
           customStyle={{
             paddingHorizontal: 14,

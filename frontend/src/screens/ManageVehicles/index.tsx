@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { FlatList, SafeAreaView } from "react-native";
 import { Text } from "react-native-paper";
 
@@ -11,8 +11,12 @@ import { Spinner } from "@/src/components/elements/Spinner";
 import { Card } from "./scene/ui/card";
 import { styles } from "./styles";
 import { fetchUserVehicles } from "./actions";
+import { VehicleDriverModal } from "./scene/ui/vehicleDriverModal";
 
 export const ManageVehicles = () => {
+  const [showVehicleDriverModal, setShowVehicleDriverModal] = useState(false);
+  const [vehicleId, setVehicleId] = useState<string | undefined>(undefined);
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
       queryKey: ["userVehicles"],
@@ -45,9 +49,22 @@ export const ManageVehicles = () => {
             }
           }}
           keyExtractor={(item, index) => String(index)}
-          renderItem={({ item }) => <Card vehicle={item} />}
+          renderItem={({ item }) => (
+            <Card
+              vehicle={item}
+              setVehicleId={setVehicleId}
+              setShowVehicleDriverModal={setShowVehicleDriverModal}
+            />
+          )}
           contentContainerStyle={{ paddingVertical: 5 }}
           showsVerticalScrollIndicator={false}
+        />
+      )}
+      {showVehicleDriverModal && (
+        <VehicleDriverModal
+          setShowVehicleDriverModal={setShowVehicleDriverModal}
+          vehicleId={vehicleId}
+          accident
         />
       )}
     </SafeAreaView>

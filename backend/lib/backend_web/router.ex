@@ -46,6 +46,11 @@ defmodule BackendWeb.Router do
         get("/vehicle_drivers", Vehicles.VehicleController, :index_management_vehicle)
         get("/public", Vehicles.VehicleController, :index_public)
         post("/update", Vehicles.VehicleController, :update_vehicle)
+        post("/accidents", Vehicles.VehicleController, :increment_accidents)
+      end
+
+      scope("/vehicle_drivers") do
+        post("/accidents", Vehicles.VehicleDriverController, :increment_accidents)
       end
 
       resources("/vehicle_drivers", Vehicles.VehicleDriverController, except: @except_path_actions)

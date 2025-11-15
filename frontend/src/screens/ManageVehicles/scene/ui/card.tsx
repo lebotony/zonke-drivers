@@ -8,23 +8,43 @@ import { isEmpty } from "lodash";
 
 import { HorizontalDivider } from "@/src/components/shapes/divider";
 import { Colors } from "@/constants/ui";
+import { PopupMenu } from "@/src/components/popup";
 import { CustomButton } from "@/src/components/elements/button";
-import { styles } from "../styles/card";
 import { shadowStyles } from "@/src/components/shadowStyles";
 import { capitalizeFirstLetter } from "@/src/utils";
 
+import { styles } from "../styles/card";
+import { MANAGEMENT_OPTIONS } from "../constants";
+
 type CardProps = {
   vehicle: Vehicle;
+  setVehicleId: (value: string) => void;
+  setShowVehicleDriverModal: (val: boolean) => void;
 };
 
 export const Card = (props: CardProps) => {
-  const { vehicle } = props;
+  const { vehicle, setVehicleId, setShowVehicleDriverModal } = props;
 
   const vehicleDriver = vehicle.vehicle_drivers?.[0];
   const noVehicleDrivers = isEmpty(vehicle?.vehicle_drivers);
 
+  const handleSelectOptions = (value: string) => {
+    if (value === "Add accident") {
+      setShowVehicleDriverModal(true);
+      setVehicleId(vehicle.id);
+      return;
+    }
+  };
+
   return (
     <View style={styles.card}>
+      <PopupMenu
+        options={MANAGEMENT_OPTIONS.map((v) => v.label)}
+        style={{ position: "absolute", top: 5, right: 0 }}
+        onSelect={handleSelectOptions}
+      >
+        <MaterialIcons name="menu" size={24} color={Colors.black} />
+      </PopupMenu>
       <TouchableOpacity
         onPress={() => router.push(`/(tabs)/vehicle/${vehicle?.id}`)}
         style={styles.body}
@@ -37,7 +57,7 @@ export const Card = (props: CardProps) => {
         <View style={styles.details}>
           <Text style={styles.name}>
             {capitalizeFirstLetter(
-              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`,
+              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`
             )}
           </Text>
 
