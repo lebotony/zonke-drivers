@@ -15,12 +15,15 @@ export const styles = StyleSheet.create({
     ...shadowStyles,
   },
   headerTitle: {
+    position: "relative",
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 14,
   },
   backButton: {
+    position: "absolute",
+    left: 0,
     marginBottom: 4,
   },
   headerText: {

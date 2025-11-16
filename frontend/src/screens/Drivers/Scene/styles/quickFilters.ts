@@ -23,8 +23,7 @@ export const styles = StyleSheet.create({
   },
   resetBtn: {
     flexDirection: "row",
-    alignItems: "center",
-    gap: 6,
+    gap: 4,
   },
   platformFilter: {
     marginTop: 7,

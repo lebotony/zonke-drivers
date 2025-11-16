@@ -143,7 +143,6 @@ export const ApplicantsScreen = () => {
             vehicles={userVehicles}
             selectedVehicle={selectedVehicle}
             onSelectVehicle={(vehicle: Vehicle) => {
-              // reset pagination data for clarity if switching vehicles
               setSelectedVehicle(vehicle);
             }}
           />

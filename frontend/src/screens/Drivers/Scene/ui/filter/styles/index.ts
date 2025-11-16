@@ -19,7 +19,6 @@ export const styles = StyleSheet.create({
   },
   wrapper: {},
   header: {
-    marginTop: 10,
     flexDirection: "row",
     justifyContent: "center",
     alignItems: "center",
@@ -30,7 +29,9 @@ export const styles = StyleSheet.create({
   },
   resetBtn: {
     position: "absolute",
-    right: 26,
+    right: 14,
+    flexDirection: "row",
+    gap: 4,
   },
   contentSection: {
     flexDirection: "column",

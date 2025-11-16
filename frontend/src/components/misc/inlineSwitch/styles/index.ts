@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     },
     shadowOpacity: 0.19,
     shadowRadius: 5.62,
-    elevation: 6,
+    elevation: 2,
   },
   item: {
     borderRadius: 10,

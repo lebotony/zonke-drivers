@@ -101,6 +101,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     position: "absolute",
+    elevation: 4,
     top: 5,
     right: -3,
   },
