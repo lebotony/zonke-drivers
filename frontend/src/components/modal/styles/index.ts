@@ -17,7 +17,6 @@ export const styles = StyleSheet.create({
   },
   modalWrapper: {
     position: "absolute",
-    // bottom: -16,
     left: 0,
     right: 0,
     borderTopLeftRadius: 15,

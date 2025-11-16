@@ -14,6 +14,7 @@ import { useCustomQuery } from "@/src/useQueryContext";
 import { styles } from "./styles/messageBox";
 import { MessageSchema } from "./schema";
 import { useMessages } from "../MessagesProvider";
+import { removeTrailingWhitespace } from "@/src/utils";
 
 type MessageFormValues = z.infer<typeof MessageSchema>;
 
@@ -110,7 +111,7 @@ export const MessageBox = (props: MessageBoxProps) => {
   const onSubmit = (data: MessageFormValues) => {
     const params = {
       ...data,
-      content: data.content.trim(),
+      content: removeTrailingWhitespace(data.content.trim()),
       recipient_id: recipientId,
       thread_id: threadId,
     };

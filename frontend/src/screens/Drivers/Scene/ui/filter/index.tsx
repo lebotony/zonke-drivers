@@ -9,7 +9,7 @@ import {
 import { Text } from "react-native-paper";
 
 import RangeSlider from "rn-range-slider";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 import { PopupMenu } from "@/src/components/popup";
 import { Rail } from "@/src/components/slider/rail";
@@ -81,6 +81,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           {showReset && (
             <TouchableOpacity onPress={onReset} style={styles.resetBtn}>
               <Text style={{ color: Colors.mrDBlue }}>Reset</Text>
+              <MaterialIcons name="refresh" size={18} color={Colors.mrDBlue} />
             </TouchableOpacity>
           )}
         </View>
@@ -139,9 +140,9 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           <View style={styles.row}>
             <Text style={styles.contentTitle}>Licences</Text>
             <PopupMenu
-              options={PLATFORM_LABELS}
+              options={LICENCES.map((licence) => licence.slug)}
               selectedValue={null}
-              onSelect={onTogglePlatforms}
+              onSelect={onToggleLicences}
               iconColor={Colors.mediumDarkGrey}
               before
             >

@@ -5,6 +5,8 @@ import {
   PanResponder,
   Pressable,
   StatusBar,
+  ScrollView,
+  View,
 } from "react-native";
 import { BlurView } from "expo-blur";
 
@@ -21,7 +23,6 @@ type ModalProps = {
 export const Modal = (props: ModalProps) => {
   const { children, onDismiss } = props;
 
-  // Animated value for Y position
   const pan = useRef(new Animated.ValueXY()).current;
 
   const dismissWithAnimation = () => {
@@ -30,21 +31,21 @@ export const Modal = (props: ModalProps) => {
       duration: 200,
       useNativeDriver: false,
     }).start(() => {
-      if (onDismiss) {
-        onDismiss();
-      }
+      if (onDismiss) onDismiss();
     });
   };
 
-  // PanResponder for drag gesture
+  // PanResponder for drag-to-dismiss
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: (_, gestureState) => {
         return Math.abs(gestureState.dy) > 5;
       },
-      onPanResponderMove: Animated.event([null, { dy: pan.y }], {
-        useNativeDriver: false,
-      }),
+
+      onPanResponderMove: (_, gestureState) => {
+        pan.setValue({ x: 0, y: gestureState.dy });
+      },
+
       onPanResponderRelease: (_, gesture) => {
         if (gesture.dy > 80) {
           dismissWithAnimation();
@@ -63,18 +64,22 @@ export const Modal = (props: ModalProps) => {
   return (
     <BlurView intensity={60} tint="dark" style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={Colors.grey} />
+
       <Pressable style={styles.backdrop} onPress={dismissWithAnimation} />
 
       <Animated.View
         style={[
           styles.modalWrapper,
           { transform: [{ translateY: pan.y }] },
-          { maxHeight: 0.8 * screenHeight },
+          { maxHeight: screenHeight },
         ]}
-        {...panResponder.panHandlers}
       >
-        <BarLine />
-        {children}
+        {/* draggable area */}
+        <View style={{ height: 20 }} {...panResponder.panHandlers}>
+          <BarLine />
+        </View>
+
+        <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
       </Animated.View>
     </BlurView>
   );

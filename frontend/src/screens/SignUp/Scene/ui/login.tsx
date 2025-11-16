@@ -12,6 +12,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 
+import { removeTrailingWhitespace } from "@/src/utils";
 import { TextLogo } from "@/src/components/misc/textLogo";
 import { CustomButton } from "@/src/components/elements/button";
 import { Colors } from "@/constants/ui";
@@ -57,18 +58,25 @@ export const LoginScreen = (props: LoginScreenProps) => {
   const onSubmit = async (data: SignUpFormValues | SignInFormValues) => {
     setAuthError(null);
 
+    const sanitizedData: any = {};
+    for (const key in data) {
+      const value = (data as any)[key];
+      sanitizedData[key] =
+        typeof value === "string" ? removeTrailingWhitespace(value) : value;
+    }
+
     try {
       if (isSignUp) {
-        const { confirm_password, ...submitData } = data as SignUpFormValues;
+        const { confirm_password, ...submitData } = sanitizedData;
 
         const signUpParams = {
           ...submitData,
           role: isDriver ? "driver" : "owner",
         };
 
-        await onRegister!(signUpParams as any);
+        await onRegister!(signUpParams);
       } else {
-        await onLogin!(data as SignInFormValues);
+        await onLogin!(sanitizedData as SignInFormValues);
       }
     } catch (err: any) {
       const message = err?.message || "Authentication failed";
