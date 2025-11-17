@@ -34,6 +34,21 @@ defmodule BackendWeb.UserController do
     # Accounts send email confirmation email
     with {:ok, _user} <- Registration.register_user(params) do
       json(conn, :ok)
+    else
+      {:error, %Ecto.Changeset{errors: [username: {"username already taken", _}]} = changeset} ->
+        conn
+        |> put_status(:conflict)
+        |> json(%{error: "Username already taken"})
+
+      {:error, reason} ->
+        conn
+        |> put_status(:error)
+        |> json(%{error: "Backend Error", reason: inspect(reason)})
+
+      _ ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: "Invalid request"})
     end
   end
 

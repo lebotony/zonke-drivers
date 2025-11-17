@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { View } from "react-native";
 import { Text } from "react-native-paper";
 
@@ -11,25 +11,14 @@ type CommentProps = {
 export const Comment = (props: CommentProps) => {
   const { comment } = props;
 
-  const [showReplies, setShowReplies] = useState(false);
-  const [replying, setReplying] = useState(false);
-  const [replyText, setReplyText] = useState("");
-
-  // const addReply = () => {
-  //   if (!replyText.trim()) return;
-
-  //   setReplying(false);
-  //   setReplyText("");
-  // };
-
-  const renderReply = ({ item }: any) => (
-    <View style={styles.replyItem}>
-      <Text style={styles.replyName}>
-        {item.name} <Text style={styles.smallText}>· {item.date}</Text>
-      </Text>
-      <Text style={styles.replyText}>{item.text}</Text>
-    </View>
-  );
+  // const renderReply = ({ item }: any) => (
+  //   <View style={styles.replyItem}>
+  //     <Text style={styles.replyName}>
+  //       {item.name} <Text style={styles.smallText}>· {item.date}</Text>
+  //     </Text>
+  //     <Text style={styles.replyText}>{item.text}</Text>
+  //   </View>
+  // );
 
   return (
     <View style={styles.commentBox}>

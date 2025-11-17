@@ -21,13 +21,13 @@ type CommentFormValues = z.infer<typeof CommentSchema>;
 type CommentModalProps = {
   setShowCommentModal: () => void;
   driverId: string;
-  vehicle: Vehicle;
+  vehicleId: string;
 };
 
 export const CommentModal = ({
   setShowCommentModal,
   driverId,
-  vehicle,
+  vehicleId,
 }: CommentModalProps) => {
   const [commentHeight, setCommentHeight] = useState(0);
   const inputRef = useRef<TextInput>(null);
@@ -38,21 +38,22 @@ export const CommentModal = ({
       resolver: zodResolver(CommentSchema),
     });
 
-  const { updatePaginatedObject } = usePaginatedCache();
+  const { updatePaginatedObject, getUpdatedObjectSnapshot } =
+    usePaginatedCache();
 
   const commentValue = watch("text");
 
   useEffect(() => {
     const showSub = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
-      () => setKeyboardOpen(true),
+      () => setKeyboardOpen(true)
     );
     const hideSub = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
       () => {
         setKeyboardOpen(false);
         inputRef.current?.blur();
-      },
+      }
     );
 
     return () => {
@@ -61,34 +62,36 @@ export const CommentModal = ({
     };
   }, []);
 
-  const handleKeyboardIcon = () => {
-    if (!keyboardOpen) {
-      inputRef.current?.focus();
-    }
-  };
-
   const handleSubmitComment = () => {
     handleSubmit((formData) => {
       createComment({ driver_id: driverId, ...formData })
         .then((response) => {
           AppToast("Comment added successfully", true);
 
-          updatePaginatedObject("userVehicles", vehicle?.id, {
-            vehicle_drivers: vehicle?.vehicle_drivers?.map((vd) => {
-              if (vd?.driver.id !== driverId) return vd;
+          const vehicle = getUpdatedObjectSnapshot("userVehicles", vehicleId);
 
-              return {
-                ...vd,
-                comments: [response, ...(vd?.comments ?? [])],
-              };
-            }),
+          updatePaginatedObject("userVehicles", vehicleId, {
+            vehicle_drivers: vehicle?.vehicle_drivers?.map(
+              (vd: VehicleDriver) => {
+                if (vd?.driver.id !== driverId) return vd;
+
+                const vehicleDriver = vehicle?.vehicle_drivers?.find(
+                  (vd: VehicleDriver) => vd.driver.id === driverId
+                );
+
+                return {
+                  ...vd,
+                  comments: [response, ...(vehicleDriver?.comments ?? [])],
+                };
+              }
+            ),
           });
 
           reset();
         })
         .catch((err) => {
           AppToast();
-          throw new Error("Error while creating comment");
+          throw new Error("Error while creating comment: ", err);
         });
     })();
     setShowCommentModal();
