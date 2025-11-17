@@ -66,7 +66,7 @@ export const PaymentsScreen = () => {
     updateNestedPagination(
       vehicleDriver?.id,
       "paymentsPagination",
-      paymentsObj.paginate,
+      paymentsObj.paginate
     );
 
     const payments = paymentsObj?.data ?? [];
@@ -87,19 +87,19 @@ export const PaymentsScreen = () => {
       (prev: VehicleDriver["id"][] = []) => {
         if (prev.includes(id)) return prev;
         return [...prev, id];
-      },
+      }
     );
 
   const handleFetchPayments = () => {
     const { pageParam } = onFetchNestedPagination(
       vehicleDriver?.id,
-      "paymentsPagination",
+      "paymentsPagination"
     );
 
     fetchPayments({ pageParam, vehicleDriverId: vehicleDriver?.id }).then(
       (res: PaymentsResponse) => {
         loadDriverPayments(res);
-      },
+      }
     );
   };
 
@@ -107,7 +107,7 @@ export const PaymentsScreen = () => {
     if (!vehicleDriver?.id) return;
 
     const alreadyFetched = fetchedVehicleDriverPayments?.includes(
-      vehicleDriver.id,
+      vehicleDriver.id
     );
     if (!alreadyFetched) {
       handleFetchPayments();
@@ -129,7 +129,7 @@ export const PaymentsScreen = () => {
         style={{
           paddingHorizontal: 14,
           marginTop: 8,
-          backgroundColor: Colors.white,
+          backgroundColor: Colors.bg,
         }}
       >
         <VehicleSelector
@@ -185,7 +185,7 @@ export const PaymentsScreen = () => {
       {showCommentModal && vehicleDriver?.driver?.id && selectedVehicle && (
         <CommentModal
           driverId={vehicleDriver.driver.id}
-          vehicle={selectedVehicle}
+          vehicleId={selectedVehicle?.id}
           setShowCommentModal={() => setShowCommentModal(false)}
         />
       )}
