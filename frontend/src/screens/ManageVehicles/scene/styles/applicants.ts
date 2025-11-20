@@ -11,8 +11,10 @@ export const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 14,
     backgroundColor: Colors.white,
+    borderBottomColor: Colors.whiteSmoke,
+    borderBottomWidth: 1,
     ...topOffset,
-    ...shadowStyles,
+    // ...shadowStyles,
   },
   headerTitle: {
     position: "relative",
@@ -27,7 +29,7 @@ export const styles = StyleSheet.create({
     marginBottom: 4,
   },
   headerText: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "600",
     margin: "auto",
   },

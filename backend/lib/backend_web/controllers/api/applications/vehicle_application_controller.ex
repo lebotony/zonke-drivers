@@ -20,6 +20,11 @@ defmodule BackendWeb.Applications.VehicleApplicationController do
 
   def create(conn, params, session) do
     case VehicleApplications.create(params, session) do
+      {:ok, :application_exists} ->
+        conn
+        |> put_status(:unprocessable_entity)
+        |> json(%{error: "application_exists"})
+
       {:ok, vehicle_application} ->
         json(conn, %{status: "ok"})
 

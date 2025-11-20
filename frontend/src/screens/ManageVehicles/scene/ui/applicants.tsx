@@ -16,6 +16,7 @@ import { styles } from "../styles/applicants";
 import { fetchApplications, setApplicationsSeen } from "../../actions";
 import { VehicleDriverModal } from "./vehicleDriverModal";
 import { VehicleSelector } from "./vehicleSelector";
+import { capitalizeFirstLetter } from "@/src/utils";
 
 export const ApplicantsScreen = () => {
   const { id } = useLocalSearchParams();
@@ -54,7 +55,7 @@ export const ApplicantsScreen = () => {
     updateNestedPagination(
       vehicleId,
       "applicationsPagination",
-      applicationsObj.paginate,
+      applicationsObj.paginate
     );
 
     const vehicleApplications = applicationsObj?.data ?? [];
@@ -79,7 +80,7 @@ export const ApplicantsScreen = () => {
       (prev: Vehicle["id"][] = []) => {
         if (prev.includes(id)) return prev;
         return [...prev, id];
-      },
+      }
     );
 
   // 🔁 Fetch applications for a given vehicle
@@ -89,7 +90,7 @@ export const ApplicantsScreen = () => {
 
     const { pageParam } = onFetchNestedPagination(
       selectedVehicle.id,
-      "applicationsPagination",
+      "applicationsPagination"
     );
 
     fetchApplications({
@@ -106,7 +107,7 @@ export const ApplicantsScreen = () => {
     if (!selectedVehicle?.id) return;
 
     const alreadyFetched = fetchedVehicleApplications?.includes(
-      selectedVehicle.id,
+      selectedVehicle.id
     );
 
     if (!alreadyFetched) {
@@ -189,7 +190,7 @@ export const ApplicantsScreen = () => {
               <Text style={styles.emptyStateTitle}>No applicants found</Text>
               <Text style={styles.emptyStateText}>
                 {selectedVehicle
-                  ? `No applicants found yet for ${selectedVehicle.model}`
+                  ? `No applicants found yet for ${capitalizeFirstLetter(`${selectedVehicle.brand} ${selectedVehicle.model}`)}`
                   : "Select a vehicle to view applicants"}
               </Text>
             </View>

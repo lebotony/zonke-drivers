@@ -66,12 +66,13 @@ export const styles = StyleSheet.create({
   },
   details: {
     justifyContent: "space-between",
-    gap: 10,
+    gap: 8,
   },
   detailIcon: {
-    width: 20,
-    height: 20,
+    width: 18,
+    height: 18,
     alignItems: "center",
+    justifyContent: "center",
   },
   detailsRow: {
     gap: 4,
@@ -79,15 +80,14 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   paymentCountText: {
-    fontSize: 11,
-    marginLeft: 22,
-    fontWeight: 400,
+    marginLeft: 2,
     color: Colors.mediumGrey,
-    textAlignVertical: "center",
-    position: "absolute",
-    width: 150,
+    fontSize: 11,
+    maxWidth: "85%",
+    fontWeight: 400,
   },
-  address: {
+  detailText: {
+    marginLeft: 2,
     color: Colors.mediumGrey,
     fontSize: 13,
     maxWidth: "85%",

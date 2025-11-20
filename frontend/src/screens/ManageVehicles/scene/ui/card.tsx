@@ -1,7 +1,7 @@
 import { TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 
-import { MaterialIcons } from "@expo/vector-icons";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { isEmpty } from "lodash";
@@ -12,9 +12,12 @@ import { PopupMenu } from "@/src/components/popup";
 import { CustomButton } from "@/src/components/elements/button";
 import { shadowStyles } from "@/src/components/shadowStyles";
 import { capitalizeFirstLetter } from "@/src/utils";
+import { AppToast } from "@/src/components/CustomToast/customToast";
+import { usePaginatedCache } from "@/src/updateCacheProvider";
 
 import { styles } from "../styles/card";
 import { MANAGEMENT_OPTIONS } from "../constants";
+import { activateVehicle } from "../../actions";
 
 type CardProps = {
   vehicle: Vehicle;
@@ -25,15 +28,46 @@ type CardProps = {
 export const Card = (props: CardProps) => {
   const { vehicle, setVehicleId, setShowVehicleDriverModal } = props;
 
+  const { updatePaginatedObject } = usePaginatedCache();
+
   const vehicleDriver = vehicle.vehicle_drivers?.[0];
   const noVehicleDrivers = isEmpty(vehicle?.vehicle_drivers);
 
+  const isActive = vehicle?.active;
+
+  const handleSetActive = () =>
+    activateVehicle({
+      active: !vehicle?.active,
+      vehicle_id: vehicle?.id,
+    })
+      .then((res) => {
+        AppToast(
+          `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
+          true
+        );
+
+        updatePaginatedObject("userVehicles", vehicle?.id, {
+          active: !vehicle?.active,
+        });
+      })
+      .catch((err) => {
+        AppToast();
+      });
+
   const handleSelectOptions = (value: string) => {
-    if (value === "Add accident") {
+    if (value === "Add accident" && vehicleDriver) {
       setShowVehicleDriverModal(true);
       setVehicleId(vehicle.id);
       return;
     }
+
+    if (value === "Search driver")
+      return router.push(`/vehicleDriverSearch/${vehicle?.id}`);
+
+    if (value === "Edit Vehicle")
+      return router.push(`/(tabs)/vehicle/${vehicle?.id}`);
+
+    if (value === "Activate / Deactivate") return handleSetActive();
   };
 
   return (
@@ -79,8 +113,26 @@ export const Card = (props: CardProps) => {
               />
             </View>
 
-            <Text style={styles.address} numberOfLines={1}>
+            <Text style={styles.detailText} numberOfLines={1}>
               {vehicle?.passengers ? `${vehicle?.passengers} passengers` : "NA"}
+            </Text>
+          </View>
+
+          <View style={styles.detailsRow}>
+            <View style={styles.detailIcon}>
+              <Feather name="play-circle" size={15} color="black" />
+            </View>
+
+            <Text
+              style={[
+                styles.detailText,
+                {
+                  color: isActive ? Colors.emeraldGreen : Colors.lightRed,
+                  fontWeight: 600,
+                },
+              ]}
+            >
+              {isActive ? "active" : "inactive"}
             </Text>
           </View>
 

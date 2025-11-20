@@ -11,11 +11,17 @@ defmodule Backend.Applications.VehicleApplications do
   def create(params, %{user_id: user_id}) do
     case get_user_driver(user_id) do
       {:ok, driver} ->
-        updated_params = Map.put(params, :driver_id, driver.id)
+        case driver_application_exists(driver.id, params.vehicle_id) do
+          false ->
+            updated_params = Map.put(params, :driver_id, driver.id)
 
-        %VehicleApplication{}
-        |> VehicleApplication.changeset(updated_params)
-        |> Repo.insert()
+            %VehicleApplication{}
+            |> VehicleApplication.changeset(updated_params)
+            |> Repo.insert()
+
+          true ->
+            {:ok, :application_exists}
+        end
 
       {:error, :not_found} ->
         {:error, :no_driver_profile}
@@ -29,6 +35,14 @@ defmodule Backend.Applications.VehicleApplications do
     )
     |> Repo.one()
     |> Drivers.format_driver()
+  end
+
+  defp driver_application_exists(driver_id, vehicle_id) do
+    exists =
+    VehicleApplicationBy.base_query()
+    |> VehicleApplicationBy.by_driver(driver_id)
+    |> VehicleApplicationBy.by_vehicle(vehicle_id)
+    |> Repo.exists?()
   end
 
   def get_application_by_vehicle_driver(vehicle_id, driver_id) do

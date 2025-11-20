@@ -32,7 +32,6 @@ type DriverProps = {
 export const DriverCard = (props: DriverProps) => {
   const {
     driver,
-    seen,
     applicant = false,
     setSelectedDriverId,
     setShowVehicleDriverModal,

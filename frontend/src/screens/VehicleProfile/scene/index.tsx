@@ -82,6 +82,10 @@ export const Scene = () => {
       .catch((err) => {
         const errorKey = err.response?.data?.error;
 
+        if (errorKey === "application_exists") {
+          return AppToast("Application already exists", true);
+        }
+
         if (errorKey === "no_driver_profile") {
           setShowNoProfileModal(true);
         } else {

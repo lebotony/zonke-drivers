@@ -40,6 +40,7 @@ export const styles = StyleSheet.create({
   userText: {
     fontSize: 18,
     marginLeft: 20,
+    width: "55%"
   },
   descriptionText: {
     fontSize: 15,

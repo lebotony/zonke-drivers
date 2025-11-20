@@ -1,6 +1,12 @@
 import * as ImagePicker from "expo-image-picker";
 
-export const pickImage = async (setValue: any, aspect = [16, 12]) => {
+export const pickImage = async (
+  setValue: any,
+  aspect = [16, 12],
+  fn?: any,
+  id?: string,
+  updatePaginatedObject?: any
+) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
   if (status !== "granted") {
@@ -11,7 +17,7 @@ export const pickImage = async (setValue: any, aspect = [16, 12]) => {
   const result = await ImagePicker.launchImageLibraryAsync({
     mediaTypes: ImagePicker.MediaTypeOptions.Images,
     allowsEditing: true,
-    aspect,
+    aspect: aspect,
     quality: 1,
   });
 
@@ -22,6 +28,11 @@ export const pickImage = async (setValue: any, aspect = [16, 12]) => {
       : (result as any);
     const uri = asset.uri || asset.uri;
     const filename = uri.split("/").pop() || `photo-${Date.now()}.jpg`;
+
+    if (id !== "new" || undefined || null)
+      fn(id, { file_path: uri, filename }).then((res: Asset) =>
+        updatePaginatedObject(res)
+      );
 
     setValue("asset", { file_path: uri, filename });
   }

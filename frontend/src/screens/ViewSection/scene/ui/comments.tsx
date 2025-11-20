@@ -32,11 +32,11 @@ export const Comments = (props: CommentsProps) => {
   } = usePaginatedCache();
 
   const { getCachedData } = useCustomQuery();
-  const { userVehicles, commentsPagination, fetchedDriverComments } =
+  const { userVehicles, commentsPagination, fetchedVehicleDriverComments } =
     getCachedData([
       "userVehicles",
       "commentsPagination",
-      "fetchedDriverComments",
+      "fetchedVehicleDriverComments",
     ]);
 
   const vehicle = find(userVehicles, { id: vehicleId });
@@ -67,12 +67,12 @@ export const Comments = (props: CommentsProps) => {
     });
   };
 
-  const handleSetFetchedComments = (id: string) =>
+  const handleSetFetchedComments = () =>
     queryClient.setQueryData(
-      ["fetchedDriverComments"],
-      (fetchedDriverComments: Vehicle["id"][]) => [
-        ...(fetchedDriverComments ?? []),
-        id,
+      ["fetchedVehicleDriverComments"],
+      (fetchedVehicleDriverComments: Driver["id"][]) => [
+        ...(fetchedVehicleDriverComments ?? []),
+        { driverId, vehicleId },
       ]
     );
 
@@ -91,9 +91,13 @@ export const Comments = (props: CommentsProps) => {
   };
 
   useEffect(() => {
-    if (!fetchedDriverComments?.includes(driverId) || !driverId) {
+    if (
+      !fetchedVehicleDriverComments?.includes({ driverId, vehicleId }) ||
+      !driverId ||
+      !vehicleId
+    ) {
       handleFetchComments();
-      handleSetFetchedComments(driverId);
+      handleSetFetchedComments();
     }
   }, []);
 

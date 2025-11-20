@@ -35,7 +35,7 @@ defmodule Backend.Assets.Assets do
       {:ok, %{asset: asset}} ->
         {:ok, asset}
 
-      {:error, :s3_upload, {:error, reason}, _changes} ->
+      {:error, :s3_upload, {:s3_upload_failed, reason}, _changes} ->
         {:error, "Failed to upload file: #{inspect(reason)}"}
 
       {:error, :asset, {:error, reason}, _changes} ->
@@ -77,10 +77,10 @@ defmodule Backend.Assets.Assets do
       {:ok, %{updated_asset: updated_asset}} ->
         {:ok, updated_asset}
 
-      {:error, :delete_old_s3_file, {:error, reason}, _changes} ->
-        {:error, "Failed to delete old s3 file file: #{inspect(reason)}"}
+      {:error, :delete_old_s3_file, {:delete_old_file_failed, reason}, _changes} ->
+        {:error, "Failed to delete old s3 file: #{inspect(reason)}"}
 
-      {:error, :new_s3_upload, {:error, reason}, _changes} ->
+      {:error, :new_s3_upload, {:s3_upload_failed, reason}, _changes} ->
         {:error, "Failed to upload file: #{inspect(reason)}"}
 
       {:error, :updated_asset, {:error, reason}, _changes} ->
@@ -124,14 +124,36 @@ defmodule Backend.Assets.Assets do
     end
   end
 
-  def prepare_url(filename) do
+  def download_url(filename, %{public: true, dt: dt}) do
+    config = s3_config()
+    port = ExAws.S3.Utils.sanitized_port_component(config)
+
+    params = query_params(t: dt_to_timestamp(dt))
+
+    if Mix.env() == :dev do
+      # LocalStack URL
+      "#{config[:scheme]}#{config[:host]}#{port}/#{@bucket}/#{filename}?#{params}"
+    else
+      # Real AWS
+      "https://#{@bucket}.s3.amazonaws.com/#{filename}?#{params}"
+    end
+  end
+
+  def prepare_url(filename, opts \\ %{public: true}) do
     case filename do
-      nil -> nil
+      nil ->
+        nil
 
       filename ->
-        case presigned_url(filename) do
-          {:ok, url} -> url
-          _ -> nil
+        if opts.public do
+          # public URL with timestamp cache-buster
+          download_url(filename, %{public: true, dt: DateTime.utc_now()})
+        else
+          # private presigned URL
+          case presigned_url(filename) do
+            {:ok, url} -> url
+            _ -> nil
+          end
         end
     end
   end
@@ -162,6 +184,14 @@ defmodule Backend.Assets.Assets do
       {:error, reason} ->
         IO.inspect(reason, label: "Unexpected S3 error when creating bucket")
     end
+  end
+
+  defp dt_to_timestamp(dt) do
+    DateTime.to_unix(dt, :millisecond)
+  end
+
+  defp query_params(params) do
+    URI.encode_query(params)
   end
 
   defp format_asset(%Asset{} = asset), do: {:ok, asset}

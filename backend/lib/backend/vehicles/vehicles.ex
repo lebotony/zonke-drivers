@@ -9,7 +9,7 @@ defmodule Backend.Vehicles.Vehicles do
   alias Backend.Drivers.{Driver, Drivers}
   alias Ecto.Multi
 
-  import Ecto.Query
+  import Ecto.Query, except: [update: 2]
 
   # defdelegate authorize(action, params, session), to: Policy
 
@@ -48,47 +48,9 @@ defmodule Backend.Vehicles.Vehicles do
   end
 
   def update(%Vehicle{} = vehicle, params) do
-    {asset_params, vehicle_params} = Map.pop(params, :asset)
-
-    with {:ok, _asset} <- maybe_handle_asset(vehicle, asset_params),
-         {:ok, _vehicle} <- maybe_update_vehicle(vehicle, vehicle_params),
-         updated_vehicle <- Repo.get(Vehicle, vehicle.id) |> Repo.preload(:asset) do
-      # IO.inspect(updated_vehicle)
-      {:ok, updated_vehicle}
-    else
-      {:error, reason} -> {:error, reason}
-    end
-  end
-
-  defp maybe_handle_asset(_vehicle, nil), do: {:ok, :no_asset}
-
-  defp maybe_handle_asset(vehicle, %{file: _} = asset_params),
-    do: update_vehicle_asset(vehicle.id, asset_params)
-
-  defp maybe_handle_asset(_vehicle, _), do: {:ok, :no_file_in_asset}
-
-  def update_vehicle_asset(vehicle_id, params) do
-    get_vehicle_asset(vehicle_id)
-    |> Assets.update_asset_with_file(params)
-  end
-
-  defp maybe_update_vehicle(vehicle, params) do
-    cleaned_params =
-      params
-      |> Enum.reject(fn {_k, v} -> is_nil(v) or v == "" end)
-      |> Enum.into(%{})
-
-    if map_size(cleaned_params) > 0 do
-      decoded_params =
-        Map.update(cleaned_params, :price_fixed, %{}, fn val ->
-          if is_binary(val), do: Jason.decode!(val), else: val
-        end)
-
-      vehicle
-      |> Vehicle.changeset(decoded_params)
-      |> Repo.update()
-    else
-      {:ok, vehicle}
+    case vehicle |> Vehicle.changeset(params) |> Repo.update() do
+      {:ok, vehicle} -> {:ok, Repo.preload(vehicle, :asset)}
+      {:error, error} -> {:error, error}
     end
   end
 
@@ -99,8 +61,27 @@ defmodule Backend.Vehicles.Vehicles do
     |> Repo.one()
   end
 
+  def update_vehicle_asset(params) do
+    asset = get_vehicle_asset(params.vehicle_id)
+    asset_params = Map.delete(params, :vehicle_id) |> Map.get(:params)
+    Assets.update_asset_with_file(asset, asset_params)
+  end
+
+  def activate_vehicle(%{vehicle_id: vehicle_id, active: active}) do
+    VehicleBy.base_query()
+    |> VehicleBy.by_id(vehicle_id)
+    |> Ecto.Query.update(set: [active: ^active])
+    |> Repo.update_all([])
+  end
+
   def delete(%Vehicle{id: id} = vehicle) do
-    Repo.delete(vehicle)
+    case Repo.delete(vehicle) do
+      {:ok, _vehicle} ->
+        %Asset{filename: filename} = get_vehicle_asset(id)
+        Assets.delete_object(filename)
+
+      {:error, reason} -> {:error, reason}
+    end
   end
 
   def get_vehicle(id) do
