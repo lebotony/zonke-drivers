@@ -82,6 +82,6 @@ export const styles = StyleSheet.create({
   driverProfileText: {
     fontSize: 17,
     fontWeight: 600,
-    marginBottom: 3
-  }
-})
+    marginBottom: 3,
+  },
+});

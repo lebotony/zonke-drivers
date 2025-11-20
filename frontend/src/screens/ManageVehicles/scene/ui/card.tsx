@@ -91,7 +91,7 @@ export const Card = (props: CardProps) => {
         <View style={styles.details}>
           <Text style={styles.name}>
             {capitalizeFirstLetter(
-              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`
+              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`,
             )}
           </Text>
 
@@ -168,7 +168,7 @@ export const Card = (props: CardProps) => {
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         {!noVehicleDrivers && (
           <CustomButton
-            onPress={() => router.push(`/payments/${vehicle?.id}`)}
+            onPress={() => router.push(`/details/${vehicle?.id}`)}
             customStyle={{
               paddingTop: 10,
               paddingBottom: 12,

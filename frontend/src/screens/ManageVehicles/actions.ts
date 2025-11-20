@@ -57,4 +57,5 @@ export const createVehicleDriver = (params: {
   vehicle_id: string;
 }) => httpPost("/vehicle_drivers", params);
 
-export const updateVehicleDriver = (id: string ) => httpPost("/vehicle_drivers/accidents", {id});
+export const updateVehicleDriver = (id: string) =>
+  httpPost("/vehicle_drivers/accidents", { id });

@@ -8,7 +8,7 @@ type VehicleDriver = {
   last_payment: number;
   payment_count: number;
   comments?: CommentType[];
-  accidents?: number
+  accidents?: number;
 };
 
 type VehicleApplication = {

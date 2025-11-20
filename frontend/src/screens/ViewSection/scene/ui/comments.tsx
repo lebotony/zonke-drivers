@@ -1,9 +1,7 @@
 import { useEffect } from "react";
 import { View, FlatList } from "react-native";
 import { Text } from "react-native-paper";
-
 import { find } from "lodash";
-
 import { useQueryClient } from "@tanstack/react-query";
 
 import { CustomButton } from "@/src/components/elements/button";
@@ -41,14 +39,16 @@ export const Comments = (props: CommentsProps) => {
 
   const vehicle = find(userVehicles, { id: vehicleId });
   const vehicleDriver = vehicle?.vehicle_drivers?.find(
-    (vd: VehicleDriver) => vd?.driver?.id === driverId
+    (vd: VehicleDriver) => vd?.driver?.id === driverId,
   );
+
+  const vehicleDriverKey = `${vehicleId}-${driverId}`;
 
   const loadDriverComments = (commentsObj: Record<string, any>) => {
     updateNestedPagination(
-      vehicleDriver?.id,
+      vehicleDriverKey,
       "commentsPagination",
-      commentsObj.paginate
+      commentsObj.paginate,
     );
 
     const driverComments = commentsObj?.data;
@@ -67,19 +67,19 @@ export const Comments = (props: CommentsProps) => {
     });
   };
 
-  const handleSetFetchedComments = () =>
+  const handleSetFetchedComments = (key: string) =>
     queryClient.setQueryData(
-      ["fetchedVehicleDriverComments"],
-      (fetchedVehicleDriverComments: Driver["id"][]) => [
-        ...(fetchedVehicleDriverComments ?? []),
-        { driverId, vehicleId },
-      ]
+      ["fetchedDriverComments"],
+      (prev: string[] = []) => {
+        if (prev.includes(key)) return prev;
+        return [...prev, key];
+      },
     );
 
   const handleFetchComments = () => {
     const { pageParam } = onFetchNestedPagination(
-      vehicleDriver?.id,
-      "commentsPagination"
+      vehicleDriverKey,
+      "commentsPagination",
     );
 
     fetchComments({
@@ -91,15 +91,15 @@ export const Comments = (props: CommentsProps) => {
   };
 
   useEffect(() => {
-    if (
-      !fetchedVehicleDriverComments?.includes({ driverId, vehicleId }) ||
-      !driverId ||
-      !vehicleId
-    ) {
+    if (!vehicleDriverKey) return;
+
+    const alreadyFetched = fetchedVehicleDriverComments?.includes(vehicleDriverKey);
+
+    if (!alreadyFetched) {
       handleFetchComments();
-      handleSetFetchedComments();
+      handleSetFetchedComments(vehicleDriverKey);
     }
-  }, []);
+  }, [vehicleDriverKey]);
 
   return (
     <View style={styles.commentsSection}>
@@ -113,7 +113,7 @@ export const Comments = (props: CommentsProps) => {
         data={vehicleDriver?.comments}
         onEndReached={() => {
           const paginationObj = find(commentsPagination, {
-            id: vehicleDriver?.id,
+            id: vehicleDriverKey,
           })?.paginate;
 
           if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
