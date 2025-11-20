@@ -3,6 +3,7 @@ import { Image } from "expo-image";
 
 import { styles } from "./styles";
 import { shadowStyles } from "../../shadowStyles";
+import { Colors } from "@/constants/ui";
 
 type AvatarProps = {
   round?: boolean;
@@ -25,6 +26,7 @@ export const Avatar = ({
         shadow && { ...shadowStyles },
         round && styles.round,
         radius && { borderRadius: 10 },
+        { backgroundColor: Colors.verylightBlue },
       ]}
       {...imageProps}
     />

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 
-import { find, isEmpty } from "lodash";
+import { find, isEmpty, isEqual } from "lodash";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,6 +32,7 @@ import { SelectLicenceArea, SelectPlatformArea } from "./selectAreas";
 import {
   fetchDriverProfile,
   updateDriver,
+  updateUserAsset,
   updateVehicleUser,
 } from "../../actions";
 
@@ -75,6 +76,9 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
     resolver: zodResolver(isDriver ? DriverProfileSchema : OwnerProfileSchema),
     defaultValues: formValues,
   });
+
+  const { asset: currentAsset, ...currentValues } = watch();
+  const isSameForm = isEqual(currentValues, formValues);
 
   useEffect(() => {
     if (isDriver && !driverProfile) {
@@ -157,11 +161,28 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
     }
   };
 
+  const updatePaginatedAsset = (asset: Asset) => {
+    queryClient.setQueryData(["user"], { ...user, asset: asset });
+    queryClient.setQueryData(["driverProfile"], {
+      ...driverProfile,
+      asset_url: asset?.url,
+    });
+  };
+
+  const handleSelectImage = () =>
+    pickImage(
+      setValue,
+      [1, 1],
+      updateUserAsset,
+      user?.id,
+      updatePaginatedAsset
+    );
+
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
       <Text style={styles.title}>Edit Profile</Text>
       <TouchableOpacity
-        onPress={() => pickImage(setValue, [1, 1])}
+        onPress={handleSelectImage}
         style={[
           styles.avatarWrapper,
           isProfilePicPresent && { borderWidth: 0 },
@@ -174,7 +195,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
           }
           round
         />
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity onPress={handleSelectImage} style={styles.editButton}>
           <MaterialIcons
             name="drive-file-rename-outline"
             color={Colors.mrDBlue}
@@ -289,13 +310,14 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       )}
 
       <CustomButton
-        onPress={handleEditProfile}
+        onPress={isSameForm ? undefined : handleEditProfile}
         haptics="light"
         customStyle={{
           flexGrow: 1,
           marginBottom: 20,
           marginTop: 10,
           flex: 1,
+          backgroundColor: isSameForm ? Colors.lightGrey : Colors.mrDBlue,
         }}
       >
         <Text style={{ color: Colors.white, fontWeight: 600, fontSize: 16 }}>

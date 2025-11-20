@@ -50,15 +50,10 @@ defmodule Backend.Drivers.Drivers do
       |> Enum.reject(fn {_k, v} -> is_nil(v) or v == "" end)
       |> Enum.into(%{})
 
-    decoded_params =
-      Map.update(cleaned_params, :location, %{}, fn val ->
-        if is_binary(val), do: Jason.decode!(val), else: val
-      end)
-
     case get_user_driver(user_id) do
       {:ok, driver} ->
-        if map_size(decoded_params) > 0 do
-          case update_driver(driver, decoded_params) do
+        if map_size(cleaned_params) > 0 do
+          case update_driver(driver, cleaned_params) do
             {:ok, driver} -> get_driver(driver.id, :public)
             {:error, error} -> {:error, error}
           end
@@ -67,7 +62,7 @@ defmodule Backend.Drivers.Drivers do
         end
 
       {:error, :not_found} ->
-        case create(decoded_params, %{user_id: user_id}) do
+        case create(cleaned_params, %{user_id: user_id}) do
           {:ok, driver} -> get_driver(driver.id, :public)
           {:error, error} -> {:error, error}
         end
@@ -152,9 +147,9 @@ defmodule Backend.Drivers.Drivers do
 
       {:name, value}, query when is_binary(value) and value != "" ->
         where(query,
-          [driver: d],
-          ilike(d.first_name, ^"%#{value}%") or
-            ilike(d.last_name, ^"%#{value}%")
+          [user: u],
+          ilike(u.first_name, ^"%#{value}%") or
+            ilike(u.last_name, ^"%#{value}%")
         )
 
       {:age_range, [min, max]}, query when min != "18" or max != "70" ->

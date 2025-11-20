@@ -4,6 +4,7 @@ defmodule BackendWeb.UserController do
 
   alias Backend.Accounts.{Users, Registration}
   alias Backend.Guardian
+  alias BackendWeb.Assets.AssetJSON
 
   def get_current_user(conn, _params, _session) do
     with ["" <> token] <- get_req_header(conn, "authorization"),
@@ -56,6 +57,27 @@ defmodule BackendWeb.UserController do
     with {:ok, user} <- Users.get_user_by(id: user_id),
          {:ok, user} <- Users.update(user, params) do
       render(conn, :show, user: user)
+    end
+  end
+
+  def update_asset(conn, %{params: params}, %{user_id: user_id}) do
+    with {:ok, asset} <- Users.update_user_asset(user_id, params) do
+      render(conn, AssetJSON, :show, %{asset: asset})
+    else
+      {:error, :asset, "Failed to upload file: :econnrefused"} ->
+        conn
+        |> put_status(:conflict)
+        |> json(%{error: "Failed to upload image"})
+
+      {:error, reason} ->
+        conn
+        |> put_status(:error)
+        |> json(%{error: "Backend Error", reason: inspect(reason)})
+
+      _ ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: "Invalid request"})
     end
   end
 end

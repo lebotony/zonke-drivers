@@ -23,6 +23,10 @@ defmodule BackendWeb.Router do
     scope "/" do
       pipe_through([:authorization])
 
+      scope("/users") do
+        post("/update_asset", UserController, :update_asset)
+      end
+
       resources("/users", UserController, except: @except_path_actions)
 
       scope("/business_profiles") do
@@ -46,7 +50,8 @@ defmodule BackendWeb.Router do
         get("/vehicle_drivers", Vehicles.VehicleController, :index_management_vehicle)
         get("/public", Vehicles.VehicleController, :index_public)
         post("/update", Vehicles.VehicleController, :update_vehicle)
-        post("/accidents", Vehicles.VehicleController, :increment_accidents)
+        post("/update_asset", Vehicles.VehicleController, :update_asset)
+        post("/activate_vehicle", Vehicles.VehicleController, :activate_vehicle)
       end
 
       scope("/vehicle_drivers") do

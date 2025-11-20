@@ -6,7 +6,7 @@ import { Image } from "expo-image";
 import { useLocalSearchParams } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 
-import { find, isEmpty } from "lodash";
+import { find, isEmpty, isEqual } from "lodash";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -24,7 +24,12 @@ import { CardFormDef } from "../utils/cardFormDef";
 import { Card } from "./card";
 import { FormSchema } from "../../schema";
 import { AddVehicleForm } from "./form";
-import { createVehicle, updateVehicle } from "../../actions";
+import {
+  createVehicle,
+  updateVehicle,
+  updateVehicleAsset,
+} from "../../actions";
+import { activateVehicle } from "@/src/screens/ManageVehicles/actions";
 
 export type AddVehicleFormValues = z.infer<typeof FormSchema>;
 
@@ -81,6 +86,10 @@ export const AddVehicle = () => {
     }
   }, [vehicle]);
 
+  const { asset: initialAsset, ...initialValues } = formValues;
+  const { asset: currentAsset, ...currentValues } = watch();
+  const isSameForm = isEqual(currentValues, initialValues);
+
   const pickedAsset = watch("asset");
 
   const isNewVehiclePic = !isEmpty(pickedAsset?.file_path);
@@ -91,7 +100,7 @@ export const AddVehicle = () => {
 
   const upsertVehicle = (params: AddVehicleFormValues) => {
     if (vehicle) {
-      return updateVehicle({ ...params, id: vehicleId })
+      return updateVehicle(vehicleId, params)
         .then((res) => {
           AppToast("Vehicle updated successfully", true);
 
@@ -111,8 +120,16 @@ export const AddVehicle = () => {
           addItemToPaginatedList("userVehicles", res);
         })
         .catch((err) => {
-          AppToast();
-          throw new Error("Error while creating vehicle: ", err);
+          if (
+            err?.response?.statusText === "Failed to upload image" ||
+            err?.response?.data?.error === "Failed to upload image"
+          ) {
+            AppToast("Failed to upload image");
+            throw new Error("Failed to upload image: ", err);
+          } else {
+            AppToast();
+            throw new Error("Error while creating vehicle: ", err);
+          }
         });
     }
   };
@@ -130,6 +147,39 @@ export const AddVehicle = () => {
     upsertVehicle(params);
   };
 
+  const updatePaginatedAsset = (asset: Asset) =>
+    updatePaginatedObject("userVehicles", vehicleId, {
+      asset: asset,
+    });
+
+  const handleSelectImage = () =>
+    pickImage(
+      setValue,
+      undefined,
+      updateVehicleAsset,
+      vehicleId,
+      updatePaginatedAsset
+    );
+
+  const handleSetActive = () =>
+    activateVehicle({
+      active: !vehicle?.active,
+      vehicle_id: vehicleId,
+    })
+      .then((res) => {
+        AppToast(
+          `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
+          true
+        );
+
+        updatePaginatedObject("userVehicles", vehicleId, {
+          active: !vehicle?.active,
+        });
+      })
+      .catch((err) => {
+        AppToast();
+      });
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView
@@ -140,12 +190,12 @@ export const AddVehicle = () => {
           <Text style={[styles.header]}>Car Details</Text>
 
           <TouchableOpacity
-            onPress={() => pickImage(setValue)}
+            onPress={handleSelectImage}
             style={styles.imageWrapper}
           >
             <TouchableOpacity
               style={styles.plusBtn}
-              onPress={() => pickImage(setValue)}
+              onPress={handleSelectImage}
             >
               <AntDesign name="plus" size={24} color={Colors.white} />
             </TouchableOpacity>
@@ -178,20 +228,46 @@ export const AddVehicle = () => {
 
         <AddVehicleForm control={control} errors={errors} />
 
-        <CustomButton
-          haptics="light"
-          onPress={handleSubmit(create)}
-          customStyle={{
-            flexGrow: 1,
-            marginBottom: 20,
-            marginTop: 10,
-            marginHorizontal: 15,
-          }}
-        >
-          <Text style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}>
-            {`${vehicle ? "Edit" : "Add"} Vehicle`}
-          </Text>
-        </CustomButton>
+        <View>
+          {vehicle && (
+            <CustomButton
+              haptics="light"
+              onPress={handleSetActive}
+              customStyle={[
+                {
+                  backgroundColor: vehicle?.active
+                    ? Colors.lightRed
+                    : Colors.lightGreen,
+                },
+                styles.btnStyles,
+              ]}
+            >
+              <Text
+                style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}
+              >
+                {vehicle?.active ? "De-activate" : "Activate"}
+              </Text>
+            </CustomButton>
+          )}
+
+          <CustomButton
+            haptics="light"
+            onPress={isSameForm ? undefined : handleSubmit(create)}
+            customStyle={[
+              {
+                backgroundColor:
+                  isSameForm && vehicle ? Colors.lightGrey : Colors.mrDBlue,
+              },
+              styles.btnStyles,
+            ]}
+          >
+            <Text
+              style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}
+            >
+              {`${vehicle ? "Edit" : "Add"} Vehicle`}
+            </Text>
+          </CustomButton>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );

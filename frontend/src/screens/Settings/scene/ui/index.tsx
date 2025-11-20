@@ -49,7 +49,11 @@ export const Settings = () => {
             {!isProfilePicPresent && <Text style={styles.addText}>Add</Text>}
           </View>
           <View>
-            <Text style={styles.userText}>
+            <Text
+              style={styles.userText}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
               {user?.first_name} {user?.last_name}
             </Text>
             <Text style={styles.descriptionText}>{user?.username}</Text>
