@@ -49,7 +49,7 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
 
     const vehicle = getUpdatedObjectSnapshot(
       "userVehicles",
-      vehicleId as string
+      vehicleId as string,
     );
 
     createVehicleDriver(params)
@@ -59,7 +59,7 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
         updatePaginatedObject("userVehicles", vehicleId as string, {
           applications: vehicle?.applications?.filter(
             (application: VehicleApplication) =>
-              application?.driver?.id !== driverId
+              application?.driver?.id !== driverId,
           ),
           vehicle_drivers: [
             {

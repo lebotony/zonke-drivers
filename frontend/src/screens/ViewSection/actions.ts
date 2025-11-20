@@ -3,7 +3,15 @@ import axios from "axios";
 import { API_URL } from "@/constants/srcConstants";
 import { httpPost } from "@/src/requests";
 
-export const fetchComments = ({ pageParam = 1, driverId }) =>
+type FetchCommentsProps = {
+  pageParam: number;
+  driverId: string;
+};
+
+export const fetchComments = ({
+  pageParam = 1,
+  driverId,
+}: FetchCommentsProps) =>
   axios
     .get(`${API_URL}/comments`, {
       params: { page: pageParam, driver_id: driverId },

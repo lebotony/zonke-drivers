@@ -10,7 +10,6 @@ import { useCustomQuery } from "@/src/useQueryContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { Colors } from "@/constants/ui";
-import { Spinner } from "@/src/components/elements/Spinner";
 
 import { styles } from "../styles/applicants";
 import { fetchApplications, setApplicationsSeen } from "../../actions";
@@ -47,7 +46,6 @@ export const ApplicantsScreen = () => {
     updateNestedPagination,
   } = usePaginatedCache();
 
-  // 🧠 Helper: update vehicle applications + mark seen
   const loadVehicleApplications = (applicationsObj: Record<string, any>) => {
     const vehicleId = selectedVehicle?.id;
     if (!vehicleId) return;
@@ -69,11 +67,9 @@ export const ApplicantsScreen = () => {
       ],
     });
 
-    // mark seen
     setApplicationsSeen(vehicleId);
   };
 
-  // 🧠 Cache fetched vehicle IDs to avoid refetch
   const handleSetFetchedVehicleApplications = (id: string) =>
     queryClient.setQueryData(
       ["fetchedVehicleApplications"],
@@ -83,10 +79,8 @@ export const ApplicantsScreen = () => {
       }
     );
 
-  // 🔁 Fetch applications for a given vehicle
   const handleFetchApplications = () => {
     if (!selectedVehicle?.id) return;
-    // setLoading(true);
 
     const { pageParam } = onFetchNestedPagination(
       selectedVehicle.id,
@@ -99,10 +93,8 @@ export const ApplicantsScreen = () => {
     }).then((res) => {
       loadVehicleApplications(res);
     });
-    // .finally(() => setLoading(false));
   };
 
-  // ⚡ On vehicle change, fetch if not cached yet
   useEffect(() => {
     if (!selectedVehicle?.id) return;
 
@@ -116,12 +108,10 @@ export const ApplicantsScreen = () => {
     }
   }, [selectedVehicle?.id]);
 
-  // 🧠 Derived current vehicle snapshot
   const currentVehicle = find(userVehicles, { id: selectedVehicle?.id });
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* 🔹 Header */}
       <View style={styles.header}>
         <View style={styles.headerTitle}>
           <TouchableOpacity
@@ -138,7 +128,6 @@ export const ApplicantsScreen = () => {
           <Text style={styles.headerText}>Applicants</Text>
         </View>
 
-        {/* 🚗 Vehicle Selector */}
         <View style={{ marginTop: 8 }}>
           <VehicleSelector
             vehicles={userVehicles}
@@ -150,7 +139,6 @@ export const ApplicantsScreen = () => {
         </View>
       </View>
 
-      {/* 🔹 Applicants List */}
       {
         <View style={styles.listContainer}>
           {!isEmpty(currentVehicle?.applications) ? (

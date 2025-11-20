@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (authState.authenticated) {
         try {
           initializeSocket().then((sock) =>
-            queryClient.setQueryData(["socket"], sock)
+            queryClient.setQueryData(["socket"], sock),
           );
           console.log("Socket connected after authentication");
         } catch (error) {
@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       ?.join()
       .receive("ok", () => console.log("joined user channel"))
       .receive("error", (err: Error) =>
-        console.error("failed to join user channel", err)
+        console.error("failed to join user channel", err),
       );
 
     queryClient.setQueryData(["userChannel"], userChannel);

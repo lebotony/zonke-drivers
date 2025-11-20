@@ -1,7 +1,7 @@
 import { Stack } from "expo-router";
 
-const PaymentLayout = () => {
+const DetailsLayout = () => {
   return <Stack screenOptions={{ headerShown: false }} />;
 };
 
-export default PaymentLayout;
+export default DetailsLayout;

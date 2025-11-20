@@ -46,14 +46,14 @@ export const CommentModal = ({
   useEffect(() => {
     const showSub = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
-      () => setKeyboardOpen(true)
+      () => setKeyboardOpen(true),
     );
     const hideSub = Keyboard.addListener(
       Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
       () => {
         setKeyboardOpen(false);
         inputRef.current?.blur();
-      }
+      },
     );
 
     return () => {
@@ -76,14 +76,14 @@ export const CommentModal = ({
                 if (vd?.driver.id !== driverId) return vd;
 
                 const vehicleDriver = vehicle?.vehicle_drivers?.find(
-                  (vd: VehicleDriver) => vd.driver.id === driverId
+                  (vd: VehicleDriver) => vd.driver.id === driverId,
                 );
 
                 return {
                   ...vd,
                   comments: [response, ...(vehicleDriver?.comments ?? [])],
                 };
-              }
+              },
             ),
           });
 
