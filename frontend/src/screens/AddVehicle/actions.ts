@@ -46,9 +46,15 @@ export const createVehicle = async (params: AddVehicleFormValues) => {
   }
 };
 
-export const updateVehicle = async (id: string, params: Partial<AddVehicleFormValues>) => httpPut('/vehicles', id, params)
+export const updateVehicle = async (
+  id: string,
+  params: Partial<AddVehicleFormValues>,
+) => httpPut("/vehicles", id, params);
 
-export const updateVehicleAsset = async (id: string, params: AddVehicleFormValues["asset"]) => {
+export const updateVehicleAsset = async (
+  id: string,
+  params: AddVehicleFormValues["asset"],
+) => {
   const form = new FormData();
 
   try {
@@ -64,14 +70,18 @@ export const updateVehicleAsset = async (id: string, params: AddVehicleFormValue
         type: mime,
       } as any);
 
-      form.append("vehicle_id", id)
+      form.append("vehicle_id", id);
     }
 
-    const response = await axios.post(`${API_URL}/vehicles/update_asset`, form, {
-      headers: {
-        "Content-Type": "multipart/form-data",
+    const response = await axios.post(
+      `${API_URL}/vehicles/update_asset`,
+      form,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       },
-    });
+    );
     return response.data;
   } catch (error) {
     console.error("Error updating vehicle image:", error);

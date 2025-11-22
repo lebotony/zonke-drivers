@@ -158,7 +158,7 @@ export const AddVehicle = () => {
       undefined,
       updateVehicleAsset,
       vehicleId,
-      updatePaginatedAsset
+      updatePaginatedAsset,
     );
 
   const handleSetActive = () =>
@@ -169,7 +169,7 @@ export const AddVehicle = () => {
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true
+          true,
         );
 
         updatePaginatedObject("userVehicles", vehicleId, {

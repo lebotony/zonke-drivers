@@ -12,6 +12,7 @@ import {
   Keyboard,
   Platform,
   BackHandler,
+  TouchableOpacity,
 } from "react-native";
 import { Portal, Text } from "react-native-paper";
 
@@ -27,9 +28,11 @@ import { capitalizeFirstLetter } from "@/src/utils";
 import { Colors } from "../../../constants/ui";
 import { styles } from "./styles";
 
+type OptionType = string | { label: string; value: string };
+
 type PopupMenuProps = {
   label?: string;
-  options: string[];
+  options: OptionType[];
   selectedValue?: string | null;
   onSelect: (value: string) => void;
   innerBtnFn?: () => void;
@@ -79,6 +82,18 @@ export const PopupMenu = ({
   const popupBtnRef = useRef<View>(null);
   const popupMenuRef = useRef<View>(null);
   const iconRef = useRef<View>(null);
+
+  const getOptionLabel = (option: OptionType): string => {
+    return typeof option === "string" ? option : option.label;
+  };
+
+  const getOptionValue = (option: OptionType): string => {
+    return typeof option === "string" ? option : option.value;
+  };
+
+  const isOptionSelected = (option: OptionType): boolean => {
+    return getOptionValue(option) === selectedValue;
+  };
 
   const measureInputPosition = (cb?: () => void) => {
     if (popupBtnRef.current) {
@@ -177,7 +192,9 @@ export const PopupMenu = ({
     };
   }, [open]);
 
-  const handleSelect = (value: string) => {
+  const handleSelect = (option: OptionType) => {
+    const value = getOptionValue(option);
+
     onSelect(value);
     setOpen(false);
 
@@ -287,45 +304,53 @@ export const PopupMenu = ({
             {label && <Text style={styles.label}>{label}</Text>}
             <FlatList
               data={options}
-              keyExtractor={(item, index) => `${item}-${index}`}
+              keyExtractor={(item, index) => {
+                const value = getOptionValue(item);
+                return `${value}-${index}`;
+              }}
               ItemSeparatorComponent={() => <View style={styles.separator} />}
-              renderItem={({ item }) => (
-                <Pressable
-                  style={styles.popupItem}
-                  onPress={() => handleSelect(item)}
-                >
-                  <View
-                    style={[
-                      styles.dot,
-                      selectedValue !== item && { opacity: 0 },
-                    ]}
-                  ></View>
-                  <Text
-                    style={[
-                      styles.popupText,
-                      selectedValue === item && {
-                        fontWeight: "bold",
-                        color: Colors.mrDBlue,
-                      },
-                      {
-                        maxWidth:
-                          (typeof computedWidth === "number"
-                            ? computedWidth
-                            : layout.poupBtnWidth + layout.freeWidth) * 0.85,
-                      },
-                    ]}
-                    onLayout={(e) => {
-                      const { width } = e.nativeEvent.layout;
-                      setLayout((prev) => ({
-                        ...prev,
-                        widestTextWidth: Math.max(prev.widestTextWidth, width),
-                      }));
-                    }}
+              renderItem={({ item }) => {
+                const label = getOptionLabel(item);
+                const isSelected = isOptionSelected(item);
+
+                return (
+                  <TouchableOpacity
+                    style={styles.popupItem}
+                    onPress={() => handleSelect(item)}
                   >
-                    {capitalizeFirstLetter(item)}
-                  </Text>
-                </Pressable>
-              )}
+                    <View
+                      style={[styles.dot, !isSelected && { opacity: 0 }]}
+                    ></View>
+                    <Text
+                      style={[
+                        styles.popupText,
+                        isSelected && {
+                          fontWeight: "bold",
+                          color: Colors.mrDBlue,
+                        },
+                        {
+                          maxWidth:
+                            (typeof computedWidth === "number"
+                              ? computedWidth
+                              : layout.poupBtnWidth + layout.freeWidth) * 0.85,
+                        },
+                      ]}
+                      onLayout={(e) => {
+                        const { width } = e.nativeEvent.layout;
+                        setLayout((prev) => ({
+                          ...prev,
+                          widestTextWidth: Math.max(
+                            prev.widestTextWidth,
+                            width,
+                          ),
+                        }));
+                      }}
+                    >
+                      {capitalizeFirstLetter(label)}
+                    </Text>
+                  </TouchableOpacity>
+                );
+              }}
               style={{ flexGrow: 0 }}
               contentContainerStyle={{ paddingVertical: 4 }}
               showsVerticalScrollIndicator={false}
@@ -336,21 +361,24 @@ export const PopupMenu = ({
 
       {/* Invisible measurement text for width */}
       <View style={styles.longText}>
-        {options?.map((option, index) => (
-          <Text
-            key={`${option}-${index}`}
-            style={styles.popupText}
-            onLayout={(e) => {
-              const { width } = e.nativeEvent.layout;
-              setLayout((prev) => ({
-                ...prev,
-                widestTextWidth: Math.max(prev.widestTextWidth, width),
-              }));
-            }}
-          >
-            {option}
-          </Text>
-        ))}
+        {options?.map((option, index) => {
+          const label = getOptionLabel(option);
+          return (
+            <Text
+              key={`${label}-${index}`}
+              style={styles.popupText}
+              onLayout={(e) => {
+                const { width } = e.nativeEvent.layout;
+                setLayout((prev) => ({
+                  ...prev,
+                  widestTextWidth: Math.max(prev.widestTextWidth, width),
+                }));
+              }}
+            >
+              {label}
+            </Text>
+          );
+        })}
       </View>
     </View>
   );

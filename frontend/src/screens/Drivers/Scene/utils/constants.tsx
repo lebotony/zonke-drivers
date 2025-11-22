@@ -71,7 +71,7 @@ export const PLATFORM_FILTERS = [
 ];
 
 export const PLATFORM_LABELS = PLATFORM_FILTERS.map(
-  (platform) => platform.slug,
+  (platform) => platform.value,
 );
 
 export const LICENCES = [

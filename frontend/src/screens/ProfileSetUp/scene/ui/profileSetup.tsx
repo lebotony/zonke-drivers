@@ -102,7 +102,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
     !isEmpty(pickedAsset?.file_path) || !isEmpty(user?.asset?.url);
 
   const handleAddPlatform = (item: string) => {
-    const selectedValue = PLATFORM_FILTERS.filter((p) => p.slug === item)[0]
+    const selectedValue = PLATFORM_FILTERS.filter((p) => p.value === item)[0]
       .value;
 
     if (!selectedPlatforms?.includes(selectedValue)) {
@@ -175,7 +175,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       [1, 1],
       updateUserAsset,
       user?.id,
-      updatePaginatedAsset
+      updatePaginatedAsset,
     );
 
   return (

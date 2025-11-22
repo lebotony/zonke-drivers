@@ -92,5 +92,5 @@ export const styles = StyleSheet.create({
     marginBottom: 20,
     marginTop: 10,
     marginHorizontal: 15,
-  }
+  },
 });

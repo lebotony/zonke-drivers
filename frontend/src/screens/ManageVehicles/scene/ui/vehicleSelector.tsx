@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { View } from "react-native";
 import { Image } from "expo-image";
-
 import { Ionicons } from "@expo/vector-icons";
 import { PopupMenu } from "@/src/components/popup";
 import { styles } from "../styles/applicants";
@@ -21,25 +20,25 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
 }) => {
   const [optionsVisible, setOptionsVisible] = useState(false);
 
-  const handleSelect = (model: string) => {
-    const vehicle = vehicles?.find((v) => v.brand + " " + v.model === model);
-
+  const handleSelect = (vehicleId: string) => {
+    const vehicle = vehicles?.find((v) => v.id === vehicleId);
     if (vehicle) {
       onSelectVehicle(vehicle);
     }
     setOptionsVisible(false);
   };
 
+  const vehicleOptions = vehicles?.map((vehicle) => ({
+    label: capitalizeFirstLetter(`${vehicle.brand} ${vehicle.model}`),
+    value: vehicle.id,
+  }));
+
   return (
     <PopupMenu
       style={styles.vehicleSelector}
-      options={vehicles?.map((vehicle) => vehicle.brand + " " + vehicle.model)}
+      options={vehicleOptions}
       innerBtnFn={() => setOptionsVisible(!optionsVisible)}
-      selectedValue={
-        selectedVehicle
-          ? selectedVehicle.brand + " " + selectedVehicle.model
-          : "Select Vehicle"
-      }
+      selectedValue={selectedVehicle?.id || ""}
       onSelect={handleSelect}
     >
       <View style={styles.vehicleSelectorLeft}>
@@ -54,7 +53,7 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
           <Text style={styles.vehicleSelectorModel}>
             {selectedVehicle
               ? capitalizeFirstLetter(
-                  `${selectedVehicle.brand} ${selectedVehicle.model}`,
+                  `${selectedVehicle.brand} ${selectedVehicle.model}`
                 )
               : "Select a vehicle"}
           </Text>

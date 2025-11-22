@@ -162,13 +162,14 @@ export const VehiclesScreen = () => {
   }, []);
 
   const handleSetSelectedVehicleType = (value: string) => {
-    setSelectedVehicleTypes((prev) => {
-      if (selectedVehicleTypes?.includes(value)) {
-        return selectedVehicleTypes.filter((type) => type !== value);
-      } else {
-        return [...(prev || []), value];
-      }
-    });
+    if (selectedVehicleTypes.includes(value)) {
+      const newVehicles = selectedVehicleTypes.filter(
+        (platform) => platform !== value,
+      );
+
+      return setSelectedVehicleTypes(newVehicles);
+    }
+    return setSelectedVehicleTypes((prev) => [...(prev || []), value]);
   };
 
   const handleApplyFilter = () => {
