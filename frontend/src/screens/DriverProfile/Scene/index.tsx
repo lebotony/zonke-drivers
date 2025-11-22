@@ -70,8 +70,8 @@ export const Scene = () => {
             if (!find(applicationDrivers, { id: driverId }))
               return [...(oldData ?? []), res];
             return oldData;
-          },
-        ),
+          }
+        )
       );
     }
   }, [driver]);
@@ -163,10 +163,14 @@ export const Scene = () => {
             </View>
           </View>
 
-          <View style={styles.commentsSection}>
-            <Text style={styles.driverDetailsText}>Comments</Text>
-            <Comments driver={driver} />
-          </View>
+          <CustomButton
+            onPress={() => router.push(`/comments/${driverId}`)}
+            color={Colors.mrDBlue}
+          >
+            <Text style={{ color: Colors.white, fontWeight: 600 }}>
+              See Comments
+            </Text>
+          </CustomButton>
         </View>
       </ScrollView>
 

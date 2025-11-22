@@ -22,7 +22,7 @@ const addFormDef = [
   },
   {
     name: "model",
-    placeholder: "AMG C-Class",
+    placeholder: "Corolla",
     label: "Car Model",
     icon: "directions-car",
     iconSize: 22,

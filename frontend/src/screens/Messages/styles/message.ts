@@ -6,7 +6,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingVertical: 12,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.bg,
     paddingHorizontal: 12,
   },
   messageItemUnread: {
@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     marginRight: 12,
-    backgroundColor: Colors.lightGrey,
+    backgroundColor: Colors.skyLight,
   },
   avatarStatus: {
     position: "absolute",

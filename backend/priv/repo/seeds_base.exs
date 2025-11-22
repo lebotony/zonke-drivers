@@ -29,6 +29,8 @@ alias Backend.Ecto.EctoEnums
 # We recommend using the bang functions (`insert!`, `update!`
 # and so on) as they will fail if something goes wrong.
 
+# Assets.ensure_bucket_exists()
+
 # Create client users without business profiles
 #####################################################################################################
 
@@ -77,7 +79,7 @@ users =
     asset_params = %{
       file: %Plug.Upload{
         path: Path.expand("priv/person-test.jpg"),
-        filename: "uploads/person-test.jpg",
+        filename: "person-test.jpg",
       },
       user_id: user.id
     }
@@ -177,7 +179,7 @@ vehicles =
         asset_params = %{
           file: %Plug.Upload{
             path: Path.expand("priv/vehicles/car#{image_index}.jpg"),
-            filename: "uploads/car#{image_index}.jpg",
+            filename: "car#{image_index}.jpg",
           },
           vehicle_id: vehicle.id
         }

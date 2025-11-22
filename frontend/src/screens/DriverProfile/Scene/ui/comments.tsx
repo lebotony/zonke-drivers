@@ -2,23 +2,22 @@ import { useEffect } from "react";
 import { View, FlatList } from "react-native";
 import { Text } from "react-native-paper";
 
+import { useLocalSearchParams } from "expo-router";
+
 import { find, isEmpty } from "lodash";
 
 import { useQueryClient } from "@tanstack/react-query";
 
 import { useCustomQuery } from "@/src/useQueryContext";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
+import { Comment } from "@/src/screens/ViewSection/scene/ui/comment";
 
 import { fetchComments } from "../../actions";
 import { styles } from "../styles/comments";
-import { Comment } from "@/src/screens/ViewSection/scene/ui/comment";
 
-type CommentsProps = {
-  driver: Driver;
-};
-
-export const Comments = (props: CommentsProps) => {
-  const { driver } = props;
+export const CommentsScreen = () => {
+  const { id } = useLocalSearchParams();
+  const driverId = Array.isArray(id) ? id[0] : id;
 
   const queryClient = useQueryClient();
   const {
@@ -28,19 +27,25 @@ export const Comments = (props: CommentsProps) => {
   } = usePaginatedCache();
 
   const { getCachedData } = useCustomQuery();
-  const { driversCommentsPagination, fetchedDriversListComments } =
-    getCachedData(["driversCommentsPagination", "fetchedDriversListComments"]);
+  const { drivers, driversCommentsPagination, fetchedDriversListComments } =
+    getCachedData([
+      "drivers",
+      "driversCommentsPagination",
+      "fetchedDriversListComments",
+    ]);
+
+  const driver = find(drivers, { id: driverId });
 
   const loadDriverComments = (commentsObj: Record<string, any>) => {
     updateNestedPagination(
-      driver?.id,
+      driverId,
       "driversCommentsPagination",
-      commentsObj.paginate,
+      commentsObj.paginate
     );
 
     const driverComments = commentsObj?.data;
 
-    updatePaginatedObject("drivers", driver?.id, {
+    updatePaginatedObject("drivers", driverId, {
       comments: [...(driver?.comments ?? []), ...(driverComments ?? [])],
     });
   };
@@ -51,53 +56,57 @@ export const Comments = (props: CommentsProps) => {
       (fetchedDriversListComments: Vehicle["id"][]) => [
         ...(fetchedDriversListComments ?? []),
         id,
-      ],
+      ]
     );
 
   const handleFetchComments = () => {
     const { pageParam } = onFetchNestedPagination(
-      driver?.id,
-      "driversCommentsPagination",
+      driverId,
+      "driversCommentsPagination"
     );
 
     fetchComments({
       pageParam,
-      driverId: driver?.id,
+      driverId: driverId,
     }).then((res) => {
       loadDriverComments(res);
     });
   };
 
   useEffect(() => {
-    if (!fetchedDriversListComments?.includes(driver?.id) || !driver?.id) {
+    if (!fetchedDriversListComments?.includes(driverId) || !driverId) {
       handleFetchComments();
-      handleSetFetchedComments(driver?.id);
+      handleSetFetchedComments(driverId);
     }
   }, []);
 
   return (
     <View style={styles.commentsSection}>
       {isEmpty(driver?.comments) ? (
-        <Text style={{ fontSize: 15, margin: "auto" }}>No comments</Text>
+        <View style={styles.noCommentsWrapper}>
+          <Text style={styles.noCommentsText}>No comments</Text>
+        </View>
       ) : (
-        <FlatList
-          nestedScrollEnabled
-          showsVerticalScrollIndicator={true}
-          showsHorizontalScrollIndicator={false}
-          data={driver?.comments}
-          onEndReached={() => {
-            const paginationObj = find(driversCommentsPagination, {
-              id: driver?.id,
-            })?.paginate;
+        <>
+          <Text style={styles.commentsTitle}>Comments</Text>
+          <FlatList
+            nestedScrollEnabled
+            showsVerticalScrollIndicator={true}
+            showsHorizontalScrollIndicator={false}
+            data={driver?.comments}
+            onEndReached={() => {
+              const paginationObj = find(driversCommentsPagination, {
+                id: driverId,
+              })?.paginate;
 
-            if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
-              handleFetchComments();
-            }
-          }}
-          keyExtractor={(v, index) => String(index)}
-          renderItem={({ item }) => <Comment comment={item} />}
-          style={{ maxHeight: 400 }}
-        />
+              if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
+                handleFetchComments();
+              }
+            }}
+            keyExtractor={(v, index) => String(index)}
+            renderItem={({ item }) => <Comment comment={item} />}
+          />
+        </>
       )}
     </View>
   );

@@ -4,7 +4,7 @@ import { Colors } from "@/constants/ui";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.bg,
   },
   header: {
     flexDirection: "row",
@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
     paddingBottom: 10,
     borderBottomWidth: 1,
     borderBottomColor: Colors.lightGrey,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.bg,
   },
   avatar: {
     width: 44,

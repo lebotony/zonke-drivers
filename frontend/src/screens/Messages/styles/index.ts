@@ -4,7 +4,7 @@ import { Colors } from "@/constants/ui";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.bg,
     paddingTop: 30,
   },
   header: {
