@@ -11,6 +11,8 @@ export const styles = StyleSheet.create({
   },
   header: {
     fontSize: 22,
+    fontWeight: 600,
+    marginBottom: 10
   },
   avatarWrapper: {
     position: "relative",
@@ -40,7 +42,6 @@ export const styles = StyleSheet.create({
   userText: {
     fontSize: 18,
     marginLeft: 20,
-    width: "55%"
   },
   descriptionText: {
     fontSize: 15,
@@ -49,8 +50,6 @@ export const styles = StyleSheet.create({
   },
   forwardArrow: {
     color: Colors.lightGrey,
-    position: "absolute",
-    right: 15,
   },
   body: {
     marginTop: 35,

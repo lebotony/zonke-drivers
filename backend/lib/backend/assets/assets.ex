@@ -139,7 +139,7 @@ defmodule Backend.Assets.Assets do
     end
   end
 
-  def prepare_url(filename, opts \\ %{public: true}) do
+  def prepare_url(filename, opts \\ %{public: false}) do
     case filename do
       nil ->
         nil

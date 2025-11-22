@@ -48,7 +48,7 @@ export const Settings = () => {
             />
             {!isProfilePicPresent && <Text style={styles.addText}>Add</Text>}
           </View>
-          <View>
+          <View style={{ flex: 1 }}>
             <Text
               style={styles.userText}
               numberOfLines={1}
