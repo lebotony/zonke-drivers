@@ -97,7 +97,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           <View style={styles.row}>
             <Text style={styles.contentTitle}>Vehicle Type</Text>
             <PopupMenu
-              options={VEHICLE_TYPES}
+              options={VEHICLE_TYPES.map((value) => value.toLowerCase())}
               selectedValue={null}
               onSelect={onToggleVehicleTypes}
               iconColor={Colors.mediumDarkGrey}

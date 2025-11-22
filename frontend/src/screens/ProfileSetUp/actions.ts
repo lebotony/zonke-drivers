@@ -5,13 +5,18 @@ import { API_URL } from "@/constants/srcConstants";
 
 import { DriverFormValues, OwnerFormValues } from "./scene/ui/profileSetup";
 
-export const updateDriver = async (params: Partial<DriverFormValues>) => httpPost('/drivers/upsert', params)
+export const updateDriver = async (params: Partial<DriverFormValues>) =>
+  httpPost("/drivers/upsert", params);
 
-export const updateVehicleUser = async (id: string, params: OwnerFormValues) => httpPut('/users', id, params)
+export const updateVehicleUser = async (id: string, params: OwnerFormValues) =>
+  httpPut("/users", id, params);
 
 export const fetchDriverProfile = () => httpGet("/drivers/user_driver");
 
-export const updateUserAsset = async (id: string, params: DriverFormValues["asset"]) => {
+export const updateUserAsset = async (
+  id: string,
+  params: DriverFormValues["asset"],
+) => {
   const form = new FormData();
 
   try {

@@ -36,7 +36,6 @@ export const ApplicantsScreen = () => {
     useState<Vehicle>(initialVehicle);
   const [showVehicleDriverModal, setShowVehicleDriverModal] = useState(false);
   const [selectedDriverId, setSelectedDriverId] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const queryClient = useQueryClient();
   const {

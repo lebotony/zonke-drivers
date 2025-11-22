@@ -14,7 +14,10 @@ export const fetchUserVehicles = ({ pageParam = 1 }) =>
     })
     .catch((err) => err);
 
-export const activateVehicle = (params: {active: boolean, vehicle_id: string}) => httpPost('/vehicles/activate_vehicle', params)
+export const activateVehicle = (params: {
+  active: boolean;
+  vehicle_id: string;
+}) => httpPost("/vehicles/activate_vehicle", params);
 
 type FetchPaymentsParams = {
   pageParam: number;

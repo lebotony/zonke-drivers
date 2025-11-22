@@ -21,7 +21,7 @@ type Driver = {
 };
 
 type Filters = {
-  search_term?: string;
+  search_term?: string | null;
   platforms?: string[];
   licences?: string[];
   age_range?: number[];

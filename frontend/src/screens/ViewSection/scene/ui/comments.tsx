@@ -39,7 +39,7 @@ export const Comments = (props: CommentsProps) => {
 
   const vehicle = find(userVehicles, { id: vehicleId });
   const vehicleDriver = vehicle?.vehicle_drivers?.find(
-    (vd: VehicleDriver) => vd?.driver?.id === driverId
+    (vd: VehicleDriver) => vd?.driver?.id === driverId,
   );
 
   const vehicleDriverKey = `${vehicleId}-${driverId}`;
@@ -48,7 +48,7 @@ export const Comments = (props: CommentsProps) => {
     updateNestedPagination(
       vehicleDriverKey,
       "commentsPagination",
-      commentsObj.paginate
+      commentsObj.paginate,
     );
 
     const driverComments = commentsObj?.data;
@@ -73,13 +73,13 @@ export const Comments = (props: CommentsProps) => {
       (prev: string[] = []) => {
         if (prev.includes(key)) return prev;
         return [...prev, key];
-      }
+      },
     );
 
   const handleFetchComments = () => {
     const { pageParam } = onFetchNestedPagination(
       vehicleDriverKey,
-      "commentsPagination"
+      "commentsPagination",
     );
 
     fetchComments({
@@ -94,7 +94,7 @@ export const Comments = (props: CommentsProps) => {
     if (!vehicleDriverKey) return;
 
     const alreadyFetched = fetchedDriverComments?.includes(vehicleDriverKey);
-    
+
     if (!alreadyFetched) {
       handleFetchComments();
       handleSetFetchedComments(vehicleDriverKey);
