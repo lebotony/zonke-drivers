@@ -25,6 +25,7 @@ import { pickImage } from "@/src/helpers/pickImage";
 import { ModalDatePicker } from "@/src/components/elements/datePicker";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { AppToast } from "@/src/components/CustomToast/customToast";
+import { BackArrow } from "@/src/components/BackArrow/header";
 
 import { styles } from "../styles/profileSetup";
 import { DriverProfileSchema, OwnerProfileSchema } from "../schema";
@@ -62,6 +63,9 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
     location: initialLocation,
     platforms: driverProfile?.platforms || [],
     licences: driverProfile?.licences || [],
+    experience:
+      (driverProfile?.experience && String(driverProfile?.experience)) ||
+      undefined,
     description: driverProfile?.description || "",
   };
 
@@ -83,7 +87,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   useEffect(() => {
     if (isDriver && !driverProfile) {
       fetchDriverProfile().then((response) =>
-        queryClient.setQueryData(["driverProfile"], response),
+        queryClient.setQueryData(["driverProfile"], response)
       );
     }
   }, [isDriver]);
@@ -113,7 +117,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleRemovePlatform = (item: string) => {
     setValue(
       "platforms",
-      selectedPlatforms?.filter((platform) => platform !== item),
+      selectedPlatforms?.filter((platform) => platform !== item)
     );
   };
 
@@ -128,7 +132,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleRemoveLicences = (item: string) => {
     setValue(
       "licences",
-      selectedLicences?.filter((licence) => licence !== item),
+      selectedLicences?.filter((licence) => licence !== item)
     );
   };
 
@@ -144,7 +148,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
             queryClient.setQueryData(["user"], user);
             queryClient.setQueryData(["driverProfile"], otherParams);
           })
-          .catch((err) => err),
+          .catch((err) => err)
       )();
     } else {
       handleSubmit((formData) =>
@@ -156,7 +160,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
           .catch((err) => {
             AppToast();
             throw new Error("Error while updating user: ", err);
-          }),
+          })
       )();
     }
   };
@@ -175,11 +179,12 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       [1, 1],
       updateUserAsset,
       user?.id,
-      updatePaginatedAsset,
+      updatePaginatedAsset
     );
 
   return (
     <ScrollView showsVerticalScrollIndicator={false}>
+      <BackArrow left={0} />
       <Text style={styles.title}>Edit Profile</Text>
       <TouchableOpacity
         onPress={handleSelectImage}
@@ -194,6 +199,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
             isProfilePicPresent && (pickedAsset?.file_path || user?.asset?.url)
           }
           round
+          backgroundColor={false}
         />
         <TouchableOpacity onPress={handleSelectImage} style={styles.editButton}>
           <MaterialIcons
@@ -293,6 +299,16 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
             options={PLATFORM_LABELS}
             selectedItems={selectedPlatforms}
             label="Platforms"
+          />
+
+          <Fieldset
+            label="Years of Experience"
+            name="experience"
+            inputIcon="access-time"
+            control={control}
+            placeholder="12"
+            errors={errors}
+            required
           />
 
           <Fieldset

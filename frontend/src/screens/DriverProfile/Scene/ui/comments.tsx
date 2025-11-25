@@ -11,6 +11,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { Comment } from "@/src/screens/ViewSection/scene/ui/comment";
+import { BackArrow } from "@/src/components/BackArrow/header";
 
 import { fetchComments } from "../../actions";
 import { styles } from "../styles/comments";
@@ -82,6 +83,7 @@ export const CommentsScreen = () => {
 
   return (
     <View style={styles.commentsSection}>
+      <BackArrow left={20} customStyles={{ top: 20 }} />
       {isEmpty(driver?.comments) ? (
         <View style={styles.noCommentsWrapper}>
           <Text style={styles.noCommentsText}>No comments</Text>

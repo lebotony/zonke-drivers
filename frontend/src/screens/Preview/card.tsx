@@ -1,15 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { Text } from "react-native-paper";
 
+import { useQueryClient } from "@tanstack/react-query";
+
 import { View } from "@/src/components/Themed";
 import { Colors } from "@/constants/ui";
 import { topOffset } from "@/src/components/appStyles";
 import { Spinner } from "@/src/components/elements/Spinner";
+import { useCustomQuery } from "@/src/useQueryContext";
+import { BackArrow } from "@/src/components/BackArrow/header";
 
 import { fetchDriverProfile } from "../ProfileSetUp/actions";
 import { DriverCard } from "../Drivers/Scene/ui/driverCard";
-import { useQueryClient } from "@tanstack/react-query";
-import { useCustomQuery } from "@/src/useQueryContext";
 
 export const PreviewCard = () => {
   const [loading, setLoading] = useState(false);
@@ -77,7 +79,8 @@ export const PreviewCard = () => {
       }}
     >
       <View style={{ alignItems: "center", backgroundColor: Colors.bg }}>
-        <Text style={{ fontSize: 20, marginBottom: 15 }}>Preview Card</Text>
+        <BackArrow left={12} />
+        <Text style={{ fontSize: 20, marginBottom: 30 }}>Preview Card</Text>
       </View>
       <DriverCard driver={driverProfile} />
     </View>

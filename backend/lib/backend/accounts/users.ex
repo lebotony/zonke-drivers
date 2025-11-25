@@ -26,12 +26,12 @@ defmodule Backend.Accounts.Users do
     end
   end
 
-  def update_user_asset(user_id, params) do
+  def update_user_asset(params, %{user_id: user_id}) do
     case get_user_asset(user_id) do
       %Asset{} = asset ->
         Assets.update_asset_with_file(asset, params)
 
-      _ ->
+      nil ->
         Map.put_new(params, :user_id, user_id)
         |> Assets.upload_and_save()
     end

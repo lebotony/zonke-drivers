@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Platform, ScrollView, View } from "react-native";
+import { useEffect } from "react";
+import { ScrollView, View } from "react-native";
 import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -20,12 +20,11 @@ import { calculateAge } from "@/src/helpers/calculateAge";
 import { Spinner } from "@/src/components/elements/Spinner";
 
 import { Platforms } from "../../Drivers/Scene/ui/platforms";
-import { styles } from "./styles";
-import { Header } from "./ui/header";
+import { BackArrow } from "../../../components/BackArrow/header";
 import { Licences } from "./ui/licences";
 import { createThread, fetchDriverProfile } from "../actions";
 import { detailsDef } from "./ui/detailsPill";
-import { Comments } from "./ui/comments";
+import { styles } from "./styles";
 
 export const Scene = () => {
   const { id } = useLocalSearchParams();
@@ -86,7 +85,7 @@ export const Scene = () => {
         style={{ position: "relative" }}
       >
         <View style={styles.body}>
-          {Platform.OS !== "web" && <Header customStyles={{ top: -10 }} />}
+          <BackArrow />
 
           <View style={styles.profilePic}>
             {driver?.asset_url ? (
@@ -110,16 +109,20 @@ export const Scene = () => {
               >{`(${calculateAge(driver?.dob)}) yrs`}</Text>
             </View>
 
-            <View style={styles.headerLocation}>
-              <MaterialIcons
-                name="location-pin"
-                size={20}
-                color={Colors.mediumDarkGrey}
-              />
-              <Text style={styles.location}>
-                {!isEmpty(driver?.location) ? driver?.location?.address : "NA"}
-              </Text>
-            </View>
+            {driver?.location?.address && (
+              <View style={styles.headerLocation}>
+                <MaterialIcons
+                  name="location-pin"
+                  size={20}
+                  color={Colors.mediumDarkGrey}
+                />
+                <Text style={styles.location}>
+                  {!isEmpty(driver?.location)
+                    ? driver?.location?.address
+                    : "NA"}
+                </Text>
+              </View>
+            )}
           </View>
 
           <Text
