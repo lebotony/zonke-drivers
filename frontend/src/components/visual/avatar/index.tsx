@@ -10,6 +10,7 @@ type AvatarProps = {
   width?: number;
   shadow?: boolean;
   radius?: boolean;
+  backgroundColor?: boolean;
 } & ComponentProps<typeof Image>;
 
 export const Avatar = ({
@@ -17,6 +18,7 @@ export const Avatar = ({
   round,
   radius,
   width = 74,
+  backgroundColor = true,
   ...imageProps
 }: AvatarProps) => {
   return (
@@ -26,7 +28,7 @@ export const Avatar = ({
         shadow && { ...shadowStyles },
         round && styles.round,
         radius && { borderRadius: 10 },
-        { backgroundColor: Colors.verylightBlue },
+        backgroundColor && { backgroundColor: Colors.verylightBlue },
       ]}
       {...imageProps}
     />

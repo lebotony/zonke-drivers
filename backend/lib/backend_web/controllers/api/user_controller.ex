@@ -60,24 +60,14 @@ defmodule BackendWeb.UserController do
     end
   end
 
-  def update_asset(conn, %{params: params}, %{user_id: user_id}) do
-    with {:ok, asset} <- Users.update_user_asset(user_id, params) do
+  def update_asset(conn, params, session) do
+    with {:ok, asset} <- Users.update_user_asset(params, session) do
       render(conn, AssetJSON, :show, %{asset: asset})
     else
       {:error, :asset, "Failed to upload file: :econnrefused"} ->
         conn
         |> put_status(:conflict)
         |> json(%{error: "Failed to upload image"})
-
-      {:error, reason} ->
-        conn
-        |> put_status(:error)
-        |> json(%{error: "Backend Error", reason: inspect(reason)})
-
-      _ ->
-        conn
-        |> put_status(:bad_request)
-        |> json(%{error: "Invalid request"})
     end
   end
 end

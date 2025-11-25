@@ -62,10 +62,15 @@ export const styles = StyleSheet.create({
     fontSize: 15,
   },
   imgContainer: {
+    marginTop: 5,
     position: "relative",
     width: "100%",
-    height: 250,
     backgroundColor: "pink",
+    borderRadius: 12,
+  },
+  image: {
+    width: "100%",
+    aspectRatio: 1.25,
     borderRadius: 12,
   },
   leftFlap: {

@@ -36,7 +36,8 @@ defmodule Backend.Vehicles.Vehicles do
   def create_vehicle_asset(params, session) do
     case create(%{}, session) do
       {:ok, vehicle} ->
-        Assets.upload_and_save(Map.put(params, :vehicle_id, vehicle.id))
+        Map.put(params, :vehicle_id, vehicle.id)
+        |> Assets.upload_and_save()
 
       {:error, error} ->
         {:error, error}

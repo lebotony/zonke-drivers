@@ -26,9 +26,6 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
             {capitalizeFirstLetter(vehicle?.brand)}{" "}
             {capitalizeFirstLetter(vehicle?.model)}
           </Text>
-          <Text
-            style={styles.model}
-          >{`Model year: ${vehicle?.model_year ?? "NA"}`}</Text>
           <View style={styles.priceContainer}>
             <Text
               style={styles.price}
@@ -58,11 +55,7 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
       >
         <Image
           source={vehicle?.asset?.url}
-          style={{
-            width: "100%",
-            height: "100%",
-            borderRadius: 12,
-          }}
+          style={styles.image}
           contentFit="cover"
         />
         <View style={styles.leftFlap} />

@@ -45,6 +45,7 @@ export const Settings = () => {
               source={isProfilePicPresent && user?.asset?.url}
               round
               width={60}
+              backgroundColor={false}
             />
             {!isProfilePicPresent && <Text style={styles.addText}>Add</Text>}
           </View>

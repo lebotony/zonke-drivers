@@ -1,21 +1,23 @@
 import { useEffect, useState } from "react";
 import { Text } from "react-native-paper";
-import { View, FlatList, SafeAreaView, TouchableOpacity } from "react-native";
+import { View, FlatList, SafeAreaView } from "react-native";
+
+import { useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+
 import { find, isEmpty } from "lodash";
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
-import { router, useLocalSearchParams } from "expo-router";
 
 import { DriverCard } from "@/src/screens/Drivers/Scene/ui/driverCard";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { useQueryClient } from "@tanstack/react-query";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
-import { Colors } from "@/constants/ui";
+import { capitalizeFirstLetter } from "@/src/utils";
+import { BackArrow } from "@/src/components/BackArrow/header";
 
 import { styles } from "../styles/applicants";
 import { fetchApplications, setApplicationsSeen } from "../../actions";
 import { VehicleDriverModal } from "./vehicleDriverModal";
 import { VehicleSelector } from "./vehicleSelector";
-import { capitalizeFirstLetter } from "@/src/utils";
 
 export const ApplicantsScreen = () => {
   const { id } = useLocalSearchParams();
@@ -113,16 +115,7 @@ export const ApplicantsScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.headerTitle}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => router.back()}
-          >
-            <MaterialIcons
-              name="arrow-back-ios"
-              size={22}
-              color={Colors.dimGrey}
-            />
-          </TouchableOpacity>
+          <BackArrow left={0} />
 
           <Text style={styles.headerText}>Applicants</Text>
         </View>

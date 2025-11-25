@@ -14,8 +14,8 @@ export const updateVehicleUser = async (id: string, params: OwnerFormValues) =>
 export const fetchDriverProfile = () => httpGet("/drivers/user_driver");
 
 export const updateUserAsset = async (
-  id: string,
   params: DriverFormValues["asset"],
+  id: string
 ) => {
   const form = new FormData();
 
@@ -26,11 +26,13 @@ export const updateUserAsset = async (
       const ext = name?.split(".").pop()?.toLowerCase() || "jpg";
       const mime = ext === "png" ? "image/png" : "image/jpeg";
 
-      form.append("params[file]", {
+      form.append("file", {
         uri,
         name,
         type: mime,
       } as any);
+
+      form.append("user_id", id as string)
     }
 
     const response = await axios.post(`${API_URL}/users/update_asset`, form, {
