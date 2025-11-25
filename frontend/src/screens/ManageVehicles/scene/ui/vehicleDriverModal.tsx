@@ -1,6 +1,8 @@
 import { View } from "react-native";
 import { Text } from "react-native-paper";
 
+import { router } from "expo-router";
+
 import { find } from "lodash";
 
 import { usePaginatedCache } from "@/src/updateCacheProvider";
@@ -49,7 +51,7 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
 
     const vehicle = getUpdatedObjectSnapshot(
       "userVehicles",
-      vehicleId as string,
+      vehicleId as string
     );
 
     createVehicleDriver(params)
@@ -59,7 +61,7 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
         updatePaginatedObject("userVehicles", vehicleId as string, {
           applications: vehicle?.applications?.filter(
             (application: VehicleApplication) =>
-              application?.driver?.id !== driverId,
+              application?.driver?.id !== driverId
           ),
           vehicle_drivers: [
             {
@@ -71,6 +73,8 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
             },
           ],
         });
+
+        router.push("/(tabs)/manage");
       })
       .catch((err) => {
         AppToast();

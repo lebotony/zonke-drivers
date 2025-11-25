@@ -5,7 +5,7 @@ export const pickImage = async (
   aspect = [16, 12],
   fn?: any,
   id?: string,
-  updatePaginatedObject?: any,
+  updatePaginatedObject?: any
 ) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -29,10 +29,9 @@ export const pickImage = async (
     const uri = asset.uri || asset.uri;
     const filename = uri.split("/").pop() || `photo-${Date.now()}.jpg`;
 
-    if (id !== "new" || undefined || null)
-      fn(id, { file_path: uri, filename }).then((res: Asset) =>
-        updatePaginatedObject(res),
-      );
+    fn({ file_path: uri, filename }, id).then((res: Asset) =>
+      updatePaginatedObject(res)
+    );
 
     setValue("asset", { file_path: uri, filename });
   }

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 import { API_URL } from "@/constants/srcConstants";
-import { httpPost } from "@/src/requests";
+import { httpDelete, httpPost } from "@/src/requests";
 
 export const fetchUserVehicles = ({ pageParam = 1 }) =>
   axios
@@ -18,6 +18,8 @@ export const activateVehicle = (params: {
   active: boolean;
   vehicle_id: string;
 }) => httpPost("/vehicles/activate_vehicle", params);
+
+export const deleteVehicle = (id: string) => httpDelete('/vehicles', id)
 
 type FetchPaymentsParams = {
   pageParam: number;

@@ -14,37 +14,9 @@ defmodule Backend.Vehicles.Vehicles do
   # defdelegate authorize(action, params, session), to: Policy
 
   def create(params, %{user_id: user_id}) do
-    decoded_params =
-      Map.update(params, :price_fixed, %{}, fn val ->
-        if is_binary(val), do: Jason.decode!(val), else: val
-      end)
-
-    vehicle_params =
-      decoded_params
-      |> Map.delete(:asset)
-      |> Map.merge(%{user_id: user_id, active: true})
-
-    Multi.new()
-    |> Multi.insert(
-      :vehicle,
-      Vehicle.changeset(%Vehicle{}, vehicle_params)
-    )
-    |> Multi.run(:asset, fn _repo, %{vehicle: vehicle} ->
-      asset_params =
-        params
-        |> Map.get(:asset, %{})
-        |> Map.put(:vehicle_id, vehicle.id)
-
-      Assets.upload_and_save(asset_params)
-    end)
-    |> Repo.transaction()
-    |> case do
-      {:ok, %{vehicle: vehicle}} ->
-        {:ok, Repo.preload(vehicle, :asset)}
-
-      {:error, step, reason, changes_so_far} ->
-        {:error, step, reason}
-    end
+    %Vehicle{}
+    |> Vehicle.changeset(Map.put(params, :user_id, user_id))
+    |> Repo.insert()
   end
 
   def update(%Vehicle{} = vehicle, params) do
@@ -61,31 +33,65 @@ defmodule Backend.Vehicles.Vehicles do
     |> Repo.one()
   end
 
-  def update_vehicle_asset(params) do
-    asset = get_vehicle_asset(params.vehicle_id)
-    asset_params = Map.delete(params, :vehicle_id) |> Map.get(:params)
-    Assets.update_asset_with_file(asset, asset_params)
-  end
+  def create_vehicle_asset(params, session) do
+    case create(%{}, session) do
+      {:ok, vehicle} ->
+        Assets.upload_and_save(Map.put(params, :vehicle_id, vehicle.id))
 
-  def activate_vehicle(%{vehicle_id: vehicle_id, active: active}) do
-    VehicleBy.base_query()
-    |> VehicleBy.by_id(vehicle_id)
-    |> Ecto.Query.update(set: [active: ^active])
-    |> Repo.update_all([])
-  end
-
-  def delete(%Vehicle{id: id} = vehicle) do
-    case Repo.delete(vehicle) do
-      {:ok, _vehicle} ->
-        %Asset{filename: filename} = get_vehicle_asset(id)
-        Assets.delete_object(filename)
-
-      {:error, reason} -> {:error, reason}
+      {:error, error} ->
+        {:error, error}
     end
   end
 
+  def update_vehicle_asset(params, session) do
+    vehicle_id = Map.get(params, :vehicle_id, nil)
+
+    case get_vehicle_asset(vehicle_id) do
+      nil ->
+        create_vehicle_asset(params, session)
+
+      %Asset{} = asset ->
+        Assets.update_asset_with_file(asset, Map.drop(params, :vehicle_id))
+    end
+  end
+
+  def activate_vehicle(%{vehicle_id: vehicle_id, active: active}) do
+    case Repo.get(Vehicle, vehicle_id) do
+      nil ->
+        {:error, :not_found}
+
+      %Vehicle{model: nil} ->
+        {:error, :missing_fields}
+
+      %Vehicle{price_fixed: nil} ->
+        {:error, :missing_fields}
+
+      %Vehicle{} = vehicle ->
+        vehicle
+        |> Vehicle.changeset(%{active: active})
+        |> Repo.update()
+    end
+  end
+
+  def delete(%Vehicle{id: id} = vehicle) do
+    Repo.transaction(fn ->
+      asset = get_vehicle_asset(id)
+      filename = if asset, do: asset.filename, else: nil
+
+      case Repo.delete(vehicle) do
+        {:ok, _} ->
+          if filename, do: Assets.delete_object(filename), else: {:ok, :deleted}
+
+        {:error, changeset} ->
+          Repo.rollback(changeset)
+      end
+    end)
+  end
+
   def get_vehicle(id) do
-    Repo.get_by(Vehicle, id: id)
+    VehicleBy.base_query()
+    |> VehicleBy.by_id(id)
+    |> Repo.one()
     |> format_vehicle()
   end
 
@@ -94,6 +100,7 @@ defmodule Backend.Vehicles.Vehicles do
     |> VehicleBy.by_id(id)
     |> VehicleBy.by_active_status()
     |> Repo.one()
+    |> Repo.preload(:asset)
     |> format_vehicle()
   end
 
@@ -126,7 +133,10 @@ defmodule Backend.Vehicles.Vehicles do
         order_by: [desc: p.inserted_at],
         select: %{
           vehicle_driver_id: p.vehicle_driver_id,
-          last_payment: fragment("CAST(?->>'value' AS DECIMAL)", p.price_fixed)
+          last_payment: %{
+            amount: fragment("CAST(?->>'value' AS DECIMAL)", p.price_fixed),
+            date: p.inserted_at
+          }
         }
       )
 
@@ -152,11 +162,15 @@ defmodule Backend.Vehicles.Vehicles do
       })
       |> preload([
         :asset,
-        vehicle_drivers: ^from(vd in VehicleDriver, where: vd.active == true, preload: [driver: ^driver_query])
+        vehicle_drivers:
+          ^from(vd in VehicleDriver, where: vd.active == true, preload: [driver: ^driver_query])
       ])
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
-    updated_data = %{data | entries: load_vehicle_drivers_with_payments(total_query, last_payment_query, data.entries)}
+    updated_data = %{
+      data
+      | entries: load_vehicle_drivers_with_payments(total_query, last_payment_query, data.entries)
+    }
 
     {:ok, updated_data, PaginateHelper.prep_paginate(data)}
   end
@@ -173,7 +187,7 @@ defmodule Backend.Vehicles.Vehicles do
       last_payment_query
       |> Repo.all()
       |> Map.new(fn %{vehicle_driver_id: id, last_payment: val} ->
-        {id, val || Decimal.new(0)}
+        {id, val || %{}}
       end)
 
     Enum.map(data, fn vehicle ->
@@ -198,7 +212,10 @@ defmodule Backend.Vehicles.Vehicles do
       |> VehicleBy.by_active_status()
       |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
       |> join(:left, [user: u], a in assoc(u, :asset), as: :asset)
-      |> join(:left, [v], vd in VehicleDriver, on: v.id == vd.vehicle_id and vd.active == true, as: :vehicle_driver)
+      |> join(:left, [v], vd in VehicleDriver,
+        on: v.id == vd.vehicle_id and vd.active == true,
+        as: :vehicle_driver
+      )
       |> where([vehicle: v, vehicle_driver: vd], is_nil(vd.id))
       |> select_merge([vehicle: v, user: u, asset: a], %{
         v

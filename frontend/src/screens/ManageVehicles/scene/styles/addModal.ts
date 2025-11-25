@@ -9,6 +9,7 @@ export const styles = StyleSheet.create({
   },
   addInput: {
     borderWidth: 1,
+    width: 180,
     borderColor: Colors.lighterGrey,
     borderRadius: 6,
     flexDirection: "row",

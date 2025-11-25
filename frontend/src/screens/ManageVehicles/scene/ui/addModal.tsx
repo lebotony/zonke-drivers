@@ -54,7 +54,10 @@ export const AddModal = (props: AddModalProps) => {
           vehicle_drivers: [
             {
               ...vehicleDriver,
-              last_payment: response.price_fixed.value,
+              last_payment: {
+                amount: response.price_fixed.value,
+                date: new Date().toISOString(),
+              },
               payment_count: vehicleDriver?.payment_count + 1,
               total_payments:
                 Number(vehicleDriver.total_payments) +

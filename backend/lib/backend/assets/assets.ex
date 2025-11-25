@@ -25,10 +25,10 @@ defmodule Backend.Assets.Assets do
     #   :ok
     # end)
     |> Multi.run(:asset, fn _repo, _changes ->
-        params
-        |> Map.merge(%{filename: filename})
-        |> Map.delete(:file)
-        |> create_asset()
+      params
+      |> Map.merge(%{filename: filename})
+      |> Map.delete(:file)
+      |> create_asset()
     end)
     |> Repo.transaction()
     |> case do
@@ -65,12 +65,12 @@ defmodule Backend.Assets.Assets do
       end
     end)
     |> Multi.run(:updated_asset, fn _repo, _changes ->
-        asset_params =
-          params
-          |> Map.merge(%{filename: filename})
-          |> Map.delete(:file)
+      asset_params =
+        params
+        |> Map.merge(%{filename: filename})
+        |> Map.delete(:file)
 
-        update_asset(asset, asset_params)
+      update_asset(asset, asset_params)
     end)
     |> Repo.transaction()
     |> case do

@@ -1,23 +1,25 @@
 import { TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 
-import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+
 import { isEmpty } from "lodash";
+import { useQueryClient } from "@tanstack/react-query";
 
 import { HorizontalDivider } from "@/src/components/shapes/divider";
 import { Colors } from "@/constants/ui";
 import { PopupMenu } from "@/src/components/popup";
 import { CustomButton } from "@/src/components/elements/button";
-import { shadowStyles } from "@/src/components/shadowStyles";
 import { capitalizeFirstLetter } from "@/src/utils";
 import { AppToast } from "@/src/components/CustomToast/customToast";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
+import { formatDateShort } from "@/src/helpers/calculateAge";
 
 import { styles } from "../styles/card";
 import { MANAGEMENT_OPTIONS } from "../constants";
-import { activateVehicle } from "../../actions";
+import { activateVehicle, deleteVehicle } from "../../actions";
 
 type CardProps = {
   vehicle: Vehicle;
@@ -28,7 +30,9 @@ type CardProps = {
 export const Card = (props: CardProps) => {
   const { vehicle, setVehicleId, setShowVehicleDriverModal } = props;
 
-  const { updatePaginatedObject } = usePaginatedCache();
+  const queryClient = useQueryClient();
+  const { updatePaginatedObject, removeItemFromPaginatedList } =
+    usePaginatedCache();
 
   const vehicleDriver = vehicle.vehicle_drivers?.[0];
   const noVehicleDrivers = isEmpty(vehicle?.vehicle_drivers);
@@ -51,7 +55,26 @@ export const Card = (props: CardProps) => {
         });
       })
       .catch((err) => {
+        const errorKey = err.response?.data?.error;
+
+        if (errorKey === "missing_fields") {
+          return AppToast("Model and Rent fields are empty");
+        } else {
+          AppToast();
+          throw new Error("Set vehicle active error:", err);
+        }
+      });
+
+  const handleDelete = () =>
+    deleteVehicle(vehicle?.id)
+      .then((res) => {
+        AppToast(`Successfully deleted vehicle`, true);
+
+        removeItemFromPaginatedList("userVehicles", vehicle?.id);
+      })
+      .catch((err) => {
         AppToast();
+        throw new Error("Delete vehicle error:", err);
       });
 
   const handleSelectOptions = (value: string) => {
@@ -68,30 +91,41 @@ export const Card = (props: CardProps) => {
       return router.push(`/(tabs)/vehicle/${vehicle?.id}`);
 
     if (value === "Activate / Deactivate") return handleSetActive();
+
+    if (value === "Delete Vehicle") return handleDelete();
   };
 
   return (
     <View style={styles.card}>
       <PopupMenu
         options={MANAGEMENT_OPTIONS.map((v) => v.label)}
-        style={{ position: "absolute", top: 5, right: 0 }}
+        style={{ position: "absolute", top: 8, right: -3 }}
         onSelect={handleSelectOptions}
       >
-        <MaterialIcons name="menu" size={24} color={Colors.black} />
+        <View style={styles.optionsBtn}>
+          <MaterialIcons name="menu" size={21} color={Colors.black} />
+        </View>
       </PopupMenu>
       <TouchableOpacity
         onPress={() => router.push(`/(tabs)/vehicle/${vehicle?.id}`)}
         style={styles.body}
       >
-        <Image
-          source={vehicle?.asset?.url}
-          style={styles.image}
-          contentFit="cover"
-        />
+        {isEmpty(vehicle?.asset?.url) ? (
+          <View style={styles.imagePlaceholder}>
+            <MaterialIcons name="commute" size={70} color={Colors.white} />
+          </View>
+        ) : (
+          <Image
+            source={vehicle?.asset?.url}
+            style={styles.image}
+            contentFit="cover"
+          />
+        )}
+
         <View style={styles.details}>
-          <Text style={styles.name}>
+          <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">
             {capitalizeFirstLetter(
-              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`,
+              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`
             )}
           </Text>
 
@@ -104,19 +138,21 @@ export const Card = (props: CardProps) => {
             >{`(${vehicleDriver?.payment_count ?? 0} payments)`}</Text>
           </View>
 
-          <View style={styles.detailsRow}>
-            <View style={styles.detailIcon}>
-              <MaterialIcons
-                name="event-seat"
-                size={18}
-                color={Colors.mrDBlue}
-              />
-            </View>
+          {vehicle?.passengers && (
+            <View style={styles.detailsRow}>
+              <View style={styles.detailIcon}>
+                <MaterialIcons
+                  name="event-seat"
+                  size={18}
+                  color={Colors.mrDBlue}
+                />
+              </View>
 
-            <Text style={styles.detailText} numberOfLines={1}>
-              {vehicle?.passengers ? `${vehicle?.passengers} passengers` : "NA"}
-            </Text>
-          </View>
+              <Text style={styles.detailText} numberOfLines={1}>
+                {`${vehicle?.passengers} passengers`}
+              </Text>
+            </View>
+          )}
 
           <View style={styles.detailsRow}>
             <View style={styles.detailIcon}>
@@ -135,28 +171,22 @@ export const Card = (props: CardProps) => {
               {isActive ? "active" : "inactive"}
             </Text>
           </View>
-
-          {/* <View style={styles.ratingRow}>
-            <View style={styles.detailIcon}>
-              <MaterialIcons
-                name="location-pin"
-                size={17}
-                color={Colors.mediumDarkGrey}
-              />
-            </View>
-            <Text style={styles.address} numberOfLines={1}>
-              Soweto, Gauteng, South Africa
-            </Text>
-          </View> */}
         </View>
       </TouchableOpacity>
       <HorizontalDivider color="#ededed" />
       <View style={styles.payments}>
         <View style={styles.paymentCard}>
           <Text style={styles.paymentText}>Recent Paid</Text>
-          <Text style={styles.amountText}>
-            R{vehicleDriver?.last_payment ?? 0}
-          </Text>
+          <View style={styles.recentPaidWrapper}>
+            {!isEmpty(vehicleDriver?.last_payment?.date) && (
+              <Text style={styles.dateText}>
+                {formatDateShort(vehicleDriver?.last_payment?.date)} -{" "}
+              </Text>
+            )}
+            <Text style={styles.amountText}>
+              R{vehicleDriver?.last_payment?.amount ?? 0}
+            </Text>
+          </View>
         </View>
         <View style={styles.paymentCard}>
           <Text style={styles.paymentText}>Total Paid</Text>
@@ -169,59 +199,40 @@ export const Card = (props: CardProps) => {
         {!noVehicleDrivers && (
           <CustomButton
             onPress={() => router.push(`/details/${vehicle?.id}`)}
-            customStyle={{
-              paddingTop: 10,
-              paddingBottom: 12,
-              backgroundColor: Colors.lightGreen,
-              width: "48%",
-              marginVertical: 10,
-              ...shadowStyles,
-            }}
+            customStyle={[
+              styles.btnStyles,
+              {
+                backgroundColor: Colors.lightGreen,
+                width: !noVehicleDrivers ? "100%" : "48%",
+              },
+            ]}
           >
-            <Text
-              style={[
-                styles.name,
-                { fontWeight: 500, lineHeight: 17, color: Colors.white },
-              ]}
-            >
-              View Details
-            </Text>
+            <Text style={styles.btnText}>View Details</Text>
           </CustomButton>
         )}
 
-        <View
-          style={{
-            position: "relative",
-            width: noVehicleDrivers ? "100%" : "48%",
-          }}
-        >
-          <CustomButton
-            onPress={() => router.push(`/applicants/${vehicle.id}`)}
-            customStyle={{
-              paddingTop: 10,
-              paddingBottom: 12,
-              backgroundColor: Colors.mrDBlue,
-              marginVertical: 10,
-              ...shadowStyles,
+        {noVehicleDrivers && (
+          <View
+            style={{
+              position: "relative",
+              width: noVehicleDrivers ? "100%" : "48%",
             }}
           >
-            <Text
-              style={[
-                styles.name,
-                { fontWeight: 500, lineHeight: 17, color: Colors.white },
-              ]}
+            <CustomButton
+              onPress={() => router.push(`/applicants/${vehicle.id}`)}
+              customStyle={styles.btnStyles}
             >
-              View Applicants
-            </Text>
-          </CustomButton>
-          {(vehicle?.unseen_applications_count ?? 0) > 0 && (
-            <View style={styles.unreadBadge}>
-              <Text style={styles.unreadBadgeText}>
-                {vehicle?.unseen_applications_count}
-              </Text>
-            </View>
-          )}
-        </View>
+              <Text style={styles.btnText}>View Applicants</Text>
+            </CustomButton>
+            {(vehicle?.unseen_applications_count ?? 0) > 0 && (
+              <View style={styles.unreadBadge}>
+                <Text style={styles.unreadBadgeText}>
+                  {vehicle?.unseen_applications_count}
+                </Text>
+              </View>
+            )}
+          </View>
+        )}
       </View>
     </View>
   );

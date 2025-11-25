@@ -53,4 +53,6 @@ type Asset = {
   copied: boolean;
   meta: Record<string, any>;
   url: string;
+  vehicle_id?: string,
+  user_id?: string
 };

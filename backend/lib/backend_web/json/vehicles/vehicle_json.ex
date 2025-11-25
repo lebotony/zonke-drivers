@@ -43,6 +43,13 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
           nil
       end
 
+    asset =
+      if Ecto.assoc_loaded?(vehicle.asset) and vehicle.asset != nil do
+        AssetJSON.show(%{asset: vehicle.asset})
+      else
+        %{}
+      end
+
     %{
       id: vehicle.id,
       model: vehicle.model,
@@ -61,7 +68,7 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
       user: user,
       inserted_at: vehicle.inserted_at,
       updated_at: vehicle.updated_at,
-      asset: AssetJSON.show(%{asset: vehicle.asset}),
+      asset: asset,
       vehicle_drivers: vehicle_drivers
     }
   end

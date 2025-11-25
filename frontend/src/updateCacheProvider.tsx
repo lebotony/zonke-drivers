@@ -9,18 +9,19 @@ const PaginatedCacheContext = createContext<
       updateAndMoveObjectToTop: (
         queryKey: string,
         objToUpdateId: string,
-        updatedParams: any,
+        updatedParams: any
       ) => void;
       getUpdatedObjectSnapshot: GetUpdatedObjectSnapshot;
       addItemToPaginatedList: (queyKey: string, newItem: any) => void;
+      removeItemFromPaginatedList: (queryKey: string, itemId: string) => void;
       updateNestedPagination: (
         itemId: string,
         paginationName: string,
-        paginate: Record<string, any>,
+        paginate: Record<string, any>
       ) => unknown;
       onFetchNestedPagination: (
         id: string,
-        paginationName: string,
+        paginationName: string
       ) => {
         pageParam: any;
       };
@@ -40,7 +41,7 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
   const updatePaginatedObject = (
     queryKey: string,
     objToUpdateId: string,
-    updatedParams: any,
+    updatedParams: any
   ) => {
     queryClient.setQueryData([queryKey], (oldData: any) => {
       if (!oldData) return oldData;
@@ -66,7 +67,7 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
   const updateAndMoveObjectToTop = (
     queryKey: string,
     objToUpdateId: string,
-    updatedParams: any,
+    updatedParams: any
   ) => {
     queryClient.setQueryData([queryKey], (oldData: any) => {
       if (!oldData) return oldData;
@@ -130,9 +131,31 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
     });
   };
 
+  const removeItemFromPaginatedList = (queryKey: string, itemId: string) => {
+    queryClient.setQueryData([queryKey], (oldData: any) => {
+      if (!oldData) return oldData;
+
+      const newPages = oldData.pages.map((page: any) => {
+        const existed = page.data.some((item: any) => item.id === itemId);
+        const newData = page.data.filter((item: any) => item.id !== itemId);
+
+        return {
+          ...page,
+          data: newData,
+          paginate: {
+            ...page.paginate,
+            total_count: page.paginate.total_count - (existed ? 1 : 0),
+          },
+        };
+      });
+
+      return { ...oldData, pages: newPages };
+    });
+  };
+
   const getUpdatedObjectSnapshot = (
     queryKey: string,
-    objToUpdateId: string,
+    objToUpdateId: string
   ) => {
     const cachedObj: any = queryClient.getQueryData([queryKey]);
     const valueList = cachedObj?.pages.flatMap((page: Page) => page.data) ?? [];
@@ -144,7 +167,7 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
   const updateNestedPagination = (
     itemId: string,
     paginationName: string,
-    paginate: Record<string, any>,
+    paginate: Record<string, any>
   ) =>
     queryClient.setQueryData([paginationName], (oldData: any[]) => {
       const data = oldData ?? [];
@@ -181,6 +204,7 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
     updateAndMoveObjectToTop,
     getUpdatedObjectSnapshot,
     addItemToPaginatedList,
+    removeItemFromPaginatedList,
     updateNestedPagination,
     onFetchNestedPagination: handleFetchRecords,
   };
@@ -196,7 +220,7 @@ export const usePaginatedCache = () => {
   const context = useContext(PaginatedCacheContext);
   if (context === undefined) {
     throw new Error(
-      "usePaginatedCache must be used within a PaginatedCacheProvider",
+      "usePaginatedCache must be used within a PaginatedCacheProvider"
     );
   }
   return context;

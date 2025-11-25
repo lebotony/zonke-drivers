@@ -146,7 +146,8 @@ defmodule Backend.Drivers.Drivers do
         )
 
       {:name, value}, query when is_binary(value) and value != "" ->
-        where(query,
+        where(
+          query,
           [user: u],
           ilike(u.first_name, ^"%#{value}%") or
             ilike(u.last_name, ^"%#{value}%")

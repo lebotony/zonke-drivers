@@ -39,10 +39,10 @@ defmodule Backend.Applications.VehicleApplications do
 
   defp driver_application_exists(driver_id, vehicle_id) do
     exists =
-    VehicleApplicationBy.base_query()
-    |> VehicleApplicationBy.by_driver(driver_id)
-    |> VehicleApplicationBy.by_vehicle(vehicle_id)
-    |> Repo.exists?()
+      VehicleApplicationBy.base_query()
+      |> VehicleApplicationBy.by_driver(driver_id)
+      |> VehicleApplicationBy.by_vehicle(vehicle_id)
+      |> Repo.exists?()
   end
 
   def get_application_by_vehicle_driver(vehicle_id, driver_id) do
