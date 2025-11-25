@@ -1,7 +1,10 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 
 import { shadowStyles } from "@/src/components/shadowStyles";
 import { Colors } from "@/constants/ui";
+
+const screenWidth = Dimensions.get("window").width;
+const dynamicWidth = screenWidth - screenWidth * 0.4 - 85;
 
 export const styles = StyleSheet.create({
   card: {
@@ -15,17 +18,35 @@ export const styles = StyleSheet.create({
   },
   body: {
     paddingVertical: 10,
-    paddingBottom: 13,
+    paddingBottom: 8,
     flexDirection: "row",
     gap: 13,
-    alignItems: "center",
   },
   image: {
-    width: 100,
-    height: 100,
+    width: "40%",
+    aspectRatio: 1.25,
     backgroundColor: Colors.verylightBlue,
     borderRadius: 7,
     ...shadowStyles,
+  },
+  imagePlaceholder: {
+    width: "40%",
+    aspectRatio: 1.25,
+    backgroundColor: Colors.lighterGrey,
+    borderRadius: 7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    ...shadowStyles,
+  },
+  optionsBtn: {
+    width: 35,
+    height: 35,
+    backgroundColor: Colors.whiteSmoke,
+    borderRadius: "50%",
+    padding: 7,
+    alignItems: 'center',
+    justifyContent: 'center',
+    // ...shadowStyles
   },
   payments: {
     paddingTop: 10,
@@ -48,14 +69,39 @@ export const styles = StyleSheet.create({
   },
   amountText: {
     textAlign: "center",
-    fontWeight: 700,
-    fontSize: 16,
+    fontWeight: 600,
+    fontSize: 15,
+  },
+  dateText: {
+    textAlign: "center",
+    fontWeight: 600,
+    fontSize: 14,
+    color: Colors.mediumLightGrey
+  },
+  recentPaidWrapper: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center"
   },
   name: {
     fontSize: 16,
     fontWeight: 600,
     color: Colors.darkCharcoalGrey,
     lineHeight: 20,
+    width: dynamicWidth,
+  },
+  btnStyles: {
+    paddingTop: 10,
+    paddingBottom: 12,
+    backgroundColor: Colors.mrDBlue,
+    marginVertical: 10,
+    ...shadowStyles,
+  },
+  btnText: {
+    fontSize: 16,
+    fontWeight: 500,
+    lineHeight: 17,
+    color: Colors.white,
   },
   age: {
     fontWeight: 400,
@@ -65,8 +111,9 @@ export const styles = StyleSheet.create({
     top: 0,
   },
   details: {
+    flexDirection: 'column',
     justifyContent: "space-between",
-    gap: 8,
+    flex: 1,
   },
   detailIcon: {
     width: 18,

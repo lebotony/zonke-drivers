@@ -15,7 +15,7 @@ const addFormDef = [
   {
     name: "price_fixed",
     placeholder: "36",
-    label: "Price per day",
+    label: "Rent per week",
     icon: "monetization-on",
     iconSize: 22,
     required: true,

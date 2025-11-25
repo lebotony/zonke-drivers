@@ -66,7 +66,7 @@ export const ApplicantsScreen = () => {
       ],
     });
 
-    setApplicationsSeen(vehicleId);
+    !isEmpty(vehicleApplications) && setApplicationsSeen(vehicleId);
   };
 
   const handleSetFetchedVehicleApplications = (id: string) =>
@@ -169,7 +169,6 @@ export const ApplicantsScreen = () => {
               )}
               keyExtractor={({ id }, index) => String(id + index)}
               showsVerticalScrollIndicator={false}
-              style={{ marginTop: 10 }}
             />
           ) : (
             <View style={styles.emptyState}>

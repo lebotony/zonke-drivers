@@ -15,6 +15,7 @@ defmodule BackendWeb.Drivers.DriverJSON do
 
   def show(%{driver: driver}) do
     user_map = Map.get(driver, :user)
+
     user =
       if Ecto.assoc_loaded?(user_map) and not is_nil(user_map) do
         UserJSON.show(%{user: user_map})
@@ -23,7 +24,9 @@ defmodule BackendWeb.Drivers.DriverJSON do
       end
 
     asset_url =
-      if Map.has_key?(driver, :asset_filename), do: Assets.prepare_url(driver.asset_filename), else: nil
+      if Map.has_key?(driver, :asset_filename),
+        do: Assets.prepare_url(driver.asset_filename),
+        else: nil
 
     %{
       id: Map.get(driver, :id),

@@ -3,7 +3,7 @@ import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 
 import { Image } from "expo-image";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { AntDesign } from "@expo/vector-icons";
 
 import { find, isEmpty, isEqual } from "lodash";
@@ -42,8 +42,10 @@ export const AddVehicle = () => {
   const { getCachedData } = useCustomQuery();
   const { userVehicles } = getCachedData(["userVehicles"]);
 
-  const vehicle =
-    vehicleId !== "new" ? find(userVehicles, { id: vehicleId }) : undefined;
+  const isNewVehicle = vehicleId === "new" || vehicleId == undefined;
+  const vehicle = !isNewVehicle
+    ? find(userVehicles, { id: vehicleId })
+    : undefined;
 
   const formValues = {
     model: vehicle?.model || "",
@@ -64,7 +66,7 @@ export const AddVehicle = () => {
         file_path: "",
         filename: vehicle?.asset?.filename,
       }) ||
-      "",
+      undefined,
     price_fixed: vehicle?.price_fixed?.value || "",
   };
 
@@ -91,6 +93,7 @@ export const AddVehicle = () => {
   const isSameForm = isEqual(currentValues, initialValues);
 
   const pickedAsset = watch("asset");
+  const pickedType = watch("type");
 
   const isNewVehiclePic = !isEmpty(pickedAsset?.file_path);
   const isVehiclePic = !isEmpty(pickedAsset?.filename);
@@ -108,6 +111,8 @@ export const AddVehicle = () => {
             ...res,
             vehicle_drivers: vehicle?.vehicle_drivers,
           });
+
+          router.push("/(tabs)/manage");
         })
         .catch((err) => {
           AppToast();
@@ -118,6 +123,7 @@ export const AddVehicle = () => {
         .then((res) => {
           AppToast("Vehicle created successfully", true);
           addItemToPaginatedList("userVehicles", res);
+          router.push("/(tabs)/manage");
         })
         .catch((err) => {
           if (
@@ -137,20 +143,25 @@ export const AddVehicle = () => {
   const create = (data: AddVehicleFormValues) => {
     const params = {
       ...data,
-      asset: !isEmpty(data.asset?.file_path) ? data.asset : "",
-      price_fixed: {
-        value: data.price_fixed,
-        currency: "Rand",
-      },
+      price_fixed: data.price_fixed
+        ? { value: Number(data.price_fixed), currency: "Rand" }
+        : undefined,
     };
 
     upsertVehicle(params);
   };
 
-  const updatePaginatedAsset = (asset: Asset) =>
-    updatePaginatedObject("userVehicles", vehicleId, {
-      asset: asset,
-    });
+  const updatePaginatedAsset = (res: Asset | Vehicle) => {
+    isNewVehicle
+      ? addItemToPaginatedList("userVehicles", res)
+      : updatePaginatedObject("userVehicles", vehicleId, {
+          asset: res,
+        });
+
+    isNewVehicle
+      ? router.push(`/(tabs)/vehicle/${res.id}`)
+      : router.push("/(tabs)/manage");
+  };
 
   const handleSelectImage = () =>
     pickImage(
@@ -177,7 +188,14 @@ export const AddVehicle = () => {
         });
       })
       .catch((err) => {
-        AppToast();
+        const errorKey = err.response?.data?.error;
+
+        if (errorKey === "missing_fields") {
+          return AppToast("Model and Rent fields are empty");
+        } else {
+          AppToast();
+          throw new Error("Set vehicle active error:", err);
+        }
       });
 
   return (
@@ -264,7 +282,7 @@ export const AddVehicle = () => {
             <Text
               style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}
             >
-              {`${vehicle ? "Edit" : "Add"} Vehicle`}
+              {`${vehicle ? "Edit" : "Add"} ${pickedType === "bike" ? "Bike" : "Vehicle"}`}
             </Text>
           </CustomButton>
         </View>

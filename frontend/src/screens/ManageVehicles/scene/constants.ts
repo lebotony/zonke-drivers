@@ -26,4 +26,8 @@ export const MANAGEMENT_OPTIONS = [
     slug: "active",
     label: "Activate / Deactivate",
   },
+  {
+    slug: "delete",
+    label: "Delete Vehicle",
+  },
 ];

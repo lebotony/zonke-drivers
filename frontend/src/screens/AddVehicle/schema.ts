@@ -1,7 +1,11 @@
+import { isEmpty } from "lodash";
 import { z } from "zod";
 
 export const fieldValidators = {
-  model: z.string().min(1, "Model must be at least 1 character").optional(),
+  model: z
+  .string()
+  .transform((val) => (val.trim() === "" ? undefined : val))
+  .optional(),
   description: z.string().optional(),
   mileage: z.preprocess(
     (val) => (val === "" ? undefined : val),
@@ -32,7 +36,7 @@ export const fieldValidators = {
   ),
   // model_year: z.string().optional(),
   price_fixed: z.preprocess(
-    (val) => (val === "" ? undefined : val),
+    (val) => (val === "" || isEmpty(val?.value) ? undefined : val),
     z.coerce
       .number()
       .min(1, "Engine capacity must be at least 1 digit")

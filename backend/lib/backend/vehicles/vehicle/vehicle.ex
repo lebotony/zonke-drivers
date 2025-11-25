@@ -10,14 +10,19 @@ defmodule Backend.Vehicles.Vehicle do
   alias Backend.Reviews.Review
   alias Backend.Ecto.EctoEnums.{VehicleTypeEnum, FuelTypeEnum}
 
-  @required_fields [:user_id, :type, :brand, :model, :fuel_type, :manual]
+  @required_fields [:user_id]
   @optional_fields [
     :description,
     :mileage,
     :active,
     :engine_capacity,
     :passengers,
-    :model_year
+    :model_year,
+    :type,
+    :brand,
+    :model,
+    :fuel_type,
+    :manual
   ]
   @embeds [:price_fixed]
   @all_fields @required_fields ++ @optional_fields ++ @embeds
@@ -27,7 +32,7 @@ defmodule Backend.Vehicles.Vehicle do
     field(:description, :string)
     field(:mileage, :integer)
     field(:active, :boolean, default: false)
-    field(:type, VehicleTypeEnum)
+    field(:type, VehicleTypeEnum, default: nil)
     field(:brand, :string)
     field(:manual, :boolean)
     field(:fuel_type, FuelTypeEnum)
@@ -56,7 +61,7 @@ defmodule Backend.Vehicles.Vehicle do
   def changeset(vehicle, attrs) do
     vehicle
     |> cast(attrs, @all_fields -- @embeds)
-    |> cast_embed(:price_fixed, required: true, with: &PriceFixed.changeset/2)
+    |> cast_embed(:price_fixed, with: &PriceFixed.changeset/2)
     |> validate_required(@required_fields)
   end
 end

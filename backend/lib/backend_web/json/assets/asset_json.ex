@@ -19,6 +19,8 @@ defmodule BackendWeb.Assets.AssetJSON do
       meta: asset.meta,
       filename: asset.filename,
       url: Assets.prepare_url(asset.filename),
+      vehicle_id: Map.get(asset, :vehicle_id),
+      user_id: Map.get(asset, :user_id),
       inserted_at: asset.inserted_at,
       updated_at: asset.updated_at
     }

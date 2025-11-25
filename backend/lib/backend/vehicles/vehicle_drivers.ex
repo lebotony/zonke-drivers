@@ -31,7 +31,8 @@ defmodule Backend.Vehicles.VehicleDrivers do
       {:ok, application} ->
         VehicleApplications.delete(application)
 
-      {:error, error} -> {:error, error}
+      {:error, error} ->
+        {:error, error}
     end
   end
 
