@@ -29,7 +29,7 @@ export const VehiclesScreen = () => {
   const [priceRange, setPriceRange] = useState<[number, number]>([0, 235]);
   const [selectedFuelTypes, setSelectedFuelTypes] = useState<string[]>([]);
   const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>(
-    [],
+    []
   );
 
   const [applyFilter, setApplyFilter] = useState<boolean>(false);
@@ -141,7 +141,7 @@ export const VehiclesScreen = () => {
 
   const toggleBrand = (id: string) => {
     setSelectedBrands((s) =>
-      s.includes(id) ? s.filter((x) => x !== id) : [...s, id],
+      s.includes(id) ? s.filter((x) => x !== id) : [...s, id]
     );
   };
 
@@ -164,7 +164,7 @@ export const VehiclesScreen = () => {
   const handleSetSelectedVehicleType = (value: string) => {
     if (selectedVehicleTypes.includes(value)) {
       const newVehicles = selectedVehicleTypes.filter(
-        (platform) => platform !== value,
+        (platform) => platform !== value
       );
 
       return setSelectedVehicleTypes(newVehicles);
@@ -182,9 +182,13 @@ export const VehiclesScreen = () => {
   };
 
   // To use memoized vehicle card
-  const renderVehicle = useCallback(({ item }: { item: Vehicle }) => {
-    return <VehicleCard vehicle={item} />;
-  }, []);
+  const renderVehicle = useCallback(
+    ({ item, index }: { item: Vehicle; index: number }) => {
+      const isLast = index === vehicles.length - 1;
+      return <VehicleCard vehicle={item} isLast={isLast} />;
+    },
+    [vehicles.length]
+  );
 
   return (
     <View style={styles.container}>
@@ -249,13 +253,7 @@ export const VehiclesScreen = () => {
                 }
               }}
               keyExtractor={(i) => i?.id}
-              renderItem={({ item, index }) => {
-                const isLastItem = index === vehicles.length - 1;
-
-                return <VehicleCard vehicle={item} isLast={isLastItem} />;
-              }}
-              // renderItem={renderVehicle}
-
+              renderItem={renderVehicle}
               contentContainerStyle={[
                 contentContainerStyle,
                 {
@@ -284,7 +282,7 @@ export const VehiclesScreen = () => {
         onToggleBrand={toggleBrand}
         onFuelToggle={(f) =>
           setSelectedFuelTypes((s) =>
-            s.includes(f) ? s.filter((x) => x !== f) : [...s, f],
+            s.includes(f) ? s.filter((x) => x !== f) : [...s, f]
           )
         }
         onPriceChange={handleValueChange}

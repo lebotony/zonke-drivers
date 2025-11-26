@@ -25,6 +25,7 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
   },
   textInput: {
+    outlineWidth: 0,
     lineHeight: 20,
     color: Colors.black,
     fontSize: 14,

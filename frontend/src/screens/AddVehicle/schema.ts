@@ -36,10 +36,9 @@ export const fieldValidators = {
   ),
   // model_year: z.string().optional(),
   price_fixed: z.preprocess(
-    (val) => (val === "" || isEmpty(val?.value) ? undefined : val),
+    (val) => (val === "" ? undefined : val),
     z.coerce
       .number()
-      .min(1, "Engine capacity must be at least 1 digit")
       .optional(),
   ),
   asset: z

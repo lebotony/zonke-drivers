@@ -27,10 +27,15 @@ defmodule Backend.Vehicles.Vehicles do
   end
 
   def get_vehicle_asset(vehicle_id) do
-    from(a in Asset,
-      where: a.vehicle_id == ^vehicle_id
-    )
-    |> Repo.one()
+    case vehicle_id do
+      nil -> nil
+
+      _ ->
+        from(a in Asset,
+          where: a.vehicle_id == ^vehicle_id
+        )
+        |> Repo.one()
+    end
   end
 
   def create_vehicle_asset(params, session) do

@@ -47,7 +47,7 @@ export const Card = (props: CardProps) => {
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true,
+          true
         );
 
         updatePaginatedObject("userVehicles", vehicle?.id, {
@@ -58,7 +58,7 @@ export const Card = (props: CardProps) => {
         const errorKey = err.response?.data?.error;
 
         if (errorKey === "missing_fields") {
-          return AppToast("Model and Rent fields are empty");
+          return AppToast("Model or Rent fields are empty");
         } else {
           AppToast();
           throw new Error("Set vehicle active error:", err);

@@ -28,14 +28,20 @@ export const CommentsScreen = () => {
   } = usePaginatedCache();
 
   const { getCachedData } = useCustomQuery();
-  const { drivers, driversCommentsPagination, fetchedDriversListComments } =
-    getCachedData([
-      "drivers",
-      "driversCommentsPagination",
-      "fetchedDriversListComments",
-    ]);
+  const {
+    drivers,
+    driverProfile,
+    driversCommentsPagination,
+    fetchedDriversListComments,
+  } = getCachedData([
+    "drivers",
+    "driverProfile",
+    "driversCommentsPagination",
+    "fetchedDriversListComments",
+  ]);
 
-  const driver = find(drivers, { id: driverId });
+  const isUserProfile = driverProfile?.id === driverId;
+  let driver = isUserProfile ? driverProfile : find(drivers, { id: driverId });
 
   const loadDriverComments = (commentsObj: Record<string, any>) => {
     updateNestedPagination(
@@ -46,9 +52,19 @@ export const CommentsScreen = () => {
 
     const driverComments = commentsObj?.data;
 
-    updatePaginatedObject("drivers", driverId, {
-      comments: [...(driver?.comments ?? []), ...(driverComments ?? [])],
-    });
+    if (!isUserProfile) {
+      updatePaginatedObject("drivers", driverId, {
+        comments: [...(driver?.comments ?? []), ...(driverComments ?? [])],
+      });
+    } else {
+      queryClient.setQueryData(["driverProfile"], {
+        ...driverProfile,
+        comments: [
+          ...(driverProfile?.comments ?? []),
+          ...(driverComments ?? []),
+        ],
+      });
+    }
   };
 
   const handleSetFetchedComments = (id: string) =>
