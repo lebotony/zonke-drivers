@@ -169,7 +169,7 @@ export const AddVehicle = () => {
       undefined,
       updateVehicleAsset,
       vehicleId,
-      updatePaginatedAsset,
+      updatePaginatedAsset
     );
 
   const handleSetActive = () =>
@@ -180,7 +180,7 @@ export const AddVehicle = () => {
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true,
+          true
         );
 
         updatePaginatedObject("userVehicles", vehicleId, {
@@ -191,7 +191,7 @@ export const AddVehicle = () => {
         const errorKey = err.response?.data?.error;
 
         if (errorKey === "missing_fields") {
-          return AppToast("Model and Rent fields are empty");
+          return AppToast("Model or Rent fields are empty");
         } else {
           AppToast();
           throw new Error("Set vehicle active error:", err);

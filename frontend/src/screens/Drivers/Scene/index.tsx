@@ -137,7 +137,7 @@ export const Scene = () => {
   const handleSetSelectedPlatforms = (value: string) => {
     if (selectedPlatforms.includes(value)) {
       const newPlatforms = selectedPlatforms.filter(
-        (platform) => platform !== value,
+        (platform) => platform !== value
       );
 
       return setSelectedPlatforms(newPlatforms);
@@ -148,7 +148,7 @@ export const Scene = () => {
   const handleSetSelectedLicences = (value: string) => {
     if (selectedLicences.includes(value)) {
       const newLicences = selectedLicences.filter(
-        (licence) => licence !== value,
+        (licence) => licence !== value
       );
 
       return setSelectedLicences(newLicences);

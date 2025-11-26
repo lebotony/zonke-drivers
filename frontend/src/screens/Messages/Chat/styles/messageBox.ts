@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
     elevation: 2,
   },
   input: {
+    outlineWidth: 0,
     flex: 1,
     fontSize: 16,
     color: "#333",
