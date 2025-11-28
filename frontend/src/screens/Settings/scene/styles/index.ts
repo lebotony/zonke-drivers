@@ -12,7 +12,7 @@ export const styles = StyleSheet.create({
   header: {
     fontSize: 22,
     fontWeight: 600,
-    marginBottom: 10
+    marginBottom: 10,
   },
   avatarWrapper: {
     position: "relative",

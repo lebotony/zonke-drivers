@@ -52,6 +52,7 @@ export const Header = (props: HeaderProps) => {
               paddingVertical: 4,
               paddingHorizontal: 5,
             }}
+            activeOpacity={0.5}
             onPress={() => setShowFilterModal(true)}
           >
             <Ionicons name="options-outline" size={23} color={Colors.mrDBlue} />

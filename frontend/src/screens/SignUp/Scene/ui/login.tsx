@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { View, TouchableOpacity, ScrollView } from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  ScrollView,
+  KeyboardAvoidingView,
+  Keyboard,
+  Platform,
+} from "react-native";
 import { Text } from "react-native-paper";
 
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -55,6 +62,25 @@ export const LoginScreen = (props: LoginScreenProps) => {
     setAuthError(null);
   }, [JSON.stringify(watchedFields)]);
 
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", (e) => {
+      setKeyboardVisible(true);
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   const onSubmit = async (data: SignUpFormValues | SignInFormValues) => {
     setAuthError(null);
 
@@ -86,84 +112,98 @@ export const LoginScreen = (props: LoginScreenProps) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {isSignUp && (
-          <TouchableOpacity
-            style={styles.goBack}
-            onPress={() => setIsSignUp(!isSignUp)}
-          >
-            <MaterialIcons name="keyboard-backspace" size={20} />
-          </TouchableOpacity>
-        )}
-        <View style={styles.logoContainer}>
-          <TextLogo size={isSignUp ? "medium" : "large"} />
-        </View>
-
-        {!isSignUp && <Text style={styles.title}>Login your account</Text>}
-
-        {isSignUp && (
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            <Text style={styles.title}>Create </Text>
-            <Text style={[styles.title, { color: Colors.mrDBlue }]}>
-              {isDriver ? "Driver" : "Vehicle Owner"}
-            </Text>
-            <Text style={styles.title}> account</Text>
-          </View>
-        )}
-
-        {isSignUp && (
-          <View style={styles.switch}>
-            <TouchableOpacity
-              onPress={() => setIsDriver(!isDriver)}
-              style={[styles.switchBtns, !isDriver && styles.activeSwitchBtn]}
-            >
-              <Text
-                style={[
-                  styles.switchText,
-                  !isDriver && { color: Colors.white },
-                ]}
-              >
-                Vehicle Owner
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => setIsDriver(!isDriver)}
-              style={[styles.switchBtns, isDriver && styles.activeSwitchBtn]}
-            >
-              <Text
-                style={[styles.switchText, isDriver && { color: Colors.white }]}
-              >
-                Driver
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
-
-        <Form isSignUp={isSignUp} control={control} errors={errors} />
-
-        {authError && (
-          <Text style={{ color: Colors.lightRed, marginTop: 5, marginLeft: 8 }}>
-            {authError}
-          </Text>
-        )}
-
-        <CustomButton
-          haptics="light"
-          customStyle={{ borderRadius: 6, marginTop: 20 }}
-          onPress={handleSubmit(onSubmit)}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={
+            isSignUp && { paddingBottom: keyboardVisible ? keyboardHeight : 0 }
+          }
         >
-          <Text style={styles.buttonText}>
-            {isSignUp ? "Sign Up" : "Log In"}
-          </Text>
-        </CustomButton>
+          {isSignUp && (
+            <TouchableOpacity
+              style={styles.goBack}
+              onPress={() => setIsSignUp(!isSignUp)}
+            >
+              <MaterialIcons name="keyboard-backspace" size={20} />
+            </TouchableOpacity>
+          )}
+          <View style={styles.logoContainer}>
+            <TextLogo size={isSignUp ? "medium" : "large"} />
+          </View>
 
-        {/* <View style={styles.dividerRow}>
+          {!isSignUp && <Text style={styles.title}>Login your account</Text>}
+
+          {isSignUp && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <Text style={styles.title}>Create </Text>
+              <Text style={[styles.title, { color: Colors.mrDBlue }]}>
+                {isDriver ? "Driver" : "Vehicle Owner"}
+              </Text>
+              <Text style={styles.title}> account</Text>
+            </View>
+          )}
+
+          {isSignUp && (
+            <View style={styles.switch}>
+              <TouchableOpacity
+                onPress={() => setIsDriver(!isDriver)}
+                style={[styles.switchBtns, !isDriver && styles.activeSwitchBtn]}
+              >
+                <Text
+                  style={[
+                    styles.switchText,
+                    !isDriver && { color: Colors.white },
+                  ]}
+                >
+                  Vehicle Owner
+                </Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => setIsDriver(!isDriver)}
+                style={[styles.switchBtns, isDriver && styles.activeSwitchBtn]}
+              >
+                <Text
+                  style={[
+                    styles.switchText,
+                    isDriver && { color: Colors.white },
+                  ]}
+                >
+                  Driver
+                </Text>
+              </TouchableOpacity>
+            </View>
+          )}
+
+          <Form isSignUp={isSignUp} control={control} errors={errors} />
+
+          {authError && (
+            <Text
+              style={{ color: Colors.lightRed, marginTop: 5, marginLeft: 8 }}
+            >
+              {authError}
+            </Text>
+          )}
+
+          <CustomButton
+            haptics="light"
+            customStyle={{ borderRadius: 6, marginTop: 20 }}
+            onPress={handleSubmit(onSubmit)}
+          >
+            <Text style={styles.buttonText}>
+              {isSignUp ? "Sign Up" : "Log In"}
+            </Text>
+          </CustomButton>
+
+          {/* <View style={styles.dividerRow}>
           <View style={styles.divider} />
           <Text style={styles.dividerText}>or continue with</Text>
           <View style={styles.divider} />
@@ -185,20 +225,21 @@ export const LoginScreen = (props: LoginScreenProps) => {
           </Text>
         </CustomButton> */}
 
-        <View>
-          <View style={styles.signupRow}>
-            <Text style={{ color: Colors.midToneGrey, fontWeight: 600 }}>
-              {isSignUp ? "Have an acount?" : " Don’t have an account?"}
-            </Text>
-            <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
-              <Text style={[styles.signupText, { fontWeight: 700 }]}>
-                {!isSignUp ? "Sign Up" : "Log In"}
+          <View>
+            <View style={styles.signupRow}>
+              <Text style={{ color: Colors.midToneGrey, fontWeight: 600 }}>
+                {isSignUp ? "Have an acount?" : " Don’t have an account?"}
               </Text>
-            </TouchableOpacity>
+              <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
+                <Text style={[styles.signupText, { fontWeight: 700 }]}>
+                  {!isSignUp ? "Sign Up" : "Log In"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            <Text style={styles.copyright}>© 2025 ZS, All right Reserved</Text>
           </View>
-          <Text style={styles.copyright}>© 2025 ZS, All right Reserved</Text>
-        </View>
-      </ScrollView>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };

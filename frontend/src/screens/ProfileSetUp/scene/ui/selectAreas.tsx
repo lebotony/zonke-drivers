@@ -18,7 +18,7 @@ type SelectAreaProps = {
   options: string[];
   onAddItem: (item: string) => void;
   onRemoveItem: (item: string) => void;
-  selectedItems: string[];
+  selectedItems?: string[];
   label: string;
 };
 
@@ -45,7 +45,7 @@ export const SelectPlatformArea = (props: SelectAreaProps) => {
             Select platforms...
           </Text>
         ) : (
-          selectedItems.map((item, idx) => {
+          selectedItems?.map((item, idx) => {
             const { value, bgColor, color, slug, icon, justIcon } =
               PLATFORM_FILTERS.filter((p) => p.value === item)[0];
 
@@ -103,7 +103,7 @@ export const SelectLicenceArea = (props: SelectAreaProps) => {
             Select licences...
           </Text>
         ) : (
-          selectedItems.map((item, idx) => {
+          selectedItems?.map((item, idx) => {
             const licence = find(LICENCES, { slug: item })?.name;
 
             return (

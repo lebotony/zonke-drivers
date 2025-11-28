@@ -33,5 +33,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     position: "absolute",
+    zIndex: 10000,
   },
 });

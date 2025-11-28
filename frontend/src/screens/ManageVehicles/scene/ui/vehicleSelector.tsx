@@ -20,16 +20,21 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
 }) => {
   const [optionsVisible, setOptionsVisible] = useState(false);
 
+  const filteredVehicles =
+    vehicles?.filter((vehicle) => vehicle.brand || vehicle.model) || [];
+
   const handleSelect = (vehicleId: string) => {
-    const vehicle = vehicles?.find((v) => v.id === vehicleId);
+    const vehicle = filteredVehicles?.find((v) => v.id === vehicleId);
     if (vehicle) {
       onSelectVehicle(vehicle);
     }
     setOptionsVisible(false);
   };
 
-  const vehicleOptions = vehicles?.map((vehicle) => ({
-    label: capitalizeFirstLetter(`${vehicle.brand} ${vehicle.model}`),
+  const vehicleOptions = filteredVehicles.map((vehicle) => ({
+    label: capitalizeFirstLetter(
+      `${vehicle.brand ?? ""} ${vehicle.model ?? ""}`,
+    ),
     value: vehicle.id,
   }));
 
@@ -53,7 +58,7 @@ export const VehicleSelector: React.FC<VehicleSelectorProps> = ({
           <Text style={styles.vehicleSelectorModel}>
             {selectedVehicle
               ? capitalizeFirstLetter(
-                  `${selectedVehicle.brand} ${selectedVehicle.model}`
+                  `${selectedVehicle.brand ?? ""} ${selectedVehicle.model ?? ""}`,
                 )
               : "Select a vehicle"}
           </Text>

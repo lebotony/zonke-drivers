@@ -1,5 +1,13 @@
-import { useEffect } from "react";
-import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
+import { useEffect, useState } from "react";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Text } from "react-native-paper";
 
 import { Image } from "expo-image";
@@ -101,6 +109,25 @@ export const AddVehicle = () => {
     ? { uri: pickedAsset?.file_path }
     : vehicle?.asset?.url;
 
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", (e) => {
+      setKeyboardVisible(true);
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   const upsertVehicle = (params: AddVehicleFormValues) => {
     if (vehicle) {
       return updateVehicle(vehicleId, params)
@@ -169,7 +196,7 @@ export const AddVehicle = () => {
       undefined,
       updateVehicleAsset,
       vehicleId,
-      updatePaginatedAsset
+      updatePaginatedAsset,
     );
 
   const handleSetActive = () =>
@@ -180,7 +207,7 @@ export const AddVehicle = () => {
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true
+          true,
         );
 
         updatePaginatedObject("userVehicles", vehicleId, {
@@ -200,62 +227,89 @@ export const AddVehicle = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <View style={styles.headerWrapper}>
-          <Text style={[styles.header]}>Car Details</Text>
+        <ScrollView
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={
+            Platform.OS === "android" && {
+              paddingBottom: keyboardVisible ? keyboardHeight : 0,
+            }
+          }
+        >
+          <View style={styles.headerWrapper}>
+            <Text style={[styles.header]}>Car Details</Text>
 
-          <TouchableOpacity
-            onPress={handleSelectImage}
-            style={styles.imageWrapper}
-          >
             <TouchableOpacity
-              style={styles.plusBtn}
               onPress={handleSelectImage}
+              style={styles.imageWrapper}
             >
-              <AntDesign name="plus" size={24} color={Colors.white} />
+              <TouchableOpacity
+                style={styles.plusBtn}
+                onPress={handleSelectImage}
+              >
+                <AntDesign name="plus" size={24} color={Colors.white} />
+              </TouchableOpacity>
+              <Image
+                source={vehicleImage}
+                style={[
+                  styles.imageStyles,
+                  !isVehiclePic && styles.defaultImageStyles,
+                ]}
+                contentFit="contain"
+              />
             </TouchableOpacity>
-            <Image
-              source={vehicleImage}
-              style={[
-                styles.imageStyles,
-                !isVehiclePic && styles.defaultImageStyles,
-              ]}
-              contentFit="contain"
+            {!isVehiclePic && (
+              <Text style={styles.imageText}>Add Vehicle image</Text>
+            )}
+          </View>
+
+          <Text style={styles.addVehicleSubText}>
+            {`${vehicle ? "Edit" : "Add"} your vehicle details below`}
+          </Text>
+
+          {CardFormDef.map((card, index) => (
+            <Card
+              key={`${card.label}-${index}`}
+              card={card}
+              setValue={setValue}
+              watch={watch}
             />
-          </TouchableOpacity>
-          {!isVehiclePic && (
-            <Text style={styles.imageText}>Add Vehicle image</Text>
-          )}
-        </View>
+          ))}
 
-        <Text style={styles.addVehicleSubText}>
-          {`${vehicle ? "Edit" : "Add"} your vehicle details below`}
-        </Text>
+          <AddVehicleForm control={control} errors={errors} />
 
-        {CardFormDef.map((card, index) => (
-          <Card
-            key={`${card.label}-${index}`}
-            card={card}
-            setValue={setValue}
-            watch={watch}
-          />
-        ))}
+          <View>
+            {vehicle && (
+              <CustomButton
+                haptics="light"
+                onPress={handleSetActive}
+                customStyle={[
+                  {
+                    backgroundColor: vehicle?.active
+                      ? Colors.lightRed
+                      : Colors.lightGreen,
+                  },
+                  styles.btnStyles,
+                ]}
+              >
+                <Text
+                  style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}
+                >
+                  {vehicle?.active ? "De-activate" : "Activate"}
+                </Text>
+              </CustomButton>
+            )}
 
-        <AddVehicleForm control={control} errors={errors} />
-
-        <View>
-          {vehicle && (
             <CustomButton
               haptics="light"
-              onPress={handleSetActive}
+              onPress={isSameForm ? undefined : handleSubmit(create)}
               customStyle={[
                 {
-                  backgroundColor: vehicle?.active
-                    ? Colors.lightRed
-                    : Colors.lightGreen,
+                  backgroundColor:
+                    isSameForm && vehicle ? Colors.lightGrey : Colors.mrDBlue,
                 },
                 styles.btnStyles,
               ]}
@@ -263,30 +317,12 @@ export const AddVehicle = () => {
               <Text
                 style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}
               >
-                {vehicle?.active ? "De-activate" : "Activate"}
+                {`${vehicle ? "Edit" : "Add"} ${pickedType === "bike" ? "Bike" : "Vehicle"}`}
               </Text>
             </CustomButton>
-          )}
-
-          <CustomButton
-            haptics="light"
-            onPress={isSameForm ? undefined : handleSubmit(create)}
-            customStyle={[
-              {
-                backgroundColor:
-                  isSameForm && vehicle ? Colors.lightGrey : Colors.mrDBlue,
-              },
-              styles.btnStyles,
-            ]}
-          >
-            <Text
-              style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}
-            >
-              {`${vehicle ? "Edit" : "Add"} ${pickedType === "bike" ? "Bike" : "Vehicle"}`}
-            </Text>
-          </CustomButton>
-        </View>
-      </ScrollView>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 };
