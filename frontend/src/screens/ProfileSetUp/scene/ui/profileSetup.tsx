@@ -1,5 +1,13 @@
-import React, { useEffect } from "react";
-import { ScrollView, TouchableOpacity, View } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  Dimensions,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { Text } from "react-native-paper";
 
 import { find, isEmpty, isEqual } from "lodash";
@@ -7,6 +15,7 @@ import { find, isEmpty, isEqual } from "lodash";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import { router } from "expo-router";
 
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 import { useQueryClient } from "@tanstack/react-query";
@@ -26,6 +35,7 @@ import { ModalDatePicker } from "@/src/components/elements/datePicker";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { AppToast } from "@/src/components/CustomToast/customToast";
 import { BackArrow } from "@/src/components/BackArrow/header";
+import { Spinner } from "@/src/components/elements/Spinner";
 
 import { styles } from "../styles/profileSetup";
 import { DriverProfileSchema, OwnerProfileSchema } from "../schema";
@@ -81,13 +91,32 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
     defaultValues: formValues,
   });
 
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
+
+  useEffect(() => {
+    const showSubscription = Keyboard.addListener("keyboardDidShow", (e) => {
+      setKeyboardVisible(true);
+      setKeyboardHeight(e.endCoordinates.height);
+    });
+    const hideSubscription = Keyboard.addListener("keyboardDidHide", () => {
+      setKeyboardVisible(false);
+      setKeyboardHeight(0);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, []);
+
   const { asset: currentAsset, ...currentValues } = watch();
   const isSameForm = isEqual(currentValues, formValues);
 
   useEffect(() => {
     if (isDriver && !driverProfile) {
       fetchDriverProfile().then((response) =>
-        queryClient.setQueryData(["driverProfile"], response)
+        queryClient.setQueryData(["driverProfile"], response),
       );
     }
   }, [isDriver]);
@@ -117,7 +146,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleRemovePlatform = (item: string) => {
     setValue(
       "platforms",
-      selectedPlatforms?.filter((platform) => platform !== item)
+      selectedPlatforms?.filter((platform) => platform !== item),
     );
   };
 
@@ -132,7 +161,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleRemoveLicences = (item: string) => {
     setValue(
       "licences",
-      selectedLicences?.filter((licence) => licence !== item)
+      selectedLicences?.filter((licence) => licence !== item),
     );
   };
 
@@ -147,8 +176,9 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
 
             queryClient.setQueryData(["user"], user);
             queryClient.setQueryData(["driverProfile"], otherParams);
+            router.back();
           })
-          .catch((err) => err)
+          .catch((err) => err),
       )();
     } else {
       handleSubmit((formData) =>
@@ -156,11 +186,12 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
           .then((response) => {
             AppToast("Profile updated successfully", true);
             queryClient.setQueryData(["user"], response);
+            router.back();
           })
           .catch((err) => {
             AppToast();
             throw new Error("Error while updating user: ", err);
-          })
+          }),
       )();
     }
   };
@@ -179,167 +210,185 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       [1, 1],
       updateUserAsset,
       user?.id,
-      updatePaginatedAsset
+      updatePaginatedAsset,
     );
 
   return (
-    <ScrollView showsVerticalScrollIndicator={false}>
-      <BackArrow left={0} />
-      <Text style={styles.title}>Edit Profile</Text>
-      <TouchableOpacity
-        onPress={handleSelectImage}
-        style={[
-          styles.avatarWrapper,
-          isProfilePicPresent && { borderWidth: 0 },
-        ]}
-      >
-        <Avatar
-          width={130}
-          source={
-            isProfilePicPresent && (pickedAsset?.file_path || user?.asset?.url)
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+    >
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={
+          Platform.OS === "android" && {
+            paddingBottom: keyboardVisible ? keyboardHeight : 0,
           }
-          round
-          backgroundColor={false}
-        />
-        <TouchableOpacity onPress={handleSelectImage} style={styles.editButton}>
-          <MaterialIcons
-            name="drive-file-rename-outline"
-            color={Colors.mrDBlue}
-            size={21}
+        }
+      >
+        <BackArrow left={0} />
+        <Text style={styles.title}>Edit Profile</Text>
+        <TouchableOpacity
+          onPress={handleSelectImage}
+          style={[
+            styles.avatarWrapper,
+            isProfilePicPresent && { borderWidth: 0 },
+          ]}
+        >
+          <Avatar
+            width={130}
+            source={
+              isProfilePicPresent &&
+              (pickedAsset?.file_path || user?.asset?.url)
+            }
+            round
+            backgroundColor={false}
           />
-        </TouchableOpacity>
-        {!isProfilePicPresent && (
-          <Text style={styles.imageText}>Select an image</Text>
-        )}
-      </TouchableOpacity>
-
-      <Fieldset
-        label="First Name"
-        name="first_name"
-        inputIcon="person-outline"
-        control={control}
-        placeholder="John"
-        errors={errors}
-        required
-      />
-
-      <Fieldset
-        label="Last Name"
-        name="last_name"
-        inputIcon="person-outline"
-        control={control}
-        placeholder="Doe"
-        errors={errors}
-        required
-      />
-
-      <Fieldset
-        label="Email"
-        name="email"
-        inputIcon="mail"
-        control={control}
-        placeholder="Doe"
-        errors={errors}
-        required
-      />
-
-      <DropdownInput
-        name="location"
-        required
-        label="Location"
-        value={initialLocation.address}
-        setValue={setValue}
-        placeholder="Search location..."
-      />
-
-      {isDriver && (
-        <>
-          <View style={{ flexDirection: "row", gap: 7 }}>
-            <Text style={styles.driverProfileText}>Driver Profile Fields</Text>
-            <Ionicons
-              name="speedometer"
-              size={23}
-              color={Colors.mediumDarkGrey}
-            />
-          </View>
-          <View
-            style={{
-              borderColor: Colors.tealGreen,
-              borderWidth: 2,
-              borderRadius: 10,
-              paddingVertical: 10,
-              paddingHorizontal: 18,
-              marginBottom: 10,
-            }}
+          <TouchableOpacity
+            onPress={handleSelectImage}
+            style={styles.editButton}
           >
+            <MaterialIcons
+              name="drive-file-rename-outline"
+              color={Colors.mrDBlue}
+              size={21}
+            />
+          </TouchableOpacity>
+          {!isProfilePicPresent && (
+            <Text style={styles.imageText}>Select an image</Text>
+          )}
+        </TouchableOpacity>
+
+        <Fieldset
+          label="First Name"
+          name="first_name"
+          inputIcon="person-outline"
+          control={control}
+          placeholder="John"
+          errors={errors}
+          required
+        />
+
+        <Fieldset
+          label="Last Name"
+          name="last_name"
+          inputIcon="person-outline"
+          control={control}
+          placeholder="Doe"
+          errors={errors}
+          required
+        />
+
+        <Fieldset
+          label="Email"
+          name="email"
+          inputIcon="mail"
+          control={control}
+          placeholder="Doe"
+          errors={errors}
+          required
+        />
+
+        <DropdownInput
+          name="location"
+          required
+          label="Location"
+          value={initialLocation.address}
+          setValue={setValue}
+          placeholder="Search location..."
+        />
+
+        {isDriver && (
+          <>
+            <View style={{ flexDirection: "row", gap: 7 }}>
+              <Text style={styles.driverProfileText}>
+                Driver Profile Fields
+              </Text>
+              <Ionicons
+                name="speedometer"
+                size={23}
+                color={Colors.mediumDarkGrey}
+              />
+            </View>
+            <View
+              style={{
+                borderColor: Colors.tealGreen,
+                borderWidth: 2,
+                borderRadius: 10,
+                paddingVertical: 10,
+                paddingHorizontal: 18,
+                marginBottom: 10,
+              }}
+            >
+              <Fieldset
+                label="Date of Birth"
+                name="dob"
+                inputIcon="event"
+                control={control}
+                placeholder="20/10/2001"
+                errors={errors}
+                required
+              />
+
+              <ModalDatePicker setValue={setValue} />
+            </View>
+
+            <SelectLicenceArea
+              onAddItem={(value: string) => handleAddLicence(value)}
+              onRemoveItem={handleRemoveLicences}
+              options={LICENCES.map((licence) => licence.name)}
+              selectedItems={selectedLicences}
+              label="Licences"
+            />
+
+            <SelectPlatformArea
+              onAddItem={(value: string) => handleAddPlatform(value)}
+              onRemoveItem={handleRemovePlatform}
+              options={PLATFORM_LABELS}
+              selectedItems={selectedPlatforms}
+              label="Platforms"
+            />
+
             <Fieldset
-              label="Date of Birth"
-              name="dob"
-              inputIcon="event"
+              label="Years of Experience"
+              name="experience"
+              inputIcon="access-time"
               control={control}
-              placeholder="20/10/2001"
+              placeholder="12"
               errors={errors}
               required
             />
 
-            <ModalDatePicker setValue={setValue} />
-          </View>
+            <Fieldset
+              label="Bio"
+              name="description"
+              inputIconSize={23}
+              control={control}
+              placeholder="Tell clients about your experience, specialties and what you offer..."
+              type="text"
+              numberOfLines={4}
+              optional
+              errors={errors}
+            />
+          </>
+        )}
 
-          <SelectLicenceArea
-            onAddItem={(value: string) => handleAddLicence(value)}
-            onRemoveItem={handleRemoveLicences}
-            options={LICENCES.map((licence) => licence.name)}
-            selectedItems={selectedLicences}
-            label="Licences"
-          />
-
-          <SelectPlatformArea
-            onAddItem={(value: string) => handleAddPlatform(value)}
-            onRemoveItem={handleRemovePlatform}
-            options={PLATFORM_LABELS}
-            selectedItems={selectedPlatforms}
-            label="Platforms"
-          />
-
-          <Fieldset
-            label="Years of Experience"
-            name="experience"
-            inputIcon="access-time"
-            control={control}
-            placeholder="12"
-            errors={errors}
-            required
-          />
-
-          <Fieldset
-            label="Bio"
-            name="description"
-            inputIconSize={23}
-            control={control}
-            placeholder="Tell clients about your experience, specialties and what you offer..."
-            type="text"
-            numberOfLines={4}
-            optional
-            errors={errors}
-          />
-        </>
-      )}
-
-      <CustomButton
-        onPress={isSameForm ? undefined : handleEditProfile}
-        haptics="light"
-        customStyle={{
-          flexGrow: 1,
-          marginBottom: 20,
-          marginTop: 10,
-          flex: 1,
-          backgroundColor: isSameForm ? Colors.lightGrey : Colors.mrDBlue,
-        }}
-      >
-        <Text style={{ color: Colors.white, fontWeight: 600, fontSize: 16 }}>
-          Edit Profile
-        </Text>
-      </CustomButton>
-    </ScrollView>
+        <CustomButton
+          onPress={isSameForm ? undefined : handleEditProfile}
+          haptics="light"
+          customStyle={{
+            flexGrow: 1,
+            marginBottom: 20,
+            marginTop: 10,
+            flex: 1,
+            backgroundColor: isSameForm ? Colors.lightGrey : Colors.mrDBlue,
+          }}
+        >
+          <Text style={{ color: Colors.white, fontWeight: 600, fontSize: 16 }}>
+            Edit Profile
+          </Text>
+        </CustomButton>
+      </ScrollView>
+    </KeyboardAvoidingView>
   );
 };

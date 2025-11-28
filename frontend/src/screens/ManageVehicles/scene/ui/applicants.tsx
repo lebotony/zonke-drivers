@@ -54,7 +54,7 @@ export const ApplicantsScreen = () => {
     updateNestedPagination(
       vehicleId,
       "applicationsPagination",
-      applicationsObj.paginate
+      applicationsObj.paginate,
     );
 
     const vehicleApplications = applicationsObj?.data ?? [];
@@ -77,7 +77,7 @@ export const ApplicantsScreen = () => {
       (prev: Vehicle["id"][] = []) => {
         if (prev.includes(id)) return prev;
         return [...prev, id];
-      }
+      },
     );
 
   const handleFetchApplications = () => {
@@ -85,7 +85,7 @@ export const ApplicantsScreen = () => {
 
     const { pageParam } = onFetchNestedPagination(
       selectedVehicle.id,
-      "applicationsPagination"
+      "applicationsPagination",
     );
 
     fetchApplications({
@@ -100,7 +100,7 @@ export const ApplicantsScreen = () => {
     if (!selectedVehicle?.id) return;
 
     const alreadyFetched = fetchedVehicleApplications?.includes(
-      selectedVehicle.id
+      selectedVehicle.id,
     );
 
     if (!alreadyFetched) {

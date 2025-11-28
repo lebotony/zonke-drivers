@@ -15,7 +15,7 @@ export const fetchDriverProfile = () => httpGet("/drivers/user_driver");
 
 export const updateUserAsset = async (
   params: DriverFormValues["asset"],
-  id: string
+  id: string,
 ) => {
   const form = new FormData();
 
@@ -32,7 +32,7 @@ export const updateUserAsset = async (
         type: mime,
       } as any);
 
-      form.append("user_id", id as string)
+      form.append("user_id", id as string);
     }
 
     const response = await axios.post(`${API_URL}/users/update_asset`, form, {

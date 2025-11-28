@@ -6,14 +6,18 @@ import { httpPost, httpPut } from "@/src/requests";
 
 import { AddVehicleFormValues } from "./scene/ui/addVehicle";
 
-export const createVehicle = async (params: AddVehicleFormValues) => httpPost('/vehicles', params)
+export const createVehicle = async (params: AddVehicleFormValues) =>
+  httpPost("/vehicles", params);
 
 export const updateVehicle = async (
   id: string,
   params: Partial<AddVehicleFormValues>,
 ) => httpPut("/vehicles", id, params);
 
-export const updateVehicleAsset = async (params: AddVehicleFormValues["asset"], id?: string) => {
+export const updateVehicleAsset = async (
+  params: AddVehicleFormValues["asset"],
+  id?: string,
+) => {
   const form = new FormData();
 
   try {
@@ -29,7 +33,7 @@ export const updateVehicleAsset = async (params: AddVehicleFormValues["asset"], 
         type: mime,
       } as any);
 
-      !isEmpty(id) && id !== "new" && form.append("vehicle_id", id as string)
+      !isEmpty(id) && id !== "new" && form.append("vehicle_id", id as string);
     }
 
     const response = await axios.post(

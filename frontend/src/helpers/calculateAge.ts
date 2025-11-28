@@ -25,8 +25,20 @@ export const formatDateShort = (dateString?: string) => {
   const date = new Date(dateString);
 
   // Month short names
-  const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const months = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const day = date.getDate();
   const month = months[date.getMonth()];

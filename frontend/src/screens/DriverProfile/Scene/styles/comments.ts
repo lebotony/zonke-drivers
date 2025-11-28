@@ -7,14 +7,14 @@ export const styles = StyleSheet.create({
   commentsSection: {
     flex: 1,
     paddingBottom: 20,
-    ...topOffset
+    ...topOffset,
   },
   commentsTitle: {
     fontWeight: 600,
     fontSize: 20,
     marginBottom: 15,
     color: Colors.veryDarkGrey,
-    margin: "auto"
+    margin: "auto",
   },
   noCommentsWrapper: {
     flex: 1,

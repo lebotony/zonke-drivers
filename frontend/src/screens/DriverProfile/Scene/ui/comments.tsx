@@ -47,7 +47,7 @@ export const CommentsScreen = () => {
     updateNestedPagination(
       driverId,
       "driversCommentsPagination",
-      commentsObj.paginate
+      commentsObj.paginate,
     );
 
     const driverComments = commentsObj?.data;
@@ -73,13 +73,13 @@ export const CommentsScreen = () => {
       (fetchedDriversListComments: Vehicle["id"][]) => [
         ...(fetchedDriversListComments ?? []),
         id,
-      ]
+      ],
     );
 
   const handleFetchComments = () => {
     const { pageParam } = onFetchNestedPagination(
       driverId,
-      "driversCommentsPagination"
+      "driversCommentsPagination",
     );
 
     fetchComments({

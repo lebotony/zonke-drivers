@@ -34,8 +34,8 @@ export const styles = StyleSheet.create({
     aspectRatio: 1.25,
     backgroundColor: Colors.lighterGrey,
     borderRadius: 7,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     ...shadowStyles,
   },
   optionsBtn: {
@@ -44,8 +44,8 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.whiteSmoke,
     borderRadius: "50%",
     padding: 7,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
     // ...shadowStyles
   },
   payments: {
@@ -76,12 +76,12 @@ export const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: 600,
     fontSize: 14,
-    color: Colors.mediumLightGrey
+    color: Colors.mediumLightGrey,
   },
   recentPaidWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   name: {
     fontSize: 16,
@@ -111,7 +111,7 @@ export const styles = StyleSheet.create({
     top: 0,
   },
   details: {
-    flexDirection: 'column',
+    flexDirection: "column",
     justifyContent: "space-between",
     flex: 1,
   },
@@ -142,11 +142,12 @@ export const styles = StyleSheet.create({
   },
   unreadBadge: {
     backgroundColor: Colors.lightRed,
-    width: 18,
+    minWidth: 18,
     height: 18,
     borderRadius: "50%",
     alignItems: "center",
     justifyContent: "center",
+    padding: 2,
     position: "absolute",
     elevation: 4,
     top: 5,

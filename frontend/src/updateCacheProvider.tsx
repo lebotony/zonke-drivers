@@ -9,7 +9,7 @@ const PaginatedCacheContext = createContext<
       updateAndMoveObjectToTop: (
         queryKey: string,
         objToUpdateId: string,
-        updatedParams: any
+        updatedParams: any,
       ) => void;
       getUpdatedObjectSnapshot: GetUpdatedObjectSnapshot;
       addItemToPaginatedList: (queyKey: string, newItem: any) => void;
@@ -17,11 +17,11 @@ const PaginatedCacheContext = createContext<
       updateNestedPagination: (
         itemId: string,
         paginationName: string,
-        paginate: Record<string, any>
+        paginate: Record<string, any>,
       ) => unknown;
       onFetchNestedPagination: (
         id: string,
-        paginationName: string
+        paginationName: string,
       ) => {
         pageParam: any;
       };
@@ -41,7 +41,7 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
   const updatePaginatedObject = (
     queryKey: string,
     objToUpdateId: string,
-    updatedParams: any
+    updatedParams: any,
   ) => {
     queryClient.setQueryData([queryKey], (oldData: any) => {
       if (!oldData) return oldData;
@@ -67,7 +67,7 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
   const updateAndMoveObjectToTop = (
     queryKey: string,
     objToUpdateId: string,
-    updatedParams: any
+    updatedParams: any,
   ) => {
     queryClient.setQueryData([queryKey], (oldData: any) => {
       if (!oldData) return oldData;
@@ -155,7 +155,7 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
 
   const getUpdatedObjectSnapshot = (
     queryKey: string,
-    objToUpdateId: string
+    objToUpdateId: string,
   ) => {
     const cachedObj: any = queryClient.getQueryData([queryKey]);
     const valueList = cachedObj?.pages.flatMap((page: Page) => page.data) ?? [];
@@ -167,7 +167,7 @@ export const PaginatedCacheProvider: FC<CacheProviderProps> = (props) => {
   const updateNestedPagination = (
     itemId: string,
     paginationName: string,
-    paginate: Record<string, any>
+    paginate: Record<string, any>,
   ) =>
     queryClient.setQueryData([paginationName], (oldData: any[]) => {
       const data = oldData ?? [];
@@ -220,7 +220,7 @@ export const usePaginatedCache = () => {
   const context = useContext(PaginatedCacheContext);
   if (context === undefined) {
     throw new Error(
-      "usePaginatedCache must be used within a PaginatedCacheProvider"
+      "usePaginatedCache must be used within a PaginatedCacheProvider",
     );
   }
   return context;

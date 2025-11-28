@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import {
   View,
-  Pressable,
   TouchableWithoutFeedback,
   UIManager,
   findNodeHandle,
@@ -236,9 +235,10 @@ export const PopupMenu = ({
 
   return (
     <View>
-      <Pressable
+      <TouchableOpacity
         ref={popupBtnRef}
         style={[styles.container, style]}
+        activeOpacity={0.5}
         onPress={onPopupPress}
         onLayout={() => {
           if (open) measureInputPosition();
@@ -269,7 +269,7 @@ export const PopupMenu = ({
         ) : (
           children
         )}
-      </Pressable>
+      </TouchableOpacity>
 
       {open && options && (
         <Portal>

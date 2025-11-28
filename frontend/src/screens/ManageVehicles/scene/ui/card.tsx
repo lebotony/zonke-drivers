@@ -47,7 +47,7 @@ export const Card = (props: CardProps) => {
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true
+          true,
         );
 
         updatePaginatedObject("userVehicles", vehicle?.id, {
@@ -125,7 +125,7 @@ export const Card = (props: CardProps) => {
         <View style={styles.details}>
           <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">
             {capitalizeFirstLetter(
-              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`
+              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`,
             )}
           </Text>
 
@@ -225,7 +225,15 @@ export const Card = (props: CardProps) => {
               <Text style={styles.btnText}>View Applicants</Text>
             </CustomButton>
             {(vehicle?.unseen_applications_count ?? 0) > 0 && (
-              <View style={styles.unreadBadge}>
+              <View
+                style={[
+                  styles.unreadBadge,
+                  (vehicle?.unseen_applications_count ?? 0) > 99 && {
+                    borderRadius: 8,
+                    paddingHorizontal: 4,
+                  },
+                ]}
+              >
                 <Text style={styles.unreadBadgeText}>
                   {vehicle?.unseen_applications_count}
                 </Text>

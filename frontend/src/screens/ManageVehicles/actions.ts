@@ -19,7 +19,7 @@ export const activateVehicle = (params: {
   vehicle_id: string;
 }) => httpPost("/vehicles/activate_vehicle", params);
 
-export const deleteVehicle = (id: string) => httpDelete('/vehicles', id)
+export const deleteVehicle = (id: string) => httpDelete("/vehicles", id);
 
 type FetchPaymentsParams = {
   pageParam: number;
