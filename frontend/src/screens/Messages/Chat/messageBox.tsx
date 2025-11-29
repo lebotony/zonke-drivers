@@ -92,7 +92,7 @@ export const MessageBox = (props: MessageBoxProps) => {
         .receive("ok", (payload: { message: Partial<Message> }) => {
           updateAndMoveObjectToTop("threads", threadId as string, {
             last_message: payload.message,
-            messages: [...(thread?.messages ?? []), payload.message],
+            messages: [payload.message, ...(thread?.messages ?? [])],
           });
 
           reset();

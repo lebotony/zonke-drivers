@@ -2,9 +2,10 @@ defmodule Backend.Messenger.Messages do
   import Ecto.Query
 
   alias Ecto.Multi
-  alias Backend.Repo
+  alias Backend.{Repo, PaginateHelper}
   alias Backend.Messenger.Threads
   alias Backend.Messenger.Schemas.Message
+  alias Backend.Messenger.Queries.MessageBy
 
   require Logger
 
@@ -21,12 +22,14 @@ defmodule Backend.Messenger.Messages do
     |> format_message()
   end
 
-  def get_thread_messages(thread_id) do
-    from(m in Message,
-      where: m.thread_id == ^thread_id,
-      order_by: [asc: m.inserted_at]
-    )
-    |> Repo.all()
+  def get_thread_messages(params) do
+    data =
+      MessageBy.base_query()
+      |> where([m], m.thread_id == ^params.thread_id)
+      |> order_by([m], desc: m.inserted_at)
+      |> Repo.paginate(PaginateHelper.prep_params(params))
+
+    {:ok, data, PaginateHelper.prep_paginate(data)}
   end
 
   def update(%Message{} = message, params) do

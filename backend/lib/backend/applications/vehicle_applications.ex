@@ -72,7 +72,6 @@ defmodule Backend.Applications.VehicleApplications do
     data =
       VehicleApplicationBy.base_query()
       |> VehicleApplicationBy.by_vehicle(params.vehicle_id)
-      # |> build_sort_all()
       |> order_by([va], desc: va.inserted_at)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 

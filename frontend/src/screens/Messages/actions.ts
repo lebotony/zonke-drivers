@@ -20,8 +20,16 @@ export const fetchUserThreads = ({ pageParam = 1 }, filters) => {
     });
 };
 
-export const fetchThreadMessages = (threadId: string) =>
-  httpGet("/messages", { thread_id: threadId });
+export const fetchThreadMessages = ({ pageParam = 1, threadId }) =>
+  axios
+    .get(`${API_URL}/messages`, {
+      params: { page: pageParam, page_size: 15, thread_id: threadId },
+    })
+    .then((response) => {
+      console.log("MESSAGES MESSAGES MESSAGES", response.data);
+      return response.data;
+    })
+    .catch((err) => err);
 
 export const setSeenTrue = (threadId: string) =>
   httpPost("/threads/messages_seen", { thread_id: threadId });

@@ -191,7 +191,7 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
         {showMediaIcons && <PostMediaIcons />}
       </View>
       {errors?.[`${name}`] && (
-        <Text style={{ color: Colors.lightRed, marginLeft: 8 }}>
+        <Text style={{ color: Colors.lightRed, marginLeft: 8, marginTop: -10 }}>
           {(errors[`${name}`] as FieldError).message}
         </Text>
       )}

@@ -1,8 +1,11 @@
 defmodule BackendWeb.Messenger.MessageJSON do
   alias Backend.DateTimeHelper
 
-  def index(%{messages: messages}) do
-    for(message <- messages, do: show(%{message: message}))
+  def index(%{messages: messages, paginate: paginate}) do
+    %{
+      paginate: paginate,
+      data: for(message <- messages, do: show(%{message: message}))
+    }
   end
 
   def show(%{message: message}) do

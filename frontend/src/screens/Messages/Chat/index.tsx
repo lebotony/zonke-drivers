@@ -13,7 +13,7 @@ import { useLocalSearchParams } from "expo-router";
 import { useNavigation } from "expo-router";
 
 import { find, isEmpty } from "lodash";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
 
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Colors } from "@/constants/ui";
@@ -33,22 +33,33 @@ export const ChatScreen = () => {
 
   const { onSetCurrentThread, currentThreadId } = useMessages();
   const { getCachedData } = useCustomQuery();
-  const { threads, user, fetchedMsgThreadIds, threadChannels } = getCachedData([
+  const {
+    threads,
+    user,
+    fetchedMsgThreadIds,
+    messagesPagination,
+    threadChannels,
+  } = getCachedData([
     "threads",
     "user",
     "fetchedMsgThreadIds",
+    "messagesPagination",
     "threadChannels",
   ]);
 
   const queryClient = useQueryClient();
-  const flatListRef = useRef<FlatList>(null);
   const navigation = useNavigation();
-  const { updatePaginatedObject } = usePaginatedCache();
+  const {
+    updatePaginatedObject,
+    updateNestedPagination,
+    onFetchNestedPagination,
+    getUpdatedObjectSnapshot,
+  } = usePaginatedCache();
 
   const thread = find(threads, { id: threadId });
   const recipient = find(
     thread?.thread_participants,
-    (thd_part) => thd_part.participant.id !== user?.id,
+    (thd_part) => thd_part.participant.id !== user?.id
   )?.participant;
 
   const isNewThread = isEmpty(thread?.last_message);
@@ -58,9 +69,20 @@ export const ChatScreen = () => {
   // console.log("CHAT USER_ID: ", user?.id);
   // console.log("CHAT RECIPIENT_ID: ", recipient?.id);
 
-  const loadThreadMessages = (messages: Message[]) => {
+  const loadThreadMessages = (messagesObj: Record<string, any>) => {
+    updateNestedPagination(
+      threadId,
+      "messagesPagination",
+      messagesObj.paginate
+    );
+
+    const messages = messagesObj?.data ?? [];
+    const threadSnapshot = getUpdatedObjectSnapshot("threads", threadId);
+
     if (Array.isArray(messages) && !isEmpty(messages)) {
-      updatePaginatedObject("threads", messages[0].thread_id, { messages });
+      updatePaginatedObject("threads", messages[0].thread_id, {
+        messages: [...(threadSnapshot.messages ?? []), ...messages],
+      });
     }
   };
 
@@ -70,7 +92,7 @@ export const ChatScreen = () => {
       (fetchedMsgThreadIds: Thread["id"][]) => [
         ...(fetchedMsgThreadIds ?? []),
         id,
-      ],
+      ]
     );
 
   const onResetUnseenCount = (threadId: string) =>
@@ -90,23 +112,31 @@ export const ChatScreen = () => {
         throw new Error(err);
       });
 
-  useEffect(() => {
-    if (isNewThread) {
-      return;
-    }
+  const handleFetchMessages = () => {
+    if (!threadId) return;
 
-    if (!fetchedMsgThreadIds?.includes(threadId)) {
-      fetchThreadMessages(threadId).then((res: Message[]) => {
-        !isEmpty(res) && loadThreadMessages(res);
-        handleSetFetchedMsgThreadIds(threadId);
-      });
-    }
+    const { pageParam } = onFetchNestedPagination(
+      threadId,
+      "messagesPagination"
+    );
+
+    fetchThreadMessages({
+      pageParam,
+      threadId,
+    }).then((res) => {
+      !isEmpty(res) && loadThreadMessages(res);
+      handleSetFetchedMsgThreadIds(threadId);
+    });
+  };
+
+  useEffect(() => {
+    if (isNewThread) return;
+
+    if (!fetchedMsgThreadIds?.includes(threadId)) handleFetchMessages();
 
     if (thread?.unseen_msg_count ?? 0 > 0) {
       onResetUnseenCount(threadId);
     }
-
-    flatListRef.current?.scrollToEnd({ animated: false });
   }, []);
 
   const onGoBack = () => navigation.goBack();
@@ -141,10 +171,18 @@ export const ChatScreen = () => {
         keyboardVerticalOffset={IS_IOS ? 90 : 0}
       >
         <View style={styles.content}>
-          <Text style={styles.dateDivider}>Today</Text>
           <FlatList
-            ref={flatListRef}
             data={thread?.messages}
+            inverted
+            onEndReached={() => {
+              const paginationObj = find(messagesPagination, {
+                id: threadId,
+              })?.paginate;
+
+              if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
+                handleFetchMessages();
+              }
+            }}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => {
               const isLast = index === (thread?.messages.length ?? 0) - 1;
@@ -159,9 +197,6 @@ export const ChatScreen = () => {
               );
             }}
             showsVerticalScrollIndicator={false}
-            onContentSizeChange={() =>
-              flatListRef.current?.scrollToEnd({ animated: true })
-            }
           />
         </View>
 
