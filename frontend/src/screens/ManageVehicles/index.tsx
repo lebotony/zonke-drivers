@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { FlatList, SafeAreaView } from "react-native";
 import { Text } from "react-native-paper";
 
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { isEmpty } from "lodash";
 
 import { NoData } from "@/src/components/NoData";
@@ -12,10 +12,16 @@ import { Card } from "./scene/ui/card";
 import { styles } from "./styles";
 import { fetchUserVehicles } from "./actions";
 import { VehicleDriverModal } from "./scene/ui/vehicleDriverModal";
+import { useCustomQuery } from "@/src/useQueryContext";
 
 export const ManageVehicles = () => {
   const [showVehicleDriverModal, setShowVehicleDriverModal] = useState(false);
   const [vehicleId, setVehicleId] = useState<string | undefined>(undefined);
+
+  const queryClient = useQueryClient();
+
+  const { getCachedData } = useCustomQuery();
+  const { fetchedOnMount } = getCachedData(["fetchedOnMount"]);
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useInfiniteQuery({
@@ -28,9 +34,13 @@ export const ManageVehicles = () => {
         return page < max_page ? page + 1 : undefined;
       },
       initialPageParam: 1,
+      refetchOnMount: fetchedOnMount ? undefined : "always",
     });
 
   const userVehicles = data?.pages?.flatMap((page) => page?.data) ?? [];
+
+  if (!fetchedOnMount)
+    return queryClient.setQueryData(["fetchedOnMount"], true);
 
   return (
     <SafeAreaView style={styles.container}>

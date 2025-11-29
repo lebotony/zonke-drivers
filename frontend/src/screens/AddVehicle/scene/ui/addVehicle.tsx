@@ -88,6 +88,7 @@ export const AddVehicle = () => {
   } = useForm<AddVehicleFormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: formValues,
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -196,7 +197,7 @@ export const AddVehicle = () => {
       undefined,
       updateVehicleAsset,
       vehicleId,
-      updatePaginatedAsset,
+      updatePaginatedAsset
     );
 
   const handleSetActive = () =>
@@ -207,7 +208,7 @@ export const AddVehicle = () => {
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true,
+          true
         );
 
         updatePaginatedObject("userVehicles", vehicleId, {

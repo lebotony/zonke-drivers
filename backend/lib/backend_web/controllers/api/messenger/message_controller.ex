@@ -19,9 +19,9 @@ defmodule BackendWeb.Messenger.MessageController do
     end
   end
 
-  def get_thread_messages(conn, %{thread_id: thread_id}, _session) do
-    with messages when is_list(messages) <- Messages.get_thread_messages(thread_id) do
-      render(conn, :index, %{messages: messages})
+  def get_thread_messages(conn, params, _session) do
+    with {:ok, messages, paginate} <- Messages.get_thread_messages(params) do
+      render(conn, :index, %{messages: messages, paginate: paginate})
     end
   end
 end

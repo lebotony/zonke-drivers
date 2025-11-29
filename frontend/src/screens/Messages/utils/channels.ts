@@ -103,8 +103,8 @@ export const newMessage = (
       : thread.unseen_msg_count,
     last_message: payload,
     messages: [
-      ...baseMessages,
       isMessageFromActiveThread ? { ...payload, seen: true } : payload,
+      ...baseMessages,
     ],
   });
 };
