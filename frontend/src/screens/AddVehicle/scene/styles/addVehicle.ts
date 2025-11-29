@@ -7,6 +7,7 @@ import { topOffset } from "@/src/components/appStyles";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: Colors.bg,
     ...topOffset,
   },
   headerWrapper: {
