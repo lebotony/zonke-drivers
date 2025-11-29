@@ -60,6 +60,7 @@ export const DropdownInput = <T extends FieldValues>({
 }: DropdownInputProps<T>) => {
   const [open, setOpen] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [keyboardTopPosition, setKeyboardTopPosition] = useState(0);
   const [query, setQuery] = useState(value || "");
   const [results, setResults] = useState<LocationType[]>([]);
 
@@ -74,6 +75,7 @@ export const DropdownInput = <T extends FieldValues>({
   const [layout, setLayout] = useState({
     dropdownTop: 0,
     dropdownLeft: 0,
+    inputY: 0,
     inputWidth: 0,
     inputHeight: 0,
     dropdownWidth: 0,
@@ -99,6 +101,7 @@ export const DropdownInput = <T extends FieldValues>({
             ...prev,
             dropdownTop: pageY + height,
             dropdownLeft: pageX,
+            inputY: pageY,
             inputWidth: width,
             inputHeight: height,
             freeHeight: screenHeight - (pageY + height),
@@ -134,6 +137,11 @@ export const DropdownInput = <T extends FieldValues>({
       Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
       (e) => {
         setKeyboardHeight(e.endCoordinates.height);
+        const screenHeight = Dimensions.get("window").height;
+        const keyboardTopPosition = screenHeight - e.endCoordinates.height;
+        setKeyboardTopPosition(keyboardTopPosition);
+        measureInputPosition();
+
         if (open) measureInputPosition();
       },
     );
@@ -174,7 +182,7 @@ export const DropdownInput = <T extends FieldValues>({
   useEffect(() => {
     measureCaretWidth();
     measureInputPosition();
-  }, [layout.dropdownHeight]);
+  }, [layout.dropdownHeight, layout.inputHeight]);
 
   useEffect(() => {
     return () => {
@@ -215,7 +223,9 @@ export const DropdownInput = <T extends FieldValues>({
       break;
   }
 
-  const showAbove = layout.freeHeight <= 225;
+  const showAbove =
+    layout.freeHeight <= 225 ||
+    (keyboardHeight > 0 && keyboardTopPosition - layout.inputY < 70);
   const dropdownPositionTop = showAbove
     ? layout.dropdownTop - (layout.dropdownHeight + layout.inputHeight) - 10
     : layout.dropdownTop + 10;
@@ -242,6 +252,7 @@ export const DropdownInput = <T extends FieldValues>({
         <View style={styles.before} />
         <TextInput
           value={query}
+          onFocus={() => setOpen(true)}
           onChangeText={handleChange}
           // numberOfLines={1}
           multiline
@@ -293,7 +304,7 @@ export const DropdownInput = <T extends FieldValues>({
                     : layout.inputWidth + layout.freeWidth,
                 maxHeight: showAbove
                   ? "auto"
-                  : Math.max(layout.freeHeight - keyboardHeight - 50, 0),
+                  : Math.max(layout.freeHeight - 50, 0),
               },
               menuStyle,
             ]}
