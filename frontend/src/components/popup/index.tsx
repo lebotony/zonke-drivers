@@ -109,7 +109,7 @@ export const PopupMenu = ({
             poupBtnWidth: width,
             popupBtnHeight: height,
             freeHeightBelow: screenHeight - (pageY + height),
-            freeHeightAbove: pageY - 20,
+            freeHeightAbove: pageY - 30,
             freeWidth: Math.round(screenWidth - width || 0),
           }));
 

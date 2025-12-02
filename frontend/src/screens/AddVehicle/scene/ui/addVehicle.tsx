@@ -197,7 +197,7 @@ export const AddVehicle = () => {
       undefined,
       updateVehicleAsset,
       vehicleId,
-      updatePaginatedAsset
+      updatePaginatedAsset,
     );
 
   const handleSetActive = () =>
@@ -208,7 +208,7 @@ export const AddVehicle = () => {
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true
+          true,
         );
 
         updatePaginatedObject("userVehicles", vehicleId, {
@@ -226,6 +226,11 @@ export const AddVehicle = () => {
         }
       });
 
+  console.log(
+    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+    vehicle,
+  );
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -234,6 +239,7 @@ export const AddVehicle = () => {
         <ScrollView
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           contentContainerStyle={
             Platform.OS === "android" && {
               paddingBottom: keyboardVisible ? keyboardHeight : 0,
@@ -265,6 +271,31 @@ export const AddVehicle = () => {
             {!isVehiclePic && (
               <Text style={styles.imageText}>Add Vehicle image</Text>
             )}
+          </View>
+
+          <Text style={styles.addVehicleSubText}>
+            {" "}
+            Current user of your vehicle
+          </Text>
+          <View style={styles.card}>
+            <View style={styles.profileWrapper}>
+              <Image
+                source={vehicleImage}
+                style={styles.iconWrapper}
+                // coontentFit="contain"
+              />
+
+              <View style={styles.profileInfo}>
+                <Text style={styles.profileName}>John Doe</Text>
+                <Text style={styles.age}>(24)</Text>
+              </View>
+            </View>
+            <TouchableOpacity
+              style={styles.addNewBtn}
+              onPress={() => router.push(`/vehicleDriverSearch/${vehicle?.id}`)}
+            >
+              <Text style={styles.addNewText}>Add new</Text>
+            </TouchableOpacity>
           </View>
 
           <Text style={styles.addVehicleSubText}>

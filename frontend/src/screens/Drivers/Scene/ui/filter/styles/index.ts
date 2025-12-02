@@ -17,7 +17,6 @@ export const styles = StyleSheet.create({
   viewAll: {
     color: Colors.mrDBlue,
   },
-  wrapper: {},
   header: {
     flexDirection: "row",
     justifyContent: "center",

@@ -59,6 +59,28 @@ export const styles = StyleSheet.create({
     color: Colors.mediumGrey,
     marginBottom: 12,
   },
+  profileWrapper: {
+    flexDirection: "row",
+  },
+  profileInfo: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+  },
+  age: {
+    fontSize: 12,
+  },
+  addNewBtn: {
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 10,
+    backgroundColor: Colors.lightGreen,
+  },
+  addNewText: {
+    color: Colors.white,
+  },
+
   card: {
     backgroundColor: Colors.white,
     marginHorizontal: 13,
@@ -66,6 +88,7 @@ export const styles = StyleSheet.create({
     padding: 12,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     marginBottom: 10,
     ...shadowStyles,
   },

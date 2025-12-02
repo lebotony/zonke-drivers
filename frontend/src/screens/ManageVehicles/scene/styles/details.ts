@@ -67,4 +67,13 @@ export const styles = StyleSheet.create({
     fontSize: 14,
     paddingRight: 12,
   },
+  emptyState: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyStateTitle: {
+    fontSize: 18,
+    color: Colors.darkGrey,
+  },
 });

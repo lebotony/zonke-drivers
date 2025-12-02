@@ -9,6 +9,7 @@ import {
 import { Text } from "react-native-paper";
 
 import RangeSlider from "rn-range-slider";
+
 import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 import { PopupMenu } from "@/src/components/popup";
