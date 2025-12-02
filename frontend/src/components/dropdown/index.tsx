@@ -311,6 +311,7 @@ export const DropdownInput = <T extends FieldValues>({
           >
             <FlatList
               data={isLocation ? results : options}
+              keyboardShouldPersistTaps="handled"
               keyExtractor={(item, index) => `${item}-${index}`}
               renderItem={({ item }) => (
                 <Pressable

@@ -2,7 +2,9 @@ import { useEffect } from "react";
 import { View, FlatList } from "react-native";
 import { Text } from "react-native-paper";
 import { find } from "lodash";
+
 import { useQueryClient } from "@tanstack/react-query";
+import { Ionicons } from "@expo/vector-icons";
 
 import { CustomButton } from "@/src/components/elements/button";
 import { useCustomQuery } from "@/src/useQueryContext";
@@ -107,22 +109,29 @@ export const Comments = (props: CommentsProps) => {
         <Text style={styles.addCommentText}>+ ADD A COMMENT</Text>
       </CustomButton>
 
-      <FlatList
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        data={vehicleDriver?.comments}
-        onEndReached={() => {
-          const paginationObj = find(commentsPagination, {
-            id: vehicleDriverKey,
-          })?.paginate;
+      {vehicleDriver?.comments ? (
+        <FlatList
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          data={vehicleDriver?.comments}
+          onEndReached={() => {
+            const paginationObj = find(commentsPagination, {
+              id: vehicleDriverKey,
+            })?.paginate;
 
-          if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
-            handleFetchComments();
-          }
-        }}
-        keyExtractor={(v, index) => String(index)}
-        renderItem={({ item }) => <Comment comment={item} />}
-      />
+            if ((paginationObj?.page ?? 0) < paginationObj?.max_page) {
+              handleFetchComments();
+            }
+          }}
+          keyExtractor={(v, index) => String(index)}
+          renderItem={({ item }) => <Comment comment={item} />}
+        />
+      ) : (
+        <View style={styles.emptyState}>
+          <Ionicons name="card-outline" size={64} color="#ddd" />
+          <Text style={styles.emptyStateTitle}>No comments added yet</Text>
+        </View>
+      )}
     </View>
   );
 };

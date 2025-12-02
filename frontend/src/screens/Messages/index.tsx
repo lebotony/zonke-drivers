@@ -65,6 +65,7 @@ export const MessagesScreen = () => {
           style={styles.messageList}
           data={threads as Thread[]}
           keyExtractor={(thread) => thread?.id}
+          keyboardShouldPersistTaps="handled"
           onEndReached={() => {
             if (hasNextPage && !isFetchingNextPage) {
               fetchNextPage();

@@ -220,6 +220,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
     >
       <ScrollView
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
         contentContainerStyle={
           Platform.OS === "android" && {
             paddingBottom: keyboardVisible ? keyboardHeight : 0,

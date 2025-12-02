@@ -118,6 +118,7 @@ export const LoginScreen = (props: LoginScreenProps) => {
       >
         <ScrollView
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
           contentContainerStyle={
             isSignUp && { paddingBottom: keyboardVisible ? keyboardHeight : 0 }
           }

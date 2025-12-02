@@ -217,6 +217,8 @@ export const Scene = () => {
               data={drivers}
               onScroll={onScroll}
               scrollEventThrottle={scrollEventThrottle}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag"
               onEndReached={() => {
                 if (hasNextPage && !isFetchingNextPage) {
                   fetchNextPage();
