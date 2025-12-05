@@ -57,16 +57,23 @@ export const styles = StyleSheet.create({
     fontWeight: 500,
     paddingHorizontal: 14,
     color: Colors.mediumGrey,
-    marginBottom: 12,
+    marginBottom: 8,
+  },
+  driverContainer: {
+    marginBottom: 14,
   },
   profileWrapper: {
     flexDirection: "row",
+    gap: 14,
   },
   profileInfo: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
+  },
+  profileName: {
+    fontSize: 15,
   },
   age: {
     fontSize: 12,
@@ -92,7 +99,7 @@ export const styles = StyleSheet.create({
     marginBottom: 10,
     ...shadowStyles,
   },
-  iconWrapper: {
+  driverImage: {
     width: 36,
     height: 36,
     borderRadius: 18,

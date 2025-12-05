@@ -1,7 +1,6 @@
-// ...existing code...
 import React from "react";
 import { Text } from "react-native-paper";
-import { View, Pressable } from "react-native";
+import { View, TouchableOpacity } from "react-native";
 
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -35,12 +34,13 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
         </View>
 
         <View style={styles.rightInfo}>
-          <Pressable
+          <TouchableOpacity
+            activeOpacity={0.5}
             style={styles.iconWrapper}
             onPress={() => router.push(`/vehicles/${vehicle.id}`)}
           >
             <Ionicons name="arrow-forward" size={20} color={Colors.white} />
-          </Pressable>
+          </TouchableOpacity>
 
           {/* <View style={styles.rating}>
             <AntDesign name="star" size={18} color={Colors.lightYellow} />
@@ -49,7 +49,8 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
         </View>
       </View>
 
-      <Pressable
+      <TouchableOpacity
+        activeOpacity={0.6}
         style={styles.imgContainer}
         onPress={() => router.push(`/vehicles/${vehicle?.id}`)}
       >
@@ -60,7 +61,7 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
         />
         <View style={styles.leftFlap} />
         <View style={styles.rightFlap} />
-      </Pressable>
+      </TouchableOpacity>
 
       <View style={styles.footer}></View>
     </View>

@@ -326,7 +326,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
                 name="dob"
                 inputIcon="event"
                 control={control}
-                placeholder="20/10/2001"
+                placeholder="2001-10-20"
                 errors={errors}
                 required
               />

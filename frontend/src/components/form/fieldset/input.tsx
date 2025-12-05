@@ -180,7 +180,10 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
               textContentType="none"
               importantForAutofill="no"
               {...(showPassword && { secureTextEntry: true })}
-              {...(type === "text" && { multiline: true, numberOfLines: 10 })}
+              {...(type === "text" && {
+                multiline: true,
+                numberOfLines: numberOfLines || 10,
+              })}
               {...(type === "dropdown" && {
                 onTouchStart: () => setDisplayDropdown(!displayDropdown),
               })}

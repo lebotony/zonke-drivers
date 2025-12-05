@@ -35,6 +35,7 @@ export const styles = StyleSheet.create({
   },
   textArea: {
     minHeight: 65,
+    flex: 1,
     textAlignVertical: "top",
     includeFontPadding: false,
     paddingTop: 0,

@@ -12,7 +12,7 @@ import { Text } from "react-native-paper";
 
 import { Image } from "expo-image";
 import { router, useLocalSearchParams } from "expo-router";
-import { AntDesign } from "@expo/vector-icons";
+import { AntDesign, MaterialIcons } from "@expo/vector-icons";
 
 import { find, isEmpty, isEqual } from "lodash";
 
@@ -226,10 +226,7 @@ export const AddVehicle = () => {
         }
       });
 
-  console.log(
-    "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-    vehicle,
-  );
+  const driver = !isNewVehicle && vehicle?.vehicle_drivers[0]?.driver;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -273,30 +270,50 @@ export const AddVehicle = () => {
             )}
           </View>
 
-          <Text style={styles.addVehicleSubText}>
-            {" "}
-            Current user of your vehicle
-          </Text>
-          <View style={styles.card}>
-            <View style={styles.profileWrapper}>
-              <Image
-                source={vehicleImage}
-                style={styles.iconWrapper}
-                // coontentFit="contain"
-              />
+          {!isNewVehicle && (
+            <View style={styles.driverContainer}>
+              <Text style={styles.addVehicleSubText}>
+                Current user of your vehicle
+              </Text>
+              <View style={styles.card}>
+                <View style={styles.profileWrapper}>
+                  {driver ? (
+                    <Image
+                      source={driver?.asset_url}
+                      style={styles.driverImage}
+                    />
+                  ) : (
+                    <MaterialIcons
+                      name="person-outline"
+                      size={30}
+                      color={Colors.grey}
+                    />
+                  )}
 
-              <View style={styles.profileInfo}>
-                <Text style={styles.profileName}>John Doe</Text>
-                <Text style={styles.age}>(24)</Text>
+                  <View style={styles.profileInfo}>
+                    <Text
+                      style={[
+                        styles.profileName,
+                        !driver && { color: Colors.grey },
+                      ]}
+                    >
+                      {driver
+                        ? driver?.first_name + " " + driver?.last_name
+                        : "No driver assigned"}
+                    </Text>
+                  </View>
+                </View>
+                <TouchableOpacity
+                  style={styles.addNewBtn}
+                  onPress={() =>
+                    router.push(`/vehicleDriverSearch/${vehicle?.id}`)
+                  }
+                >
+                  <Text style={styles.addNewText}>Add new</Text>
+                </TouchableOpacity>
               </View>
             </View>
-            <TouchableOpacity
-              style={styles.addNewBtn}
-              onPress={() => router.push(`/vehicleDriverSearch/${vehicle?.id}`)}
-            >
-              <Text style={styles.addNewText}>Add new</Text>
-            </TouchableOpacity>
-          </View>
+          )}
 
           <Text style={styles.addVehicleSubText}>
             {`${vehicle ? "Edit" : "Add"} your vehicle details below`}
