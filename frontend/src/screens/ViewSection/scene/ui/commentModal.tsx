@@ -21,13 +21,13 @@ type CommentFormValues = z.infer<typeof CommentSchema>;
 type CommentModalProps = {
   setShowCommentModal: () => void;
   driverId: string;
-  vehicleId: string;
+  vehicle: Vehicle;
 };
 
 export const CommentModal = ({
   setShowCommentModal,
   driverId,
-  vehicleId,
+  vehicle,
 }: CommentModalProps) => {
   const [commentHeight, setCommentHeight] = useState(0);
   const inputRef = useRef<TextInput>(null);
@@ -61,6 +61,12 @@ export const CommentModal = ({
       hideSub.remove();
     };
   }, []);
+
+  const vehicleId = vehicle.id;
+
+  const vehicleDriver = vehicle?.vehicle_drivers?.find(
+    (vd: VehicleDriver) => vd.driver.id === driverId,
+  )?.driver;
 
   const handleSubmitComment = () => {
     handleSubmit((formData) => {
@@ -103,7 +109,10 @@ export const CommentModal = ({
         <Text style={styles.title}>Add Comment</Text>
 
         <View style={[styles.commentBox]}>
-          <Text style={styles.username}>Jabulani Nkomo</Text>
+          <Text style={styles.username}>
+            Add comment for{" "}
+            {vehicleDriver?.first_name + " " + vehicleDriver?.last_name}
+          </Text>
 
           <View style={[styles.comment]}>
             <TextInput
