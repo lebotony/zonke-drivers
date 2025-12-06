@@ -9,7 +9,7 @@ alias Backend.Messenger.Threads
 alias Backend.Reviews.{Review, Reply}
 alias Backend.Tags.Tag
 alias Backend.TestExample.Participant
-alias Backend.Vehicles.{Vehicle, VehicleDriver, Payment}
+alias Backend.Vehicles.{Vehicle, VehicleDriver, Payment, Payments}
 alias Backend.Drivers.Driver
 alias Backend.Assets.Assets
 alias Backend.Applications.VehicleApplication
@@ -161,10 +161,10 @@ vehicles =
             model: Enum.random(vehicle_models),
             manual: Enum.random([true, false]),
             fuel_type: Enum.random(fuel_types),
-            model_year: Enum.random(2005..2024),
             engine_capacity: 1.2,
             passengers: Enum.random(2..40),
             description: "Has suspension problems",
+            payments_per_month: Enum.random(1..4),
             active: true,
             mileage: Enum.random(10000..100000),
             price_fixed: %{currency: "ZAR", value: Enum.random(20..60)},
@@ -321,45 +321,91 @@ vehicle_applications =
 
 ######################################################################################################
 
-Logger.info("Creating vehicle_drivers")
+Logger.info("Creating vehicle_drivers with historical assignments and payments")
 
 vehicle_drivers =
-  Enum.map(Enum.zip(Enum.take(drivers, 10), Enum.take(vehicles, 10)), fn {driver, vehicle} ->
-      {:ok, vehicle_driver} =
-        %VehicleDriver{
-          accidents: Enum.random(1..3),
-          vehicle_id: vehicle.id,
-          driver_id: driver.id,
-          active: true,
-        }
-        |> Repo.insert()
+  Enum.flat_map(Enum.zip(Enum.take(drivers, 20), Enum.take(vehicles, 20)), fn {driver, vehicle} ->
+    vd_1_base_time =
+      NaiveDateTime.utc_now()
+      |> NaiveDateTime.add(-150 * 86400)
+      |> NaiveDateTime.truncate(:second)
 
-      vehicle_driver
+    vd_1_updated_at =
+      NaiveDateTime.utc_now()
+      |> NaiveDateTime.add(-56 * 86400)
+      |> NaiveDateTime.truncate(:second)
+
+    vd_2_base_time =
+      NaiveDateTime.utc_now()
+      |> NaiveDateTime.add(-53 * 86400)
+      |> NaiveDateTime.truncate(:second)
+
+    {:ok, vehicle_driver_1} =
+      %VehicleDriver{
+        accidents: Enum.random(1..5),
+        vehicle_id: vehicle.id,
+        driver_id: driver.id,
+        active: true,
+        inserted_at: vd_1_base_time,
+        updated_at: vd_1_updated_at
+      }
+      |> Repo.insert()
+
+    {:ok, vehicle_driver_2} =
+      %VehicleDriver{
+        accidents: Enum.random(1..5),
+        vehicle_id: vehicle.id,
+        driver_id: driver.id,
+        active: true,
+        inserted_at: vd_2_base_time
+      }
+      |> Repo.insert()
+
+    # PAYMENTS FOR VEHICLE_DRIVER_1
+    Enum.each([0, 7, 14], fn offset ->
+      Payments.create(%{
+        vehicle_driver_id: vehicle_driver_1.id,
+        price_fixed: %{currency: "ZAR", value: 100},
+        inserted_at: NaiveDateTime.add(vd_1_base_time, offset * 86400)
+      })
     end)
 
-######################################################################################################
-
-Logger.info("Creating payments")
-
-payments =
-  Enum.flat_map(Enum.zip(vehicle_drivers, 1..10), fn {vehicle_driver, price} ->
-    Enum.map(1..20, fn v ->
-      inserted_at =
-        NaiveDateTime.utc_now()
-        |> Timex.shift(minutes: -(v * 1300))
-        |> NaiveDateTime.truncate(:second)
-
-      {:ok, payment} =
-        %Payment{
-          price_fixed: %{currency: "dollars", value: price * v},
-          vehicle_driver_id: vehicle_driver.id,
-          inserted_at: inserted_at
-        }
-        |> Repo.insert()
-
-      payment
+    Enum.each([28, 35, 42, 49], fn offset ->
+      Payments.create(%{
+        vehicle_driver_id: vehicle_driver_1.id,
+        price_fixed: %{currency: "ZAR", value: 100},
+        inserted_at: NaiveDateTime.add(vd_1_base_time, offset * 86400)
+      })
     end)
+
+    Enum.each([56, 70], fn offset ->
+      Payments.create(%{
+        vehicle_driver_id: vehicle_driver_1.id,
+        price_fixed: %{currency: "ZAR", value: 100},
+        inserted_at: NaiveDateTime.add(vd_1_base_time, offset * 86400)
+      })
+    end)
+
+    # PAYMENTS FOR VEHICLE_DRIVER_2
+    Enum.each([13, 26], fn offset ->
+      Payments.create(%{
+        vehicle_driver_id: vehicle_driver_2.id,
+        price_fixed: %{currency: "ZAR", value: 100},
+        inserted_at: NaiveDateTime.add(vd_2_base_time, offset * 86400)
+      })
+    end)
+
+    Enum.each([42], fn offset ->
+      Payments.create(%{
+        vehicle_driver_id: vehicle_driver_2.id,
+        price_fixed: %{currency: "ZAR", value: 100},
+        inserted_at: NaiveDateTime.add(vd_2_base_time, offset * 86400)
+      })
+    end)
+
+    [vehicle_driver_1, vehicle_driver_2]
   end)
+
 ######################################################################################################
 
 Logger.info("Creating driver reviews")
@@ -472,7 +518,6 @@ Logger.info("Created: #{length(vehicle_applications)} vehicle_applications")
 # Logger.info("Created: #{length(posts)} posts")
 Logger.info("Created: #{length(vehicles)} vehicles")
 Logger.info("Created: #{length(drivers)} drivers")
-Logger.info("Created: #{length(vehicle_drivers)} vehicle_drivers")
-Logger.info("Created: #{length(payments)} payments")
+Logger.info("Created: #{length(vehicle_drivers)} vehicle_drivers with historical periods and payments")
 Logger.info("Created: #{length(driver_comments)} driver_comments")
 Logger.info("Created: #{length(threads)} threads, #{length(messages)} messages")

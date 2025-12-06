@@ -22,6 +22,7 @@ defmodule Backend.Vehicles.Vehicle do
     :brand,
     :model,
     :fuel_type,
+    :payments_per_month,
     :manual
   ]
   @embeds [:price_fixed]
@@ -39,6 +40,7 @@ defmodule Backend.Vehicles.Vehicle do
     field(:engine_capacity, :float)
     field(:passengers, :integer)
     field(:model_year, :integer)
+    field(:payments_per_month, :integer)
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
 
     embeds_one(:price_fixed, PriceFixed, on_replace: :update)

@@ -18,7 +18,15 @@ const addFormDef = [
     label: "Rent per week",
     icon: "monetization-on",
     iconSize: 22,
-    required: true,
+    decimalPad: true,
+  },
+  {
+    name: "payments_per_month",
+    placeholder: "4",
+    label: "No. of Payments per month",
+    icon: "monetization-on",
+    iconSize: 22,
+    decimalPad: true,
   },
   {
     name: "model",
@@ -26,14 +34,14 @@ const addFormDef = [
     label: "Car Model",
     icon: "directions-car",
     iconSize: 22,
-    required: true,
   },
   {
     name: "mileage",
-    placeholder: "10 000km",
-    label: "Car Mileage",
+    placeholder: "10 000",
+    label: "Car Mileage (km)",
     icon: "place",
     iconSize: 22,
+    decimalPad: true,
   },
   {
     name: "engine_capacity",
@@ -41,6 +49,7 @@ const addFormDef = [
     label: "Engine Capacity",
     icon: "local-gas-station",
     iconSize: 22,
+    decimalPad: true,
   },
   {
     name: "passengers",
@@ -48,6 +57,7 @@ const addFormDef = [
     label: "Passengers",
     icon: "people",
     iconSize: 22,
+    decimalPad: true,
   },
 ];
 
@@ -68,6 +78,7 @@ export const AddVehicleForm = (props: AddVehicleFormProps) => {
           errors={errors}
           customStyles={{ flex: 1 }}
           required={item.required}
+          decimalPad={item.decimalPad}
         />
       ))}
     </View>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import {
   View,
   Image,
@@ -68,6 +68,8 @@ export const ChatScreen = () => {
 
   // console.log("CHAT USER_ID: ", user?.id);
   // console.log("CHAT RECIPIENT_ID: ", recipient?.id);
+  // console.log("THREAD THREAD: ", thread);
+  // console.log("FETCHED FETCHED: ", fetchedMsgThreadIds);
 
   const loadThreadMessages = (messagesObj: Record<string, any>) => {
     updateNestedPagination(
@@ -80,9 +82,21 @@ export const ChatScreen = () => {
     const threadSnapshot = getUpdatedObjectSnapshot("threads", threadId);
 
     if (Array.isArray(messages) && !isEmpty(messages)) {
-      updatePaginatedObject("threads", messages[0].thread_id, {
-        messages: [...(threadSnapshot.messages ?? []), ...messages],
-      });
+      const existingMessages = threadSnapshot?.messages ?? [];
+
+      const existingIds = new Set(existingMessages.map((m: any) => m.id));
+
+      // Filter out duplicates
+      const newMessages = messages.filter(
+        (msg: any) => !existingIds.has(msg.id)
+      );
+
+      // Only update if there are non-duplicate messages
+      if (newMessages.length > 0) {
+        updatePaginatedObject("threads", messages[0].thread_id, {
+          messages: [...existingMessages, ...newMessages],
+        });
+      }
     }
   };
 

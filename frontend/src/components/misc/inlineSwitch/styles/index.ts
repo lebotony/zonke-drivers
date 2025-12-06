@@ -2,22 +2,19 @@ import { Colors } from "../../../../../constants/ui";
 import { StyleSheet } from "react-native";
 
 export const styles = StyleSheet.create({
+  container: {
+    position: "relative",
+    flexDirection: "row",
+  },
   switch: {
     position: "relative",
     flexDirection: "row",
     justifyContent: "space-between",
     paddingHorizontal: 15,
     paddingVertical: 5,
-    gap: 30,
+    gap: 15,
+    flex: 1,
     backgroundColor: Colors.bg,
-    shadowColor: Colors.darkGrey,
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.19,
-    shadowRadius: 5.62,
-    elevation: 2,
   },
   item: {
     borderRadius: 10,

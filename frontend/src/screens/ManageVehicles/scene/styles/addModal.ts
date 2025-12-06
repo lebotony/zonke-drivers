@@ -23,12 +23,13 @@ export const styles = StyleSheet.create({
   },
   inputWrapper: {
     flexDirection: "row",
+    alignItems: 'center'
   },
   textInput: {
     outlineWidth: 0,
-    lineHeight: 20,
     color: Colors.black,
-    fontSize: 14,
+    fontSize: 16,
     paddingRight: 12,
+    width: 40,
   },
 });

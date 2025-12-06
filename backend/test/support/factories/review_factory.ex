@@ -14,8 +14,7 @@ defmodule Backend.ReviewFactory do
           # likes: length(users_liked_array),
           # users_liked: users_liked_array,
           author: build(:user),
-          driver: build(:driver),
-          vehicle: build(:vehicle)
+          driver: build(:driver)
         }
       end
     end

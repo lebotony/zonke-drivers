@@ -28,7 +28,8 @@ defmodule Backend.Vehicles.Vehicles do
 
   def get_vehicle_asset(vehicle_id) do
     case vehicle_id do
-      nil -> nil
+      nil ->
+        nil
 
       _ ->
         from(a in Asset,
@@ -38,7 +39,7 @@ defmodule Backend.Vehicles.Vehicles do
     end
   end
 
-  def create_vehicle_asset(params, session) do
+  def create_vehicle_and_asset(params, session) do
     case create(%{}, session) do
       {:ok, vehicle} ->
         Map.put(params, :vehicle_id, vehicle.id)
@@ -52,17 +53,24 @@ defmodule Backend.Vehicles.Vehicles do
   def update_vehicle_asset(params, session) do
     vehicle_id = Map.get(params, :vehicle_id, nil)
 
-    case get_vehicle_asset(vehicle_id) do
+    case vehicle_id do
       nil ->
-        create_vehicle_asset(params, session)
+        create_vehicle_and_asset(params, session)
 
-      %Asset{} = asset ->
-        Assets.update_asset_with_file(asset, Map.drop(params, :vehicle_id))
+      id when is_binary(id) ->
+        case get_vehicle_asset(vehicle_id) do
+          nil ->
+            Map.put(params, :vehicle_id, vehicle_id)
+            |> Assets.upload_and_save()
+
+          %Asset{} = asset ->
+            Assets.update_asset_with_file(asset, Map.drop(params, [:vehicle_id]))
+        end
     end
   end
 
   def activate_vehicle(%{vehicle_id: vehicle_id, active: active}) do
-    case Repo.get(Vehicle, vehicle_id) do
+    case Repo.get(Vehicle, vehicle_id) |> Repo.preload(:asset) do
       nil ->
         {:error, :not_found}
 
@@ -70,6 +78,9 @@ defmodule Backend.Vehicles.Vehicles do
         {:error, :missing_fields}
 
       %Vehicle{price_fixed: nil} ->
+        {:error, :missing_fields}
+
+      %Vehicle{asset: nil} = vehicle ->
         {:error, :missing_fields}
 
       %Vehicle{} = vehicle ->
@@ -157,6 +168,7 @@ defmodule Backend.Vehicles.Vehicles do
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_user(user_id)
+      |> distinct([v], v.id)
       |> join(:left, [v], vd in VehicleDriver, on: v.id == vd.vehicle_id and vd.active == true)
       |> join(:left_lateral, [v], uc in subquery(unseen_va_count_subquery),
         as: :unseen_count,
@@ -166,6 +178,7 @@ defmodule Backend.Vehicles.Vehicles do
         v
         | unseen_applications_count: coalesce(uc.count, 0)
       })
+      |> order_by([vehicle: v], asc: v.inserted_at)
       |> preload([
         :asset,
         vehicle_drivers:

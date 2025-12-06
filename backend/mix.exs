@@ -62,7 +62,8 @@ defmodule Backend.MixProject do
       {:ex_aws_s3, "~> 2.5"},
       {:hackney, "~> 1.18"},
       {:sweet_xml, "~> 0.7"},
-      {:briefly, "~> 0.5", only: :test}
+      {:briefly, "~> 0.5", only: :test},
+      {:oban, "~> 2.17"}
     ]
   end
 

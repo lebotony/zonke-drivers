@@ -17,7 +17,8 @@ defmodule Backend.Drivers.Driver do
     :dob,
     :platforms,
     :licences,
-    :location
+    :location,
+    :rating
   ]
   @all_fields @required_fields ++ @optional_fields
 
@@ -31,8 +32,8 @@ defmodule Backend.Drivers.Driver do
     field(:licences, {:array, :string})
     field(:location, :map)
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
+    field(:rating, :float)
 
-    field(:rating, :float, virtual: true)
     field(:booking_count, :float, virtual: true)
     field(:rank_value, :decimal, virtual: true)
     field(:email, :string, virtual: true)

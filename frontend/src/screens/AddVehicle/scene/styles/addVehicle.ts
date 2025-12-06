@@ -118,10 +118,15 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  nbActivate: {
+    marginLeft: 17,
+    color: Colors.lightRed
+  },
   btnStyles: {
     flexGrow: 1,
     marginBottom: 20,
     marginTop: 10,
     marginHorizontal: 15,
+    paddingVertical: 10
   },
 });

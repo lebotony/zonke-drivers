@@ -10,7 +10,7 @@ export const styles = StyleSheet.create({
     marginHorizontal: 13,
     backgroundColor: Colors.white,
     padding: 20,
-    borderRadius: 18,
+    borderRadius: 10,
     marginBottom: 20,
     ...shadowStyles,
   },

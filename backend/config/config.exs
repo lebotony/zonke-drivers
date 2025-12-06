@@ -62,3 +62,14 @@ config :backend, Backend.Repo,
   migration_foreign_key: [type: :uuid]
 
 config :backend, :broadcast_module, Backend.Utils.BroadcastImpl
+
+config :backend, Oban,
+  repo: Backend.Repo,
+  name: Backend.Oban,
+  plugins: [
+    {Oban.Plugins.Cron,
+     crontab: [
+       {"0 0 * * *", Backend.Workers.DriverRatingWorker}
+     ]}
+  ],
+  queues: [default: 10]

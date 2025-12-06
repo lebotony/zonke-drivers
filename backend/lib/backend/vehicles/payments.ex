@@ -2,15 +2,40 @@ defmodule Backend.Vehicles.Payments do
   alias Backend.{Repo, PaginateHelper}
   alias Backend.Vehicles.Payment
   alias Backend.Vehicles.Queries.PaymentBy
+  alias Backend.Drivers.{Drivers, Driver}
+  alias Backend.Drivers.Rating
 
   import Ecto.Query
 
   # defdelegate authorize(action, params, session), to: Policy
 
   def create(params) do
-    %Payment{}
-    |> Payment.changeset(params)
-    |> Repo.insert()
+    case %Payment{}
+         |> Payment.changeset(params)
+         |> Repo.insert() do
+      {:ok, payment} ->
+        driver_id =
+          payment
+          |> Repo.preload(:vehicle_driver)
+          |> Map.get(:vehicle_driver)
+          |> Map.get(:driver_id)
+
+        update_driver_rating(driver_id)
+
+        {:ok, payment}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
+  end
+
+  def update_driver_rating(driver_id) do
+    rating_map = Rating.compute_driver_rating(driver_id)
+    {:ok, driver} = Drivers.get_driver(driver_id)
+
+    driver
+    |> Driver.changeset(%{rating: rating_map.driver_rating})
+    |> Repo.update()
   end
 
   def update(%Payment{} = payment, params) do

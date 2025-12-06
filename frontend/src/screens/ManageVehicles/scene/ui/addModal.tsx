@@ -81,14 +81,16 @@ export const AddModal = (props: AddModalProps) => {
         <View style={styles.addInput}>
           <Text style={styles.amountText}>Amount</Text>
           <View style={styles.inputWrapper}>
-            <Text
-              style={{
-                fontSize: 16,
-                alignSelf: "center",
-              }}
-            >
-              R
-            </Text>
+            <View>
+              <Text
+                style={{
+                  fontSize: 16,
+                  lineHeight: 16,
+                }}
+              >
+                R
+              </Text>
+            </View>
             <Controller
               control={control}
               name="amount"
@@ -101,6 +103,7 @@ export const AddModal = (props: AddModalProps) => {
                     value={value || ""}
                     onChangeText={onChange}
                     underlineColorAndroid="transparent"
+                    keyboardType="decimal-pad"
                   />
                 );
               }}
