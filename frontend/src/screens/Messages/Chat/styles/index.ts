@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
     height: 44,
     borderRadius: 22,
     marginRight: 15,
-    backgroundColor: Colors.lightGrey,
+    backgroundColor: Colors.skyLight,
   },
   name: {
     fontSize: 18,

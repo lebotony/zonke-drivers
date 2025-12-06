@@ -1,6 +1,6 @@
 defmodule Backend.Drivers.Drivers do
   alias Backend.{Repo, PaginateHelper, EmptyFieldsHelper}
-  alias Backend.Drivers.{Driver, Policy, Queries.DriverBy}
+  alias Backend.Drivers.{Driver, Policy, Queries.DriverBy, Rating}
   alias Backend.Vehicles.VehicleDriver
   alias Backend.Reviews.Review
   alias Backend.Accounts.Users
@@ -171,7 +171,7 @@ defmodule Backend.Drivers.Drivers do
 
       {:rating_range, val}, query when is_binary(val) and val != "" ->
         rating = String.to_integer(val)
-        where(query, [rating: r], coalesce(r.avg_rating, 0) >= ^rating)
+        where(query, [driver: d], coalesce(d.rating, 0) >= ^rating)
 
       {:platforms, val}, query when is_list(val) ->
         where(query, [driver: d], fragment("? && ?", d.platforms, ^val))
@@ -210,18 +210,11 @@ defmodule Backend.Drivers.Drivers do
         }
       )
 
-    rating_subquery =
-      from(r in Review,
-        where: r.driver_id == parent_as(:driver).id,
-        select: %{avg_rating: fragment("ROUND(AVG(?)::numeric, 1)", r.rating)}
-      )
-
     query
     |> join(:inner, [driver: d], u in assoc(d, :user), as: :user)
     |> join(:left, [user: u], a in assoc(u, :asset), as: :asset)
     |> join(:left_lateral, [driver: d], vd_stats in subquery(subquery), as: :vd_stats)
-    |> join(:left_lateral, [driver: d], rating in subquery(rating_subquery), as: :rating, on: true)
-    |> select_merge([driver: d, user: u, vd_stats: vd_stats, rating: rating, asset: a], %{
+    |> select_merge([driver: d, user: u, vd_stats: vd_stats, asset: a], %{
       d
       | email: u.email,
         first_name: u.first_name,
@@ -230,7 +223,6 @@ defmodule Backend.Drivers.Drivers do
         user_id: u.id,
         previous_vehicles: vd_stats.previous_vehicles,
         total_accidents: vd_stats.total_accidents,
-        rating: coalesce(rating.avg_rating, 0),
         asset_filename: a.filename
     })
   end

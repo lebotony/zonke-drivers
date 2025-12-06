@@ -7,6 +7,7 @@ export const fieldValidators = {
     .transform((val) => (val.trim() === "" ? undefined : val))
     .optional(),
   description: z.string().optional(),
+  payments_per_month: numbersZodValidation("Payments per month"),
   mileage: numbersZodValidation("Mileage"),
   type: z.string(),
   brand: z.string(),
@@ -27,6 +28,7 @@ export const FormSchema = z.object({
   model: fieldValidators.model,
   description: fieldValidators.description,
   mileage: fieldValidators.mileage,
+  payments_per_month: fieldValidators.payments_per_month,
   type: fieldValidators.type,
   brand: fieldValidators.brand,
   manual: fieldValidators.manual,

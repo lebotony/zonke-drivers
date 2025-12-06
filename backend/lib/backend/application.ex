@@ -16,6 +16,7 @@ defmodule Backend.Application do
       Backend.Repo,
       {DNSCluster, query: Application.get_env(:backend, :dns_cluster_query) || :ignore},
       {Phoenix.PubSub, name: Backend.PubSub},
+      {Oban, Application.fetch_env!(:backend, Oban)},
       # Start the Finch HTTP client for sending emails
       {Finch, name: Backend.Finch},
       Backend.ConnectionTracker,

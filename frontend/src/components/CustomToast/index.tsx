@@ -34,7 +34,14 @@ export const CustomToast = ({ text1, text2, props }: CustomToastProps) => {
       ]}
     >
       <View style={{ flexDirection: "row", gap: 5 }}>
-        <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>
+        <Text
+          style={{
+            color: "white",
+            maxWidth: "92%",
+            fontWeight: "bold",
+            fontSize: 16,
+          }}
+        >
           {text1}
         </Text>
         {isSuccess ? (

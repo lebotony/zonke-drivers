@@ -7,12 +7,12 @@ import { isEmpty } from "lodash";
 
 import { NoData } from "@/src/components/NoData";
 import { Spinner } from "@/src/components/elements/Spinner";
+import { useCustomQuery } from "@/src/useQueryContext";
 
 import { Card } from "./scene/ui/card";
 import { styles } from "./styles";
 import { fetchUserVehicles } from "./actions";
 import { VehicleDriverModal } from "./scene/ui/vehicleDriverModal";
-import { useCustomQuery } from "@/src/useQueryContext";
 
 export const ManageVehicles = () => {
   const [showVehicleDriverModal, setShowVehicleDriverModal] = useState(false);

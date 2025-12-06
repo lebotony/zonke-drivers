@@ -16,7 +16,7 @@ export const BackArrow = (props: BackArrow) => {
   const { customStyles, left = 7 } = props;
 
   return (
-    <View style={[styles.row, customStyles, { left: left }]}>
+    <View style={[styles.row, { left: left }, customStyles]}>
       <CustomButton color={Colors.whiteSmoke} onPress={() => router.back()}>
         <MaterialIcons
           name={Platform.OS === "ios" ? "arrow-back-ios-new" : "arrow-back"}

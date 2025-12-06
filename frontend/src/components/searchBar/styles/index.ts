@@ -14,6 +14,7 @@ export const styles = StyleSheet.create({
     gap: 4,
   },
   textInput: {
+    outlineWidth: 0,
     flex: 1,
     fontSize: 14,
     color: Colors.black,

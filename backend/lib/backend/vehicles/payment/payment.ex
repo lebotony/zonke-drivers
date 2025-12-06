@@ -6,7 +6,8 @@ defmodule Backend.Vehicles.Payment do
 
   @required_fields [:vehicle_driver_id]
   @embeds [:price_fixed]
-  @all_fields @required_fields ++ @embeds
+  # allow inserted_at in changeset so tests can create historical payments
+  @all_fields @required_fields ++ [:inserted_at] ++ @embeds
 
   schema "payments" do
     embeds_one(:price_fixed, PriceFixed, on_replace: :update)

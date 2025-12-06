@@ -26,6 +26,7 @@ import { Colors } from "@/constants/ui";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { AppToast } from "@/src/components/CustomToast/customToast";
+import { activateVehicle } from "@/src/screens/ManageVehicles/actions";
 
 import { styles } from "../styles/addVehicle";
 import { CardFormDef } from "../utils/cardFormDef";
@@ -37,7 +38,6 @@ import {
   updateVehicle,
   updateVehicleAsset,
 } from "../../actions";
-import { activateVehicle } from "@/src/screens/ManageVehicles/actions";
 
 export type AddVehicleFormValues = z.infer<typeof FormSchema>;
 
@@ -59,6 +59,9 @@ export const AddVehicle = () => {
     model: vehicle?.model || "",
     description: vehicle?.description || "",
     mileage: (vehicle?.mileage && String(vehicle?.mileage)) || undefined,
+    payments_per_month:
+      (vehicle?.payments_per_month && String(vehicle?.payments_per_month)) ||
+      undefined,
     type: vehicle?.type || "",
     brand: vehicle?.brand || "",
     manual: vehicle?.manual ?? false,
@@ -68,7 +71,6 @@ export const AddVehicle = () => {
       undefined,
     passengers:
       (vehicle?.passengers && String(vehicle?.passengers)) || undefined,
-    // model_year: vehicle?.model_year || "",
     asset:
       (vehicle?.asset && {
         file_path: "",
@@ -152,6 +154,7 @@ export const AddVehicle = () => {
           AppToast("Vehicle created successfully", true);
           addItemToPaginatedList("userVehicles", res);
           router.push("/(tabs)/manage");
+          reset(formValues);
         })
         .catch((err) => {
           if (
@@ -197,7 +200,7 @@ export const AddVehicle = () => {
       undefined,
       updateVehicleAsset,
       vehicleId,
-      updatePaginatedAsset,
+      updatePaginatedAsset
     );
 
   const handleSetActive = () =>
@@ -208,7 +211,7 @@ export const AddVehicle = () => {
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true,
+          true
         );
 
         updatePaginatedObject("userVehicles", vehicleId, {
@@ -219,7 +222,9 @@ export const AddVehicle = () => {
         const errorKey = err.response?.data?.error;
 
         if (errorKey === "missing_fields") {
-          return AppToast("Model or Rent fields are empty");
+          return AppToast(
+            `'Model', 'Vehicle image' or 'Rent' fields are empty`
+          );
         } else {
           AppToast();
           throw new Error("Set vehicle active error:", err);
@@ -332,24 +337,33 @@ export const AddVehicle = () => {
 
           <View>
             {vehicle && (
-              <CustomButton
-                haptics="light"
-                onPress={handleSetActive}
-                customStyle={[
-                  {
-                    backgroundColor: vehicle?.active
-                      ? Colors.lightRed
-                      : Colors.lightGreen,
-                  },
-                  styles.btnStyles,
-                ]}
-              >
-                <Text
-                  style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}
-                >
-                  {vehicle?.active ? "De-activate" : "Activate"}
+              <>
+                <Text style={styles.nbActivate}>
+                  NB: Vehicle wont be searchable if not activated
                 </Text>
-              </CustomButton>
+                <CustomButton
+                  haptics="light"
+                  onPress={handleSetActive}
+                  customStyle={[
+                    {
+                      backgroundColor: vehicle?.active
+                        ? Colors.lightRed
+                        : Colors.lightGreen,
+                    },
+                    styles.btnStyles,
+                  ]}
+                >
+                  <Text
+                    style={{
+                      color: Colors.white,
+                      fontWeight: 700,
+                      fontSize: 16,
+                    }}
+                  >
+                    {vehicle?.active ? "De-activate" : "Activate"}
+                  </Text>
+                </CustomButton>
+              </>
             )}
 
             <CustomButton
