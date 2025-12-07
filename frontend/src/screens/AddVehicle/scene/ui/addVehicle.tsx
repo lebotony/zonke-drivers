@@ -57,26 +57,23 @@ export const AddVehicle = () => {
 
   const formValues = {
     model: vehicle?.model || "",
-    description: vehicle?.description || "",
-    mileage: (vehicle?.mileage && String(vehicle?.mileage)) || undefined,
+    mileage: (vehicle?.mileage && String(vehicle?.mileage)) || "",
     payments_per_month:
       (vehicle?.payments_per_month && String(vehicle?.payments_per_month)) ||
-      undefined,
+      "",
     type: vehicle?.type || "",
     brand: vehicle?.brand || "",
     manual: vehicle?.manual ?? false,
     fuel_type: vehicle?.fuel_type || "",
     engine_capacity:
-      (vehicle?.engine_capacity && String(vehicle?.engine_capacity)) ||
-      undefined,
-    passengers:
-      (vehicle?.passengers && String(vehicle?.passengers)) || undefined,
+      (vehicle?.engine_capacity && String(vehicle?.engine_capacity)) || "",
+    passengers: (vehicle?.passengers && String(vehicle?.passengers)) || "",
     asset:
       (vehicle?.asset && {
         file_path: "",
         filename: vehicle?.asset?.filename,
       }) ||
-      undefined,
+      "",
     price_fixed: vehicle?.price_fixed?.value || "",
   };
 

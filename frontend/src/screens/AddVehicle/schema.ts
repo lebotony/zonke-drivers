@@ -1,12 +1,8 @@
-import { numbersZodValidation } from "@/src/helpers/schemaHelper";
+import { numbersZodValidation, stringsZodValidation } from "@/src/helpers/schemaHelper";
 import { z } from "zod";
 
 export const fieldValidators = {
-  model: z
-    .string()
-    .transform((val) => (val.trim() === "" ? undefined : val))
-    .optional(),
-  description: z.string().optional(),
+  model: stringsZodValidation(),
   payments_per_month: numbersZodValidation("Payments per month"),
   mileage: numbersZodValidation("Mileage"),
   type: z.string(),
@@ -26,7 +22,6 @@ export const fieldValidators = {
 
 export const FormSchema = z.object({
   model: fieldValidators.model,
-  description: fieldValidators.description,
   mileage: fieldValidators.mileage,
   payments_per_month: fieldValidators.payments_per_month,
   type: fieldValidators.type,
