@@ -1,7 +1,6 @@
 import React, { useEffect } from "react";
 import {
   View,
-  Image,
   Pressable,
   FlatList,
   KeyboardAvoidingView,
@@ -11,6 +10,7 @@ import { Text } from "react-native-paper";
 
 import { useLocalSearchParams } from "expo-router";
 import { useNavigation } from "expo-router";
+import { Image } from "expo-image";
 
 import { find, isEmpty } from "lodash";
 import { useQueryClient } from "@tanstack/react-query";
@@ -59,7 +59,7 @@ export const ChatScreen = () => {
   const thread = find(threads, { id: threadId });
   const recipient = find(
     thread?.thread_participants,
-    (thd_part) => thd_part.participant.id !== user?.id,
+    (thd_part) => thd_part.participant.id !== user?.id
   )?.participant;
 
   const isNewThread = isEmpty(thread?.last_message);
@@ -75,7 +75,7 @@ export const ChatScreen = () => {
     updateNestedPagination(
       threadId,
       "messagesPagination",
-      messagesObj.paginate,
+      messagesObj.paginate
     );
 
     const messages = messagesObj?.data ?? [];
@@ -106,7 +106,7 @@ export const ChatScreen = () => {
       (fetchedMsgThreadIds: Thread["id"][]) => [
         ...(fetchedMsgThreadIds ?? []),
         id,
-      ],
+      ]
     );
 
   const onResetUnseenCount = (threadId: string) =>
@@ -131,7 +131,7 @@ export const ChatScreen = () => {
 
     const { pageParam } = onFetchNestedPagination(
       threadId,
-      "messagesPagination",
+      "messagesPagination"
     );
 
     fetchThreadMessages({

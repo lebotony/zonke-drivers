@@ -1,3 +1,4 @@
+import { isEmpty } from "lodash";
 import { z } from "zod";
 
 export const numbersZodValidation = (value: string) =>
@@ -12,8 +13,17 @@ export const numbersZodValidation = (value: string) =>
       { message: `${value} must contain numbers only` }
     )
 
-export const stringsZodValidation = () =>
-  z
+export const stringsZodValidation = (fieldName?: string) => {
+  const isOptional = isEmpty(fieldName)
+  const base = z
     .string()
-    .optional()
-    .transform((val) => val?.trim() ?? "")
+    .transform((val) => val.trim())
+    .refine(
+      (val) => isOptional || val.length > 0,
+      {
+        message: `${fieldName} must contain at least one character`,
+      }
+    );
+
+  return isOptional ? base.optional() : base;
+};

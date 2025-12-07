@@ -68,12 +68,12 @@ export const AddVehicle = () => {
     engine_capacity:
       (vehicle?.engine_capacity && String(vehicle?.engine_capacity)) || "",
     passengers: (vehicle?.passengers && String(vehicle?.passengers)) || "",
-    asset:
-      (vehicle?.asset && {
-        file_path: "",
-        filename: vehicle?.asset?.filename,
-      }) ||
-      "",
+    asset: vehicle?.asset
+      ? {
+          file_path: vehicle.asset.file_path || undefined,
+          filename: vehicle.asset.filename || undefined,
+        }
+      : undefined,
     price_fixed: vehicle?.price_fixed?.value || "",
   };
 

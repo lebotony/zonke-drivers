@@ -2,8 +2,8 @@ import { numbersZodValidation, stringsZodValidation } from "@/src/helpers/schema
 import { z } from "zod";
 
 export const fieldValidators = {
-  first_name: stringsZodValidation(),
-  last_name: stringsZodValidation(),
+  first_name: stringsZodValidation("First Name"),
+  last_name: stringsZodValidation("Last Name"),
   location: z
     .object({
       address: z.string().optional(),
