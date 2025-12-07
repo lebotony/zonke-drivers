@@ -74,8 +74,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
     platforms: driverProfile?.platforms || [],
     licences: driverProfile?.licences || [],
     experience:
-      (driverProfile?.experience && String(driverProfile?.experience)) ||
-      undefined,
+      (driverProfile?.experience && String(driverProfile?.experience)) || "",
     description: driverProfile?.description || "",
   };
 
