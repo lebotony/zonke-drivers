@@ -3,7 +3,7 @@ defmodule Backend.Drivers.DriversTest do
   use Backend.MoxCase
 
   alias Backend.Drivers.{Driver, Drivers}
-  alias Backend.Vehicles.Payments
+  alias Backend.Vehicles.{VehicleDrivers, Payments}
 
   import Backend.Factory
 
@@ -155,6 +155,39 @@ defmodule Backend.Drivers.DriversTest do
 
       assert fetched_driver.rating == 3.3
     end
+
+    test "returns driver with correct no. of accidents", %{
+      user: driver_user,
+      session: session,
+      params: params
+    } do
+      {:ok, driver} = Drivers.create(params, session)
+
+      owner = insert(:user, first_name: "Owner", last_name: "Test")
+
+      vehicle_1 = insert(:vehicle, user: owner, active: true, payments_per_month: 4)
+      vehicle_2 = insert(:vehicle, user: owner, active: true, payments_per_month: 2)
+
+      vehicle_driver_1 =
+        insert(:vehicle_driver,
+          driver: driver,
+          vehicle: vehicle_1,
+          active: false,
+        )
+
+      vehicle_driver_2 =
+        insert(:vehicle_driver,
+          driver: driver,
+          vehicle: vehicle_2,
+          active: false,
+        )
+
+      VehicleDrivers.increment_accidents_count(vehicle_driver_1.id)
+      {:ok, user_driver} = Drivers.get_driver(driver.id, :public)
+
+      assert user_driver.total_accidents == 1
+    end
+  end
 
   # describe "get_drivers/1" do
   #   test "returns business_profile drivers if found", %{
