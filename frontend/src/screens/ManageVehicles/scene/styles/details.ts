@@ -13,6 +13,14 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 14,
     paddingTop: 12,
   },
+  header: {
+    alignItems: "center",
+    paddingHorizontal: 14,
+    paddingBottom: 20,
+  },
+  headerTitle: {
+    fontSize: 20,
+  },
   driver: {
     flexDirection: "row",
     borderWidth: 0.5,

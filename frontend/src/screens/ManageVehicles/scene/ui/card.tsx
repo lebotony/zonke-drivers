@@ -47,7 +47,7 @@ export const Card = (props: CardProps) => {
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true
+          true,
         );
 
         updatePaginatedObject("userVehicles", vehicle?.id, {
@@ -59,7 +59,7 @@ export const Card = (props: CardProps) => {
 
         if (errorKey === "missing_fields") {
           return AppToast(
-            `'Model', 'Vehicle image' or 'Rent' fields are empty`
+            `'Model', 'Vehicle image' or 'Rent' fields are empty`,
           );
         } else {
           AppToast();
@@ -127,7 +127,7 @@ export const Card = (props: CardProps) => {
         <View style={styles.details}>
           <Text style={styles.name} numberOfLines={1} ellipsizeMode="tail">
             {capitalizeFirstLetter(
-              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`
+              `${vehicle?.brand ?? ""} ${vehicle?.model ?? ""}`,
             )}
           </Text>
 

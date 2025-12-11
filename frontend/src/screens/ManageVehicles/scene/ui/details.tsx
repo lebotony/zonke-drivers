@@ -59,7 +59,7 @@ export const DetailsScreen = () => {
     updateNestedPagination(
       vehicleDriver?.id,
       "paymentsPagination",
-      paymentsObj.paginate
+      paymentsObj.paginate,
     );
 
     const payments = paymentsObj?.data ?? [];
@@ -80,19 +80,19 @@ export const DetailsScreen = () => {
       (fetchedVehicleDriverPayments: VehicleDriver["id"][]) => [
         ...(fetchedVehicleDriverPayments ?? []),
         id,
-      ]
+      ],
     );
 
   const handleFetchPayments = () => {
     const { pageParam } = onFetchNestedPagination(
       vehicleDriver?.id,
-      "paymentsPagination"
+      "paymentsPagination",
     );
 
     fetchPayments({ pageParam, vehicleDriverId: vehicleDriver?.id }).then(
       (res: PaymentsResponse) => {
         loadDriverPayments(res);
-      }
+      },
     );
   };
 

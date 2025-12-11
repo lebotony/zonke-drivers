@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
   },
   inputWrapper: {
     flexDirection: "row",
-    alignItems: 'center'
+    alignItems: "center",
   },
   textInput: {
     outlineWidth: 0,

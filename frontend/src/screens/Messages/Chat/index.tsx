@@ -88,7 +88,7 @@ export const ChatScreen = () => {
 
       // Filter out duplicates
       const newMessages = messages.filter(
-        (msg: any) => !existingIds.has(msg.id)
+        (msg: any) => !existingIds.has(msg.id),
       );
 
       // Only update if there are non-duplicate messages
@@ -199,7 +199,7 @@ export const ChatScreen = () => {
             }}
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => {
-              const isLast = index === (thread?.messages.length ?? 0) - 1;
+              const isLast = index === 0;
 
               return (
                 <ChatMessage
@@ -211,6 +211,10 @@ export const ChatScreen = () => {
               );
             }}
             showsVerticalScrollIndicator={false}
+            contentContainerStyle={{
+              flexGrow: 1,
+              justifyContent: "flex-end",
+            }}
           />
         </View>
 
