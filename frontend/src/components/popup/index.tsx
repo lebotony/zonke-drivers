@@ -62,11 +62,13 @@ export const PopupMenu = ({
 }: PopupMenuProps) => {
   const [open, setOpen] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [keyboardTopPosition, setKeyboardTopPosition] = useState(0);
 
   const [layout, setLayout] = useState({
     popupTop: 0,
     popupLeft: 0,
     width: 0,
+    inputY: 0,
     poupBtnWidth: 0,
     popupBtnHeight: 0,
     popupMenuWidth: 0,
@@ -106,10 +108,11 @@ export const PopupMenu = ({
             popupTop: pageY + height,
             width,
             popupLeft: pageX,
+            inputY: pageY,
             poupBtnWidth: width,
             popupBtnHeight: height,
             freeHeightBelow: screenHeight - (pageY + height),
-            freeHeightAbove: pageY - 30,
+            freeHeightAbove: pageY,
             freeWidth: Math.round(screenWidth - width || 0),
           }));
 
@@ -149,6 +152,11 @@ export const PopupMenu = ({
       Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
       (e) => {
         setKeyboardHeight(e.endCoordinates.height);
+        const screenHeight = Dimensions.get("window").height;
+        const keyboardTopPosition = screenHeight - e.endCoordinates.height;
+        setKeyboardTopPosition(keyboardTopPosition);
+        measureInputPosition();
+
         if (open) measureInputPosition();
       },
     );
@@ -159,6 +167,8 @@ export const PopupMenu = ({
         if (open) measureInputPosition();
       },
     );
+
+    measureInputPosition();
 
     return () => {
       dimSub?.remove();
@@ -219,10 +229,52 @@ export const PopupMenu = ({
     0,
   );
 
-  const showAbove = layout.freeHeightBelow <= 225;
+  const calculateShowAbove = () => {
+    const minOptionsSpace = 200;
+
+    if (keyboardHeight > 0) {
+      const buttonBottom = layout.inputY + layout.popupBtnHeight;
+      const availableSpaceBelow = keyboardTopPosition - buttonBottom;
+
+      const availableSpaceAbove = layout.inputY;
+
+      return (
+        availableSpaceBelow < minOptionsSpace &&
+        availableSpaceAbove > availableSpaceBelow
+      );
+    }
+
+    return layout.freeHeightBelow <= 225;
+  };
+
+  const showAbove = calculateShowAbove();
+
   const popupPositionTop = showAbove
     ? layout.popupTop - (layout.popupMenuHeight + layout.popupBtnHeight)
     : layout.popupTop;
+
+  const calculateMaxHeight = () => {
+    if (showAbove) {
+      if (keyboardHeight > 0) {
+        const keyboardBottom = keyboardTopPosition + keyboardHeight;
+        const screenHeight = Dimensions.get("window").height;
+        const availableHeightAboveKeyboard =
+          layout.inputY - (screenHeight - keyboardBottom);
+        return Math.max(availableHeightAboveKeyboard - 30, 50);
+      } else {
+        return Math.max(layout.freeHeightAbove - 30, 0);
+      }
+    } else {
+      if (keyboardHeight > 0) {
+        const availableHeight = keyboardTopPosition - (popupPositionTop + 10);
+        return Math.max(availableHeight, 50);
+      } else {
+        return Math.max(layout.freeHeightBelow - 30, 0);
+      }
+    }
+  };
+
+  const maxHeight = calculateMaxHeight();
 
   const IconLibraries = {
     Feather,
@@ -293,9 +345,7 @@ export const PopupMenu = ({
                 top: popupPositionTop,
                 left: leftPosition,
                 width: computedWidth,
-                maxHeight: showAbove
-                  ? layout.freeHeightAbove
-                  : Math.max(layout.freeHeightBelow - keyboardHeight - 50, 0),
+                maxHeight: maxHeight,
                 maxWidth: screenWidth,
                 marginVertical: showAbove ? -4 : 4,
               },
@@ -359,7 +409,6 @@ export const PopupMenu = ({
         </Portal>
       )}
 
-      {/* Invisible measurement text for width */}
       <View style={styles.longText}>
         {options?.map((option, index) => {
           const label = getOptionLabel(option);

@@ -17,7 +17,6 @@ import { BackArrow } from "@/src/components/BackArrow/header";
 import { styles } from "../styles/applicants";
 import { fetchApplications, setApplicationsSeen } from "../../actions";
 import { VehicleDriverModal } from "./vehicleDriverModal";
-import { VehicleSelector } from "./vehicleSelector";
 
 export const ApplicantsScreen = () => {
   const { id } = useLocalSearchParams();
@@ -121,13 +120,13 @@ export const ApplicantsScreen = () => {
         </View>
 
         <View style={{ marginTop: 2 }}>
-          <VehicleSelector
+          {/* <VehicleSelector
             vehicles={userVehicles}
             selectedVehicle={selectedVehicle}
             onSelectVehicle={(vehicle: Vehicle) => {
               setSelectedVehicle(vehicle);
             }}
-          />
+          /> */}
         </View>
       </View>
 

@@ -153,12 +153,14 @@ export const DropdownInput = <T extends FieldValues>({
       },
     );
 
+    measureInputPosition();
+
     return () => {
       dimSub?.remove();
       kbShowSub?.remove();
       kbHideSub?.remove();
     };
-  }, [open, keyboardHeight]);
+  }, [open, keyboardHeight, layout.inputY]);
 
   useEffect(() => {
     if (!open) return;
@@ -223,12 +225,48 @@ export const DropdownInput = <T extends FieldValues>({
       break;
   }
 
-  const showAbove =
-    layout.freeHeight <= 225 ||
-    (keyboardHeight > 0 && keyboardTopPosition - layout.inputY < 70);
+  const calculateShowAbove = () => {
+    const minDropdownSpace = 200;
+
+    if (keyboardHeight > 0) {
+      const inputBottom = layout.inputY + layout.inputHeight;
+      const availableSpaceBelow = keyboardTopPosition - inputBottom;
+
+      const keyboardBottom = keyboardTopPosition + keyboardHeight;
+      const screenHeight = Dimensions.get("window").height;
+      const availableSpaceAbove =
+        layout.inputY - (screenHeight - keyboardBottom);
+
+      return (
+        availableSpaceBelow < minDropdownSpace &&
+        availableSpaceAbove > availableSpaceBelow
+      );
+    }
+
+    return layout.freeHeight <= 225;
+  };
+
+  const showAbove = calculateShowAbove();
+
   const dropdownPositionTop = showAbove
     ? layout.dropdownTop - (layout.dropdownHeight + layout.inputHeight) - 10
     : layout.dropdownTop + 10;
+
+  const calculateMaxHeight = () => {
+    if (showAbove) {
+      return "auto";
+    } else {
+      if (keyboardHeight > 0) {
+        const availableHeight =
+          keyboardTopPosition - (dropdownPositionTop + 10);
+        return Math.max(availableHeight, 50);
+      } else {
+        return Math.max(layout.freeHeight - 30, 0);
+      }
+    }
+  };
+
+  const maxHeight = calculateMaxHeight();
 
   return (
     <View style={{ marginBottom: 20 }}>
@@ -254,13 +292,11 @@ export const DropdownInput = <T extends FieldValues>({
           value={query}
           onFocus={() => setOpen(true)}
           onChangeText={handleChange}
-          // numberOfLines={1}
           multiline
           placeholderTextColor={placeholderTextColor}
           placeholder={placeholder}
           style={[
             styles.inputText,
-            // !selectedValue && styles.placeholderText,
             { width: layout.inputWidth - layout.caretWidth * 2 },
           ]}
         />
@@ -302,9 +338,7 @@ export const DropdownInput = <T extends FieldValues>({
                   layout.freeWidth === 0
                     ? layout.inputWidth
                     : layout.inputWidth + layout.freeWidth,
-                maxHeight: showAbove
-                  ? "auto"
-                  : Math.max(layout.freeHeight - 50, 0),
+                maxHeight: maxHeight,
               },
               menuStyle,
             ]}
@@ -359,7 +393,6 @@ export const DropdownInput = <T extends FieldValues>({
         </Portal>
       )}
 
-      {/* Invisible measurement text for width */}
       <View style={styles.longText}>
         {options?.map((option, index) => (
           <Text

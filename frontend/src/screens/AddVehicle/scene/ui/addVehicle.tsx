@@ -197,7 +197,7 @@ export const AddVehicle = () => {
       undefined,
       updateVehicleAsset,
       vehicleId,
-      updatePaginatedAsset
+      updatePaginatedAsset,
     );
 
   const handleSetActive = () =>
@@ -208,7 +208,7 @@ export const AddVehicle = () => {
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true
+          true,
         );
 
         updatePaginatedObject("userVehicles", vehicleId, {
@@ -220,7 +220,7 @@ export const AddVehicle = () => {
 
         if (errorKey === "missing_fields") {
           return AppToast(
-            `'Model', 'Vehicle image' or 'Rent' fields are empty`
+            `'Model', 'Vehicle image' or 'Rent' fields are empty`,
           );
         } else {
           AppToast();
@@ -278,7 +278,7 @@ export const AddVehicle = () => {
                 Current user of your vehicle
               </Text>
               <View style={styles.card}>
-                <View style={styles.profileWrapper}>
+                <View style={[styles.profileWrapper, !driver && { gap: 14 }]}>
                   {driver ? (
                     <Image
                       source={driver?.asset_url}

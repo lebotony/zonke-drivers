@@ -115,7 +115,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   useEffect(() => {
     if (isDriver && !driverProfile) {
       fetchDriverProfile().then((response) =>
-        queryClient.setQueryData(["driverProfile"], response)
+        queryClient.setQueryData(["driverProfile"], response),
       );
     }
   }, [isDriver]);
@@ -145,7 +145,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleRemovePlatform = (item: string) => {
     setValue(
       "platforms",
-      selectedPlatforms?.filter((platform) => platform !== item)
+      selectedPlatforms?.filter((platform) => platform !== item),
     );
   };
 
@@ -160,7 +160,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleRemoveLicences = (item: string) => {
     setValue(
       "licences",
-      selectedLicences?.filter((licence) => licence !== item)
+      selectedLicences?.filter((licence) => licence !== item),
     );
   };
 
@@ -177,7 +177,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
             queryClient.setQueryData(["driverProfile"], otherParams);
             router.back();
           })
-          .catch((err) => err)
+          .catch((err) => err),
       )();
     } else {
       handleSubmit((formData) =>
@@ -190,7 +190,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
           .catch((err) => {
             AppToast();
             throw new Error("Error while updating user: ", err);
-          })
+          }),
       )();
     }
   };
@@ -209,7 +209,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       [1, 1],
       updateUserAsset,
       user?.id,
-      updatePaginatedAsset
+      updatePaginatedAsset,
     );
 
   return (
