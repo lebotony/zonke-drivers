@@ -177,7 +177,10 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
             queryClient.setQueryData(["driverProfile"], otherParams);
             router.back();
           })
-          .catch((err) => err),
+          .catch((err) => {
+            AppToast("Failed to update driver profile");
+            throw err;
+          }),
       )();
     } else {
       handleSubmit((formData) =>
@@ -188,8 +191,8 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
             router.back();
           })
           .catch((err) => {
-            AppToast();
-            throw new Error("Error while updating user: ", err);
+            AppToast("Failed to update profile");
+            throw err;
           }),
       )();
     }

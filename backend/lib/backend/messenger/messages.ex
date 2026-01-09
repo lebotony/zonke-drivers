@@ -57,7 +57,7 @@ defmodule Backend.Messenger.Messages do
       from(m in Message,
         where: m.thread_id == ^thread_id,
         where: m.author_id != ^participant_id,
-        where: m.seen == true,
+        where: m.seen == false,
         select: count(m.id)
       )
     )

@@ -30,5 +30,9 @@ defmodule Backend.Vehicles.VehicleDriver do
     |> assoc_constraint(:driver)
     |> assoc_constraint(:vehicle)
     |> validate_required(@required_params)
+    |> unique_constraint([:driver_id, :vehicle_id],
+      name: :vehicle_drivers_driver_id_vehicle_id_unique_index,
+      message: "driver is already assigned to this vehicle"
+    )
   end
 end

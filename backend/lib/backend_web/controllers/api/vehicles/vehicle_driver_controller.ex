@@ -4,9 +4,9 @@ defmodule BackendWeb.Vehicles.VehicleDriverController do
 
   alias Backend.Vehicles.VehicleDrivers
 
-  def create(conn, params, _session) do
-    # with :ok <- Bodyguard.permit(VehicleDrivers, :create, %{id: profile_id}, session),
-    with {:ok, vehicle_driver} <- VehicleDrivers.create(params) do
+  def create(conn, params, session) do
+    with :ok <- Bodyguard.permit(VehicleDrivers, :create, params, session),
+         {:ok, vehicle_driver} <- VehicleDrivers.create(params) do
       render(conn, :show, %{vehicle_driver: vehicle_driver})
     end
   end
@@ -19,23 +19,24 @@ defmodule BackendWeb.Vehicles.VehicleDriverController do
   end
 
   def update(conn, %{id: id} = params, session) do
-    #  :ok <- Bodyguard.permit(VehicleDrivers, :update, vehicle_driver, session),
     with {:ok, vehicle_driver} <- VehicleDrivers.get_vehicle_driver(id),
-         {:ok, vehicle_driver} <- VehicleDrivers.update(vehicle_driver, params) do
+         :ok <- Bodyguard.permit(VehicleDrivers, :update, vehicle_driver, session),
+         {:ok, vehicle_driver} <- VehicleDrivers.update_vehicle_driver(vehicle_driver, params) do
       render(conn, :show, vehicle_driver: vehicle_driver)
     end
   end
 
-  def increment_accidents(conn, %{id: id} = params, session) do
-    #  :ok <- Bodyguard.permit(VehicleDrivers, :update, vehicle_driver, session),
-    with {1, _nil} <- VehicleDrivers.increment_accidents_count(id) do
+  def increment_accidents(conn, %{id: id} = _params, session) do
+    with {:ok, vehicle_driver} <- VehicleDrivers.get_vehicle_driver(id),
+         :ok <- Bodyguard.permit(VehicleDrivers, :update, vehicle_driver, session),
+         {1, _nil} <- VehicleDrivers.increment_accidents_count(id) do
       json(conn, :ok)
     end
   end
 
   def delete(conn, %{id: id}, session) do
-    #  :ok <- Bodyguard.permit(VehicleDrivers, :delete, vehicle_driver, session),
     with {:ok, vehicle_driver} <- VehicleDrivers.get_vehicle_driver(id),
+         :ok <- Bodyguard.permit(VehicleDrivers, :delete, vehicle_driver, session),
          {:ok, _vehicle_driver} <- VehicleDrivers.delete(vehicle_driver) do
       json(conn, :ok)
     end

@@ -72,19 +72,24 @@ defmodule BackendWeb.MessengerChannel do
     user_id = socket.assigns.user_id
     atomized_params = AtomKeysHelper.string_keys_to_atoms(params)
 
-    {:ok, message} = Messages.create(atomized_params, user_id)
-    payload = MessageJSON.show(%{message: message})
+    case Messages.create(atomized_params, user_id) do
+      {:ok, message} ->
+        payload = MessageJSON.show(%{message: message})
+        broadcast_module = Application.get_env(:backend, :broadcast_module)
 
-    broadcast_module = Application.get_env(:backend, :broadcast_module)
+        broadcast_module.broadcast_from!(
+          self(),
+          "chats:" <> message.thread_id,
+          "new_message",
+          payload
+        )
 
-    broadcast_module.broadcast_from!(
-      self(),
-      "chats:" <> message.thread_id,
-      "new_message",
-      payload
-    )
+        Logger.info("Messages sent to thread_id: #{inspect(message.thread_id)}")
+        {:reply, {:ok, %{message: payload}}, socket}
 
-    Logger.info("Messages sent to thread_id: #{inspect(message.thread_id)}")
-    {:reply, {:ok, %{message: payload}}, socket}
+      {:error, changeset} ->
+        Logger.error("Failed to create message: #{inspect(changeset.errors)}")
+        {:reply, {:error, %{errors: changeset.errors}}, socket}
+    end
   end
 end

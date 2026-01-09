@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import { Text } from "react-native-paper";
 
@@ -36,7 +36,7 @@ import { AddVehicleForm } from "./form";
 import {
   createVehicle,
   updateVehicle,
-  updateVehicleAsset,
+  updateVehicleAsset
 } from "../../actions";
 
 export type AddVehicleFormValues = z.infer<typeof FormSchema>;
@@ -71,10 +71,10 @@ export const AddVehicle = () => {
     asset: vehicle?.asset
       ? {
           file_path: vehicle.asset.file_path || undefined,
-          filename: vehicle.asset.filename || undefined,
+          filename: vehicle.asset.filename || undefined
         }
       : undefined,
-    price_fixed: vehicle?.price_fixed?.value || "",
+    price_fixed: vehicle?.price_fixed?.value || ""
   };
 
   const {
@@ -83,11 +83,11 @@ export const AddVehicle = () => {
     setValue,
     watch,
     reset,
-    formState: { errors },
+    formState: { errors, isSubmitting }
   } = useForm<AddVehicleFormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: formValues,
-    mode: "onChange",
+    mode: "onChange"
   });
 
   useEffect(() => {
@@ -136,7 +136,7 @@ export const AddVehicle = () => {
 
           updatePaginatedObject("userVehicles", vehicleId, {
             ...res,
-            vehicle_drivers: vehicle?.vehicle_drivers,
+            vehicle_drivers: vehicle?.vehicle_drivers
           });
 
           router.push("/(tabs)/manage");
@@ -173,7 +173,7 @@ export const AddVehicle = () => {
       ...data,
       price_fixed: data.price_fixed
         ? { value: Number(data.price_fixed), currency: "Rand" }
-        : undefined,
+        : undefined
     };
 
     upsertVehicle(params);
@@ -183,7 +183,7 @@ export const AddVehicle = () => {
     isNewVehicle
       ? addItemToPaginatedList("userVehicles", res)
       : updatePaginatedObject("userVehicles", vehicleId, {
-          asset: res,
+          asset: res
         });
 
     isNewVehicle
@@ -197,22 +197,22 @@ export const AddVehicle = () => {
       undefined,
       updateVehicleAsset,
       vehicleId,
-      updatePaginatedAsset,
+      updatePaginatedAsset
     );
 
   const handleSetActive = () =>
     activateVehicle({
       active: !vehicle?.active,
-      vehicle_id: vehicleId,
+      vehicle_id: vehicleId
     })
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true,
+          true
         );
 
         updatePaginatedObject("userVehicles", vehicleId, {
-          active: !vehicle?.active,
+          active: !vehicle?.active
         });
       })
       .catch((err) => {
@@ -220,7 +220,7 @@ export const AddVehicle = () => {
 
         if (errorKey === "missing_fields") {
           return AppToast(
-            `'Model', 'Vehicle image' or 'Rent' fields are empty`,
+            `'Model', 'Vehicle image' or 'Rent' fields are empty`
           );
         } else {
           AppToast();
@@ -241,7 +241,7 @@ export const AddVehicle = () => {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={
             Platform.OS === "android" && {
-              paddingBottom: keyboardVisible ? keyboardHeight : 0,
+              paddingBottom: keyboardVisible ? keyboardHeight : 0
             }
           }
         >
@@ -262,7 +262,7 @@ export const AddVehicle = () => {
                 source={vehicleImage}
                 style={[
                   styles.imageStyles,
-                  !isVehiclePic && styles.defaultImageStyles,
+                  !isVehiclePic && styles.defaultImageStyles
                 ]}
                 contentFit="contain"
               />
@@ -296,7 +296,7 @@ export const AddVehicle = () => {
                     <Text
                       style={[
                         styles.profileName,
-                        !driver && { color: Colors.grey },
+                        !driver && { color: Colors.grey }
                       ]}
                     >
                       {driver
@@ -345,16 +345,16 @@ export const AddVehicle = () => {
                     {
                       backgroundColor: vehicle?.active
                         ? Colors.lightRed
-                        : Colors.lightGreen,
+                        : Colors.lightGreen
                     },
-                    styles.btnStyles,
+                    styles.btnStyles
                   ]}
                 >
                   <Text
                     style={{
                       color: Colors.white,
                       fontWeight: 700,
-                      fontSize: 16,
+                      fontSize: 16
                     }}
                   >
                     {vehicle?.active ? "De-activate" : "Activate"}
@@ -365,19 +365,25 @@ export const AddVehicle = () => {
 
             <CustomButton
               haptics="light"
-              onPress={isSameForm ? undefined : handleSubmit(create)}
+              onPress={
+                isSameForm || isSubmitting ? undefined : handleSubmit(create)
+              }
               customStyle={[
                 {
                   backgroundColor:
-                    isSameForm && vehicle ? Colors.lightGrey : Colors.mrDBlue,
+                    (isSameForm && vehicle) || isSubmitting
+                      ? Colors.lightGrey
+                      : Colors.mrDBlue
                 },
-                styles.btnStyles,
+                styles.btnStyles
               ]}
             >
               <Text
                 style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}
               >
-                {`${vehicle ? "Edit" : "Add"} ${pickedType === "bike" ? "Bike" : "Vehicle"}`}
+                {isSubmitting
+                  ? "Saving..."
+                  : `${vehicle ? "Edit" : "Add"} ${pickedType === "bike" ? "Bike" : "Vehicle"}`}
               </Text>
             </CustomButton>
           </View>

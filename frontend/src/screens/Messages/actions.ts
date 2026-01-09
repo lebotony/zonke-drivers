@@ -29,7 +29,9 @@ export const fetchThreadMessages = ({ pageParam = 1, threadId }) =>
       console.log("MESSAGES MESSAGES MESSAGES", response.data);
       return response.data;
     })
-    .catch((err) => err);
+    .catch((err) => {
+      throw new Error("Error while fetching thread messages: " + err.message);
+    });
 
 export const setSeenTrue = (threadId: string) =>
   httpPost("/threads/messages_seen", { thread_id: threadId });

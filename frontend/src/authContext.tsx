@@ -3,7 +3,7 @@ import {
   ReactNode,
   useContext,
   useEffect,
-  useState,
+  useState
 } from "react";
 
 import * as SecureStore from "expo-secure-store";
@@ -65,7 +65,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     authenticated: boolean | null;
   }>({
     token: null,
-    authenticated: null,
+    authenticated: null
   });
 
   const queryClient = useQueryClient();
@@ -77,7 +77,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       if (authState.authenticated) {
         try {
           initializeSocket().then((sock) =>
-            queryClient.setQueryData(["socket"], sock),
+            queryClient.setQueryData(["socket"], sock)
           );
           console.log("Socket connected after authentication");
         } catch (error) {
@@ -103,7 +103,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       ?.join()
       .receive("ok", () => console.log("joined user channel"))
       .receive("error", (err: Error) =>
-        console.error("failed to join user channel", err),
+        console.error("failed to join user channel", err)
       );
 
     queryClient.setQueryData(["userChannel"], userChannel);
@@ -192,7 +192,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     authState: authState,
     onRegister: register,
     onLogin: login,
-    onLogout: logout,
+    onLogout: logout
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
