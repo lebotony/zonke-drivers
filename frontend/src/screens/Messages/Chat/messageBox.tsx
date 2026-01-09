@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { View, TextInput, TouchableOpacity } from "react-native";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -38,6 +39,8 @@ export const MessageBox = (props: MessageBoxProps) => {
     resolver: zodResolver(MessageSchema),
   });
 
+  const [isSending, setIsSending] = useState(false);
+
   const { initiateChannels } = useMessages();
   const { getCachedData } = useCustomQuery();
   const { threadChannels, userChannel, threads } = getCachedData([
@@ -50,6 +53,7 @@ export const MessageBox = (props: MessageBoxProps) => {
 
   const sendToNewThread = (params: Partial<Message>) => {
     if (userChannel) {
+      setIsSending(true);
       userChannel
         .push("send_message_to_new_thread", {
           params: params,
@@ -70,12 +74,15 @@ export const MessageBox = (props: MessageBoxProps) => {
           }
 
           reset();
+          setIsSending(false);
         })
         .receive("error", (err: Error) => {
           console.error("Failed to send message:", err);
+          setIsSending(false);
         })
         .receive("timeout", () => {
           console.warn("Message push timed out");
+          setIsSending(false);
         });
     } else {
       console.warn(`No channel for thread ${threadId}`);
@@ -85,6 +92,7 @@ export const MessageBox = (props: MessageBoxProps) => {
 
   const sendMessage = (params: Partial<Message>) => {
     if (threadChannels?.[threadId as string]) {
+      setIsSending(true);
       threadChannels?.[threadId as string]
         .push("send_message", {
           params: params,
@@ -96,12 +104,15 @@ export const MessageBox = (props: MessageBoxProps) => {
           });
 
           reset();
+          setIsSending(false);
         })
         .receive("error", (err: Error) => {
           console.error("Failed to send message:", err);
+          setIsSending(false);
         })
         .receive("timeout", () => {
           console.warn("Message push timed out");
+          setIsSending(false);
         });
     } else {
       sendToNewThread(params);
@@ -139,8 +150,9 @@ export const MessageBox = (props: MessageBoxProps) => {
         }}
       />
       <TouchableOpacity
-        style={styles.sendButton}
-        onPress={handleSubmit(onSubmit)}
+        style={[styles.sendButton, isSending && { opacity: 0.5 }]}
+        onPress={isSending ? undefined : handleSubmit(onSubmit)}
+        disabled={isSending}
       >
         <Ionicons name="send" size={20} color="white" />
       </TouchableOpacity>

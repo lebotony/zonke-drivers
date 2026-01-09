@@ -55,19 +55,24 @@ defmodule BackendWeb.UserChannel do
     user_id = socket.assigns.user_id
     atomized_params = AtomKeysHelper.string_keys_to_atoms(params)
 
-    {:ok, thread} = Threads.put_message_in_new_thread(atomized_params, user_id)
-    payload = ThreadJSON.show(%{thread: thread})
+    case Threads.put_message_in_new_thread(atomized_params, user_id) do
+      {:ok, thread} ->
+        payload = ThreadJSON.show(%{thread: thread})
+        broadcast_module = Application.get_env(:backend, :broadcast_module)
 
-    broadcast_module = Application.get_env(:backend, :broadcast_module)
+        broadcast_module.broadcast(
+          "users:" <> atomized_params.recipient_id,
+          "new_thread",
+          payload
+        )
 
-    broadcast_module.broadcast(
-      "users:" <> atomized_params.recipient_id,
-      "new_thread",
-      payload
-    )
+        Logger.info("Message sent to NEW thread_id: #{inspect(thread.id)}")
+        {:reply, {:ok, %{thread: payload}}, socket}
 
-    Logger.info("Message sent to NEW thread_id: #{inspect(thread.id)}")
-    {:reply, {:ok, %{thread: payload}}, socket}
+      {:error, reason} ->
+        Logger.error("Failed to create thread: #{inspect(reason)}")
+        {:reply, {:error, %{reason: reason}}, socket}
+    end
   end
 
   # check if current_token exists in that map

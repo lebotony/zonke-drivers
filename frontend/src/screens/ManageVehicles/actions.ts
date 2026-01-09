@@ -12,7 +12,9 @@ export const fetchUserVehicles = ({ pageParam = 1 }) =>
       console.log("user_vehicle user_vehicle", response.data);
       return response.data;
     })
-    .catch((err) => err);
+    .catch((err) => {
+      throw new Error("Error while fetching vehicles: " + err.message);
+    });
 
 export const activateVehicle = (params: {
   active: boolean;
@@ -38,7 +40,9 @@ export const fetchPayments = ({
       console.log("PAYMENTS PAYMENTS PAYMENTS", response.data.paginate);
       return response.data;
     })
-    .catch((err) => err);
+    .catch((err) => {
+      throw new Error("Error while fetching payments: " + err.message);
+    });
 
 export const fetchApplications = ({ pageParam = 1, vehicleId }) =>
   axios
@@ -49,7 +53,9 @@ export const fetchApplications = ({ pageParam = 1, vehicleId }) =>
       console.log("APPLICATIONS APPLICATIONS APPLICATIONS", response.data);
       return response.data;
     })
-    .catch((err) => err);
+    .catch((err) => {
+      throw new Error("Error while fetching applications: " + err.message);
+    });
 
 export const setApplicationsSeen = (vehicleId: string) =>
   httpPost("/vehicle_applications/application_seen", { id: vehicleId });

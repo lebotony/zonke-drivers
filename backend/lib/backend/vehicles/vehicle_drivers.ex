@@ -3,10 +3,11 @@ defmodule Backend.Vehicles.VehicleDrivers do
   alias Backend.Vehicles.VehicleDriver
   alias Backend.Vehicles.Queries.VehicleDriverBy
   alias Backend.Applications.VehicleApplications
+  alias Backend.Vehicles.Policy
 
   import Ecto.Query
 
-  # defdelegate authorize(action, params, session), to: Policy
+  defdelegate authorize(action, params, session), to: Policy
 
   def create(params) do
     Repo.transaction(fn ->
