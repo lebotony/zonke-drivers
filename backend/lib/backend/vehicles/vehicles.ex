@@ -225,7 +225,9 @@ defmodule Backend.Vehicles.Vehicles do
     end)
   end
 
-  def get_vehicles(params, :public) do
+  def get_vehicles(params, %{user_id: user_id}, :public) do
+    driver_country = get_driver_country(user_id)
+
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()
@@ -236,11 +238,13 @@ defmodule Backend.Vehicles.Vehicles do
         as: :vehicle_driver
       )
       |> where([vehicle: v, vehicle_driver: vd], is_nil(vd.id))
+      |> filter_by_country(driver_country)
       |> select_merge([vehicle: v, user: u, asset: a], %{
         v
         | user: %{
             id: u.id,
-            asset: a
+            asset: a,
+            location: u.location
           }
       })
       |> preload(:asset)
@@ -249,6 +253,34 @@ defmodule Backend.Vehicles.Vehicles do
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
+  end
+
+  defp get_driver_country(user_id) when not is_nil(user_id) do
+    from(d in Driver,
+      where: d.user_id == ^user_id,
+      select: d.location
+    )
+    |> Repo.one()
+    |> case do
+      %{"address" => address} ->
+        address
+
+      _ -> nil
+    end
+  end
+
+  defp filter_by_country(query, nil), do: query
+
+  defp filter_by_country(query, driver_country) do
+    query
+    |> where(
+      [user: u],
+      fragment(
+        "LOWER(TRIM(?->>'address')) = LOWER(TRIM(?))",
+        u.location,
+        ^driver_country
+      )
+    )
   end
 
   defp build_search(query, params) do
