@@ -20,6 +20,7 @@ export const fetchSuggestions = debounce(
             access_token: mapboxToken,
             autocomplete: true,
             limit: 5,
+            types: "country",
           },
         },
       )

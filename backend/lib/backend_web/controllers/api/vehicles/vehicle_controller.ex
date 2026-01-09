@@ -19,8 +19,8 @@ defmodule BackendWeb.Vehicles.VehicleController do
     end
   end
 
-  def index_public(conn, params, _session) do
-    with {:ok, vehicles, paginate} <- Vehicles.get_vehicles(params, :public) do
+  def index_public(conn, params, session) do
+    with {:ok, vehicles, paginate} <- Vehicles.get_vehicles(params, session, :public) do
       render(conn, :index, %{vehicles: vehicles, paginate: paginate})
     end
   end

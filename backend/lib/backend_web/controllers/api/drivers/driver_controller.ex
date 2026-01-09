@@ -12,8 +12,8 @@ defmodule BackendWeb.Drivers.DriverController do
     end
   end
 
-  def public_index(conn, params, _session) do
-    with {:ok, drivers, paginate} <- Drivers.get_drivers(params, :public) do
+  def public_index(conn, params, session) do
+    with {:ok, drivers, paginate} <- Drivers.get_drivers(params, session, :public) do
       render(conn, :index, %{drivers: drivers, paginate: paginate})
     end
   end

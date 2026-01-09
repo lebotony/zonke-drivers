@@ -3,7 +3,7 @@ defmodule Backend.Drivers.Drivers do
   alias Backend.Drivers.{Driver, Policy, Queries.DriverBy, Rating}
   alias Backend.Vehicles.VehicleDriver
   alias Backend.Reviews.Review
-  alias Backend.Accounts.Users
+  alias Backend.Accounts.{Users, User}
 
   import Ecto.Query
 
@@ -114,16 +114,49 @@ defmodule Backend.Drivers.Drivers do
     {:ok, data, PaginateHelper.prep_paginate(data)}
   end
 
-  def get_drivers(params, :public) do
+  def get_drivers(params, %{user_id: user_id}, :public) do
+    owner_country = get_owner_country(user_id)
+
     data =
       DriverBy.base_query()
       # |> DriverBy.by_active_status()
       |> add_extra_fields()
+      |> filter_by_country(owner_country)
       |> build_search(params)
       |> build_sort(params)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
+  end
+
+  defp get_owner_country(user_id) when not is_nil(user_id) do
+    from(u in User,
+      where: u.id == ^user_id,
+      select: u.location
+    )
+    |> Repo.one()
+    |> case do
+      %{"address" => address} ->
+        address
+
+      _ -> nil
+    end
+  end
+
+  defp get_owner_country(_), do: nil
+
+  defp filter_by_country(query, nil), do: query
+
+  defp filter_by_country(query, owner_country) do
+    where(
+      query,
+      [driver: d],
+      fragment(
+        "LOWER(TRIM(?->>'address')) = LOWER(TRIM(?))",
+        d.location,
+        ^owner_country
+      )
+    )
   end
 
   defp build_search(query, params) do
