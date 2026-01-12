@@ -84,7 +84,7 @@ export const SelectLicenceArea = (props: SelectAreaProps) => {
   const { options, onAddItem, selectedItems, onRemoveItem, label } = props;
 
   return (
-    <View style={{ marginBottom: 5 }}>
+    <View style={{ marginBottom: 5, marginTop: 15 }}>
       <View style={{ justifyContent: "space-between", flexDirection: "row" }}>
         <Text>
           {label}{" "}

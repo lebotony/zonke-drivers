@@ -38,21 +38,10 @@ Logger.info("Creating users with profiles")
 
 locations_zimbabwe = [
   %{address: "Zimbabwe", lat: -20.1457, lon: 28.5873},
-  %{address: "Zimbabwe", lat: -17.8292, lon: 31.0522},
-  %{address: "Zimbabwe", lat: -19.4500, lon: 29.8167},
-  %{address: "Zimbabwe", lat: -17.9243, lon: 25.8560}
 ]
 
 locations_south_africa = [
   %{address: "South Africa", lat: -26.2678, lon: 27.8585},
-  %{address: "South Africa", lat: -26.1076, lon: 28.0567},
-  %{address: "South Africa", lat: -25.7461, lon: 28.1881},
-  %{address: "South Africa", lat: -29.8587, lon: 31.0218},
-  %{address: "South Africa", lat: -33.9249, lon: 18.4241},
-  %{address: "South Africa", lat: -33.9608, lon: 25.6022},
-  %{address: "South Africa", lat: -29.0852, lon: 26.1596},
-  %{address: "South Africa", lat: -23.9045, lon: 29.4689},
-  %{address: "South Africa", lat: -25.4658, lon: 30.9853}
 ]
 
 locations = locations_zimbabwe ++ locations_south_africa
@@ -60,6 +49,7 @@ locations = locations_zimbabwe ++ locations_south_africa
 users =
   Enum.map(1..40, fn number ->
     role = if number < 21, do: "driver", else: "owner"
+    location = if rem(number, 2) == 0, do: %{address: "Zimbabwe", lat: -20.1457, lon: 28.5873}, else: %{address: "South Africa", lat: -26.2678, lon: 27.8585}
 
     params = %{
       first_name: Person.first_name(),
@@ -67,7 +57,7 @@ users =
       username: "user#{number}",
       email: "user#{number}@gmail.com",
       password: "user123",
-      location: Enum.random(locations),
+      location: location,
       role: role
     }
 
@@ -150,66 +140,48 @@ vehicle_types = ["bike", "passenger", "taxi", "truck", "lorry"]
 fuel_types = [:diesel, :petrol, :electric, :hybrid, :hydrogen]
 vehicle_images = 1..7 |> Enum.to_list() # car1.jpg ... car7.jpg
 
-# Group owners by country based on their location
-{owners_zimbabwe, owners_south_africa} =
-  Enum.split_with(owners_users, fn user ->
-    case user.location.address do
-      address when is_binary(address) ->
-        String.ends_with?(address, "Zimbabwe")
-      _ ->
-        false
-    end
-  end)
-
 counter = :atomics.new(1, signed: true)
 :atomics.put(counter, 1, 0) # initial value 0
 
-# Helper function to create vehicles for a country
-create_vehicles_for_country = fn owners, currency, vehicle_count ->
-  owners
-  |> Enum.take(vehicle_count)
-  |> Enum.map(fn user ->
-    {:ok, vehicle} =
-      %Vehicle{
-        type: Enum.random(vehicle_types),
-        brand: Enum.random(vehicle_brands),
-        model: Enum.random(vehicle_models),
-        manual: Enum.random([true, false]),
-        fuel_type: Enum.random(fuel_types),
-        engine_capacity: 1.2,
-        passengers: Enum.random(2..40),
-        description: "Has suspension problems",
-        payments_per_month: Enum.random(1..4),
-        active: true,
-        mileage: Enum.random(10000..100000),
-        price_fixed: %{currency: currency, value: Enum.random(20..60)},
-        user_id: user.id,
-      }
-      |> Repo.insert()
+vehicles =
+  Enum.flat_map(owners_users, fn user ->
+    vehicles =
+      Enum.map(1..3, fn v ->
+        {:ok, vehicle} =
+          %Vehicle{
+            type: Enum.random(vehicle_types),
+            brand: Enum.random(vehicle_brands),
+            model: Enum.random(vehicle_models),
+            manual: Enum.random([true, false]),
+            fuel_type: Enum.random(fuel_types),
+            engine_capacity: 1.2,
+            passengers: Enum.random(2..40),
+            description: "Has suspension problems",
+            payments_per_month: Enum.random(1..4),
+            active: true,
+            mileage: Enum.random(10000..100000),
+            price_fixed: %{currency: "ZAR", value: Enum.random(20..60)},
+            user_id: user.id,
+          }
+          |> Repo.insert()
 
-    # CREATE VEHICLE ASSET
-    count = :atomics.add_get(counter, 1, 1) # atomically increment
-    image_index = rem(count - 1, length(vehicle_images)) + 1
+          # CREATE VEHICLE ASSET
+        count = :atomics.add_get(counter, 1, 1) # atomically increment
+        image_index = rem(count - 1, length(vehicle_images)) + 1
 
-    asset_params = %{
-      file: %Plug.Upload{
-        path: Path.expand("priv/vehicles/car#{image_index}.jpg"),
-        filename: "car#{image_index}.jpg",
-      },
-      vehicle_id: vehicle.id
-    }
+        asset_params = %{
+          file: %Plug.Upload{
+            path: Path.expand("priv/vehicles/car#{image_index}.jpg"),
+            filename: "car#{image_index}.jpg",
+          },
+          vehicle_id: vehicle.id
+        }
 
-    Assets.upload_and_save(asset_params)
+      Assets.upload_and_save(asset_params)
 
-    vehicle
+      vehicle
+    end)
   end)
-end
-
-# Create exactly 7 vehicles per country
-vehicles_zimbabwe = create_vehicles_for_country.(owners_zimbabwe, "ZWL", 7)
-vehicles_south_africa = create_vehicles_for_country.(owners_south_africa, "ZAR", 7)
-
-vehicles = vehicles_zimbabwe ++ vehicles_south_africa
 
 ######################################################################################################
 
@@ -245,44 +217,23 @@ random_licences = fn licences ->
   |> Enum.take(rand_num_of_items)
 end
 
-# Group driver users by country based on their location
-{drivers_users_zimbabwe, drivers_users_south_africa} =
-  Enum.split_with(drivers_users, fn user ->
-    case user.location.address do
-      address when is_binary(address) ->
-        String.ends_with?(address, "Zimbabwe")
-      _ ->
-        false
-    end
-  end)
-
-# Helper function to create drivers for a country
-create_drivers_for_country = fn driver_users, country_locations, driver_count ->
-  driver_users
-  |> Enum.take(driver_count)
-  |> Enum.map(fn user ->
+drivers =
+  Enum.map(drivers_users, fn user ->
     {:ok, driver} =
       %Driver{
         description: Enum.random(descriptions),
         licences: random_licences.(licences),
         active: true,
         experience: Enum.random(0..52),
-        location: Enum.random(country_locations),
+        location: user.location,
         dob: Date.new!(Enum.random(1960..2006), 10, 13),
         platforms: random_platforms.(driver_platforms),
         user_id: user.id,
       }
       |> Repo.insert()
 
-    driver
-  end)
-end
-
-# Create exactly 7 drivers per country
-drivers_zimbabwe = create_drivers_for_country.(drivers_users_zimbabwe, locations_zimbabwe, 7)
-drivers_south_africa = create_drivers_for_country.(drivers_users_south_africa, locations_south_africa, 7)
-
-drivers = drivers_zimbabwe ++ drivers_south_africa
+      driver
+    end)
 
 ######################################################################################################
 
@@ -553,13 +504,13 @@ messages =
     end)
   end)
 
-Logger.info("Seed data population completed successfully!")
-# Logger.info("Created: #{length(users)} users, #{length(business_profiles)} business profiles")
-Logger.info("Created: #{length(vehicle_applications)} vehicle_applications")
-# Logger.info("Created: #{length(driver_bookings)} driver_bookings")
-# Logger.info("Created: #{length(posts)} posts")
-Logger.info("Created: #{length(vehicles)} vehicles")
-Logger.info("Created: #{length(drivers)} drivers")
-Logger.info("Created: #{length(vehicle_drivers)} vehicle_drivers with historical periods and payments")
-Logger.info("Created: #{length(driver_comments)} driver_comments")
-Logger.info("Created: #{length(threads)} threads, #{length(messages)} messages")
+IO.puts("Seed data population completed successfully!")
+# IO.puts("Created: #{length(users)} users, #{length(business_profiles)} business profiles")
+IO.puts("Created: #{length(vehicle_applications)} vehicle_applications")
+# IO.puts("Created: #{length(driver_bookings)} driver_bookings")
+# IO.puts("Created: #{length(posts)} posts")
+IO.puts("Created: #{length(vehicles)} vehicles")
+IO.puts("Created: #{length(drivers)} drivers")
+IO.puts("Created: #{length(vehicle_drivers)} vehicle_drivers with historical periods and payments")
+IO.puts("Created: #{length(driver_comments)} driver_comments")
+IO.puts("Created: #{length(threads)} threads, #{length(messages)} messages")

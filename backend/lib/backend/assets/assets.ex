@@ -162,7 +162,7 @@ defmodule Backend.Assets.Assets do
     if Mix.env() == :dev do
       ExAws.Config.new(:s3,
         scheme: "http://",
-        host: "192.168.1.106",
+        host: "192.168.1.39",
         port: 4566,
         region: "us-east-1"
       )

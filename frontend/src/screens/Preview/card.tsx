@@ -79,7 +79,7 @@ export const PreviewCard = () => {
       }}
     >
       <View style={{ alignItems: "center", backgroundColor: Colors.bg }}>
-        <BackArrow left={12} />
+        <BackArrow left={12} top={3} />
         <Text style={{ fontSize: 20, marginBottom: 30 }}>Preview Card</Text>
       </View>
       <DriverCard driver={driverProfile} />

@@ -1,6 +1,6 @@
 import React, { ReactNode, useState } from "react";
 import { View, TextInput, Pressable } from "react-native";
-import { Text } from "react-native-paper";
+import { Text, useTheme } from "react-native-paper";
 
 import {
   Control,
@@ -109,6 +109,8 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
   const [showPassword, setShowPassword] = useState(false);
   const [displayDropdown, setDisplayDropdown] = useState(false);
 
+  const { fonts } = useTheme();
+
   const inputStyle = type === "text" ? styles.textArea : styles.input;
 
   const RightInputIcon: VoidFunction | ReactNode = () => {
@@ -132,9 +134,11 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
   return (
     <View style={[customStyles]}>
       <View style={styles.label}>
-        <Text style={{ fontWeight: "500", color: Colors.black }}>{label}</Text>
+        <Text style={[{ fontSize: 15, lineHeight: 20 }, fonts.bodyMedium]}>
+          {label}
+        </Text>
         {required ? (
-          <Text style={{ color: Colors.mrDBlue, paddingLeft: 3 }}>*</Text>
+          <Text style={{ color: Colors.primaryBlue, paddingLeft: 3 }}>*</Text>
         ) : (
           <Text
             style={{ color: Colors.lightGrey, paddingLeft: 3, fontSize: 13 }}
@@ -149,7 +153,7 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
           styles.inputContainer,
           type === "text" && {
             padding: 8,
-            paddingHorizontal: 8,
+            // paddingHorizontal: 8,
           },
           showMediaIcons && {
             flexDirection: "column",
@@ -158,19 +162,19 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
           },
         ]}
       >
-        {!(type === "text") && !(type === "dropdown") && (
+        {/* {!(type === 'text') && !(type === 'dropdown') && (
           <MaterialIcons
             name={inputIcon as keyof typeof MaterialIcons.glyphMap}
             size={inputIconSize}
             style={[styles.inputIcon, { marginRight: 4 }]}
           />
-        )}
+        )} */}
         <Controller
           control={control}
           name={name}
           render={({ field: { onChange, onBlur, value } }) => (
             <TextInput
-              style={inputStyle}
+              style={[inputStyle, { fontFamily: "NationalPark_500Medium" }]}
               placeholder={placeholder}
               placeholderTextColor={placeholderTextColor}
               value={value}
@@ -178,6 +182,7 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
               onBlur={onBlur}
               autoComplete="off"
               autoCorrect={false}
+              autoCapitalize="none"
               spellCheck={false}
               textContentType="none"
               importantForAutofill="no"

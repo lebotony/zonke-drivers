@@ -73,7 +73,7 @@ export const DriverCard = (props: DriverProps) => {
             style={[
               styles.name,
               applicant && { color: Colors.white },
-              { fontWeight: 500, lineHeight: 17 },
+              { fontWeight: 500 },
             ]}
           >
             View profile

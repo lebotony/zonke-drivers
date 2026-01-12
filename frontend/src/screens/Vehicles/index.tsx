@@ -96,6 +96,11 @@ export const VehiclesScreen = () => {
 
   const vehicles = data?.pages.flatMap((page) => page?.data) ?? [];
 
+  console.log(
+    "IIIIIIIIIII",
+    vehicles.map((v) => v.user.location.address),
+  );
+
   // useEffects responsible for triggering refetch
   useEffect(() => {
     if (debouncedSearchTerm !== undefined) {

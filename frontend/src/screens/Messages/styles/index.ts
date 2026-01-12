@@ -1,11 +1,12 @@
 import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/ui";
+import { topOffset } from "@/src/components/appStyles";
 
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.bg,
-    paddingTop: 30,
+    ...topOffset,
   },
   header: {
     flexDirection: "row",

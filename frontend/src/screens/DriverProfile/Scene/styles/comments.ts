@@ -7,6 +7,7 @@ export const styles = StyleSheet.create({
   commentsSection: {
     flex: 1,
     paddingBottom: 20,
+    position: "relative",
     ...topOffset,
   },
   commentsTitle: {

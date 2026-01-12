@@ -1,4 +1,10 @@
-import { Platform, View, ViewStyle, StyleSheet } from "react-native";
+import {
+  Platform,
+  View,
+  ViewStyle,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 
 import { router } from "expo-router";
 
@@ -10,28 +16,27 @@ import { Colors } from "@/src/../constants/ui";
 type BackArrow = {
   customStyles?: ViewStyle;
   left?: number;
+  top?: number;
 };
 
 export const BackArrow = (props: BackArrow) => {
-  const { customStyles, left = 7 } = props;
+  const { customStyles, left = 7, top = 0 } = props;
 
   return (
-    <View style={[styles.row, { left: left }, customStyles]}>
-      <CustomButton color={Colors.whiteSmoke} onPress={() => router.back()}>
+    <View style={[styles.row, { left: left, top: top }, customStyles]}>
+      <TouchableOpacity onPress={() => router.back()}>
         <MaterialIcons
           name={Platform.OS === "ios" ? "arrow-back-ios-new" : "arrow-back"}
           size={24}
           color={Colors.black}
         />
-      </CustomButton>
+      </TouchableOpacity>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   row: {
-    flexDirection: "row",
-    alignItems: "center",
     position: "absolute",
     zIndex: 10000,
   },

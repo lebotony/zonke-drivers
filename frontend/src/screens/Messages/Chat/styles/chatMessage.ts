@@ -4,7 +4,7 @@ import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   chatMessage: {
-    backgroundColor: "#f7f7f7ff",
+    backgroundColor: "#f2f2f2ff",
     paddingVertical: 7,
     paddingHorizontal: 12,
     borderRadius: 16,

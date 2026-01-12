@@ -1,39 +1,49 @@
+import { Colors } from "@/constants/ui";
 import { StyleSheet } from "react-native";
-
-import { Colors } from "../../../../constants/ui";
-import { shadowStyles } from "../../shadowStyles";
+import { shadowStyles } from "@/src/components/shadowStyles";
+import { IS_IOS } from "@/constants/srcConstants";
 
 export const styles = StyleSheet.create({
   label: {
     fontSize: 15,
-    marginBottom: 8,
+    lineHeight: 20,
+    marginBottom: 6,
   },
   inputBox: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 14,
-    borderRadius: 5,
+    paddingLeft: 10,
+    paddingRight: 10,
+    borderRadius: 7,
+    borderColor: "#F2F2F2",
+    backgroundColor: Colors.inputBackground,
+    borderWidth: 1,
     position: "relative",
-    // zIndex: 1,
     overflow: "hidden",
+    paddingTop: IS_IOS ? 12 : 6,
+    paddingBottom: IS_IOS ? 12 : 6,
   },
-  before: {
-    ...StyleSheet.absoluteFillObject,
-    borderRadius: 5,
-    backgroundColor: Colors.lightGrey,
-    opacity: 0.4,
-    zIndex: -1,
+  textArea: {
+    paddingHorizontal: 10,
+    paddingVertical: 3,
+    borderRadius: 7,
+    borderColor: "#F2F2F2",
+    borderWidth: 1,
+    position: "relative",
+    overflow: "hidden",
   },
   inputText: {
     fontSize: 15,
     color: Colors.black,
+    lineHeight: 15,
   },
   placeholderText: {
     opacity: 0.3,
   },
   caretWrapper: {
     alignItems: "center",
+    paddingRight: 2,
   },
   backdrop: {
     ...StyleSheet.absoluteFillObject,

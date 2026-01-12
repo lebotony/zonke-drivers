@@ -13,6 +13,7 @@ import { useFocusEffect } from "expo-router";
 import { Colors } from "@/constants/ui";
 
 import { styles } from "./styles";
+import { IS_IOS } from "../../../constants/srcConstants";
 
 type DynamicHeaderProps = {
   header: ReactNode;
@@ -113,7 +114,9 @@ export const DynamicHeader = ({
           ? children({
               onScroll,
               scrollEventThrottle: 16,
-              contentContainerStyle: { paddingTop: headerHeight },
+              contentContainerStyle: {
+                paddingTop: headerHeight - (IS_IOS ? 60 : 0),
+              },
             })
           : children}
       </View>

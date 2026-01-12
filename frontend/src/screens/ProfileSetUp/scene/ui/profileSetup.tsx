@@ -229,7 +229,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
           }
         }
       >
-        <BackArrow left={0} />
+        <BackArrow left={0} top={3} />
         <Text style={styles.title}>Edit Profile</Text>
         <TouchableOpacity
           onPress={handleSelectImage}
@@ -360,6 +360,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
               placeholder="12"
               errors={errors}
               required
+              decimalPad
             />
 
             <Fieldset

@@ -26,6 +26,7 @@ import { MessageBox } from "./messageBox";
 import { styles } from "./styles/index";
 import { fetchThreadMessages, setSeenTrue } from "../actions";
 import { useMessages } from "../MessagesProvider";
+import { topOffset } from "@/src/components/appStyles";
 
 export const ChatScreen = () => {
   const { id } = useLocalSearchParams();
@@ -59,7 +60,7 @@ export const ChatScreen = () => {
   const thread = find(threads, { id: threadId });
   const recipient = find(
     thread?.thread_participants,
-    (thd_part) => thd_part.participant.id !== user?.id
+    (thd_part) => thd_part.participant.id !== user?.id,
   )?.participant;
 
   const isNewThread = isEmpty(thread?.last_message);
@@ -75,7 +76,7 @@ export const ChatScreen = () => {
     updateNestedPagination(
       threadId,
       "messagesPagination",
-      messagesObj.paginate
+      messagesObj.paginate,
     );
 
     const messages = messagesObj?.data ?? [];
@@ -106,7 +107,7 @@ export const ChatScreen = () => {
       (fetchedMsgThreadIds: Thread["id"][]) => [
         ...(fetchedMsgThreadIds ?? []),
         id,
-      ]
+      ],
     );
 
   const onResetUnseenCount = (threadId: string) =>
@@ -131,7 +132,7 @@ export const ChatScreen = () => {
 
     const { pageParam } = onFetchNestedPagination(
       threadId,
-      "messagesPagination"
+      "messagesPagination",
     );
 
     fetchThreadMessages({
@@ -156,7 +157,7 @@ export const ChatScreen = () => {
   const onGoBack = () => navigation.goBack();
 
   return (
-    <SafeAreaView style={[styles.container, { paddingTop: IS_IOS ? 35 : 30 }]}>
+    <SafeAreaView style={[styles.container, { ...topOffset }]}>
       <View style={styles.header}>
         <Pressable style={{ marginRight: 12 }} onPress={onGoBack}>
           <MaterialIcons
