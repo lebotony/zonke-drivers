@@ -2,10 +2,10 @@ import { StyleSheet } from "react-native";
 
 import { Colors } from "@/constants/ui";
 import { isIOS } from "@/src/helpers/platform";
+import { topOffset } from "@/src/components/appStyles";
 
 export const styles = StyleSheet.create({
   container: {
-    paddingTop: isIOS ? 37 : 10,
     backgroundColor: Colors.white,
     shadowColor: Colors.darkGrey,
     shadowOffset: {

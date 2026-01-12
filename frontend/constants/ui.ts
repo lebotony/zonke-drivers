@@ -3,6 +3,7 @@ export const Colors = {
   blueTicksColor: "#34B7F1",
   black: "#000",
   darkCharcoalGrey: "#1C1B1F",
+  inputBackground: "#FCFCFC",
   white: "#fff",
   grey: "#ccc",
   darkGrey: "#a9a9a9",

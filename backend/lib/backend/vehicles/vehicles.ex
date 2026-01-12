@@ -265,7 +265,8 @@ defmodule Backend.Vehicles.Vehicles do
       %{"address" => address} ->
         address
 
-      _ -> nil
+      _ ->
+        nil
     end
   end
 

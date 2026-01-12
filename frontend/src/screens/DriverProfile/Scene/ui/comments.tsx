@@ -15,6 +15,8 @@ import { BackArrow } from "@/src/components/BackArrow/header";
 
 import { fetchComments } from "../../actions";
 import { styles } from "../styles/comments";
+import { IS_IOS } from "@/constants/srcConstants";
+import { topOffsetHeight } from "@/src/components/appStyles";
 
 export const CommentsScreen = () => {
   const { id } = useLocalSearchParams();
@@ -99,7 +101,7 @@ export const CommentsScreen = () => {
 
   return (
     <View style={styles.commentsSection}>
-      <BackArrow left={20} customStyles={{ top: 20 }} />
+      <BackArrow left={20} top={topOffsetHeight + 3} />
       {isEmpty(driver?.comments) ? (
         <View style={styles.noCommentsWrapper}>
           <Text style={styles.noCommentsText}>No comments</Text>

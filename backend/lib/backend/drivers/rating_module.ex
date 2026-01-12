@@ -72,7 +72,7 @@ defmodule Backend.Drivers.Rating do
           end
       end
 
-    IO.inspect(vd_results, label: "RATING RATING RATING")
+    # IO.inspect(vd_results, label: "RATING RATING RATING")
 
     %{
       driver_id: driver_id,
@@ -145,15 +145,22 @@ defmodule Backend.Drivers.Rating do
         # IO.inspect(expected, label: "EXPECTED EXPECTED EXPECTED")
 
         cond do
-          expected == 0 and payments_made > 0 -> 5.0
-          expected == 0 and payments_made == 0 -> nil
-          expected == 0 -> nil
+          expected == 0 and payments_made > 0 ->
+            5.0
+
+          expected == 0 and payments_made == 0 ->
+            nil
+
+          expected == 0 ->
+            nil
+
           true ->
             rating = payments_made / expected * 5.0
             if rating > 5, do: 5, else: rating
         end
       end)
-      |> Enum.reject(&is_nil/1)   # remove periods with rating nil
+      # remove periods with rating nil
+      |> Enum.reject(&is_nil/1)
     end
   end
 
