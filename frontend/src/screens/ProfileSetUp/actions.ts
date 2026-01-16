@@ -2,6 +2,7 @@ import axios from "axios";
 
 import { httpGet, httpPost, httpPut } from "@/src/requests";
 import { API_URL } from "@/constants/srcConstants";
+import { compressImage } from "@/src/helpers/compressImage";
 
 import { DriverFormValues, OwnerFormValues } from "./scene/ui/profileSetup";
 
@@ -21,13 +22,15 @@ export const updateUserAsset = async (
 
   try {
     if (params && params.file_path) {
-      const uri = params.file_path;
-      const name = params.filename || uri.split("/").pop();
+      // Compress the image before upload
+      const compressed = await compressImage({ uri: params.file_path });
+
+      const name = params.filename || compressed.uri.split("/").pop();
       const ext = name?.split(".").pop()?.toLowerCase() || "jpg";
       const mime = ext === "png" ? "image/png" : "image/jpeg";
 
       form.append("file", {
-        uri,
+        uri: compressed.uri,
         name,
         type: mime,
       } as any);

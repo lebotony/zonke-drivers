@@ -1,4 +1,7 @@
-import { numbersZodValidation, stringsZodValidation } from "@/src/helpers/schemaHelper";
+import {
+  numbersZodValidation,
+  stringsZodValidation,
+} from "@/src/helpers/schemaHelper";
 import { z } from "zod";
 
 export const fieldValidators = {
@@ -6,9 +9,11 @@ export const fieldValidators = {
   last_name: stringsZodValidation("Last Name"),
   location: z
     .object({
-      address: z.string().optional(),
       lon: z.number().optional(),
       lat: z.number().optional(),
+      country: z.string().optional(),
+      city: z.string().optional(),
+      place: z.string().optional(),
     })
     .optional(),
   email: stringsZodValidation(),

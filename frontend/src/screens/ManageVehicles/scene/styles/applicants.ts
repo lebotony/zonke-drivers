@@ -7,14 +7,22 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.bg,
+    ...topOffset,
   },
   header: {
     paddingHorizontal: 14,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.bg,
     borderBottomColor: Colors.whiteSmoke,
     borderBottomWidth: 1,
-    ...topOffset,
-    // ...shadowStyles,
+    paddingTop: 10,
+    shadowColor: Colors.darkGrey,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
   },
   headerTitle: {
     position: "relative",

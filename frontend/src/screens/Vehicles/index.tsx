@@ -20,6 +20,7 @@ import { BrandsList } from "./utils/constants";
 import { Brands } from "./scene/ui/brands";
 import { Header } from "../Drivers/Scene/ui/header";
 import { HeaderFilterPlatforms } from "./scene/ui/platforms";
+import { IS_IOS } from "../../../constants/srcConstants";
 
 export const VehiclesScreen = () => {
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -98,7 +99,7 @@ export const VehiclesScreen = () => {
 
   console.log(
     "IIIIIIIIIII",
-    vehicles.map((v) => v.user.location.address),
+    vehicles.map((v) => v?.user?.location?.country),
   );
 
   // useEffects responsible for triggering refetch
@@ -200,7 +201,7 @@ export const VehiclesScreen = () => {
       <DynamicHeader
         headerBgColor={Colors.bg}
         header={
-          <View>
+          <View style={[IS_IOS && styles.iosHeader]}>
             <Header
               setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
               setSearchTerm={(value: string) => setSearchTerm(value)}

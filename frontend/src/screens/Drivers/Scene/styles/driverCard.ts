@@ -88,10 +88,12 @@ export const styles = StyleSheet.create({
     borderRadius: 10,
   },
   cardBtns: {
-    paddingTop: 10,
-    paddingBottom: 12,
+    paddingVertical: 6,
     backgroundColor: Colors.lightGreen,
     width: "48%",
     ...shadowStyles,
+  },
+  viewProfileBtn: {
+    paddingVertical: 4,
   },
 });

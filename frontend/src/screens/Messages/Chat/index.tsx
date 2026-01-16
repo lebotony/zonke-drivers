@@ -157,33 +157,35 @@ export const ChatScreen = () => {
   const onGoBack = () => navigation.goBack();
 
   return (
-    <SafeAreaView style={[styles.container, { ...topOffset }]}>
-      <View style={styles.header}>
-        <Pressable style={{ marginRight: 12 }} onPress={onGoBack}>
-          <MaterialIcons
-            name="arrow-back-ios"
-            size={22}
-            color={Colors.darkCharcoal}
+    <View style={[styles.container, { ...topOffset }]}>
+      <SafeAreaView style={styles.headerContainer}>
+        <View style={styles.header}>
+          <Pressable style={{ marginRight: 12 }} onPress={onGoBack}>
+            <MaterialIcons
+              name="arrow-back-ios"
+              size={22}
+              color={Colors.darkCharcoal}
+            />
+          </Pressable>
+          <Image
+            source={recipient?.asset_url}
+            style={styles.avatar}
+            resizeMode="cover"
           />
-        </Pressable>
-        <Image
-          source={recipient?.asset_url}
-          style={styles.avatar}
-          resizeMode="cover"
-        />
-        <View style={{ flex: 1 }}>
-          <Text style={styles.name}>
-            {recipient?.first_name} {recipient?.last_name}
-          </Text>
-          {/* <Text style={styles.status}>Online</Text> */}
+          <View style={{ flex: 1 }}>
+            <Text style={styles.name}>
+              {recipient?.first_name} {recipient?.last_name}
+            </Text>
+            {/* <Text style={styles.status}>Online</Text> */}
+          </View>
+          {/* <Feather name="more-vertical" size={22} color={Colors.mediumDarkGrey} /> */}
         </View>
-        {/* <Feather name="more-vertical" size={22} color={Colors.mediumDarkGrey} /> */}
-      </View>
+      </SafeAreaView>
 
       <KeyboardAvoidingView
         style={styles.container}
-        behavior={IS_IOS ? "padding" : undefined}
-        keyboardVerticalOffset={IS_IOS ? 90 : 0}
+        behavior={IS_IOS ? "padding" : "height"}
+        keyboardVerticalOffset={IS_IOS ? 0 : 20}
       >
         <View style={styles.content}>
           <FlatList
@@ -226,6 +228,6 @@ export const ChatScreen = () => {
           user={user}
         />
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </View>
   );
 };

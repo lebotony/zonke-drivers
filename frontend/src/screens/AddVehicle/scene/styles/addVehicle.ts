@@ -35,6 +35,7 @@ export const styles = StyleSheet.create({
     width: "88%",
     aspectRatio: 16 / 12,
     borderRadius: 12,
+    position: "relative",
   },
   imageStyles: {
     width: "100%",

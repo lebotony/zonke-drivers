@@ -27,6 +27,10 @@ erl_crash.dump
 
 .tool-versions
 
+# Environment variables
+.env
+.env.local
+
 # If using Phoenix
 /node_modules/
 npm-debug.log

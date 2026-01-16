@@ -20,6 +20,9 @@ if System.get_env("PHX_SERVER") do
   config :backend, BackendWeb.Endpoint, server: true
 end
 
+# Configure Mapbox token for all environments
+config :backend, :mapbox_token, System.get_env("MAPBOX_TOKEN")
+
 if config_env() == :prod do
   database_url =
     System.get_env("DATABASE_URL") ||

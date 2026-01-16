@@ -25,6 +25,7 @@ import { Licences } from "./ui/licences";
 import { createThread, fetchDriverProfile } from "../actions";
 import { detailsDef } from "./ui/detailsPill";
 import { styles } from "./styles";
+import { IS_IOS } from "../../../../constants/srcConstants";
 
 export const Scene = () => {
   const { id } = useLocalSearchParams();
@@ -78,107 +79,110 @@ export const Scene = () => {
   if (!driver) return <Spinner />;
 
   return (
-    <SafeAreaView>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        showsHorizontalScrollIndicator={false}
-        style={{ position: "relative" }}
-      >
-        <View style={styles.body}>
-          <BackArrow />
+    <View style={{ flex: 1 }}>
+      <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{ paddingBottom: !isUserProfile ? 80 : 20 }}
+        >
+          <View style={styles.body}>
+            <BackArrow />
 
-          <View style={styles.profilePic}>
-            {driver?.asset_url ? (
-              <Avatar source={driver?.asset_url} round shadow width={125} />
-            ) : (
-              <View style={styles.defaultPic}>
-                <Ionicons
-                  name="person"
-                  size={60}
-                  color={Colors.mediumLightGrey}
-                />
-              </View>
-            )}
-
-            <View style={styles.nameAgeWrapper}>
-              <Text style={styles.name}>
-                {driver?.first_name} {driver?.last_name}{" "}
-              </Text>
-              <Text
-                style={styles.age}
-              >{`(${calculateAge(driver?.dob)}) yrs`}</Text>
-            </View>
-
-            {driver?.location?.address && (
-              <View style={styles.headerLocation}>
-                <MaterialIcons
-                  name="location-pin"
-                  size={20}
-                  color={Colors.mediumDarkGrey}
-                />
-                <Text style={styles.location}>
-                  {!isEmpty(driver?.location)
-                    ? driver?.location?.address
-                    : "NA"}
-                </Text>
-              </View>
-            )}
-          </View>
-
-          <Text
-            style={[
-              styles.description,
-              isEmpty(driver?.description) && { display: "none" },
-            ]}
-            numberOfLines={2}
-          >
-            {driver?.description}
-          </Text>
-
-          <Text
-            style={[
-              styles.heading,
-              isEmpty(driver?.platforms) && { display: "none" },
-            ]}
-          >
-            Platforms
-          </Text>
-
-          <Platforms
-            customContainerStyle={styles.platormsContainer}
-            platforms={driver?.platforms}
-          />
-
-          <Licences licences={driver?.licences} />
-
-          <View style={styles.stats}>
-            <Text style={styles.driverDetailsText}>Driver Details</Text>
-            <View style={styles.statsWrapper}>
-              {detailsDef.map((detail, index) => (
-                <View key={`${detail.slug}-${index}`} style={styles.stat}>
-                  {detail.icon}
-                  <Text style={styles.statValue}>
-                    {driver?.[`${detail.slug}`]}
-                  </Text>
-                  <Text style={styles.statType}>{detail.label}</Text>
+            <View style={styles.profilePic}>
+              {driver?.asset_url ? (
+                <Avatar source={driver?.asset_url} round shadow width={125} />
+              ) : (
+                <View style={styles.defaultPic}>
+                  <Ionicons
+                    name="person"
+                    size={60}
+                    color={Colors.mediumLightGrey}
+                  />
                 </View>
-              ))}
-            </View>
-          </View>
+              )}
 
-          <CustomButton
-            onPress={() => router.push(`/comments/${driverId}`)}
-            color={Colors.mrDBlue}
-          >
-            <Text style={{ color: Colors.white, fontWeight: 600 }}>
-              See Comments
+              <View style={styles.nameAgeWrapper}>
+                <Text style={styles.name}>
+                  {driver?.first_name} {driver?.last_name}{" "}
+                </Text>
+                <Text
+                  style={styles.age}
+                >{`(${calculateAge(driver?.dob)}) yrs`}</Text>
+              </View>
+
+              {driver?.location?.place && (
+                <View style={styles.headerLocation}>
+                  <MaterialIcons
+                    name="location-pin"
+                    size={20}
+                    color={Colors.mediumDarkGrey}
+                  />
+                  <Text style={styles.location}>
+                    {!isEmpty(driver?.location)
+                      ? driver?.location?.place
+                      : "NA"}
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            <Text
+              style={[
+                styles.description,
+                isEmpty(driver?.description) && { display: "none" },
+              ]}
+              numberOfLines={2}
+            >
+              {driver?.description}
             </Text>
-          </CustomButton>
-        </View>
-      </ScrollView>
+
+            <Text
+              style={[
+                styles.heading,
+                isEmpty(driver?.platforms) && { display: "none" },
+              ]}
+            >
+              Platforms
+            </Text>
+
+            <Platforms
+              customContainerStyle={styles.platormsContainer}
+              platforms={driver?.platforms}
+            />
+
+            <Licences licences={driver?.licences} />
+
+            <View style={styles.stats}>
+              <Text style={styles.driverDetailsText}>Driver Details</Text>
+              <View style={styles.statsWrapper}>
+                {detailsDef.map((detail, index) => (
+                  <View key={`${detail.slug}-${index}`} style={styles.stat}>
+                    {detail.icon}
+                    <Text style={styles.statValue}>
+                      {driver?.[`${detail.slug}`]}
+                    </Text>
+                    <Text style={styles.statType}>{detail.label}</Text>
+                  </View>
+                ))}
+              </View>
+            </View>
+
+            <CustomButton
+              onPress={() => router.push(`/comments/${driverId}`)}
+              color={Colors.mrDBlue}
+              customStyle={{ marginBottom: IS_IOS ? 20 : 0 }}
+            >
+              <Text style={{ color: Colors.white, fontWeight: 600 }}>
+                See Comments
+              </Text>
+            </CustomButton>
+          </View>
+        </ScrollView>
+      </SafeAreaView>
 
       {!isUserProfile && (
-        <View style={styles.footer}>
+        <SafeAreaView edges={["bottom"]} style={styles.footer}>
           <CustomButton
             color={Colors.emeraldGreen}
             onPress={handleCreateThread}
@@ -204,8 +208,8 @@ export const Scene = () => {
               color={Colors.white}
             />
           </CustomButton>
-        </View>
+        </SafeAreaView>
       )}
-    </SafeAreaView>
+    </View>
   );
 };

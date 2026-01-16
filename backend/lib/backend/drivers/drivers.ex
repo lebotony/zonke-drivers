@@ -53,6 +53,8 @@ defmodule Backend.Drivers.Drivers do
     case get_user_driver(user_id) do
       {:ok, driver} ->
         if map_size(cleaned_params) > 0 do
+          # IO.inspect(cleaned_params, label: "Updating Driver with Params")
+
           case update_driver(driver, cleaned_params) do
             {:ok, driver} -> get_driver(driver.id, :public)
             {:error, error} -> {:error, error}
@@ -136,10 +138,11 @@ defmodule Backend.Drivers.Drivers do
     )
     |> Repo.one()
     |> case do
-      %{"address" => address} ->
-        address
+      %{"country" => country} ->
+        country
 
-      _ -> nil
+      _ ->
+        nil
     end
   end
 
@@ -152,7 +155,7 @@ defmodule Backend.Drivers.Drivers do
       query,
       [driver: d],
       fragment(
-        "LOWER(TRIM(?->>'address')) = LOWER(TRIM(?))",
+        "LOWER(TRIM(?->>'country')) = LOWER(TRIM(?))",
         d.location,
         ^owner_country
       )
@@ -245,7 +248,7 @@ defmodule Backend.Drivers.Drivers do
 
     query
     |> join(:inner, [driver: d], u in assoc(d, :user), as: :user)
-    |> join(:left, [user: u], a in assoc(u, :asset), as: :asset)
+    |> join(:inner, [user: u], a in assoc(u, :asset), as: :asset)
     |> join(:left_lateral, [driver: d], vd_stats in subquery(subquery), as: :vd_stats)
     |> select_merge([driver: d, user: u, vd_stats: vd_stats, asset: a], %{
       d

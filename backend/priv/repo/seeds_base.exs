@@ -36,20 +36,14 @@ alias Backend.Ecto.EctoEnums
 
 Logger.info("Creating users with profiles")
 
-locations_zimbabwe = [
-  %{address: "Zimbabwe", lat: -20.1457, lon: 28.5873},
-]
+locations_zimbabwe = %{place: "Nketa, Bulawayo, Zimbabwe", country: "Zimbabwe", city: "Bulawayo", lat: -20.1457, lon: 28.5873}
 
-locations_south_africa = [
-  %{address: "South Africa", lat: -26.2678, lon: 27.8585},
-]
-
-locations = locations_zimbabwe ++ locations_south_africa
+locations_south_africa = %{place: "Nkuluekweni, Eastern Cape, South Africa", country: "South Africa", city: "Eastern Cape", lat: -26.2678, lon: 27.8585}
 
 users =
   Enum.map(1..40, fn number ->
     role = if number < 21, do: "driver", else: "owner"
-    location = if rem(number, 2) == 0, do: %{address: "Zimbabwe", lat: -20.1457, lon: 28.5873}, else: %{address: "South Africa", lat: -26.2678, lon: 27.8585}
+    location = if rem(number, 2) == 0, do: locations_zimbabwe, else: locations_south_africa
 
     params = %{
       first_name: Person.first_name(),

@@ -27,9 +27,11 @@ type Paginate = {
 };
 
 type LocationType = {
-  address: string;
-  lat: string;
-  lon: string;
+  country: string;
+  city: string;
+  lon: number;
+  lat: number;
+  place: string;
 };
 
 type Licence = {

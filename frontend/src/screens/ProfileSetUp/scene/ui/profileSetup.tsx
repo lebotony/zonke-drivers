@@ -36,6 +36,7 @@ import { useCustomQuery } from "@/src/useQueryContext";
 import { AppToast } from "@/src/components/CustomToast/customToast";
 import { BackArrow } from "@/src/components/BackArrow/header";
 import { Spinner } from "@/src/components/elements/Spinner";
+import { ImageLoadingOverlay } from "@/src/components/elements/ImageLoadingOverlay";
 
 import { styles } from "../styles/profileSetup";
 import { DriverProfileSchema, OwnerProfileSchema } from "../schema";
@@ -58,6 +59,9 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const queryClient = useQueryClient();
   const { getCachedData } = useCustomQuery();
   const { user, driverProfile } = getCachedData(["user", "driverProfile"]);
+
+  console.log("FFFFFFFFFFFFF", driverProfile?.location);
+  console.log("GGGGGGGGGGGGG", user?.location);
 
   const isDriver = user?.role === "driver";
 
@@ -92,6 +96,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", (e) => {
@@ -213,6 +218,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
       updateUserAsset,
       user?.id,
       updatePaginatedAsset,
+      setIsUploadingImage,
     );
 
   return (
@@ -232,11 +238,12 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
         <BackArrow left={0} top={3} />
         <Text style={styles.title}>Edit Profile</Text>
         <TouchableOpacity
-          onPress={handleSelectImage}
+          onPress={isUploadingImage ? undefined : handleSelectImage}
           style={[
             styles.avatarWrapper,
             isProfilePicPresent && { borderWidth: 0 },
           ]}
+          disabled={isUploadingImage}
         >
           <Avatar
             width={130}
@@ -247,16 +254,8 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
             round
             backgroundColor={false}
           />
-          <TouchableOpacity
-            onPress={handleSelectImage}
-            style={styles.editButton}
-          >
-            <MaterialIcons
-              name="drive-file-rename-outline"
-              color={Colors.mrDBlue}
-              size={21}
-            />
-          </TouchableOpacity>
+          <ImageLoadingOverlay isLoading={isUploadingImage} borderRadius={65} />
+
           {!isProfilePicPresent && (
             <Text style={styles.imageText}>Select an image</Text>
           )}
@@ -296,7 +295,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
           name="location"
           required
           label="Location"
-          value={initialLocation.address}
+          value={initialLocation.place}
           setValue={setValue}
           placeholder="Search location..."
         />
@@ -396,3 +395,6 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
     </KeyboardAvoidingView>
   );
 };
+
+// messenger chat header scrolls away when keyboard is opened in android. it should stay fixed
+// add hire button on the driver profile. When clicked, it should redirect to the manage page, and select the vehicle you are hiring for and link the 2

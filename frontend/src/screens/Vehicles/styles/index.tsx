@@ -17,6 +17,17 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     ...shadowStyles,
   },
+  iosHeader: {
+    backgroundColor: Colors.bg,
+    shadowColor: Colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
+  },
   greeting: {
     flex: 1,
   },

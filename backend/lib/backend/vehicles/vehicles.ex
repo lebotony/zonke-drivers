@@ -232,7 +232,7 @@ defmodule Backend.Vehicles.Vehicles do
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()
       |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
-      |> join(:left, [user: u], a in assoc(u, :asset), as: :asset)
+      |> join(:inner, [user: u], a in assoc(u, :asset), as: :asset)
       |> join(:left, [v], vd in VehicleDriver,
         on: v.id == vd.vehicle_id and vd.active == true,
         as: :vehicle_driver
@@ -262,8 +262,8 @@ defmodule Backend.Vehicles.Vehicles do
     )
     |> Repo.one()
     |> case do
-      %{"address" => address} ->
-        address
+      %{"country" => country} ->
+        country
 
       _ ->
         nil
@@ -277,7 +277,7 @@ defmodule Backend.Vehicles.Vehicles do
     |> where(
       [user: u],
       fragment(
-        "LOWER(TRIM(?->>'address')) = LOWER(TRIM(?))",
+        "LOWER(TRIM(?->>'country')) = LOWER(TRIM(?))",
         u.location,
         ^driver_country
       )

@@ -11,7 +11,7 @@ import * as SecureStore from "expo-secure-store";
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { Platform } from "react-native";
+import { AppState, AppStateStatus, Platform } from "react-native";
 import { disconnectSocket, initializeSocket } from "./socket";
 import { httpGet, httpPost } from "./requests";
 import { useCustomQuery } from "./useQueryContext";
@@ -93,6 +93,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       disconnectSocket();
     };
   }, [authState.authenticated]);
+
+  // Handle app lifecycle for socket reconnection
+  useEffect(() => {
+    if (!authState.authenticated) return;
+
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === "active") {
+        // App came to foreground
+        const currentSocket = queryClient.getQueryData(["socket"]) as any;
+        if (currentSocket && !currentSocket.isConnected()) {
+          console.log("Reconnecting socket after app resume...");
+          currentSocket.connect();
+        }
+      } else if (nextAppState === "background") {
+        // App went to background - socket may disconnect naturally
+        console.log("App backgrounded");
+      }
+    };
+
+    const subscription = AppState.addEventListener("change", handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, [authState.authenticated, queryClient]);
 
   useEffect(() => {
     if (!socket || !user) return;

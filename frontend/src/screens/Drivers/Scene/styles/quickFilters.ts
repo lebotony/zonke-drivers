@@ -4,6 +4,11 @@ import { Colors } from "@/constants/ui";
 import { shadowStyles } from "@/src/components/shadowStyles";
 
 export const styles = StyleSheet.create({
+  iosWrapper: {
+    backgroundColor: Colors.bg,
+    ...shadowStyles,
+    shadowColor: Colors.dimGrey,
+  },
   container: {
     paddingVertical: 8,
   },
