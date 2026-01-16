@@ -3,6 +3,7 @@ import { isEmpty } from "lodash";
 
 import { API_URL } from "@/constants/srcConstants";
 import { httpPost, httpPut } from "@/src/requests";
+import { compressImage } from "@/src/helpers/compressImage";
 
 import { AddVehicleFormValues } from "./scene/ui/addVehicle";
 
@@ -22,13 +23,15 @@ export const updateVehicleAsset = async (
 
   try {
     if (params && params.file_path) {
-      const uri = params.file_path;
-      const name = params.filename || uri.split("/").pop();
+      // Compress the image before upload
+      const compressed = await compressImage({ uri: params.file_path });
+
+      const name = params.filename || compressed.uri.split("/").pop();
       const ext = name?.split(".").pop()?.toLowerCase() || "jpg";
       const mime = ext === "png" ? "image/png" : "image/jpeg";
 
       form.append("file", {
-        uri,
+        uri: compressed.uri,
         name,
         type: mime,
       } as any);

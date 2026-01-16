@@ -23,6 +23,10 @@ defmodule BackendWeb.Router do
     scope "/" do
       pipe_through([:authorization])
 
+      scope("/locations") do
+        get("/search", LocationController, :search)
+      end
+
       scope("/users") do
         post("/update_asset", UserController, :update_asset)
       end
@@ -58,7 +62,9 @@ defmodule BackendWeb.Router do
         post("/accidents", Vehicles.VehicleDriverController, :increment_accidents)
       end
 
-      resources("/vehicle_drivers", Vehicles.VehicleDriverController, except: @except_path_actions)
+      resources("/vehicle_drivers", Vehicles.VehicleDriverController,
+        except: @except_path_actions
+      )
 
       resources("/vehicles", Vehicles.VehicleController, except: @except_path_actions)
 

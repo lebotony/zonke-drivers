@@ -13,7 +13,19 @@ export const initializeSocket = async () => {
   socketInstance = new Socket(SOCKET_URL, {
     params: { token },
     transport: window.WebSocket,
+    reconnectAfterMs: (tries) => {
+      // Exponential backoff: 1s, 2s, 5s, 10s, then 10s
+      return [1000, 2000, 5000, 10000][tries - 1] || 10000;
+    },
+    rejoinAfterMs: (tries) => {
+      return [1000, 2000, 5000][tries - 1] || 5000;
+    },
   });
+
+  // Add connection state listeners
+  socketInstance.onOpen(() => console.log("Socket connected"));
+  socketInstance.onError(() => console.log("Socket error"));
+  socketInstance.onClose(() => console.log("Socket disconnected"));
 
   socketInstance.connect();
   return socketInstance;

@@ -4,6 +4,7 @@ import { Text } from "react-native-paper";
 
 import { Colors } from "@/constants/ui";
 import { Ionicons } from "@expo/vector-icons";
+import { isIOS } from "@/src/helpers/platform";
 
 import { styles } from "../styles/card";
 import { PopupMenu } from "@/src/components/popup";
@@ -84,6 +85,7 @@ export const Card = (props: CardProps) => {
             value={checked}
             trackColor={{ false: "#D3D3D3", true: Colors.tealGreen }}
             thumbColor={checked ? "#fff" : "#f4f3f4"}
+            style={isIOS ? { transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] } : undefined}
           />
         ) : (
           <Ionicons

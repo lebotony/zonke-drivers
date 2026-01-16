@@ -9,6 +9,9 @@ defmodule Backend.Application do
 
   @impl true
   def start(_type, _args) do
+    # Load .env file in dev/test environments
+    load_dotenv()
+
     Assets.ensure_bucket_exists()
 
     children = [
@@ -38,5 +41,18 @@ defmodule Backend.Application do
   def config_change(changed, _new, removed) do
     BackendWeb.Endpoint.config_change(changed, removed)
     :ok
+  end
+
+  defp load_dotenv do
+    if Mix.env() in [:dev, :test] do
+      case Code.ensure_loaded(Dotenv) do
+        {:module, Dotenv} ->
+          if File.exists?(".env") do
+            Dotenv.load!()
+          end
+        _ ->
+          :ok
+      end
+    end
   end
 end

@@ -10,6 +10,7 @@ import { Shadow } from "@/src/components/shadow";
 
 import { styles } from "../styles/quickFilters";
 import { PLATFORM_FILTERS } from "../utils/constants";
+import { IS_IOS } from "@/constants/srcConstants";
 
 type QuickFiltersProps = {
   showReset?: boolean;
@@ -28,14 +29,16 @@ export const QuickFilters = (props: QuickFiltersProps) => {
     isVehicle,
   } = props;
 
-  const WrapperElement = isVehicle ? View : Shadow;
+  const WrapperElement = isVehicle || IS_IOS ? View : Shadow;
 
   const platformFilters = isVehicle
     ? PLATFORM_FILTERS.slice(0, 5)
     : PLATFORM_FILTERS;
 
   return (
-    <WrapperElement>
+    <WrapperElement
+      style={IS_IOS && !isVehicle ? styles.iosWrapper : undefined}
+    >
       <View
         style={[
           styles.container,

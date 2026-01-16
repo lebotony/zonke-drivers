@@ -213,7 +213,7 @@ Thread ──→ (*) Message
 
 ### 5.4 Frontend Types (`src/types/`)
 - `Page` - Paginated response with cursor-based pagination
-- `LocationType` - address, lat, lon
+- `LocationType` - country, city, place, lat, lon
 - `Asset` - File/image with URL and metadata
 - `Session` - JWT + User data
 - `PriceFixed`, `PriceRange`, `Licence`
@@ -394,6 +394,28 @@ const { control, handleSubmit } = useForm({
 
 - Use `React.memo` and `useMemo` for expensive computations or large lists.
 - Respect existing pagination patterns with React Query.
+
+### 10.5 Image Upload Requirements
+
+**CRITICAL: All image uploads MUST be compressed before sending to the backend.**
+
+- **Helper location**: `frontend/src/helpers/compressImage.ts`
+- **Usage**: Call `compressImage({ uri })` on all image URIs before upload
+- **Target size**: ~400 KB (automatic, best-effort compression)
+- **Format**: JPEG with maximum dimension of 1600px (preserves aspect ratio)
+
+**Integration points**:
+- `pickImage` helper already integrates compression automatically
+- Direct upload functions (`updateUserAsset`, `updateVehicleAsset`) compress images before FormData creation
+- Never bypass compression unless explicitly required for a specific use case
+
+**Example**:
+```typescript
+import { compressImage } from "@/src/helpers/compressImage";
+
+const compressed = await compressImage({ uri: originalImageUri });
+// Use compressed.uri for upload
+```
 
 ---
 

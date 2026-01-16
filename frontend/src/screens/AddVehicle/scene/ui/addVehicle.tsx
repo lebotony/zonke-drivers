@@ -6,7 +6,7 @@ import {
   SafeAreaView,
   ScrollView,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import { Text } from "react-native-paper";
 
@@ -27,6 +27,7 @@ import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { AppToast } from "@/src/components/CustomToast/customToast";
 import { activateVehicle } from "@/src/screens/ManageVehicles/actions";
+import { ImageLoadingOverlay } from "@/src/components/elements/ImageLoadingOverlay";
 
 import { styles } from "../styles/addVehicle";
 import { CardFormDef } from "../utils/cardFormDef";
@@ -36,7 +37,7 @@ import { AddVehicleForm } from "./form";
 import {
   createVehicle,
   updateVehicle,
-  updateVehicleAsset
+  updateVehicleAsset,
 } from "../../actions";
 
 export type AddVehicleFormValues = z.infer<typeof FormSchema>;
@@ -71,10 +72,10 @@ export const AddVehicle = () => {
     asset: vehicle?.asset
       ? {
           file_path: vehicle.asset.file_path || undefined,
-          filename: vehicle.asset.filename || undefined
+          filename: vehicle.asset.filename || undefined,
         }
       : undefined,
-    price_fixed: vehicle?.price_fixed?.value || ""
+    price_fixed: vehicle?.price_fixed?.value || "",
   };
 
   const {
@@ -83,11 +84,11 @@ export const AddVehicle = () => {
     setValue,
     watch,
     reset,
-    formState: { errors, isSubmitting }
+    formState: { errors, isSubmitting },
   } = useForm<AddVehicleFormValues>({
     resolver: zodResolver(FormSchema),
     defaultValues: formValues,
-    mode: "onChange"
+    mode: "onChange",
   });
 
   useEffect(() => {
@@ -111,6 +112,7 @@ export const AddVehicle = () => {
 
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", (e) => {
@@ -136,7 +138,7 @@ export const AddVehicle = () => {
 
           updatePaginatedObject("userVehicles", vehicleId, {
             ...res,
-            vehicle_drivers: vehicle?.vehicle_drivers
+            vehicle_drivers: vehicle?.vehicle_drivers,
           });
 
           router.push("/(tabs)/manage");
@@ -173,7 +175,7 @@ export const AddVehicle = () => {
       ...data,
       price_fixed: data.price_fixed
         ? { value: Number(data.price_fixed), currency: "Rand" }
-        : undefined
+        : undefined,
     };
 
     upsertVehicle(params);
@@ -183,7 +185,7 @@ export const AddVehicle = () => {
     isNewVehicle
       ? addItemToPaginatedList("userVehicles", res)
       : updatePaginatedObject("userVehicles", vehicleId, {
-          asset: res
+          asset: res,
         });
 
     isNewVehicle
@@ -197,22 +199,23 @@ export const AddVehicle = () => {
       undefined,
       updateVehicleAsset,
       vehicleId,
-      updatePaginatedAsset
+      updatePaginatedAsset,
+      setIsUploadingImage,
     );
 
   const handleSetActive = () =>
     activateVehicle({
       active: !vehicle?.active,
-      vehicle_id: vehicleId
+      vehicle_id: vehicleId,
     })
       .then((res) => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
-          true
+          true,
         );
 
         updatePaginatedObject("userVehicles", vehicleId, {
-          active: !vehicle?.active
+          active: !vehicle?.active,
         });
       })
       .catch((err) => {
@@ -220,7 +223,7 @@ export const AddVehicle = () => {
 
         if (errorKey === "missing_fields") {
           return AppToast(
-            `'Model', 'Vehicle image' or 'Rent' fields are empty`
+            `'Model', 'Vehicle image' or 'Rent' fields are empty`,
           );
         } else {
           AppToast();
@@ -241,7 +244,7 @@ export const AddVehicle = () => {
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={
             Platform.OS === "android" && {
-              paddingBottom: keyboardVisible ? keyboardHeight : 0
+              paddingBottom: keyboardVisible ? keyboardHeight : 0,
             }
           }
         >
@@ -249,12 +252,14 @@ export const AddVehicle = () => {
             <Text style={[styles.header]}>Car Details</Text>
 
             <TouchableOpacity
-              onPress={handleSelectImage}
+              onPress={isUploadingImage ? undefined : handleSelectImage}
               style={styles.imageWrapper}
+              disabled={isUploadingImage}
             >
               <TouchableOpacity
                 style={styles.plusBtn}
-                onPress={handleSelectImage}
+                onPress={isUploadingImage ? undefined : handleSelectImage}
+                disabled={isUploadingImage}
               >
                 <AntDesign name="plus" size={24} color={Colors.white} />
               </TouchableOpacity>
@@ -262,10 +267,11 @@ export const AddVehicle = () => {
                 source={vehicleImage}
                 style={[
                   styles.imageStyles,
-                  !isVehiclePic && styles.defaultImageStyles
+                  !isVehiclePic && styles.defaultImageStyles,
                 ]}
                 contentFit="contain"
               />
+              <ImageLoadingOverlay isLoading={isUploadingImage} />
             </TouchableOpacity>
             {!isVehiclePic && (
               <Text style={styles.imageText}>Add Vehicle image</Text>
@@ -296,7 +302,7 @@ export const AddVehicle = () => {
                     <Text
                       style={[
                         styles.profileName,
-                        !driver && { color: Colors.grey }
+                        !driver && { color: Colors.grey },
                       ]}
                     >
                       {driver
@@ -335,7 +341,7 @@ export const AddVehicle = () => {
           <View>
             {vehicle && (
               <>
-                <Text style={styles.nbActivate}>
+                <Text style={{ paddingHorizontal: 20 }}>
                   NB: Vehicle wont be searchable if not activated
                 </Text>
                 <CustomButton
@@ -345,16 +351,16 @@ export const AddVehicle = () => {
                     {
                       backgroundColor: vehicle?.active
                         ? Colors.lightRed
-                        : Colors.lightGreen
+                        : Colors.lightGreen,
                     },
-                    styles.btnStyles
+                    styles.btnStyles,
                   ]}
                 >
                   <Text
                     style={{
                       color: Colors.white,
                       fontWeight: 700,
-                      fontSize: 16
+                      fontSize: 16,
                     }}
                   >
                     {vehicle?.active ? "De-activate" : "Activate"}
@@ -373,9 +379,9 @@ export const AddVehicle = () => {
                   backgroundColor:
                     (isSameForm && vehicle) || isSubmitting
                       ? Colors.lightGrey
-                      : Colors.mrDBlue
+                      : Colors.mrDBlue,
                 },
-                styles.btnStyles
+                styles.btnStyles,
               ]}
             >
               <Text

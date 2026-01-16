@@ -193,7 +193,7 @@ export const DropdownInput = <T extends FieldValues>({
   const handleSelect = (value: string | LocationType) => {
     if (isLocation) {
       setValue(name, value, { shouldValidate: true });
-      setQuery((value as LocationType).address);
+      setQuery((value as LocationType).place);
     } else {
       onSelect!(value as string);
       setQuery(value as string);
@@ -311,7 +311,9 @@ export const DropdownInput = <T extends FieldValues>({
             <FlatList
               data={isLocation ? results : options}
               keyboardShouldPersistTaps="handled"
-              keyExtractor={(item, index) => `${item}-${index}`}
+              keyExtractor={(item, index) =>
+                `${isLocation ? (item as unknown as LocationType).place : item}-${index}`
+              }
               renderItem={({ item }) => (
                 <Pressable
                   style={styles.dropdownItem}
@@ -339,7 +341,9 @@ export const DropdownInput = <T extends FieldValues>({
                       }));
                     }}
                   >
-                    {isLocation ? item.address : item}
+                    {isLocation
+                      ? (item as unknown as LocationType).place
+                      : (item as string)}
                   </Text>
                   {selectedValue === item && (
                     <MaterialIcons

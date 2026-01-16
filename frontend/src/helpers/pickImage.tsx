@@ -1,4 +1,5 @@
 import * as ImagePicker from "expo-image-picker";
+import { compressImage } from "./compressImage";
 
 export const pickImage = async (
   setValue: any,
@@ -6,6 +7,7 @@ export const pickImage = async (
   fn?: any,
   id?: string,
   updatePaginatedObject?: any,
+  setLoading?: (loading: boolean) => void,
 ) => {
   const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
@@ -22,17 +24,36 @@ export const pickImage = async (
   });
 
   if (!result.canceled) {
-    // expo-image-picker returns assets array in newer versions
-    const asset = Array.isArray(result.assets)
-      ? result.assets[0]
-      : (result as any);
-    const uri = asset.uri || asset.uri;
-    const filename = uri.split("/").pop() || `photo-${Date.now()}.jpg`;
+    try {
+      // Start loading state
+      setLoading?.(true);
 
-    fn({ file_path: uri, filename }, id).then((res: Asset) =>
-      updatePaginatedObject(res),
-    );
+      // expo-image-picker returns assets array in newer versions
+      const asset = Array.isArray(result.assets)
+        ? result.assets[0]
+        : (result as any);
+      const originalUri = asset.uri || asset.uri;
+      const filename = originalUri.split("/").pop() || `photo-${Date.now()}.jpg`;
 
-    setValue("asset", { file_path: uri, filename });
+      // Compress the image before upload
+      const compressed = await compressImage({ uri: originalUri });
+      const compressedFilename = compressed.uri.split("/").pop() || filename;
+
+      setValue("asset", {
+        file_path: compressed.uri,
+        filename: compressedFilename,
+      });
+
+      // Upload to backend
+      await fn({ file_path: compressed.uri, filename: compressedFilename }, id).then(
+        (res: Asset) => updatePaginatedObject(res),
+      );
+    } catch (error) {
+      console.error("Error processing image:", error);
+      throw error;
+    } finally {
+      // End loading state
+      setLoading?.(false);
+    }
   }
 };

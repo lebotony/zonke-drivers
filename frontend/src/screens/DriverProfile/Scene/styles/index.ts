@@ -8,7 +8,6 @@ const VERTIAL_MARGIN = 10;
 export const styles = StyleSheet.create({
   body: {
     paddingTop: isIOS ? 25 : 0,
-    paddingBottom: 70,
     margin: 15,
   },
   profilePic: {
@@ -143,17 +142,16 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 14,
   },
   footer: {
-    height: 60,
     paddingHorizontal: 15,
+    paddingVertical: 12,
     backgroundColor: Colors.white,
     flexDirection: "row",
-    gap: 12,
+    justifyContent: "center",
     alignItems: "center",
     position: "absolute",
     bottom: 0,
     left: 0,
     right: 0,
-    paddingBottom: isIOS ? 12 : 0,
 
     ...shadowStyles,
   },

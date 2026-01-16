@@ -20,6 +20,8 @@ defmodule Backend.Accounts.Users do
   end
 
   def update(%User{} = user, params) do
+    IO.inspect(params, label: "Update User Params")
+
     case user |> User.changeset(params) |> Repo.update() do
       {:ok, user} -> {:ok, Repo.preload(user, :asset)}
       {:error, error} -> {:error, error}

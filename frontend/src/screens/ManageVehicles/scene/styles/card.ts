@@ -91,8 +91,7 @@ export const styles = StyleSheet.create({
     width: dynamicWidth,
   },
   btnStyles: {
-    paddingTop: 10,
-    paddingBottom: 12,
+    paddingVertical: 8,
     backgroundColor: Colors.mrDBlue,
     marginVertical: 10,
     ...shadowStyles,
@@ -100,7 +99,6 @@ export const styles = StyleSheet.create({
   btnText: {
     fontSize: 16,
     fontWeight: 500,
-    lineHeight: 17,
     color: Colors.white,
   },
   age: {

@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import { Text } from "react-native-paper";
 
 import { router } from "expo-router";
@@ -45,7 +45,9 @@ export const DriverCard = (props: DriverProps) => {
           </View>
         )}
 
-        <Details driver={driver} />
+        <TouchableOpacity onPress={() => router.push(`/drivers/${driver?.id}`)}>
+          <Details driver={driver} />
+        </TouchableOpacity>
       </View>
 
       {!isEmpty(driver?.platforms) && (
@@ -67,7 +69,7 @@ export const DriverCard = (props: DriverProps) => {
         <CustomButton
           color="white"
           onPress={() => router.push(`/drivers/${driver?.id}`)}
-          customStyle={[applicant && styles.cardBtns, { paddingVertical: 1 }]}
+          customStyle={applicant ? styles.cardBtns : styles.viewProfileBtn}
         >
           <Text
             style={[
@@ -89,10 +91,7 @@ export const DriverCard = (props: DriverProps) => {
             customStyle={[styles.cardBtns, { backgroundColor: Colors.mrDBlue }]}
           >
             <Text
-              style={[
-                styles.name,
-                { fontWeight: 500, lineHeight: 17, color: Colors.white },
-              ]}
+              style={[styles.name, { fontWeight: 500, color: Colors.white }]}
             >
               Add driver
             </Text>

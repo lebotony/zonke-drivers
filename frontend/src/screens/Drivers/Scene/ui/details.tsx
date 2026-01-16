@@ -16,7 +16,7 @@ type DetailsProps = {
 export const Details = (props: DetailsProps) => {
   const { driver } = props;
 
-  const isLocationAndExpNil = !driver?.experience && !driver?.location?.address;
+  const isLocationAndExpNil = !driver?.experience && !driver?.location?.place;
 
   return (
     <View
@@ -54,7 +54,7 @@ export const Details = (props: DetailsProps) => {
         </View>
       )}
 
-      {driver?.location?.address && (
+      {driver?.location?.place && (
         <View style={styles.ratingRow}>
           <View style={styles.detailIcon}>
             <MaterialIcons
@@ -64,7 +64,7 @@ export const Details = (props: DetailsProps) => {
             />
           </View>
           <Text style={styles.address} numberOfLines={1} ellipsizeMode="tail">
-            {driver?.location?.address || "NA"}
+            {driver?.location?.place || "NA"}
           </Text>
         </View>
       )}

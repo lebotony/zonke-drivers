@@ -57,14 +57,14 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
   const threadChannelsRef = useRef<Record<string, Channel>>({});
   const baseChannelRef = useRef<Channel | undefined>(undefined);
   const currentThreadRef = useRef<string | undefined>(undefined);
+  const isInitialConnectionRef = useRef(true);
 
   const queryClient = useQueryClient();
   const { getCachedData } = useCustomQuery();
-  const { user, socket, userChannel, threadChannels } = getCachedData([
+  const { user, socket, userChannel } = getCachedData([
     "user",
     "socket",
     "userChannel",
-    "threadChannels",
   ]);
 
   const segments = useSegments();
@@ -110,6 +110,50 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
     initiateChannels(threads);
   }, [threads, socket]);
 
+  // Rejoin channels when socket reconnects
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleSocketOpen = () => {
+      // Skip rejoin logic on initial connection
+      if (isInitialConnectionRef.current) {
+        isInitialConnectionRef.current = false;
+        console.log("Socket initial connection");
+        return;
+      }
+
+      console.log("Socket reconnected, rejoining channels...");
+
+      // Rejoin all thread channels
+      Object.entries(threadChannelsRef.current).forEach(([threadId, channel]) => {
+        if (channel.state !== "joined" && channel.state !== "joining") {
+          channel
+            .join()
+            .receive("ok", () => console.log(`Rejoined chats:${threadId}`))
+            .receive("error", (err: any) =>
+              console.error(`Rejoin failed for chats:${threadId}:`, err)
+            );
+        }
+      });
+
+      // Rejoin user channel
+      if (userChannel && userChannel.state !== "joined" && userChannel.state !== "joining") {
+        userChannel
+          .join()
+          .receive("ok", () => console.log("Rejoined user channel"))
+          .receive("error", (err: any) =>
+            console.error("User channel rejoin failed:", err)
+          );
+      }
+    };
+
+    socket.onOpen(handleSocketOpen);
+
+    return () => {
+      // Cleanup: socket listeners are managed by Phoenix
+    };
+  }, [socket, userChannel]);
+
   const initiateChannels = (threads: Thread[]) => {
     return threads.forEach((thread) => {
       if (!socket) return;
@@ -126,7 +170,7 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
           //   event: "participant_joined",
           // });
         })
-        .receive("error", (err: Error) => console.log("Unable to join", err));
+        .receive("error", (err: any) => console.log("Unable to join", err));
 
       baseChannelRef.current = channel;
       threadChannelsRef.current[thread?.id] = channel;
