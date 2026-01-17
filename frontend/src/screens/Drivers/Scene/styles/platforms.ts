@@ -1,23 +1,28 @@
 import { StyleSheet } from "react-native";
 
-import { shadowStyles } from "@/src/components/shadowStyles";
-
 export const styles = StyleSheet.create({
   platformTags: {
-    gap: 5,
+    gap: 8,
     flexDirection: "row",
     alignItems: "center",
   },
   platform: {
-    paddingVertical: 4,
-    paddingHorizontal: 5,
+    paddingVertical: 6,
+    paddingHorizontal: 8,
     justifyContent: "center",
-    borderRadius: 7,
-    ...shadowStyles,
-    shadowOpacity: 0.3,
+    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 3,
+    elevation: 2,
   },
   justIconPlatform: {
-    width: 35,
+    width: 36,
+    height: 36,
     justifyContent: "center",
     flexDirection: "row",
     alignItems: "center",

@@ -8,80 +8,38 @@ type CommentProps = {
   comment?: CommentType;
 };
 
+const getInitials = (firstName?: string, lastName?: string) => {
+  const first = firstName?.charAt(0)?.toUpperCase() || "";
+  const last = lastName?.charAt(0)?.toUpperCase() || "";
+  return `${first}${last}`;
+};
+
 export const Comment = (props: CommentProps) => {
   const { comment } = props;
 
-  // const renderReply = ({ item }: any) => (
-  //   <View style={styles.replyItem}>
-  //     <Text style={styles.replyName}>
-  //       {item.name} <Text style={styles.smallText}>· {item.date}</Text>
-  //     </Text>
-  //     <Text style={styles.replyText}>{item.text}</Text>
-  //   </View>
-  // );
+  const initials = getInitials(comment?.first_name, comment?.last_name);
 
   return (
-    <View style={styles.commentBox}>
-      <View style={styles.commentHeader}>
-        <Text style={styles.commentName}>
-          {comment?.first_name} {comment?.last_name}
-        </Text>
-        <Text style={styles.commentDate}>{comment?.sent_at}</Text>
+    <View style={styles.commentCard}>
+      <View style={styles.avatarContainer}>
+        <View style={styles.avatar}>
+          <Text style={styles.avatarText}>{initials}</Text>
+        </View>
       </View>
-      <Text style={styles.commentText}>{comment?.text}</Text>
 
-      {/* <View style={styles.commentActions}>
-        <TouchableOpacity
-          onPress={() => {
-            (setShowReplies((s) => !s), setReplying(false));
-          }}
-          style={styles.replies}
-        > */}
-      {/* <MaterialIcons
-            name={showReplies ? "keyboard-arrow-down" : "keyboard-arrow-left"}
-            size={18}
-            color={showReplies ? Colors.mrDBlue : Colors.charcoalGray}
-          /> */}
-      {/* <Text style={[styles.viewText, showReplies && styles.replyToggle]}>
-            {showReplies
-              ? `Hide replies (${replies.length})`
-              : `View replies (${replies.length})`}
-          </Text> */}
-      {/* </TouchableOpacity> */}
-
-      {/* <View style={styles.actionIcons}>
-          <TouchableOpacity onPress={() => setReplying(!replying)}>
-            <Text style={styles.commentAction}>💬 Reply</Text>
-          </TouchableOpacity>
-        </View> */}
-      {/* </View> */}
-
-      {/* {showReplies && (
-        <View style={styles.replyList}>
-          <FlatList
-            // data={replies}
-            keyExtractor={(item) => item.id}
-            renderItem={renderReply}
-            scrollEnabled={false}
-          />
+      <View style={styles.commentContent}>
+        <View style={styles.commentHeader}>
+          <View style={styles.authorSection}>
+            <Text style={styles.authorName}>
+              {comment?.first_name} {comment?.last_name}
+            </Text>
+            <View style={styles.dotSeparator} />
+            <Text style={styles.timestamp}>{comment?.sent_at}</Text>
+          </View>
         </View>
-      )} */}
 
-      {/* {replying && (
-        <View style={styles.replyBox}>
-          <Text style={styles.replyTitle}>Reply Lebohang Mdlongwa</Text>
-          <TextInput
-            value={replyText}
-            onChangeText={setReplyText}
-            placeholder="Write a reply..."
-            style={styles.replyInput}
-            multiline
-          />
-          <Pressable onPress={addReply} style={styles.replySend}>
-            <Ionicons name="send" size={20} color="white" />
-          </Pressable>
-        </View>
-      )} */}
+        <Text style={styles.commentText}>{comment?.text}</Text>
+      </View>
     </View>
   );
 };

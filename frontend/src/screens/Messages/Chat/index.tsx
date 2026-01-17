@@ -26,7 +26,6 @@ import { MessageBox } from "./messageBox";
 import { styles } from "./styles/index";
 import { fetchThreadMessages, setSeenTrue } from "../actions";
 import { useMessages } from "../MessagesProvider";
-import { topOffset } from "@/src/components/appStyles";
 
 export const ChatScreen = () => {
   const { id } = useLocalSearchParams();
@@ -94,8 +93,18 @@ export const ChatScreen = () => {
 
       // Only update if there are non-duplicate messages
       if (newMessages.length > 0) {
+        // Sort only the new messages to ensure they're in correct order
+        const sortedNewMessages = newMessages.sort((a: any, b: any) => {
+          const timeA = new Date(a.created_at).getTime();
+          const timeB = new Date(b.created_at).getTime();
+          return timeB - timeA; // Descending: newest first
+        });
+
+        // Append older messages to the end (they appear at top in inverted list)
+        const combinedMessages = [...existingMessages, ...sortedNewMessages];
+
         updatePaginatedObject("threads", messages[0].thread_id, {
-          messages: [...existingMessages, ...newMessages],
+          messages: combinedMessages,
         });
       }
     }
@@ -157,28 +166,32 @@ export const ChatScreen = () => {
   const onGoBack = () => navigation.goBack();
 
   return (
-    <View style={[styles.container, { ...topOffset }]}>
+    <View style={styles.container}>
       <SafeAreaView style={styles.headerContainer}>
         <View style={styles.header}>
-          <Pressable style={{ marginRight: 12 }} onPress={onGoBack}>
+          <Pressable
+            style={({ pressed }) => [
+              styles.backButton,
+              pressed && { backgroundColor: "rgba(0, 0, 0, 0.05)" },
+            ]}
+            onPress={onGoBack}
+          >
             <MaterialIcons
               name="arrow-back-ios"
-              size={22}
-              color={Colors.darkCharcoal}
+              size={20}
+              color={Colors.darkCharcoalGrey}
             />
           </Pressable>
           <Image
             source={recipient?.asset_url}
             style={styles.avatar}
-            resizeMode="cover"
+            contentFit="cover"
           />
           <View style={{ flex: 1 }}>
             <Text style={styles.name}>
               {recipient?.first_name} {recipient?.last_name}
             </Text>
-            {/* <Text style={styles.status}>Online</Text> */}
           </View>
-          {/* <Feather name="more-vertical" size={22} color={Colors.mediumDarkGrey} /> */}
         </View>
       </SafeAreaView>
 
@@ -203,6 +216,10 @@ export const ChatScreen = () => {
             keyExtractor={(item) => item.id}
             renderItem={({ item, index }) => {
               const isLast = index === 0;
+              const messages = thread?.messages || [];
+              const nextMessage = messages[index + 1];
+
+              const isGrouped = nextMessage?.author_id === item.author_id;
 
               return (
                 <ChatMessage
@@ -210,6 +227,7 @@ export const ChatScreen = () => {
                   recipient={recipient}
                   user={user}
                   isLast={isLast}
+                  isGrouped={isGrouped}
                 />
               );
             }}
@@ -217,6 +235,7 @@ export const ChatScreen = () => {
             contentContainerStyle={{
               flexGrow: 1,
               justifyContent: "flex-end",
+              paddingTop: 12,
             }}
           />
         </View>

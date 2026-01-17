@@ -26,7 +26,7 @@ export const Form = (props: FormProps) => {
   const customErrors = isSignUp ? errors : undefined;
 
   return (
-    <View style={[!isSignUp && { marginVertical: 20 }]}>
+    <View>
       {isSignUp && (
         <>
           <Fieldset
@@ -37,7 +37,7 @@ export const Form = (props: FormProps) => {
             placeholder="John"
             inputIconSize={22}
             errors={customErrors}
-            customStyles={{ flex: 1 }}
+            customStyles={{ marginBottom: 16 }}
             required
           />
           <Fieldset
@@ -48,7 +48,7 @@ export const Form = (props: FormProps) => {
             placeholder="Doe"
             inputIconSize={22}
             errors={customErrors}
-            customStyles={{ flex: 1 }}
+            customStyles={{ marginBottom: 16 }}
             required
           />
           <Fieldset
@@ -58,26 +58,22 @@ export const Form = (props: FormProps) => {
             inputIcon="mail-outline"
             placeholder="example@gmail.com"
             errors={customErrors}
+            customStyles={{ marginBottom: 20 }}
           />
         </>
       )}
 
       {isSignUp && (
-        <Text style={{ fontSize: 16 }}>
-          NB:
-          <Text> Fields used in Login</Text>
+        <Text style={styles.signupNote}>
+          <Text style={styles.signupNoteHighlight}>Login Credentials</Text>
+          <Text> — Required for signing in</Text>
         </Text>
       )}
+
       <View
         style={[
-          {
-            borderColor: Colors.mrDBlue,
-            borderWidth: 2,
-            borderRadius: 7,
-            paddingTop: 10,
-            paddingHorizontal: 15,
-          },
-          !isSignUp && { borderWidth: 0, paddingTop: 0, paddingHorizontal: 0 },
+          isSignUp && styles.loginFieldsContainer,
+          !isSignUp && { marginBottom: 20 },
         ]}
       >
         <Fieldset
@@ -91,18 +87,18 @@ export const Form = (props: FormProps) => {
         />
 
         <View>
-          {/* {!isSignUp && (
+          {!isSignUp && (
             <TouchableOpacity style={styles.forgotPasswordWrapper}>
               <Text style={styles.forgotPassword}>Forgot password?</Text>
             </TouchableOpacity>
-          )} */}
+          )}
           <Fieldset
             control={control}
             name="password"
             label="Password"
             inputIcon="lock-outline"
             type="password"
-            placeholder="********"
+            placeholder="Enter your password"
             errors={customErrors}
             required
           />
@@ -115,7 +111,7 @@ export const Form = (props: FormProps) => {
             label="Confirm Password"
             inputIcon="lock-outline"
             type="password"
-            placeholder="********"
+            placeholder="Re-enter your password"
             errors={customErrors}
             required
           />

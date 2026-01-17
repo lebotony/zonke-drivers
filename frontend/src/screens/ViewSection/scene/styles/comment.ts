@@ -1,38 +1,109 @@
 import { Colors } from "@/constants/ui";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Platform } from "react-native";
+
+const IS_ANDROID = Platform.OS === "android";
+
+const SPACING = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+};
+
+const SHADOWS = {
+  subtle: {
+    shadowColor: Colors.darkCharcoalGrey,
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: IS_ANDROID ? 0.03 : 0.06,
+    shadowRadius: IS_ANDROID ? 3 : 6,
+    elevation: IS_ANDROID ? 1 : 2,
+  },
+};
 
 export const styles = StyleSheet.create({
-  commentBox: {
-    backgroundColor: Colors.whiteSmoke,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    marginHorizontal: 15,
-    paddingTop: 12,
-    paddingBottom: 8,
-    marginBottom: 10,
-  },
-  commentHeader: {
+  // Modern Comment Card
+  commentCard: {
     flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 4,
+    backgroundColor: Colors.white,
+    borderRadius: 16,
+    padding: SPACING.lg,
+    marginHorizontal: SPACING.lg,
+    marginBottom: SPACING.md,
+    ...SHADOWS.subtle,
   },
-  commentName: {
-    fontWeight: 700,
-    color: Colors.veryDarkGrey,
-    fontSize: 15,
+
+  // Avatar Section
+  avatarContainer: {
+    marginRight: SPACING.md,
   },
-  commentDate: {
-    color: Colors.mediumGrey,
+
+  avatar: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    backgroundColor: Colors.mrDBlue + "15",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: Colors.mrDBlue + "20",
+  },
+
+  avatarText: {
+    fontSize: 16,
+    fontWeight: 600,
+    color: Colors.mrDBlue,
+    letterSpacing: 0.5,
+  },
+
+  // Content Section
+  commentContent: {
+    flex: 1,
+  },
+
+  commentHeader: {
+    marginBottom: SPACING.sm,
+  },
+
+  authorSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: SPACING.sm,
+  },
+
+  authorName: {
+    fontSize: 16,
+    fontWeight: 600,
+    color: Colors.darkCharcoalGrey,
+    letterSpacing: 0.2,
+  },
+
+  dotSeparator: {
+    width: 3,
+    height: 3,
+    borderRadius: 1.5,
+    backgroundColor: Colors.mediumGrey,
+  },
+
+  timestamp: {
     fontSize: 13,
+    fontWeight: 500,
+    color: Colors.mediumGrey,
   },
+
   commentText: {
-    color: Colors.dimGrey,
     fontSize: 15,
-    marginBottom: 6,
+    lineHeight: 22,
+    color: Colors.mediumDarkGrey,
+    fontWeight: 400,
+    letterSpacing: 0.1,
   },
+
+  // Legacy styles (kept for backward compatibility - reply functionality)
   commentActions: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginTop: SPACING.sm,
   },
   commentAction: {
     color: Colors.dimGrey,
@@ -49,7 +120,6 @@ export const styles = StyleSheet.create({
   viewText: {
     fontSize: 12,
   },
-
   replyToggle: {
     color: Colors.mrDBlue,
   },

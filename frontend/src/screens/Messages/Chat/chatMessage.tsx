@@ -1,5 +1,5 @@
 import React from "react";
-import { View, ViewStyle } from "react-native";
+import { View, ViewStyle, Pressable } from "react-native";
 import { Text } from "react-native-paper";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -13,14 +13,15 @@ type ChatProps = {
   recipient: Participant | undefined;
   user?: { id: string };
   isLast: boolean;
+  isGrouped?: boolean;
 };
 
 export const ChatMessage = (props: ChatProps) => {
-  const { message, user } = props;
+  const { message, user, isGrouped = false } = props;
   const isAuthor = message?.author_id === user?.id;
   const tickColor = message?.seen
-    ? Colors.blueTicksColor
-    : Colors.mediumDarkGrey;
+    ? Colors.white
+    : "rgba(255, 255, 255, 0.7)";
 
   const customStyle = {
     alignItems: `${isAuthor ? "flex-end" : "flex-start"}`,
@@ -28,28 +29,36 @@ export const ChatMessage = (props: ChatProps) => {
 
   return (
     <View style={{ alignItems: customStyle.alignItems }}>
-      <View
-        style={[
+      <Pressable
+        style={({ pressed }) => [
           styles.chatMessage,
-          isAuthor && {
-            backgroundColor: Colors.skyLight,
-            borderBottomRightRadius: 0,
-          },
-          !isAuthor && { borderBottomLeftRadius: 0 },
+          isGrouped && styles.chatMessageGrouped,
+          isAuthor ? styles.chatMessageAuthor : styles.chatMessageReceived,
+          pressed && { opacity: 0.85 },
         ]}
       >
-        <Text style={styles.messageText}>{message?.content}</Text>
+        <Text style={[
+          styles.messageText,
+          isAuthor && styles.messageTextAuthor,
+        ]}>
+          {message?.content}
+        </Text>
         <View style={styles.messageMetaRow}>
-          <Text style={styles.messageTime}>{message?.sent_at}</Text>
+          <Text style={[
+            styles.messageTime,
+            isAuthor && styles.messageTimeAuthor,
+          ]}>
+            {message?.sent_at}
+          </Text>
           {isAuthor && (
             <MaterialCommunityIcons
               name="check-all"
-              size={16}
+              size={14}
               color={tickColor}
             />
           )}
         </View>
-      </View>
+      </Pressable>
     </View>
   );
 };

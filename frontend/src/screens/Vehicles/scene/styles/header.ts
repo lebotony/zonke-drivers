@@ -6,7 +6,6 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingRight: 10,
     paddingTop: 5,
   },
   filterBtn: {
@@ -15,13 +14,13 @@ export const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: 600,
     color: Colors.darkCharcoalGrey,
   },
   seeAll: {
     fontSize: 15,
     color: Colors.mrDBlue,
-    fontWeight: "600",
+    fontWeight: 600,
   },
   filterContainer: {
     flexDirection: "row",
@@ -32,5 +31,30 @@ export const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
+  },
+  viewAllButton: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: Colors.white,
+    borderWidth: 1,
+    borderColor: Colors.mrDBlue,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 4,
+    elevation: 2,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  viewAllText: {
+    fontSize: 14,
+    color: Colors.mrDBlue,
+    fontWeight: 600,
+    textAlignVertical: "center",
+    includeFontPadding: false,
   },
 });

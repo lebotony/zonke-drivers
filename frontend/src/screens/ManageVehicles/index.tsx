@@ -44,7 +44,8 @@ export const ManageVehicles = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Management</Text>
+      <Text style={styles.header}>My Vehicles</Text>
+      <Text style={styles.subtitle}>Manage and track your fleet</Text>
 
       {isEmpty(userVehicles) && !isLoading ? (
         <NoData />
@@ -66,7 +67,7 @@ export const ManageVehicles = () => {
               setShowVehicleDriverModal={setShowVehicleDriverModal}
             />
           )}
-          contentContainerStyle={{ paddingVertical: 5 }}
+          contentContainerStyle={{ paddingBottom: 20, paddingTop: 8 }}
           showsVerticalScrollIndicator={false}
         />
       )}

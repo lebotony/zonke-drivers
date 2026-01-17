@@ -1,4 +1,5 @@
-import { TextInput, View } from "react-native";
+import { useState } from "react";
+import { TextInput, View, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 
 import { Controller, useForm } from "react-hook-form";
@@ -8,8 +9,6 @@ import z from "zod";
 import { AppToast } from "@/src/components/CustomToast/customToast";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { Modal } from "@/src/components/elements/modal";
-import { Colors } from "@/constants/ui";
-import { CustomButton } from "@/src/components/elements/button";
 
 import { addPayment } from "../../actions";
 import { AmountSchema } from "../../schema";
@@ -26,6 +25,7 @@ type AddModalProps = {
 
 export const AddModal = (props: AddModalProps) => {
   const { vehicleDriver, vehicleId, setShowAddPayModal } = props;
+  const [isFocused, setIsFocused] = useState(false);
 
   const { control, handleSubmit } = useForm<AmountFormValues>({
     resolver: zodResolver(AmountSchema),
@@ -77,19 +77,19 @@ export const AddModal = (props: AddModalProps) => {
 
   return (
     <Modal fn={setShowAddPayModal}>
-      <View style={styles.addModal}>
-        <View style={styles.addInput}>
-          <Text style={styles.amountText}>Amount</Text>
-          <View style={styles.inputWrapper}>
-            <View>
-              <Text
-                style={{
-                  fontSize: 16,
-                  lineHeight: 16,
-                }}
-              >
-                R
-              </Text>
+      <View style={styles.modalContainer}>
+        <View style={styles.header}>
+          <Text style={styles.title}>Add Payment</Text>
+          <Text style={styles.subtitle}>
+            Record a payment for {vehicleDriver?.driver?.first_name} {vehicleDriver?.driver?.last_name}
+          </Text>
+        </View>
+
+        <View style={styles.inputSection}>
+          <Text style={styles.label}>Payment Amount</Text>
+          <View style={[styles.inputContainer, isFocused && styles.inputContainerFocused]}>
+            <View style={styles.currencyContainer}>
+              <Text style={styles.currencyText}>R</Text>
             </View>
             <Controller
               control={control}
@@ -98,10 +98,12 @@ export const AddModal = (props: AddModalProps) => {
                 return (
                   <TextInput
                     style={styles.textInput}
-                    placeholder="..."
-                    placeholderTextColor="#888"
+                    placeholder="0.00"
+                    placeholderTextColor="#B0B0B0"
                     value={value || ""}
                     onChangeText={onChange}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
                     underlineColorAndroid="transparent"
                     keyboardType="decimal-pad"
                   />
@@ -109,14 +111,28 @@ export const AddModal = (props: AddModalProps) => {
               }}
             />
           </View>
+          <Text style={styles.helperText}>
+            Enter the amount paid by the driver in South African Rand
+          </Text>
         </View>
-        <CustomButton
-          onPress={handleSubmit(onSubmit)}
-          color={Colors.lightGreen}
-          customStyle={{ paddingHorizontal: 14 }}
-        >
-          <Text style={[styles.amountText, { color: Colors.white }]}>ADD</Text>
-        </CustomButton>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.primaryButton}
+            onPress={handleSubmit(onSubmit)}
+            activeOpacity={0.8}
+          >
+            <Text style={styles.buttonText}>CONFIRM PAYMENT</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.cancelButton}
+            onPress={setShowAddPayModal}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.cancelButtonText}>Cancel</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </Modal>
   );

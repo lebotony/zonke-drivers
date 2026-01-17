@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { View, Pressable, FlatList } from "react-native";
+import React from "react";
+import { View, FlatList } from "react-native";
 import { Text } from "react-native-paper";
 
 import { isEmpty } from "lodash";
@@ -13,11 +13,7 @@ import { Message } from "./message";
 import { styles } from "./styles/index";
 import { useMessages } from "./MessagesProvider";
 
-const TABS = ["All"];
-
 export const MessagesScreen = () => {
-  const [activeTab, setActiveTab] = useState(1);
-
   const { getCachedData } = useCustomQuery();
   const { threads, user } = getCachedData(["threads", "user"]);
 
@@ -39,25 +35,10 @@ export const MessagesScreen = () => {
       </View>
       <SearchComponent
         onChange={onSetSearchTerm}
-        placeholder="Search Contacts"
-        height={36}
-        customStyle={{ paddingHorizontal: 15 }}
+        placeholder="Search conversations..."
+        height={44}
+        customStyle={{ paddingHorizontal: 20, marginBottom: 8 }}
       />
-      <View style={styles.tabsRow}>
-        {TABS.map((tab, idx) => (
-          <Pressable
-            key={idx}
-            style={styles.tabItem}
-            onPress={() => setActiveTab(idx)}
-          >
-            <Text
-              style={[styles.tabText, activeTab === idx && styles.tabActive]}
-            >
-              {tab}
-            </Text>
-          </Pressable>
-        ))}
-      </View>
       {isEmpty(threads) ? (
         <NoData messages />
       ) : (
@@ -81,6 +62,7 @@ export const MessagesScreen = () => {
             />
           )}
           showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.messageListContent}
         />
       )}
     </View>

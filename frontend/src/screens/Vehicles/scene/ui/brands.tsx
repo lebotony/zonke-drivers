@@ -41,19 +41,21 @@ export const Brands = (props: BrandsProps) => {
             activeOpacity={0.8}
             onPress={() => toggleBrand(item.id)}
           >
-            <View style={styles.brandLogo}>
-              {iconData ? (
-                <Svg
-                  width={25}
-                  height={25}
-                  viewBox="0 0 24 24"
-                  fill={`#${iconData.hex}`}
-                >
-                  <Path d={iconData.path} />
-                </Svg>
-              ) : (
-                <MaterialIcons name="directions-car" size={28} color="black" />
-              )}
+            <View style={styles.logoShadowContainer}>
+              <View style={styles.brandLogo}>
+                {iconData ? (
+                  <Svg
+                    width={25}
+                    height={25}
+                    viewBox="0 0 24 24"
+                    fill={`#${iconData.hex}`}
+                  >
+                    <Path d={iconData.path} />
+                  </Svg>
+                ) : (
+                  <MaterialIcons name="directions-car" size={28} color="black" />
+                )}
+              </View>
             </View>
 
             <Text

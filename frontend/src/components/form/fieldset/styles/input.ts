@@ -29,8 +29,8 @@ export const styles = StyleSheet.create({
     fontSize: 15,
     color: Colors.black,
     backgroundColor: Colors.inputBackground,
-    paddingTop: 12,
-    paddingBottom: 12,
+    paddingTop: 15,
+    paddingBottom: 15,
   },
   textArea: {
     minHeight: 65,

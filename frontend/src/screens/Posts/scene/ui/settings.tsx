@@ -50,7 +50,7 @@ export const PostSettings = () => {
         onPress={() => null}
         customStyle={{ flexGrow: 1, marginBottom: 40, marginTop: 20 }}
       >
-        <Text style={{ color: Colors.white, fontWeight: 700, fontSize: 17 }}>
+        <Text style={{ color: Colors.white, fontWeight: 600, fontSize: 17 }}>
           Next
         </Text>
       </CustomButton>

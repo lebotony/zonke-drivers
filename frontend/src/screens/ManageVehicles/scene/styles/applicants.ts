@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
   },
   headerText: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: 600,
     margin: "auto",
   },
   menuButton: {
@@ -78,7 +78,7 @@ export const styles = StyleSheet.create({
   },
   vehicleSelectorModel: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: 600,
     color: Colors.mrDBlue,
   },
   statItem: {
@@ -87,7 +87,7 @@ export const styles = StyleSheet.create({
   },
   statNumber: {
     fontSize: 20,
-    fontWeight: "700",
+    fontWeight: 600,
     color: "#1e3c72",
     marginBottom: 4,
   },
@@ -140,7 +140,7 @@ export const styles = StyleSheet.create({
   },
   filterChipText: {
     fontSize: 14,
-    fontWeight: "500",
+    fontWeight: 500,
     color: "#666",
   },
   filterChipTextActive: {
@@ -161,7 +161,7 @@ export const styles = StyleSheet.create({
   },
   emptyStateTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#666",
     marginTop: 16,
     marginBottom: 8,
@@ -205,7 +205,7 @@ export const styles = StyleSheet.create({
   },
   applicantName: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#2d3748",
     marginBottom: 4,
   },
@@ -216,7 +216,7 @@ export const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#2d3748",
     marginLeft: 4,
     marginRight: 4,
@@ -234,7 +234,7 @@ export const styles = StyleSheet.create({
   vehicleText: {
     fontSize: 14,
     color: "#1e3c72",
-    fontWeight: "500",
+    fontWeight: 500,
   },
   statusBadge: {
     flexDirection: "row",
@@ -245,7 +245,7 @@ export const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#fff",
     marginLeft: 4,
     textTransform: "capitalize",
@@ -296,7 +296,7 @@ export const styles = StyleSheet.create({
   },
   dropdownTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#2d3748",
   },
   vehicleDropdownItem: {
@@ -320,7 +320,7 @@ export const styles = StyleSheet.create({
   },
   vehicleDropdownModel: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#2d3748",
     marginBottom: 4,
   },
@@ -353,7 +353,7 @@ export const styles = StyleSheet.create({
   },
   modalTitle: {
     fontSize: 18,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#2d3748",
   },
   modalHeaderSpacer: {
@@ -378,7 +378,7 @@ export const styles = StyleSheet.create({
   },
   modalName: {
     fontSize: 24,
-    fontWeight: "700",
+    fontWeight: 600,
     color: "#2d3748",
     marginBottom: 4,
   },
@@ -389,7 +389,7 @@ export const styles = StyleSheet.create({
   },
   modalRatingText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#2d3748",
     marginLeft: 4,
     marginRight: 4,
@@ -406,7 +406,7 @@ export const styles = StyleSheet.create({
   },
   modalStatusText: {
     fontSize: 12,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#fff",
     textTransform: "capitalize",
   },
@@ -415,7 +415,7 @@ export const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#2d3748",
     marginBottom: 12,
   },
@@ -456,7 +456,7 @@ export const styles = StyleSheet.create({
   },
   infoValue: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#2d3748",
   },
   coverLetter: {
@@ -490,7 +490,7 @@ export const styles = StyleSheet.create({
   },
   actionButtonText: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: 600,
     color: "#fff",
     marginLeft: 8,
   },

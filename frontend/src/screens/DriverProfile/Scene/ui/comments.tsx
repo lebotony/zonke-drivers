@@ -100,18 +100,34 @@ export const CommentsScreen = () => {
   }, []);
 
   return (
-    <View style={styles.commentsSection}>
-      <BackArrow left={20} top={topOffsetHeight + 3} />
+    <View style={styles.container}>
+      <BackArrow left={20} top={topOffsetHeight + 6} />
+
       {isEmpty(driver?.comments) ? (
-        <View style={styles.noCommentsWrapper}>
-          <Text style={styles.noCommentsText}>No comments</Text>
+        <View style={styles.emptyStateContainer}>
+          <View style={styles.emptyStateIcon}>
+            <Text style={styles.emptyStateEmoji}>💬</Text>
+          </View>
+          <Text style={styles.emptyStateTitle}>No Comments Yet</Text>
+          <Text style={styles.emptyStateSubtitle}>
+            Be the first to share your thoughts
+          </Text>
         </View>
       ) : (
-        <>
-          <Text style={styles.commentsTitle}>Comments</Text>
+        <View style={styles.contentContainer}>
+          <View style={styles.headerSection}>
+            <Text style={styles.pageTitle}>Comments</Text>
+            <View style={styles.commentCountBadge}>
+              <Text style={styles.commentCountText}>
+                {driver?.comments?.length || 0}
+              </Text>
+            </View>
+          </View>
+
           <FlatList
+            contentContainerStyle={styles.listContent}
             nestedScrollEnabled
-            showsVerticalScrollIndicator={true}
+            showsVerticalScrollIndicator={false}
             showsHorizontalScrollIndicator={false}
             data={driver?.comments}
             onEndReached={() => {
@@ -126,7 +142,7 @@ export const CommentsScreen = () => {
             keyExtractor={(v, index) => String(index)}
             renderItem={({ item }) => <Comment comment={item} />}
           />
-        </>
+        </View>
       )}
     </View>
   );

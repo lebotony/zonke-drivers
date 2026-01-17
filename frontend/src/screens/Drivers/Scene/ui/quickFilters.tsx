@@ -1,5 +1,6 @@
 import { View, ScrollView, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
+import { LinearGradient } from "expo-linear-gradient";
 
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -36,18 +37,31 @@ export const QuickFilters = (props: QuickFiltersProps) => {
     : PLATFORM_FILTERS;
 
   return (
-    <WrapperElement
-      style={IS_IOS && !isVehicle ? styles.iosWrapper : undefined}
-    >
-      <View
-        style={[
-          styles.container,
-          isVehicle && {
-            justifyContent: "center",
-            backgroundColor: "yellow",
-          },
-        ]}
+    <View style={IS_IOS && !isVehicle ? styles.outerWrapper : undefined}>
+      <WrapperElement
+        style={IS_IOS && !isVehicle ? styles.iosWrapper : undefined}
       >
+        {!isVehicle && (
+          <LinearGradient
+            colors={[
+              "rgba(118, 203, 237, 0.4)",
+              "rgba(118, 203, 237, 0.2)",
+              "rgba(118, 203, 237, 0.05)",
+            ]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 0 }}
+            style={styles.gradientBorder}
+          />
+        )}
+        <View
+          style={[
+            styles.container,
+            isVehicle && {
+              justifyContent: "center",
+              backgroundColor: "yellow",
+            },
+          ]}
+        >
         {!isVehicle && (
           <View style={styles.titleWrapper}>
             <Text style={styles.heading}>
@@ -59,7 +73,7 @@ export const QuickFilters = (props: QuickFiltersProps) => {
                 onPress={() => onClear()}
                 activeOpacity={0.8}
               >
-                <Text style={{ color: Colors.mrDBlue, fontWeight: "600" }}>
+                <Text style={{ color: Colors.mrDBlue, fontWeight: 600 }}>
                   Reset
                 </Text>
                 <MaterialIcons
@@ -109,5 +123,6 @@ export const QuickFilters = (props: QuickFiltersProps) => {
         </ScrollView>
       </View>
     </WrapperElement>
+    </View>
   );
 };

@@ -1,4 +1,4 @@
-import React, { ReactNode, useRef } from "react";
+import React, { ReactNode, useRef, useEffect, useState } from "react";
 import {
   Animated,
   Dimensions,
@@ -7,6 +7,8 @@ import {
   StatusBar,
   ScrollView,
   View,
+  Keyboard,
+  Platform,
 } from "react-native";
 import { BlurView } from "expo-blur";
 
@@ -24,6 +26,7 @@ export const Modal = (props: ModalProps) => {
   const { children, onDismiss } = props;
 
   const pan = useRef(new Animated.ValueXY()).current;
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
 
   const dismissWithAnimation = () => {
     Animated.timing(pan, {
@@ -61,6 +64,26 @@ export const Modal = (props: ModalProps) => {
 
   const screenHeight = Dimensions.get("window").height;
 
+  useEffect(() => {
+    const keyboardWillShowListener = Keyboard.addListener(
+      Platform.OS === "ios" ? "keyboardWillShow" : "keyboardDidShow",
+      (e) => {
+        setKeyboardHeight(e.endCoordinates.height);
+      }
+    );
+    const keyboardWillHideListener = Keyboard.addListener(
+      Platform.OS === "ios" ? "keyboardWillHide" : "keyboardDidHide",
+      () => {
+        setKeyboardHeight(0);
+      }
+    );
+
+    return () => {
+      keyboardWillShowListener.remove();
+      keyboardWillHideListener.remove();
+    };
+  }, []);
+
   return (
     <BlurView intensity={60} tint="dark" style={styles.container}>
       <StatusBar barStyle="dark-content" backgroundColor={Colors.grey} />
@@ -70,8 +93,11 @@ export const Modal = (props: ModalProps) => {
       <Animated.View
         style={[
           styles.modalWrapper,
-          { transform: [{ translateY: pan.y }] },
-          { maxHeight: screenHeight },
+          {
+            transform: [{ translateY: pan.y }],
+            ...(Platform.OS === "ios" && keyboardHeight > 0 ? { bottom: keyboardHeight } : {}),
+          },
+          Platform.OS === "ios" && keyboardHeight > 0 ? { maxHeight: screenHeight - keyboardHeight } : {},
         ]}
       >
         {/* draggable area */}
@@ -79,7 +105,12 @@ export const Modal = (props: ModalProps) => {
           <BarLine />
         </View>
 
-        <ScrollView showsVerticalScrollIndicator={false}>{children}</ScrollView>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
+          {children}
+        </ScrollView>
       </Animated.View>
     </BlurView>
   );

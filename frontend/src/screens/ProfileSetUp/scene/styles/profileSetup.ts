@@ -8,14 +8,14 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: 600,
     marginBottom: 10,
     color: Colors.black,
     textAlign: "center",
   },
   label: {
     fontSize: 15,
-    fontWeight: "500",
+    fontWeight: 500,
     color: Colors.black,
     marginBottom: 6,
     marginLeft: 2,

@@ -16,7 +16,7 @@ type CardProps = {
     label: string;
     icon: React.JSX.Element;
     placeholder?: string;
-    options: string[];
+    options?: string[];
   };
   setValue: any;
   watch: any;
@@ -40,13 +40,13 @@ export const Card = (props: CardProps) => {
     }
   }, [checked]);
 
-  const getValues = () => {
+  const getDisplayValue = () => {
     if (isTransmission) {
       return checked ? "Automatic" : "Manual";
     }
 
     const watchedValue = watch(card.name);
-    return !isEmpty(watchedValue) ? watchedValue : card.placeholder;
+    return !isEmpty(watchedValue) ? watchedValue : null;
   };
 
   const onDropdownPress = () => {
@@ -57,45 +57,44 @@ export const Card = (props: CardProps) => {
     }
   };
 
+  const displayValue = getDisplayValue();
+  const hasValue = !isEmpty(displayValue);
+
   return (
     <PopupMenu
       onSelect={handleSetValue}
-      options={card.options}
+      options={card.options || []}
       innerBtnFn={onDropdownPress}
       style={styles.card}
     >
       <View style={styles.iconWrapper}>{card.icon}</View>
-      <View style={{ flex: 1 }}>
-        <Text style={{ fontSize: 13, fontWeight: 600 }}>{card.label}</Text>
-        <Text
-          style={{
-            fontSize: 11,
-            fontWeight: 600,
-            color: Colors.mediumGrey,
-          }}
-        >
-          {getValues()}
+      <View style={styles.contentWrapper}>
+        <Text style={styles.label}>{card.label}</Text>
+        <Text style={hasValue ? styles.valueText : styles.placeholderText}>
+          {hasValue ? displayValue : card.placeholder || "Select option"}
         </Text>
       </View>
 
-      <View style={styles.dropdowmIconWrapper}>
-        {isTransmission ? (
+      {isTransmission ? (
+        <View style={styles.switchContainer}>
           <Switch
             onValueChange={() => setChecked(!checked)}
             value={checked}
-            trackColor={{ false: "#D3D3D3", true: Colors.tealGreen }}
-            thumbColor={checked ? "#fff" : "#f4f3f4"}
-            style={isIOS ? { transform: [{ scaleX: 0.8 }, { scaleY: 0.8 }] } : undefined}
+            trackColor={{ false: Colors.lighterGrey, true: Colors.mrDBlue }}
+            thumbColor={Colors.white}
+            ios_backgroundColor={Colors.lighterGrey}
+            style={isIOS ? { transform: [{ scaleX: 0.85 }, { scaleY: 0.85 }] } : undefined}
           />
-        ) : (
+        </View>
+      ) : (
+        <View style={styles.dropdownIconWrapper}>
           <Ionicons
-            name={!displayDropdown ? "chevron-down" : "chevron-up"}
-            color={Colors.black}
-            size={12}
-            style={{ paddingTop: 1 }}
+            name={displayDropdown ? "chevron-up" : "chevron-down"}
+            color={Colors.mrDBlue}
+            size={16}
           />
-        )}
-      </View>
+        </View>
+      )}
     </PopupMenu>
   );
 };

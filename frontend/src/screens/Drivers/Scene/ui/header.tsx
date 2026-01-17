@@ -1,8 +1,8 @@
 import { View, TextInput, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import EvilIcons from "@expo/vector-icons/EvilIcons";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import { StatusBar } from "expo-status-bar";
+import { LinearGradient } from "expo-linear-gradient";
 
 import { TextLogo } from "@/src/components/misc/textLogo";
 import { Colors } from "@/constants/ui";
@@ -23,15 +23,23 @@ export const Header = (props: HeaderProps) => {
       <StatusBar style="dark" />
       <SafeAreaView edges={["top"]} style={{ backgroundColor: Colors.white }}>
         <View style={styles.items}>
-          <TextLogo size="small" />
+          <View style={styles.logoWrapper}>
+            <TextLogo size="small" />
+          </View>
           <View style={styles.inputWrapper}>
-            <EvilIcons name="search" size={20} color="black" />
+            <View style={styles.searchIconWrapper}>
+              <Ionicons
+                name="search-outline"
+                size={20}
+                color={Colors.mrDBlue}
+              />
+            </View>
             <TextInput
               onChangeText={setSearchTerm}
               style={styles.textInput}
               placeholder={`Search ${isVehicleList ? "vehicles" : "drivers"}...`}
-              placeholderTextColor={Colors.mediumGrey}
-              cursorColor={Colors.darkUiBlue}
+              placeholderTextColor={Colors.mediumLightGrey}
+              cursorColor={Colors.mrDBlue}
               textAlignVertical="center"
               underlineColorAndroid="transparent"
               maxLength={50}
@@ -45,17 +53,22 @@ export const Header = (props: HeaderProps) => {
           </View>
 
           <TouchableOpacity
-            style={{
-              borderColor: Colors.mrDBlue,
-              borderWidth: 1,
-              borderRadius: 8,
-              paddingVertical: 4,
-              paddingHorizontal: 5,
-            }}
-            activeOpacity={0.5}
+            style={styles.filterButton}
+            activeOpacity={0.8}
             onPress={() => setShowFilterModal(true)}
           >
-            <Ionicons name="options-outline" size={23} color={Colors.mrDBlue} />
+            <LinearGradient
+              colors={["#76CBED", "#90D7F5", "#ADE3F9"]}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+              style={styles.filterButtonGradient}
+            >
+              <Ionicons
+                name="options-outline"
+                size={22}
+                color={Colors.white}
+              />
+            </LinearGradient>
           </TouchableOpacity>
         </View>
       </SafeAreaView>

@@ -5,13 +5,15 @@ import { shadowStyles } from "@/src/components/shadowStyles";
 
 export const styles = StyleSheet.create({
   container: {
-    marginTop: 10,
     flex: 1,
-    marginHorizontal: 13,
+    marginHorizontal: 16,
     backgroundColor: Colors.white,
     padding: 20,
-    borderRadius: 10,
-    marginBottom: 20,
+    paddingTop: 18,
+    borderRadius: 16,
+    gap: 14,
     ...shadowStyles,
+    shadowOpacity: 0.06,
+    elevation: 2,
   },
 });

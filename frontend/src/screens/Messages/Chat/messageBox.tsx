@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, TextInput, TouchableOpacity } from "react-native";
+import { View, TextInput, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { Ionicons } from "@expo/vector-icons";
@@ -100,17 +100,30 @@ export const MessageBox = (props: MessageBoxProps) => {
 
     setIsSending(true);
     userChannel
-      .push("send_message_to_new_thread", {
-        params: params,
-      }, 10000)
+      .push(
+        "send_message_to_new_thread",
+        {
+          params: params,
+        },
+        10000,
+      )
       .receive("ok", (payload: { thread: Thread }) => {
         if (find(threads, { id: payload.thread.id })) {
+          const combinedMessages = [
+            payload.thread.last_message,
+            ...(thread?.messages ?? []),
+          ];
+
+          // Sort by created_at descending to ensure correct order
+          const sortedMessages = combinedMessages.sort((a: any, b: any) => {
+            const timeA = new Date(a.created_at).getTime();
+            const timeB = new Date(b.created_at).getTime();
+            return timeB - timeA;
+          });
+
           updateAndMoveObjectToTop("threads", threadId as string, {
             last_message: payload.thread.last_message,
-            messages: [
-              ...(thread?.messages ?? []),
-              payload.thread.last_message,
-            ],
+            messages: sortedMessages,
           });
 
           initiateChannels([payload.thread]);
@@ -171,13 +184,26 @@ export const MessageBox = (props: MessageBoxProps) => {
 
     setIsSending(true);
     channel
-      .push("send_message", {
-        params: params,
-      }, 10000)
+      .push(
+        "send_message",
+        {
+          params: params,
+        },
+        10000,
+      )
       .receive("ok", (payload: { message: Partial<Message> }) => {
+        const combinedMessages = [payload.message, ...(thread?.messages ?? [])];
+
+        // Sort by created_at descending to ensure correct order
+        const sortedMessages = combinedMessages.sort((a: any, b: any) => {
+          const timeA = new Date(a.created_at).getTime();
+          const timeB = new Date(b.created_at).getTime();
+          return timeB - timeA;
+        });
+
         updateAndMoveObjectToTop("threads", threadId as string, {
           last_message: payload.message,
-          messages: [payload.message, ...(thread?.messages ?? [])],
+          messages: sortedMessages,
         });
 
         reset();
@@ -248,13 +274,18 @@ export const MessageBox = (props: MessageBoxProps) => {
           );
         }}
       />
-      <TouchableOpacity
-        style={[styles.sendButton, isSending && { opacity: 0.5 }]}
+      <Pressable
+        style={({ pressed }) => [
+          styles.sendButton,
+          isSending && styles.sendButtonDisabled,
+          pressed &&
+            !isSending && { opacity: 0.8, transform: [{ scale: 0.95 }] },
+        ]}
         onPress={isSending ? undefined : handleSubmit(onSubmit)}
         disabled={isSending}
       >
-        <Ionicons name="send" size={20} color="white" />
-      </TouchableOpacity>
+        <Ionicons name="send" size={18} color="white" />
+      </Pressable>
     </View>
   );
 };

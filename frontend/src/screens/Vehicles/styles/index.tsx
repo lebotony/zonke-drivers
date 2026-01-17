@@ -5,7 +5,7 @@ import { shadowStyles } from "../../../components/shadowStyles";
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Colors.bg,
+    backgroundColor: "#F5F5F7",
   },
   topRow: {
     width: "100%",
@@ -18,21 +18,21 @@ export const styles = StyleSheet.create({
     ...shadowStyles,
   },
   iosHeader: {
-    backgroundColor: Colors.bg,
+    backgroundColor: "#F5F5F7",
     shadowColor: Colors.black,
     shadowOffset: {
       width: 0,
-      height: 2,
+      height: 1,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
+    shadowOpacity: 0.05,
+    shadowRadius: 3,
+    elevation: 1,
   },
   greeting: {
     flex: 1,
   },
   hello: {
-    fontWeight: "700",
+    fontWeight: 600,
     color: Colors.darkCharcoalGrey,
   },
   searchContainer: {
@@ -58,13 +58,13 @@ export const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: 600,
     color: Colors.darkCharcoalGrey,
   },
   seeAll: {
     fontSize: 15,
     color: Colors.mrDBlue,
-    fontWeight: "600",
+    fontWeight: 600,
   },
   filterContainer: {
     flexDirection: "row",

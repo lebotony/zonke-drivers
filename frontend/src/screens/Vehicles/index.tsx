@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import { SafeAreaView, FlatList, View } from "react-native";
+import { FlatList, View } from "react-native";
 
 import { useDebounce } from "use-debounce";
 import { isEmpty } from "lodash";
@@ -8,8 +8,10 @@ import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 
 import { NoData } from "@/src/components/NoData";
 import { Spinner } from "@/src/components/elements/Spinner";
-import { DynamicHeader } from "@/src/components/dynamicHeader";
-import { Colors } from "@/constants/ui";
+import {
+  DynamicHeader,
+  DynamicHeaderRef,
+} from "@/src/components/dynamicHeader";
 
 import { VehicleCard } from "./scene/ui/card";
 import { styles } from "./styles";
@@ -20,6 +22,7 @@ import { BrandsList } from "./utils/constants";
 import { Brands } from "./scene/ui/brands";
 import { Header } from "../Drivers/Scene/ui/header";
 import { HeaderFilterPlatforms } from "./scene/ui/platforms";
+import { ResetFAB } from "./scene/ui/ResetFAB";
 import { IS_IOS } from "../../../constants/srcConstants";
 
 export const VehiclesScreen = () => {
@@ -37,6 +40,8 @@ export const VehiclesScreen = () => {
   const [reset, setReset] = useState<boolean>(false);
   const resetRef = useRef<boolean>(undefined);
   const didMountRef = useRef(false);
+  const flatListRef = useRef<FlatList>(null);
+  const dynamicHeaderRef = useRef<DynamicHeaderRef>(null);
 
   const [searchTerm, setSearchTerm] = useState<string>();
   const [debouncedSearchTerm] = useDebounce(searchTerm, 300);
@@ -97,11 +102,6 @@ export const VehiclesScreen = () => {
 
   const vehicles = data?.pages.flatMap((page) => page?.data) ?? [];
 
-  console.log(
-    "IIIIIIIIIII",
-    vehicles.map((v) => v?.user?.location?.country),
-  );
-
   // useEffects responsible for triggering refetch
   useEffect(() => {
     if (debouncedSearchTerm !== undefined) {
@@ -161,6 +161,9 @@ export const VehiclesScreen = () => {
     setPriceRange([0, 235]);
     setSelectedFuelTypes([]);
     setReset((prev) => !prev);
+
+    // Show the header after reset
+    dynamicHeaderRef.current?.showHeader();
   };
 
   const handleValueChange = useCallback((low: number, high: number) => {
@@ -199,9 +202,18 @@ export const VehiclesScreen = () => {
   return (
     <View style={styles.container}>
       <DynamicHeader
-        headerBgColor={Colors.bg}
+        ref={dynamicHeaderRef}
+        headerBgColor="#F8FCFE"
         header={
-          <View style={[IS_IOS && styles.iosHeader]}>
+          <View
+            style={[
+              IS_IOS && styles.iosHeader,
+              {
+                backgroundColor: "#F8FCFE",
+                paddingBottom: 16,
+              },
+            ]}
+          >
             <Header
               setShowFilterModal={(value: boolean) => setShowFilterModal(value)}
               setSearchTerm={(value: string) => setSearchTerm(value)}
@@ -213,7 +225,8 @@ export const VehiclesScreen = () => {
                 flexDirection: "row",
                 justifyContent: "space-between",
                 alignItems: "center",
-                overflow: "hidden",
+                paddingHorizontal: 8,
+                paddingTop: 5,
               }}
             >
               <HeaderFilterPlatforms
@@ -227,13 +240,16 @@ export const VehiclesScreen = () => {
                 setShowFilterModal={(value: boolean) =>
                   setShowFilterModal(value)
                 }
-                onReset={handleFilterReset}
                 toggleBrand={toggleBrand}
-                showReset={!isDefaultState && !showFilterModal}
               />
             </View>
 
-            <View style={{ height: 80 }}>
+            <View
+              style={{
+                paddingHorizontal: 8,
+                paddingTop: 5,
+              }}
+            >
               <Brands
                 selectedBrands={selectedBrands}
                 toggleBrand={toggleBrand}
@@ -250,6 +266,7 @@ export const VehiclesScreen = () => {
             <Spinner />
           ) : (
             <FlatList
+              ref={flatListRef}
               onScroll={onScroll}
               scrollEventThrottle={scrollEventThrottle}
               data={vehicles}
@@ -258,13 +275,15 @@ export const VehiclesScreen = () => {
                   fetchNextPage();
                 }
               }}
+              onEndReachedThreshold={0.5}
               keyExtractor={(i) => i?.id}
               renderItem={renderVehicle}
               contentContainerStyle={[
                 contentContainerStyle,
                 {
-                  gap: 12,
-                  paddingHorizontal: 14,
+                  gap: 20,
+                  paddingHorizontal: 16,
+                  paddingBottom: 24,
                 },
               ]}
               showsVerticalScrollIndicator={false}
@@ -294,6 +313,11 @@ export const VehiclesScreen = () => {
         onPriceChange={handleValueChange}
         onRatingSelect={setSelectedRating}
         onApply={handleApplyFilter}
+      />
+
+      <ResetFAB
+        visible={!isDefaultState && !showFilterModal}
+        onPress={handleFilterReset}
       />
     </View>
   );

@@ -1,64 +1,141 @@
 import { StyleSheet } from "react-native";
 
-import { shadowStyles } from "@/src/components/shadowStyles";
 import { Colors } from "@/constants/ui";
 
 export const styles = StyleSheet.create({
   card: {
     backgroundColor: Colors.white,
-    height: 60,
-    borderRadius: 7,
-    position: "relative",
-    marginHorizontal: 15,
-    marginBottom: 12,
-    ...shadowStyles,
+    borderRadius: 16,
+    marginHorizontal: 16,
+    marginBottom: 10,
+    overflow: "hidden",
+    shadowColor: Colors.mrDBlue,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 12,
+    elevation: 3,
+    borderWidth: 1,
+    borderColor: "rgba(118, 203, 237, 0.08)",
   },
-  addText: {
-    color: Colors.skyBlue,
+  cardContent: {
+    padding: 12,
   },
-  header: {
-    paddingVertical: 4,
-    marginLeft: 20,
-    marginRight: 15,
-    borderStyle: "dashed",
-    borderBottomWidth: 1,
-    borderColor: Colors.greyLighter,
-    alignItems: "center",
-    justifyContent: "space-between",
-    flexDirection: "row",
-  },
-  body: {
-    marginLeft: 20,
-    marginRight: 15,
+  topRow: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+    marginBottom: 8,
   },
-  amountText: {
-    color: Colors.lightGreen,
-    fontSize: 15,
-    fontWeight: 700,
+  leftSection: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    flex: 1,
+  },
+  avatarContainer: {
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    backgroundColor: "rgba(118, 203, 237, 0.12)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 2,
+    borderColor: "rgba(118, 203, 237, 0.2)",
+  },
+  avatarText: {
+    color: Colors.mrDBlue,
+    fontSize: 14,
+    fontWeight: 800,
+    letterSpacing: 0.5,
+  },
+  nameContainer: {
+    flex: 1,
   },
   headerName: {
-    color: Colors.black,
+    color: Colors.darkCharcoalGrey,
     fontWeight: 600,
-    fontSize: 15,
+    fontSize: 14,
+    marginBottom: 2,
   },
-  time: {
+  timeRow: {
     flexDirection: "row",
-    gap: 5,
+    alignItems: "center",
+    gap: 4,
   },
   timeText: {
     color: Colors.mediumGrey,
+    fontSize: 11,
+    fontWeight: 500,
   },
-  leftBadge: {
+  statusBadge: {
+    backgroundColor: "rgba(34, 197, 94, 0.15)",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: "rgba(34, 197, 94, 0.2)",
+  },
+  statusText: {
+    color: Colors.lightGreen,
+    fontSize: 9,
+    fontWeight: 800,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: Colors.greyLighter,
+    marginVertical: 8,
+    opacity: 0.4,
+  },
+  bottomRow: {
+    backgroundColor: "rgba(118, 203, 237, 0.05)",
+    paddingVertical: 8,
+    paddingHorizontal: 10,
+    borderRadius: 10,
+    marginHorizontal: -2,
+  },
+  amountLabel: {
+    color: Colors.mediumGrey,
+    fontSize: 9,
+    fontWeight: 600,
+    textTransform: "uppercase",
+    letterSpacing: 0.8,
+    marginBottom: 3,
+  },
+  amountContainer: {
+    flexDirection: "row",
+    alignItems: "baseline",
+    gap: 2,
+  },
+  currencySymbol: {
+    color: Colors.mrDBlue,
+    fontSize: 14,
+    fontWeight: 600,
+  },
+  amountText: {
+    color: Colors.darkCharcoalGrey,
+    fontSize: 22,
+    fontWeight: 900,
+    letterSpacing: -0.6,
+  },
+  accentBar: {
     position: "absolute",
     left: 0,
-    borderTopLeftRadius: 7,
-    borderBottomLeftRadius: 7,
-    width: 10,
-    height: 60,
+    top: 0,
+    bottom: 0,
+    width: 4,
     backgroundColor: Colors.lightGreen,
-    marginRight: 10,
+  },
+  shimmer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    height: 2,
+    backgroundColor: "rgba(118, 203, 237, 0.3)",
   },
 });

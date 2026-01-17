@@ -53,8 +53,6 @@ export const LoginScreen = (props: LoginScreenProps) => {
     resolver: zodResolver(isSignUp ? SignUpSchema : SignInSchema),
   });
 
-  console.log(watch());
-
   const watchedFields = watch(["email", "password"]);
 
   useEffect(() => {
@@ -119,63 +117,75 @@ export const LoginScreen = (props: LoginScreenProps) => {
         <ScrollView
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={
-            isSignUp && { paddingBottom: keyboardVisible ? keyboardHeight : 0 }
-          }
+          contentContainerStyle={{
+            flexGrow: 1,
+            paddingBottom: keyboardVisible && isSignUp ? keyboardHeight : 20,
+          }}
         >
           {isSignUp && (
             <TouchableOpacity
               style={styles.goBack}
               onPress={() => setIsSignUp(!isSignUp)}
             >
-              <MaterialIcons name="keyboard-backspace" size={20} />
+              <MaterialIcons name="keyboard-backspace" size={22} color={Colors.darkCharcoalGrey} />
             </TouchableOpacity>
           )}
+
           <View style={styles.logoContainer}>
             <TextLogo size={isSignUp ? "medium" : "large"} />
           </View>
 
-          {!isSignUp && <Text style={styles.title}>Login your account</Text>}
+          <View style={styles.headerSection}>
+            {!isSignUp && (
+              <>
+                <Text style={styles.title}>Welcome Back</Text>
+                <Text style={styles.subtitle}>
+                  Sign in to continue to your account
+                </Text>
+              </>
+            )}
 
-          {isSignUp && (
-            <View
-              style={{
-                flexDirection: "row",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <Text style={styles.title}>Create </Text>
-              <Text style={[styles.title, { color: Colors.mrDBlue }]}>
-                {isDriver ? "Driver" : "Vehicle Owner"}
-              </Text>
-              <Text style={styles.title}> account</Text>
-            </View>
-          )}
+            {isSignUp && (
+              <>
+                <Text style={styles.title}>
+                  Create{" "}
+                  <Text style={{ color: Colors.mrDBlue }}>
+                    {isDriver ? "Driver" : "Owner"}
+                  </Text>
+                  {" "}Account
+                </Text>
+                <Text style={styles.subtitle}>
+                  Join the Zonke Drivers community today
+                </Text>
+              </>
+            )}
+          </View>
 
           {isSignUp && (
             <View style={styles.switch}>
               <TouchableOpacity
-                onPress={() => setIsDriver(!isDriver)}
+                onPress={() => setIsDriver(false)}
                 style={[styles.switchBtns, !isDriver && styles.activeSwitchBtn]}
+                activeOpacity={0.7}
               >
                 <Text
                   style={[
                     styles.switchText,
-                    !isDriver && { color: Colors.white },
+                    !isDriver && styles.activeSwitchText,
                   ]}
                 >
                   Vehicle Owner
                 </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                onPress={() => setIsDriver(!isDriver)}
+                onPress={() => setIsDriver(true)}
                 style={[styles.switchBtns, isDriver && styles.activeSwitchBtn]}
+                activeOpacity={0.7}
               >
                 <Text
                   style={[
                     styles.switchText,
-                    isDriver && { color: Colors.white },
+                    isDriver && styles.activeSwitchText,
                   ]}
                 >
                   Driver
@@ -187,57 +197,59 @@ export const LoginScreen = (props: LoginScreenProps) => {
           <Form isSignUp={isSignUp} control={control} errors={errors} />
 
           {authError && (
-            <Text
-              style={{ color: Colors.lightRed, marginTop: 5, marginLeft: 8 }}
+            <View
+              style={{
+                backgroundColor: "rgba(235, 99, 75, 0.08)",
+                paddingHorizontal: 16,
+                paddingVertical: 12,
+                borderRadius: 12,
+                marginBottom: 16,
+                borderLeftWidth: 3,
+                borderLeftColor: Colors.lightRed,
+              }}
             >
-              {authError}
-            </Text>
+              <Text style={{ color: Colors.lightRed, fontSize: 14, fontWeight: 500 }}>
+                {authError}
+              </Text>
+            </View>
           )}
 
           <CustomButton
             haptics="light"
-            customStyle={{ borderRadius: 6, marginTop: 20 }}
+            customStyle={{
+              borderRadius: 12,
+              marginTop: 4,
+              height: 52,
+              shadowColor: Colors.mrDBlue,
+              shadowOffset: {
+                width: 0,
+                height: 4,
+              },
+              shadowOpacity: 0.2,
+              shadowRadius: 8,
+              elevation: 2,
+            }}
             onPress={handleSubmit(onSubmit)}
           >
             <Text style={styles.buttonText}>
-              {isSignUp ? "Sign Up" : "Log In"}
+              {isSignUp ? "Create Account" : "Sign In"}
             </Text>
           </CustomButton>
 
-          {/* <View style={styles.dividerRow}>
-          <View style={styles.divider} />
-          <Text style={styles.dividerText}>or continue with</Text>
-          <View style={styles.divider} />
-        </View>
-
-        <CustomButton
-          color="skyLight"
-          haptics="light"
-          customStyle={{
-            borderRadius: 6,
-            flexDirection: "row",
-            paddingVertical: 2,
-          }}
-          onPress={() => {}}
-        >
-          <Image source={google_logo} style={styles.googleIcon} />
-          <Text style={[styles.googleText, { color: Colors.black }]}>
-            Google
-          </Text>
-        </CustomButton> */}
+          <View style={{ flex: 1 }} />
 
           <View>
             <View style={styles.signupRow}>
-              <Text style={{ color: Colors.midToneGrey, fontWeight: 600 }}>
-                {isSignUp ? "Have an acount?" : " Don’t have an account?"}
+              <Text style={styles.signupPrompt}>
+                {isSignUp ? "Already have an account?" : "Don't have an account?"}
               </Text>
               <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
-                <Text style={[styles.signupText, { fontWeight: 700 }]}>
-                  {!isSignUp ? "Sign Up" : "Log In"}
+                <Text style={styles.signupText}>
+                  {!isSignUp ? "Sign Up" : "Sign In"}
                 </Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.copyright}>© 2025 ZS, All right Reserved</Text>
+            <Text style={styles.copyright}>© 2025 Zonke, All Rights Reserved</Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

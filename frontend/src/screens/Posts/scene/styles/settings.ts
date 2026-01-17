@@ -12,12 +12,12 @@ export const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: "600",
+    fontWeight: 600,
     color: Colors.black,
   },
   subTitle: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: 600,
     color: Colors.dimGrey,
     marginTop: 9,
   },
