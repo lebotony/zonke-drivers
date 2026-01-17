@@ -237,136 +237,164 @@ export const AddVehicle = () => {
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
+        style={{ flex: 1 }}
       >
         <ScrollView
           showsHorizontalScrollIndicator={false}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
-          contentContainerStyle={
+          contentContainerStyle={[
+            styles.scrollContent,
             Platform.OS === "android" && {
               paddingBottom: keyboardVisible ? keyboardHeight : 0,
-            }
-          }
+            },
+          ]}
         >
-          <View style={styles.headerWrapper}>
-            <Text style={[styles.header]}>Car Details</Text>
-
-            <TouchableOpacity
-              onPress={isUploadingImage ? undefined : handleSelectImage}
-              style={styles.imageWrapper}
-              disabled={isUploadingImage}
-            >
-              <TouchableOpacity
-                style={styles.plusBtn}
-                onPress={isUploadingImage ? undefined : handleSelectImage}
-                disabled={isUploadingImage}
-              >
-                <AntDesign name="plus" size={24} color={Colors.white} />
-              </TouchableOpacity>
-              <Image
-                source={vehicleImage}
-                style={[
-                  styles.imageStyles,
-                  !isVehiclePic && styles.defaultImageStyles,
-                ]}
-                contentFit="contain"
-              />
-              <ImageLoadingOverlay isLoading={isUploadingImage} />
-            </TouchableOpacity>
-            {!isVehiclePic && (
-              <Text style={styles.imageText}>Add Vehicle image</Text>
-            )}
+          {/* Premium Header Section */}
+          <View style={styles.headerSection}>
+            <View style={styles.headerTextContainer}>
+              <Text style={styles.headerTitle}>
+                {vehicle ? "Update Your Vehicle" : "Add Your Vehicle"}
+              </Text>
+              <Text style={styles.headerSubtitle}>
+                {vehicle
+                  ? "Keep your vehicle details up to date"
+                  : "Share your vehicle with our community of drivers"}
+              </Text>
+            </View>
           </View>
 
-          {!isNewVehicle && (
-            <View style={styles.driverContainer}>
-              <Text style={styles.addVehicleSubText}>
-                Current user of your vehicle
-              </Text>
-              <View style={styles.card}>
-                <View style={[styles.profileWrapper, !driver && { gap: 14 }]}>
-                  {driver ? (
-                    <Image
-                      source={driver?.asset_url}
-                      style={styles.driverImage}
-                    />
-                  ) : (
-                    <MaterialIcons
-                      name="person-outline"
-                      size={30}
-                      color={Colors.grey}
-                    />
-                  )}
+          {/* Premium Image Upload Card */}
+          <View style={styles.imageCard}>
+            <Text style={styles.sectionLabel}>Vehicle Photo</Text>
+            <TouchableOpacity
+              onPress={isUploadingImage ? undefined : handleSelectImage}
+              style={styles.imageUploadArea}
+              disabled={isUploadingImage}
+              activeOpacity={0.7}
+            >
+              {isVehiclePic ? (
+                <>
+                  <Image
+                    source={vehicleImage}
+                    style={styles.uploadedImage}
+                    contentFit="cover"
+                  />
+                  <View style={styles.imageEditBadge}>
+                    <AntDesign name="edit" size={16} color={Colors.white} />
+                  </View>
+                </>
+              ) : (
+                <View style={styles.emptyImageState}>
+                  <View style={styles.uploadIconContainer}>
+                    <AntDesign name="camerao" size={32} color={Colors.mrDBlue} />
+                  </View>
+                  <Text style={styles.uploadPromptText}>Tap to upload photo</Text>
+                  <Text style={styles.uploadHintText}>
+                    Show off your vehicle's best angle
+                  </Text>
+                </View>
+              )}
+              <ImageLoadingOverlay isLoading={isUploadingImage} />
+            </TouchableOpacity>
+          </View>
 
-                  <View style={styles.profileInfo}>
-                    <Text
-                      style={[
-                        styles.profileName,
-                        !driver && { color: Colors.grey },
-                      ]}
-                    >
+          {/* Driver Assignment Section */}
+          {!isNewVehicle && (
+            <View style={styles.section}>
+              <Text style={styles.sectionLabel}>Current Driver</Text>
+              <View style={styles.driverCard}>
+                <View style={styles.driverInfo}>
+                  <View style={styles.driverAvatarContainer}>
+                    {driver ? (
+                      <Image
+                        source={driver?.asset_url}
+                        style={styles.driverAvatar}
+                      />
+                    ) : (
+                      <MaterialIcons
+                        name="person-outline"
+                        size={28}
+                        color={Colors.mediumGrey}
+                      />
+                    )}
+                  </View>
+                  <View style={styles.driverTextContainer}>
+                    <Text style={[styles.driverName, !driver && { color: Colors.mediumGrey }]}>
                       {driver
-                        ? driver?.first_name + " " + driver?.last_name
+                        ? `${driver.first_name} ${driver.last_name}`
                         : "No driver assigned"}
                     </Text>
+                    {driver && (
+                      <Text style={styles.driverSubtext}>Active driver</Text>
+                    )}
                   </View>
                 </View>
                 <TouchableOpacity
-                  style={styles.addNewBtn}
-                  onPress={() =>
-                    router.push(`/vehicleDriverSearch/${vehicle?.id}`)
-                  }
+                  style={styles.assignButton}
+                  onPress={() => router.push(`/vehicleDriverSearch/${vehicle?.id}`)}
+                  activeOpacity={0.7}
                 >
-                  <Text style={styles.addNewText}>Add new</Text>
+                  <Text style={styles.assignButtonText}>
+                    {driver ? "Change" : "Assign"}
+                  </Text>
                 </TouchableOpacity>
               </View>
             </View>
           )}
 
-          <Text style={styles.addVehicleSubText}>
-            {`${vehicle ? "Edit" : "Add"} your vehicle details below`}
-          </Text>
+          {/* Vehicle Type & Details Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Vehicle Type & Details</Text>
+            <View style={styles.cardsGroup}>
+              {CardFormDef.map((card, index) => (
+                <Card
+                  key={`${card.label}-${index}`}
+                  card={card}
+                  setValue={setValue}
+                  watch={watch}
+                />
+              ))}
+            </View>
+          </View>
 
-          {CardFormDef.map((card, index) => (
-            <Card
-              key={`${card.label}-${index}`}
-              card={card}
-              setValue={setValue}
-              watch={watch}
-            />
-          ))}
+          {/* Specifications Section */}
+          <View style={styles.section}>
+            <Text style={styles.sectionLabel}>Specifications & Pricing</Text>
+            <AddVehicleForm control={control} errors={errors} />
+          </View>
 
-          <AddVehicleForm control={control} errors={errors} />
-
-          <View>
+          {/* Action Buttons */}
+          <View style={styles.actionsContainer}>
             {vehicle && (
-              <>
-                <Text style={{ paddingHorizontal: 20 }}>
-                  NB: Vehicle wont be searchable if not activated
-                </Text>
+              <View style={styles.activationSection}>
+                <View style={styles.activationInfo}>
+                  <AntDesign
+                    name="infocirlceo"
+                    size={18}
+                    color={Colors.mediumGrey}
+                  />
+                  <Text style={styles.activationText}>
+                    Vehicle must be activated to appear in searches
+                  </Text>
+                </View>
                 <CustomButton
                   haptics="light"
                   onPress={handleSetActive}
                   customStyle={[
+                    styles.activationButton,
                     {
                       backgroundColor: vehicle?.active
                         ? Colors.lightRed
                         : Colors.lightGreen,
                     },
-                    styles.btnStyles,
                   ]}
                 >
-                  <Text
-                    style={{
-                      color: Colors.white,
-                      fontWeight: 700,
-                      fontSize: 16,
-                    }}
-                  >
-                    {vehicle?.active ? "De-activate" : "Activate"}
+                  <Text style={styles.activationButtonText}>
+                    {vehicle?.active ? "Deactivate Vehicle" : "Activate Vehicle"}
                   </Text>
                 </CustomButton>
-              </>
+              </View>
             )}
 
             <CustomButton
@@ -375,21 +403,22 @@ export const AddVehicle = () => {
                 isSameForm || isSubmitting ? undefined : handleSubmit(create)
               }
               customStyle={[
+                styles.primaryButton,
                 {
                   backgroundColor:
                     (isSameForm && vehicle) || isSubmitting
                       ? Colors.lightGrey
                       : Colors.mrDBlue,
                 },
-                styles.btnStyles,
               ]}
+              disabled={(isSameForm && vehicle) || isSubmitting}
             >
-              <Text
-                style={{ color: Colors.white, fontWeight: 700, fontSize: 16 }}
-              >
+              <Text style={styles.primaryButtonText}>
                 {isSubmitting
-                  ? "Saving..."
-                  : `${vehicle ? "Edit" : "Add"} ${pickedType === "bike" ? "Bike" : "Vehicle"}`}
+                  ? "Saving Changes..."
+                  : vehicle
+                    ? "Save Changes"
+                    : `Add ${pickedType === "bike" ? "Bike" : "Vehicle"}`}
               </Text>
             </CustomButton>
           </View>

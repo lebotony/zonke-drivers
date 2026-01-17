@@ -117,7 +117,7 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
       ) : (
         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
           <Text>Are you sure you want to add an accident for: </Text>
-          <Text style={{ fontWeight: 700, fontSize: 16 }}>
+          <Text style={{ fontWeight: 600, fontSize: 16 }}>
             {vehicleDriver?.driver?.first_name}{" "}
             {vehicleDriver?.driver?.last_name}
           </Text>

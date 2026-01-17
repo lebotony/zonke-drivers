@@ -1,5 +1,6 @@
-import { TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View, Animated, Pressable } from "react-native";
 import { Text } from "react-native-paper";
+import { useRef } from "react";
 
 import { Image } from "expo-image";
 import { router } from "expo-router";
@@ -8,7 +9,6 @@ import { Feather, MaterialIcons } from "@expo/vector-icons";
 import { isEmpty } from "lodash";
 import { useQueryClient } from "@tanstack/react-query";
 
-import { HorizontalDivider } from "@/src/components/shapes/divider";
 import { Colors } from "@/constants/ui";
 import { PopupMenu } from "@/src/components/popup";
 import { CustomButton } from "@/src/components/elements/button";
@@ -34,10 +34,30 @@ export const Card = (props: CardProps) => {
   const { updatePaginatedObject, removeItemFromPaginatedList } =
     usePaginatedCache();
 
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
   const vehicleDriver = vehicle.vehicle_drivers?.[0];
   const noVehicleDrivers = isEmpty(vehicle?.vehicle_drivers);
 
   const isActive = vehicle?.active;
+
+  const handlePressIn = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 0.98,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  };
+
+  const handlePressOut = () => {
+    Animated.spring(scaleAnim, {
+      toValue: 1,
+      useNativeDriver: true,
+      speed: 50,
+      bounciness: 4,
+    }).start();
+  };
 
   const handleSetActive = () =>
     activateVehicle({
@@ -98,20 +118,29 @@ export const Card = (props: CardProps) => {
   };
 
   return (
-    <View style={styles.card}>
-      <PopupMenu
-        options={MANAGEMENT_OPTIONS.map((v) => v.label)}
-        style={{ position: "absolute", top: 8, right: -3 }}
-        onSelect={handleSelectOptions}
+    <Pressable onPressIn={handlePressIn} onPressOut={handlePressOut}>
+      <Animated.View
+        style={[styles.card, { transform: [{ scale: scaleAnim }] }]}
       >
-        <View style={styles.optionsBtn}>
-          <MaterialIcons name="menu" size={21} color={Colors.black} />
+        <View style={styles.optionsBtnWrapper}>
+          <PopupMenu
+            options={MANAGEMENT_OPTIONS.map((v) => v.label)}
+            onSelect={handleSelectOptions}
+          >
+            <View style={styles.optionsBtn}>
+              <MaterialIcons
+                name="more-vert"
+                size={20}
+                color={Colors.darkCharcoalGrey}
+              />
+            </View>
+          </PopupMenu>
         </View>
-      </PopupMenu>
-      <TouchableOpacity
-        onPress={() => router.push(`/(tabs)/vehicle/${vehicle?.id}`)}
-        style={styles.body}
-      >
+        <TouchableOpacity
+          onPress={() => router.push(`/(tabs)/vehicle/${vehicle?.id}`)}
+          style={styles.body}
+          activeOpacity={0.7}
+        >
         {isEmpty(vehicle?.asset?.url) ? (
           <View style={styles.imagePlaceholder}>
             <MaterialIcons name="commute" size={70} color={Colors.white} />
@@ -175,20 +204,17 @@ export const Card = (props: CardProps) => {
           </View>
         </View>
       </TouchableOpacity>
-      <HorizontalDivider color="#ededed" />
       <View style={styles.payments}>
         <View style={styles.paymentCard}>
-          <Text style={styles.paymentText}>Recent Paid</Text>
-          <View style={styles.recentPaidWrapper}>
-            {!isEmpty(vehicleDriver?.last_payment?.date) && (
-              <Text style={styles.dateText}>
-                {formatDateShort(vehicleDriver?.last_payment?.date)} -{" "}
-              </Text>
-            )}
-            <Text style={styles.amountText}>
-              R{vehicleDriver?.last_payment?.amount ?? 0}
+          <Text style={styles.paymentText}>Recent Payment</Text>
+          {!isEmpty(vehicleDriver?.last_payment?.date) && (
+            <Text style={styles.dateText}>
+              {formatDateShort(vehicleDriver?.last_payment?.date)}
             </Text>
-          </View>
+          )}
+          <Text style={styles.amountText}>
+            R{vehicleDriver?.last_payment?.amount ?? 0}
+          </Text>
         </View>
         <View style={styles.paymentCard}>
           <Text style={styles.paymentText}>Total Paid</Text>
@@ -197,29 +223,18 @@ export const Card = (props: CardProps) => {
           </Text>
         </View>
       </View>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View style={styles.actionsContainer}>
         {!noVehicleDrivers && (
           <CustomButton
             onPress={() => router.push(`/details/${vehicle?.id}`)}
-            customStyle={[
-              styles.btnStyles,
-              {
-                backgroundColor: Colors.lightGreen,
-                width: !noVehicleDrivers ? "100%" : "48%",
-              },
-            ]}
+            customStyle={styles.viewDetailsBtn}
           >
             <Text style={styles.btnText}>View Details</Text>
           </CustomButton>
         )}
 
         {noVehicleDrivers && (
-          <View
-            style={{
-              position: "relative",
-              width: noVehicleDrivers ? "100%" : "48%",
-            }}
-          >
+          <View style={styles.applicantBtnWrapper}>
             <CustomButton
               onPress={() => router.push(`/applicants/${vehicle.id}`)}
               customStyle={styles.btnStyles}
@@ -227,23 +242,18 @@ export const Card = (props: CardProps) => {
               <Text style={styles.btnText}>View Applicants</Text>
             </CustomButton>
             {(vehicle?.unseen_applications_count ?? 0) > 0 && (
-              <View
-                style={[
-                  styles.unreadBadge,
-                  (vehicle?.unseen_applications_count ?? 0) > 99 && {
-                    borderRadius: 8,
-                    paddingHorizontal: 4,
-                  },
-                ]}
-              >
+              <View style={styles.unreadBadge}>
                 <Text style={styles.unreadBadgeText}>
-                  {vehicle?.unseen_applications_count}
+                  {(vehicle?.unseen_applications_count ?? 0) > 99
+                    ? "99+"
+                    : vehicle?.unseen_applications_count}
                 </Text>
               </View>
             )}
           </View>
         )}
       </View>
-    </View>
+      </Animated.View>
+    </Pressable>
   );
 };

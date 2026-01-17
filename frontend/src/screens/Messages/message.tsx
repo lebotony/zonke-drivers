@@ -29,6 +29,8 @@ export const Message = (props: MessageProps) => {
     ? Colors.blueTicksColor
     : Colors.mediumDarkGrey;
 
+  const hasUnread = (thread?.unseen_msg_count ?? 0) > 0;
+
   const handlePressChat = () => {
     if (thread?.id) {
       router.push(`/chats/${thread.id}`);
@@ -39,7 +41,11 @@ export const Message = (props: MessageProps) => {
   if (!thread) return;
 
   return (
-    <TouchableOpacity style={[styles.messageItem]} onPress={handlePressChat}>
+    <TouchableOpacity
+      style={[styles.messageItem, hasUnread && styles.messageItemUnread]}
+      onPress={handlePressChat}
+      activeOpacity={0.7}
+    >
       <View style={{ position: "relative" }}>
         <Image
           source={recipient?.asset_url}
@@ -49,28 +55,36 @@ export const Message = (props: MessageProps) => {
       </View>
       <View style={styles.messageContent}>
         <View style={styles.messageNameRow}>
-          <Text style={styles.messageName}>
+          <Text style={styles.messageName} numberOfLines={1}>
             {recipient?.first_name} {recipient?.last_name}
           </Text>
           <Text style={styles.messageTime}>{thread.last_message.sent_at}</Text>
         </View>
         <View style={styles.messageTextRow}>
-          <Text style={styles.messageText} numberOfLines={1}>
+          <Text
+            style={[
+              styles.messageText,
+              hasUnread && styles.messageTextUnread,
+            ]}
+            numberOfLines={2}
+          >
             {thread.last_message.content}
           </Text>
-          {thread.unseen_msg_count > 0 && (
+          {hasUnread ? (
             <View style={styles.unreadBadge}>
               <Text style={styles.unreadBadgeText}>
                 {thread.unseen_msg_count}
               </Text>
             </View>
-          )}
-          {isAuthor && (
-            <MaterialCommunityIcons
-              name="check-all"
-              size={16}
-              color={tickColor}
-            />
+          ) : (
+            isAuthor && (
+              <MaterialCommunityIcons
+                name="check-all"
+                size={16}
+                color={tickColor}
+                style={styles.checkIcon}
+              />
+            )
           )}
         </View>
       </View>

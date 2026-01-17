@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
   },
   headerTitle: {
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: 600,
   },
   resetBtn: {
     position: "absolute",
@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     gap: 10,
   },
   contentTitle: {
-    fontWeight: "700",
+    fontWeight: 600,
   },
   chipFlatlist: {
     paddingVertical: 8,
@@ -80,7 +80,7 @@ export const styles = StyleSheet.create({
   },
   reviewText: {
     marginVertical: 12,
-    fontWeight: "700",
+    fontWeight: 600,
   },
   ratingBtn: {
     flexDirection: "row",
@@ -127,6 +127,6 @@ export const styles = StyleSheet.create({
   },
   footerText: {
     color: Colors.white,
-    fontWeight: "700",
+    fontWeight: 600,
   },
 });

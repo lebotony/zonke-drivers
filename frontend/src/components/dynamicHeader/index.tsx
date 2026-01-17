@@ -1,4 +1,11 @@
-import { ReactNode, useCallback, useRef, useState } from "react";
+import {
+  ReactNode,
+  useCallback,
+  useRef,
+  useState,
+  forwardRef,
+  useImperativeHandle,
+} from "react";
 import {
   Animated,
   View,
@@ -28,12 +35,20 @@ type DynamicHeaderProps = {
   scrollThreshold?: number;
 };
 
-export const DynamicHeader = ({
-  header,
-  children,
-  headerBgColor = Colors.white,
-  scrollThreshold = 2,
-}: DynamicHeaderProps) => {
+export type DynamicHeaderRef = {
+  showHeader: () => void;
+};
+
+export const DynamicHeader = forwardRef<DynamicHeaderRef, DynamicHeaderProps>(
+  (
+    {
+      header,
+      children,
+      headerBgColor = Colors.white,
+      scrollThreshold = 2,
+    }: DynamicHeaderProps,
+    ref,
+  ) => {
   const [headerHeight, setHeaderHeight] = useState(0);
   const headerOffset = useRef(new Animated.Value(0)).current;
   const lastScrollY = useRef(0);
@@ -56,6 +71,10 @@ export const DynamicHeader = ({
     }).start();
     isHidden.current = true;
   }, [headerHeight, headerOffset]);
+
+  useImperativeHandle(ref, () => ({
+    showHeader,
+  }));
 
   useFocusEffect(
     useCallback(() => {
@@ -122,4 +141,5 @@ export const DynamicHeader = ({
       </View>
     </SafeAreaView>
   );
-};
+},
+);

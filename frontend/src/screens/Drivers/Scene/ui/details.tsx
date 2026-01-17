@@ -1,7 +1,6 @@
 import { View } from "react-native";
 import { Text } from "react-native-paper";
 
-import { DEFAULT_ICON_SIZE } from "@expo/vector-icons/build/createIconSet";
 import { AntDesign, Feather, MaterialIcons } from "@expo/vector-icons";
 
 import { calculateAge } from "@/src/helpers/calculateAge";
@@ -25,46 +24,46 @@ export const Details = (props: DetailsProps) => {
         isLocationAndExpNil && { justifyContent: "flex-start" },
       ]}
     >
-      <Text style={styles.name}>
-        {driver?.first_name} {driver?.last_name}
-        <Text style={styles.age}> {`(${calculateAge(driver?.dob)})`}</Text>
-      </Text>
+      <View style={styles.nameContainer}>
+        <Text style={styles.name}>
+          {driver?.first_name} {driver?.last_name}{" "}
+          <Text style={styles.age}>({calculateAge(driver?.dob)})</Text>
+        </Text>
+      </View>
+
       {driver?.rating && (
         <View style={styles.ratingRow}>
-          <View style={styles.detailIcon}>
-            <AntDesign
-              name="star"
-              size={DEFAULT_ICON_SIZE}
-              color={Colors.yellow}
-            />
+          <View style={styles.ratingBadge}>
+            <AntDesign name="star" size={13} color={Colors.yellow} />
+            <Text style={styles.ratingText}>{driver?.rating}</Text>
           </View>
-          <Text style={styles.ratingText}>{driver?.rating} rating</Text>
+          <Text style={styles.ratingLabel}>rating</Text>
         </View>
       )}
 
       {driver?.experience && (
-        <View style={styles.ratingRow}>
-          <View style={styles.detailIcon}>
-            <Feather name="clock" size={13} color={Colors.checkers60Green} />
+        <View style={styles.detailRow}>
+          <View style={styles.iconWrapper}>
+            <Feather name="clock" size={14} color={Colors.mrDBlue} />
           </View>
-
-          <Text style={styles.address} numberOfLines={1}>
-            {driver?.experience || "NA"} years of Experience
+          <Text style={styles.detailText} numberOfLines={1}>
+            {driver?.experience} {driver?.experience === 1 ? "year" : "years"}{" "}
+            experience
           </Text>
         </View>
       )}
 
       {driver?.location?.place && (
-        <View style={styles.ratingRow}>
-          <View style={styles.detailIcon}>
+        <View style={styles.detailRow}>
+          <View style={styles.iconWrapper}>
             <MaterialIcons
               name="location-pin"
-              size={17}
-              color={Colors.mediumDarkGrey}
+              size={16}
+              color={Colors.lightRed}
             />
           </View>
-          <Text style={styles.address} numberOfLines={1} ellipsizeMode="tail">
-            {driver?.location?.place || "NA"}
+          <Text style={styles.detailText} numberOfLines={1} ellipsizeMode="tail">
+            {driver?.location?.place}
           </Text>
         </View>
       )}

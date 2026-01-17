@@ -6,8 +6,8 @@ export const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: Colors.bg,
-    paddingHorizontal: 24,
-    paddingTop: 15,
-    position: "relative",
+    // paddingHorizontal: 24,
+    // paddingTop: 15,
+    // position: "relative",
   },
 });

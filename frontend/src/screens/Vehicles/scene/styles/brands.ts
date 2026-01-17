@@ -6,6 +6,7 @@ export const styles = StyleSheet.create({
   brands: {
     gap: 6,
     paddingBottom: 5,
+    paddingTop: 5,
   },
   chip: {
     flexDirection: "column",
@@ -14,18 +15,23 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 6,
     borderRadius: 12,
   },
+  logoShadowContainer: {
+    borderRadius: 25,
+    ...shadowStyles,
+  },
   brandLogo: {
     width: 50,
     height: 50,
-    borderRadius: 29,
+    borderRadius: 25,
     backgroundColor: Colors.white,
     alignItems: "center",
     justifyContent: "center",
-    ...shadowStyles,
+    overflow: "hidden",
   },
   chipText: {
     fontSize: 13,
-    fontWeight: "600",
+    fontWeight: 600,
     color: Colors.darkCharcoalGrey,
+    marginTop: 4,
   },
 });

@@ -6,7 +6,7 @@ import { shadowStyles } from "@/src/components/shadowStyles";
 export const styles = StyleSheet.create({
   selectText: {
     color: Colors.mrDBlue,
-    fontWeight: 700,
+    fontWeight: 600,
     fontSize: 16,
     textDecorationLine: "underline",
     marginRight: 3,

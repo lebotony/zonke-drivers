@@ -226,11 +226,14 @@ Thread ──→ (*) Message
 ---
 
 ## 6. Styling System
+- `elevation: 2` always use this shadow style for android
+- **Maximum fontWeight**: Use `fontWeight: 600` as the maximum bold weight across all styles. Never use 700 or higher.
 
 ### 6.1 Color Palette (`frontend/constants/ui.ts`)
+
 ```typescript
 // Primary
-primaryBlue: "#5669FF"       // Main brand color
+mrDBlue: "#76CBED"       // Main brand color
 darkCharcoalGrey: "#1C1B1F"  // Dark backgrounds
 bg: "#FAF9F6"                // Default background
 

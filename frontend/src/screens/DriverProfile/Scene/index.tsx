@@ -2,8 +2,9 @@ import { useEffect } from "react";
 import { ScrollView, View } from "react-native";
 import { Text } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { LinearGradient } from "expo-linear-gradient";
 
-import { Ionicons, MaterialIcons } from "@expo/vector-icons";
+import { Ionicons, MaterialIcons, AntDesign } from "@expo/vector-icons";
 import { router, useLocalSearchParams } from "expo-router";
 
 import { find, isEmpty } from "lodash";
@@ -79,136 +80,188 @@ export const Scene = () => {
   if (!driver) return <Spinner />;
 
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, backgroundColor: Colors.bg }}>
       <SafeAreaView edges={["top"]} style={{ flex: 1 }}>
         <ScrollView
           showsVerticalScrollIndicator={false}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: !isUserProfile ? 80 : 20 }}
+          contentContainerStyle={{ paddingBottom: !isUserProfile ? 100 : 20 }}
         >
-          <View style={styles.body}>
-            <BackArrow />
+          {/* Hero Section with Gradient Overlay */}
+          <View style={styles.heroSection}>
+            <View style={styles.profileHeroCard}>
+              {/* Modern Back Button */}
+              <View style={styles.backButtonContainer}>
+                <BackArrow customStyles={styles.backArrowOverride} />
+              </View>
 
-            <View style={styles.profilePic}>
-              {driver?.asset_url ? (
-                <Avatar source={driver?.asset_url} round shadow width={125} />
-              ) : (
-                <View style={styles.defaultPic}>
-                  <Ionicons
-                    name="person"
-                    size={60}
-                    color={Colors.mediumLightGrey}
-                  />
-                </View>
-              )}
+              <LinearGradient
+                colors={['rgba(118, 203, 237, 0.08)', 'rgba(118, 203, 237, 0.02)']}
+                style={styles.gradientBackground}
+              />
 
-              <View style={styles.nameAgeWrapper}>
-                <Text style={styles.name}>
-                  {driver?.first_name} {driver?.last_name}{" "}
+              <View style={styles.avatarContainer}>
+                {driver?.asset_url ? (
+                  <View style={styles.avatarWrapper}>
+                    <Avatar source={driver?.asset_url} round shadow width={140} />
+                    <View style={styles.avatarBorder} />
+                  </View>
+                ) : (
+                  <View style={styles.defaultPicModern}>
+                    <Ionicons
+                      name="person"
+                      size={70}
+                      color={Colors.mrDBlue}
+                    />
+                  </View>
+                )}
+              </View>
+
+              <View style={styles.nameSection}>
+                <Text style={styles.nameModern}>
+                  {driver?.first_name} {driver?.last_name}
                 </Text>
-                <Text
-                  style={styles.age}
-                >{`(${calculateAge(driver?.dob)}) yrs`}</Text>
+                <Text style={styles.ageModern}>
+                  {calculateAge(driver?.dob)} years old
+                </Text>
               </View>
 
               {driver?.location?.place && (
-                <View style={styles.headerLocation}>
+                <View style={styles.locationBadge}>
                   <MaterialIcons
                     name="location-pin"
-                    size={20}
-                    color={Colors.mediumDarkGrey}
+                    size={16}
+                    color={Colors.mrDBlue}
                   />
-                  <Text style={styles.location}>
-                    {!isEmpty(driver?.location)
-                      ? driver?.location?.place
-                      : "NA"}
+                  <Text style={styles.locationText} numberOfLines={1}>
+                    {driver?.location?.place}
                   </Text>
                 </View>
               )}
+
+              {driver?.rating && (
+                <View style={styles.ratingBadgeModern}>
+                  <AntDesign name="star" size={16} color={Colors.yellow} />
+                  <Text style={styles.ratingTextModern}>{driver?.rating}</Text>
+                  <Text style={styles.ratingLabelModern}>rating</Text>
+                </View>
+              )}
+            </View>
+          </View>
+
+          <View style={styles.contentSection}>
+            {/* Description Card */}
+            {!isEmpty(driver?.description) && (
+              <View style={styles.descriptionCard}>
+                <Text style={styles.sectionLabel}>About</Text>
+                <Text style={styles.descriptionModern} numberOfLines={3}>
+                  {driver?.description}
+                </Text>
+              </View>
+            )}
+
+            {/* Driver Stats - Quick Highlights */}
+            <View style={styles.quickStatsCard}>
+              <View style={styles.quickStatItem}>
+                <View style={styles.quickStatIconWrapper}>
+                  <AntDesign name="star" size={20} color={Colors.yellow} />
+                </View>
+                <Text style={styles.quickStatValue}>{driver?.rating || 'N/A'}</Text>
+                <Text style={styles.quickStatLabel}>Rating</Text>
+              </View>
+
+              <View style={styles.quickStatDivider} />
+
+              <View style={styles.quickStatItem}>
+                <View style={styles.quickStatIconWrapper}>
+                  <MaterialIcons name="access-time" size={20} color={Colors.emeraldGreen} />
+                </View>
+                <Text style={styles.quickStatValue}>
+                  {driver?.experience || '0'}y
+                </Text>
+                <Text style={styles.quickStatLabel}>Experience</Text>
+              </View>
+
+              <View style={styles.quickStatDivider} />
+
+              <View style={styles.quickStatItem}>
+                <View style={styles.quickStatIconWrapper}>
+                  <Ionicons name="car-sport" size={20} color={Colors.mrDBlue} />
+                </View>
+                <Text style={styles.quickStatValue}>
+                  {driver?.previous_vehicles || '0'}
+                </Text>
+                <Text style={styles.quickStatLabel}>Vehicles</Text>
+              </View>
             </View>
 
-            <Text
-              style={[
-                styles.description,
-                isEmpty(driver?.description) && { display: "none" },
-              ]}
-              numberOfLines={2}
-            >
-              {driver?.description}
-            </Text>
+            {/* Platforms Section */}
+            {!isEmpty(driver?.platforms) && (
+              <View style={styles.sectionCard}>
+                <Text style={styles.sectionTitle}>Platforms</Text>
+                <Platforms
+                  customContainerStyle={styles.platormsContainer}
+                  platforms={driver?.platforms}
+                />
+              </View>
+            )}
 
-            <Text
-              style={[
-                styles.heading,
-                isEmpty(driver?.platforms) && { display: "none" },
-              ]}
-            >
-              Platforms
-            </Text>
-
-            <Platforms
-              customContainerStyle={styles.platormsContainer}
-              platforms={driver?.platforms}
-            />
-
+            {/* Licences Section */}
             <Licences licences={driver?.licences} />
 
-            <View style={styles.stats}>
-              <Text style={styles.driverDetailsText}>Driver Details</Text>
-              <View style={styles.statsWrapper}>
+            {/* Detailed Stats */}
+            <View style={styles.detailedStatsCard}>
+              <Text style={styles.sectionTitle}>Professional Details</Text>
+              <View style={styles.statsGrid}>
                 {detailsDef.map((detail, index) => (
-                  <View key={`${detail.slug}-${index}`} style={styles.stat}>
-                    {detail.icon}
-                    <Text style={styles.statValue}>
-                      {driver?.[`${detail.slug}`]}
+                  <View key={`${detail.slug}-${index}`} style={styles.statCardModern}>
+                    <View style={styles.statIconCircle}>
+                      {detail.icon}
+                    </View>
+                    <Text style={styles.statValueModern}>
+                      {driver?.[`${detail.slug}`] || 'N/A'}
                     </Text>
-                    <Text style={styles.statType}>{detail.label}</Text>
+                    <Text style={styles.statLabelModern}>{detail.label}</Text>
                   </View>
                 ))}
               </View>
             </View>
 
+            {/* Comments CTA */}
             <CustomButton
               onPress={() => router.push(`/comments/${driverId}`)}
-              color={Colors.mrDBlue}
-              customStyle={{ marginBottom: IS_IOS ? 20 : 0 }}
+              color={Colors.white}
+              customStyle={styles.commentsButton}
             >
-              <Text style={{ color: Colors.white, fontWeight: 600 }}>
-                See Comments
+              <Ionicons name="chatbox-outline" size={20} color={Colors.mrDBlue} />
+              <Text style={styles.commentsButtonText}>
+                View Reviews & Comments
               </Text>
             </CustomButton>
           </View>
         </ScrollView>
       </SafeAreaView>
 
+      {/* Enhanced Message CTA */}
       {!isUserProfile && (
-        <SafeAreaView edges={["bottom"]} style={styles.footer}>
-          <CustomButton
-            color={Colors.emeraldGreen}
-            onPress={handleCreateThread}
-            customStyle={{
-              flex: 1,
-              borderRadius: 13,
-              ...shadowStyles,
-            }}
-          >
-            <Text
-              style={{
-                color: Colors.white,
-                marginRight: 5,
-                fontSize: 15,
-                fontWeight: 600,
-              }}
+        <View style={styles.floatingFooter}>
+          <SafeAreaView edges={["bottom"]}>
+            <CustomButton
+              color={Colors.emeraldGreen}
+              onPress={handleCreateThread}
+              customStyle={styles.messageButtonModern}
             >
-              Message
-            </Text>
-            <Ionicons
-              name="chatbubble-outline"
-              size={20}
-              color={Colors.white}
-            />
-          </CustomButton>
-        </SafeAreaView>
+              <Ionicons
+                name="chatbubble"
+                size={22}
+                color={Colors.white}
+              />
+              <Text style={styles.messageButtonText}>
+                Send Message
+              </Text>
+            </CustomButton>
+          </SafeAreaView>
+        </View>
       )}
     </View>
   );

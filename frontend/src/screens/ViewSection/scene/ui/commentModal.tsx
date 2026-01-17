@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from "react";
 import { View, TextInput, Keyboard, Platform } from "react-native";
 import { Text } from "react-native-paper";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import { Ionicons } from "@expo/vector-icons";
 
 import { Colors } from "@/constants/ui";
 import { Modal } from "@/src/components/modal";
@@ -32,6 +34,7 @@ export const CommentModal = ({
   const [commentHeight, setCommentHeight] = useState(0);
   const inputRef = useRef<TextInput>(null);
   const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const insets = useSafeAreaInsets();
 
   const { control, handleSubmit, reset, watch, setValue } =
     useForm<CommentFormValues>({
@@ -105,37 +108,64 @@ export const CommentModal = ({
 
   return (
     <Modal onDismiss={setShowCommentModal}>
-      <View style={[styles.container, { height: commentHeight + 250 }]}>
+      <View style={[styles.container, { paddingBottom: Math.max(insets.bottom, 20) }]}>
+        <View style={{
+          width: 56,
+          height: 56,
+          borderRadius: 28,
+          backgroundColor: "rgba(118, 203, 237, 0.15)",
+          alignItems: "center",
+          justifyContent: "center",
+          marginBottom: 12,
+          borderWidth: 2,
+          borderColor: "rgba(118, 203, 237, 0.25)",
+        }}>
+          <Ionicons name="chatbox-ellipses" size={28} color={Colors.mrDBlue} />
+        </View>
+
         <Text style={styles.title}>Add Comment</Text>
 
         <View style={[styles.commentBox]}>
           <Text style={styles.username}>
-            Add comment for{" "}
-            {vehicleDriver?.first_name + " " + vehicleDriver?.last_name}
+            For {vehicleDriver?.first_name} {vehicleDriver?.last_name}
           </Text>
 
-          <View style={[styles.comment]}>
-            <TextInput
-              ref={inputRef}
-              style={[styles.commentInput, { height: "85%" }]}
-              placeholder="Write your comment..."
-              placeholderTextColor="#999"
-              value={commentValue}
-              onChangeText={(value) => setValue("text", value)}
-              multiline
-              onContentSizeChange={(event) =>
-                setCommentHeight(event.nativeEvent.contentSize.height)
-              }
-            />
-          </View>
+          <TextInput
+            ref={inputRef}
+            style={[styles.commentInput, { minHeight: 60 }]}
+            placeholder="Share your thoughts about this driver..."
+            placeholderTextColor="rgba(28, 27, 31, 0.4)"
+            value={commentValue}
+            onChangeText={(value) => setValue("text", value)}
+            multiline
+            textAlignVertical="top"
+            underlineColorAndroid="transparent"
+            selectionColor={Colors.mrDBlue}
+            onContentSizeChange={(event) =>
+              setCommentHeight(event.nativeEvent.contentSize.height)
+            }
+          />
         </View>
 
         <CustomButton
-          customStyle={{ width: "100%", marginBottom: 20, paddingVertical: 10 }}
+          customStyle={{
+            width: "100%",
+            marginTop: 8,
+            paddingVertical: 14,
+            borderRadius: 16,
+            shadowColor: Colors.mrDBlue,
+            shadowOffset: {
+              width: 0,
+              height: 4,
+            },
+            shadowOpacity: 0.25,
+            shadowRadius: 10,
+            elevation: 5,
+          }}
           color={Colors.mrDBlue}
           onPress={handleSubmitComment}
         >
-          <Text style={styles.postBtnText}>POST</Text>
+          <Text style={styles.postBtnText}>POST COMMENT</Text>
         </CustomButton>
       </View>
     </Modal>

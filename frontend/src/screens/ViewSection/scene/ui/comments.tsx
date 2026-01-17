@@ -1,12 +1,12 @@
 import { useEffect } from "react";
-import { View, FlatList } from "react-native";
+import { View, FlatList, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 import { find } from "lodash";
 
 import { useQueryClient } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
 
-import { CustomButton } from "@/src/components/elements/button";
+import { Colors } from "@/constants/ui";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 
@@ -105,9 +105,14 @@ export const Comments = (props: CommentsProps) => {
 
   return (
     <View style={styles.commentsSection}>
-      <CustomButton onPress={setShowCommentModal} style={styles.addCommentRow}>
-        <Text style={styles.addCommentText}>+ ADD A COMMENT</Text>
-      </CustomButton>
+      <TouchableOpacity
+        style={styles.addCommentRow}
+        onPress={setShowCommentModal}
+        activeOpacity={0.8}
+      >
+        <Ionicons name="add-circle-outline" size={22} color={Colors.white} />
+        <Text style={styles.addCommentText}>ADD COMMENT</Text>
+      </TouchableOpacity>
 
       {vehicleDriver?.comments ? (
         <FlatList

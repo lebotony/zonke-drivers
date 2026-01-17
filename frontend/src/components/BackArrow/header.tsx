@@ -1,5 +1,4 @@
 import {
-  Platform,
   View,
   ViewStyle,
   StyleSheet,
@@ -26,7 +25,7 @@ export const BackArrow = (props: BackArrow) => {
     <View style={[styles.row, { left: left, top: top }, customStyles]}>
       <TouchableOpacity onPress={() => router.back()}>
         <MaterialIcons
-          name={Platform.OS === "ios" ? "arrow-back-ios-new" : "arrow-back"}
+          name="arrow-back-ios-new"
           size={24}
           color={Colors.black}
         />

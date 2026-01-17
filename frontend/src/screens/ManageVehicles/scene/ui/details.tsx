@@ -1,24 +1,22 @@
 import { useEffect, useState } from "react";
-import { FlatList, SafeAreaView, View } from "react-native";
+import { FlatList, SafeAreaView, View, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { find } from "lodash";
 import { useQueryClient } from "@tanstack/react-query";
+import { Ionicons } from "@expo/vector-icons";
 
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { Comments } from "@/src/screens/ViewSection/scene/ui/comments";
 import { CommentModal } from "@/src/screens/ViewSection/scene/ui/commentModal";
-import { InlineSwitch } from "@/src/components/misc/inlineSwitch";
 import { Colors } from "@/constants/ui";
-import { CustomButton } from "@/src/components/elements/button";
 import { Avatar } from "@/src/components/visual/avatar";
 
 import { PaymentCard } from "./paymentCard";
 import { fetchPayments } from "../../actions";
 import { AddModal } from "./addModal";
-import { switchItems } from "../constants";
 import { styles } from "../styles/details";
 
 type PaymentsResponse = {
@@ -29,10 +27,11 @@ type PaymentsResponse = {
 export const DetailsScreen = () => {
   const { id } = useLocalSearchParams();
   const vehicleId = Array.isArray(id) ? id[0] : id;
+  const router = useRouter();
 
   const [showCommentModal, setShowCommentModal] = useState(false);
   const [showAddPayModal, setShowAddPayModal] = useState(false);
-  const [switchSelection, setSwitchSelection] = useState(switchItems[0].slug);
+  const [switchSelection, setSwitchSelection] = useState("payments");
   const { getCachedData } = useCustomQuery();
 
   const { userVehicles, fetchedVehicleDriverPayments, paymentsPagination } =
@@ -105,34 +104,61 @@ export const DetailsScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <InlineSwitch
-        shadowColor={Colors.whiteSmoke}
-        items={switchItems}
-        selectedColor={Colors.mrDBlue}
-        value={switchSelection}
-        onChange={setSwitchSelection}
-      />
-      <View style={styles.driver}>
+      <View style={styles.topBar}>
+        <TouchableOpacity
+          style={styles.backButton}
+          onPress={() => router.back()}
+          activeOpacity={0.7}
+        >
+          <Ionicons name="arrow-back" size={22} color={Colors.darkCharcoalGrey} />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Payment Details</Text>
+      </View>
+
+      <View style={styles.tabSwitcherContainer}>
+        <View style={styles.tabSwitcher}>
+          <TouchableOpacity
+            style={[styles.tab, switchSelection === "payments" && styles.tabActive]}
+            onPress={() => setSwitchSelection("payments")}
+            activeOpacity={0.8}
+          >
+            <Text style={switchSelection === "payments" ? styles.tabTextActive : styles.tabText}>
+              Payments
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.tab, switchSelection === "comments" && styles.tabActive]}
+            onPress={() => setSwitchSelection("comments")}
+            activeOpacity={0.8}
+          >
+            <Text style={switchSelection === "comments" ? styles.tabTextActive : styles.tabText}>
+              Comments
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+
+      <View style={styles.driverCard}>
         <Avatar source={vehicleDriver?.driver?.asset_url} width={50} round />
         <Text style={styles.nameText}>
           {vehicleDriver?.driver?.first_name} {vehicleDriver?.driver?.last_name}
         </Text>
       </View>
 
-      {/* <VehicleSelector
-vehicles={userVehicles}
-selectedVehicle={selectedVehicle}
-onSelectVehicle={setSelectedVehicle}
-/> */}
-
       {switchSelection === "payments" && (
         <>
-          <CustomButton
+          <TouchableOpacity
+            style={styles.addPaymentButton}
             onPress={() => setShowAddPayModal(true)}
-            style={styles.addPaymentRow}
+            activeOpacity={0.8}
           >
-            <Text style={styles.addText}>+ ADD A PAYMENT</Text>
-          </CustomButton>
+            <Ionicons name="add-circle-outline" size={22} color={Colors.white} />
+            <Text style={styles.addText}>ADD PAYMENT</Text>
+          </TouchableOpacity>
+
+          <View style={styles.listHeader}>
+            <Text style={styles.listHeaderText}>Payment History</Text>
+          </View>
 
           <FlatList
             data={vehicleDriver?.payments}
@@ -149,8 +175,19 @@ onSelectVehicle={setSelectedVehicle}
             renderItem={({ item }) => (
               <PaymentCard payment={item} vehicleDriver={vehicleDriver} />
             )}
-            contentContainerStyle={{ paddingVertical: 5 }}
+            contentContainerStyle={{ paddingBottom: 20 }}
             showsVerticalScrollIndicator={false}
+            ListEmptyComponent={
+              <View style={styles.emptyState}>
+                <View style={styles.emptyStateIconContainer}>
+                  <Ionicons name="wallet-outline" size={40} color={Colors.mrDBlue} />
+                </View>
+                <Text style={styles.emptyStateTitle}>No Payments Yet</Text>
+                <Text style={styles.emptyStateSubtitle}>
+                  Payments made by this driver will appear here
+                </Text>
+              </View>
+            }
           />
         </>
       )}

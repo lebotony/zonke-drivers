@@ -1,36 +1,122 @@
 import { StyleSheet } from "react-native";
 
 import { Colors } from "@/constants/ui";
-import { shadowStyles } from "@/src/components/shadowStyles";
 
 export const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.white,
-    shadowColor: "#888888",
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowRadius: 5,
+    elevation: 2, // Android only
+    borderRadius: 20,
+    marginHorizontal: 16,
+  },
+
+  cardContent: {
+    padding: 20,
+  },
+  topSection: {
+    flexDirection: "row",
+    gap: 16,
+    marginBottom: 16,
+  },
+  avatarContainer: {
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 1,
+      height: 2,
     },
-    shadowOpacity: 0.16,
-    shadowRadius: 1.51,
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
     elevation: 2,
-    borderRadius: 10,
-    marginHorizontal: 13,
-    padding: 12,
-    gap: 10,
   },
-  row: {
+  infoSection: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  defaultPic: {
+    backgroundColor: Colors.skyLight,
+    alignItems: "center",
+    justifyContent: "center",
+    width: 92,
+    height: 92,
+    borderRadius: 16,
+  },
+  platformsSection: {
+    paddingVertical: 8,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(0, 0, 0, 0.04)",
+  },
+  platformsContainer: {
+    paddingHorizontal: 0,
+  },
+  actionsSection: {
+    // paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: "rgba(0, 0, 0, 0.04)",
+  },
+  buttonRow: {
     flexDirection: "row",
-    gap: 10,
+    gap: 12,
+  },
+  primaryButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.mrDBlue,
+    borderRadius: 12,
+    shadowColor: Colors.mrDBlue,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  primaryButtonText: {
+    color: Colors.white,
+    fontSize: 15,
+    fontWeight: 600,
+    textAlign: "center",
+  },
+  secondaryButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    backgroundColor: Colors.white,
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: Colors.mrDBlue,
+  },
+  secondaryButtonText: {
+    color: Colors.mrDBlue,
+    fontSize: 15,
+    fontWeight: 600,
+    textAlign: "center",
+  },
+  viewProfileButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    paddingTop: 18,
+  },
+  viewProfileText: {
+    color: Colors.mrDBlue,
+    fontSize: 15,
+    fontWeight: 600,
+    lineHeight: 18,
   },
   name: {
     fontSize: 16,
-    fontWeight: "700",
+    fontWeight: 600,
     color: Colors.darkCharcoalGrey,
     lineHeight: 19,
   },
   age: {
-    fontWeight: "400",
+    fontWeight: 400,
     fontSize: 12,
     color: Colors.mediumGrey,
     position: "absolute",
@@ -55,7 +141,7 @@ export const styles = StyleSheet.create({
   },
   ratingText: {
     fontSize: 13,
-    fontWeight: 700,
+    fontWeight: 600,
     textAlignVertical: "center",
     color: "rgba(0, 0, 0, 0.69)",
   },
@@ -79,19 +165,10 @@ export const styles = StyleSheet.create({
     right: 10,
     top: 8,
   },
-  defaultPic: {
-    backgroundColor: Colors.whiteSmoke,
-    alignItems: "center",
-    justifyContent: "center",
-    width: 83,
-    height: 83,
-    borderRadius: 10,
-  },
   cardBtns: {
     paddingVertical: 6,
     backgroundColor: Colors.lightGreen,
     width: "48%",
-    ...shadowStyles,
   },
   viewProfileBtn: {
     paddingVertical: 4,

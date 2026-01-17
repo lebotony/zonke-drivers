@@ -97,15 +97,22 @@ export const newMessage = (
       )
     : [];
 
+  const newMsg = isMessageFromActiveThread ? { ...payload, seen: true } : payload;
+  const combinedMessages = [newMsg, ...baseMessages];
+
+  // Sort by created_at descending to ensure correct order
+  const sortedMessages = combinedMessages.sort((a: Message, b: Message) => {
+    const timeA = new Date(a.created_at).getTime();
+    const timeB = new Date(b.created_at).getTime();
+    return timeB - timeA;
+  });
+
   updateAndMoveObjectToTop("threads", payload?.thread_id, {
     unseen_msg_count: !isMessageFromActiveThread
       ? thread.unseen_msg_count + 1
       : thread.unseen_msg_count,
     last_message: payload,
-    messages: [
-      isMessageFromActiveThread ? { ...payload, seen: true } : payload,
-      ...baseMessages,
-    ],
+    messages: sortedMessages,
   });
 };
 
