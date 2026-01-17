@@ -127,7 +127,11 @@ export const LoginScreen = (props: LoginScreenProps) => {
               style={styles.goBack}
               onPress={() => setIsSignUp(!isSignUp)}
             >
-              <MaterialIcons name="keyboard-backspace" size={22} color={Colors.darkCharcoalGrey} />
+              <MaterialIcons
+                name="keyboard-backspace"
+                size={22}
+                color={Colors.darkCharcoalGrey}
+              />
             </TouchableOpacity>
           )}
 
@@ -151,8 +155,8 @@ export const LoginScreen = (props: LoginScreenProps) => {
                   Create{" "}
                   <Text style={{ color: Colors.mrDBlue }}>
                     {isDriver ? "Driver" : "Owner"}
-                  </Text>
-                  {" "}Account
+                  </Text>{" "}
+                  Account
                 </Text>
                 <Text style={styles.subtitle}>
                   Join the Zonke Drivers community today
@@ -208,7 +212,13 @@ export const LoginScreen = (props: LoginScreenProps) => {
                 borderLeftColor: Colors.lightRed,
               }}
             >
-              <Text style={{ color: Colors.lightRed, fontSize: 14, fontWeight: 500 }}>
+              <Text
+                style={{
+                  color: Colors.lightRed,
+                  fontSize: 14,
+                  fontWeight: 500,
+                }}
+              >
                 {authError}
               </Text>
             </View>
@@ -241,7 +251,9 @@ export const LoginScreen = (props: LoginScreenProps) => {
           <View>
             <View style={styles.signupRow}>
               <Text style={styles.signupPrompt}>
-                {isSignUp ? "Already have an account?" : "Don't have an account?"}
+                {isSignUp
+                  ? "Already have an account?"
+                  : "Don't have an account?"}
               </Text>
               <TouchableOpacity onPress={() => setIsSignUp(!isSignUp)}>
                 <Text style={styles.signupText}>
@@ -249,7 +261,9 @@ export const LoginScreen = (props: LoginScreenProps) => {
                 </Text>
               </TouchableOpacity>
             </View>
-            <Text style={styles.copyright}>© 2025 Zonke, All Rights Reserved</Text>
+            <Text style={styles.copyright}>
+              © 2025 Zonke, All Rights Reserved
+            </Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>

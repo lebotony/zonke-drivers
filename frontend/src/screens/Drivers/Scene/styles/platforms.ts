@@ -21,7 +21,7 @@ export const styles = StyleSheet.create({
     elevation: 2,
   },
   justIconPlatform: {
-    width: 36,
+    width: 40,
     height: 36,
     justifyContent: "center",
     flexDirection: "row",

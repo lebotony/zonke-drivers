@@ -55,82 +55,77 @@ export const DriverCard = (props: DriverProps) => {
   if (!driver) return <Spinner />;
 
   return (
-    <Pressable
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      onPress={() => router.push(`/drivers/${driver?.id}`)}
+    <Animated.View
+      style={[styles.container, { transform: [{ scale: scaleAnim }] }]}
     >
-      <Animated.View
-        style={[styles.container, { transform: [{ scale: scaleAnim }] }]}
-      >
-        <View style={styles.cardContent}>
-          <View style={styles.topSection}>
-            <View style={styles.avatarContainer}>
-              {driver?.asset_url ? (
-                <Avatar source={driver?.asset_url} radius shadow width={92} />
-              ) : (
-                <View style={styles.defaultPic}>
-                  <Ionicons
-                    name="person"
-                    size={50}
-                    color={Colors.mediumLightGrey}
-                  />
-                </View>
-              )}
-            </View>
-
-            <View style={styles.infoSection}>
-              <Details driver={driver} />
-            </View>
-          </View>
-
-          {!isEmpty(driver?.platforms) && (
-            <View style={styles.platformsSection}>
-              <Platforms
-                platforms={driver?.platforms}
-                customContainerStyle={styles.platformsContainer}
-              />
-            </View>
-          )}
-
-          <View style={styles.actionsSection}>
-            {applicant ? (
-              <View style={styles.buttonRow}>
-                <CustomButton
-                  color="white"
-                  onPress={() => router.push(`/drivers/${driver?.id}`)}
-                  customStyle={styles.secondaryButton}
-                >
-                  <Text style={styles.secondaryButtonText}>View Profile</Text>
-                </CustomButton>
-                <CustomButton
-                  color="white"
-                  onPress={() => {
-                    setSelectedDriverId!(driver?.id);
-                    setShowVehicleDriverModal!(true);
-                  }}
-                  customStyle={styles.primaryButton}
-                >
-                  <Text style={styles.primaryButtonText}>Add Driver</Text>
-                </CustomButton>
-              </View>
+      <View style={styles.cardContent}>
+        <TouchableOpacity
+          onPressIn={handlePressIn}
+          onPressOut={handlePressOut}
+          onPress={() => router.push(`/drivers/${driver?.id}`)}
+          style={styles.topSection}
+        >
+          <View style={styles.avatarContainer}>
+            {driver?.asset_url ? (
+              <Avatar source={driver?.asset_url} radius shadow width={92} />
             ) : (
-              <TouchableOpacity
-                style={styles.viewProfileButton}
-                onPress={() => router.push(`/drivers/${driver?.id}`)}
-                activeOpacity={0.7}
-              >
-                <Text style={styles.viewProfileText}>View Full Profile</Text>
+              <View style={styles.defaultPic}>
                 <Ionicons
-                  name="arrow-forward"
-                  size={16}
-                  color={Colors.mrDBlue}
+                  name="person"
+                  size={50}
+                  color={Colors.mediumLightGrey}
                 />
-              </TouchableOpacity>
+              </View>
             )}
           </View>
+
+          <View style={styles.infoSection}>
+            <Details driver={driver} />
+          </View>
+        </TouchableOpacity>
+
+        {!isEmpty(driver?.platforms) && (
+          <View style={styles.platformsSection}>
+            <Platforms
+              platforms={driver?.platforms}
+              customContainerStyle={styles.platformsContainer}
+            />
+          </View>
+        )}
+
+        <View style={styles.actionsSection}>
+          {applicant ? (
+            <View style={styles.buttonRow}>
+              <CustomButton
+                color="white"
+                onPress={() => router.push(`/drivers/${driver?.id}`)}
+                customStyle={styles.secondaryButton}
+              >
+                <Text style={styles.secondaryButtonText}>View Profile</Text>
+              </CustomButton>
+              <CustomButton
+                color="white"
+                onPress={() => {
+                  setSelectedDriverId!(driver?.id);
+                  setShowVehicleDriverModal!(true);
+                }}
+                customStyle={styles.primaryButton}
+              >
+                <Text style={styles.primaryButtonText}>Add Driver</Text>
+              </CustomButton>
+            </View>
+          ) : (
+            <TouchableOpacity
+              style={styles.viewProfileButton}
+              onPress={() => router.push(`/drivers/${driver?.id}`)}
+              activeOpacity={0.7}
+            >
+              <Text style={styles.viewProfileText}>View Full Profile</Text>
+              <Ionicons name="arrow-forward" size={16} color={Colors.mrDBlue} />
+            </TouchableOpacity>
+          )}
         </View>
-      </Animated.View>
-    </Pressable>
+      </View>
+    </Animated.View>
   );
 };

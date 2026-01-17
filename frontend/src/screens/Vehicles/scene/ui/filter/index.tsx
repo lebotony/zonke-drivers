@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
-  Dimensions,
 } from "react-native";
 import { Text } from "react-native-paper";
 
@@ -76,16 +75,14 @@ export const FilterModal: React.FC<FilterModalProps> = ({
       isSelected: selectedVehicleTypes.includes(type.toLowerCase()),
     }));
 
-  const screenHeight = Dimensions.get("window").height;
-
   return (
     <Modal onDismiss={onDismiss}>
-      <View style={{ maxHeight: screenHeight * 0.8 }}>
+      <View>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Filter</Text>
+          <Text style={styles.headerTitle}>Filters</Text>
           {showReset && (
             <TouchableOpacity onPress={onReset} style={styles.resetBtn}>
-              <Text style={{ color: Colors.mrDBlue }}>Reset</Text>
+              <Text style={styles.resetBtnText}>Reset</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -103,7 +100,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               iconColor={Colors.mediumDarkGrey}
               before
             >
-              <Text style={{ color: Colors.mrDBlue }}>View all</Text>
+              <Text style={styles.viewAll}>View all</Text>
             </PopupMenu>
           </View>
 
@@ -118,25 +115,31 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                 onPress={() => onToggleVehicleTypes(item.value)}
                 style={[
                   styles.chipBtn,
+                  item.isSelected && styles.chipBtnSelected,
                   {
                     backgroundColor: item.isSelected
                       ? Colors.mrDBlue
-                      : Colors.softGrey,
+                      : Colors.white,
                   },
                 ]}
               >
                 <Text
-                  style={{
-                    color: item.isSelected
-                      ? Colors.white
-                      : Colors.darkCharcoalGrey,
-                  }}
+                  style={[
+                    styles.chipText,
+                    {
+                      color: item.isSelected
+                        ? Colors.white
+                        : Colors.darkCharcoalGrey,
+                    },
+                  ]}
                 >
                   {item.label}
                 </Text>
               </TouchableOpacity>
             )}
           />
+
+          <View style={styles.sectionDivider} />
 
           <View style={styles.row}>
             <Text style={styles.contentTitle}>Brand</Text>
@@ -168,19 +171,23 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                   onPress={() => onToggleBrand(item.id)}
                   style={[
                     styles.chipBtn,
+                    isSelected && styles.chipBtnSelected,
                     {
                       backgroundColor: isSelected
                         ? Colors.mrDBlue
-                        : Colors.softGrey,
+                        : Colors.white,
                     },
                   ]}
                 >
                   <Text
-                    style={{
-                      color: isSelected
-                        ? Colors.white
-                        : Colors.darkCharcoalGrey,
-                    }}
+                    style={[
+                      styles.chipText,
+                      {
+                        color: isSelected
+                          ? Colors.white
+                          : Colors.darkCharcoalGrey,
+                      },
+                    ]}
                   >
                     {item.label}
                   </Text>
@@ -188,6 +195,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               );
             }}
           />
+
+          <View style={styles.sectionDivider} />
 
           <View style={styles.fuelCheckbox}>
             <Text style={styles.contentTitle}>Fuel Type</Text>
@@ -197,46 +206,52 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.fuelOptions}
               renderItem={({ item }) => {
-                {
-                  const key = item.toLowerCase();
-                  const selected = selectedFuelTypes.includes(key);
-                  return (
-                    <TouchableOpacity
-                      key={key}
-                      onPress={() => onFuelToggle(key)}
-                      style={styles.checkbox}
+                const key = item.toLowerCase();
+                const selected = selectedFuelTypes.includes(key);
+                return (
+                  <TouchableOpacity
+                    key={key}
+                    onPress={() => onFuelToggle(key)}
+                    style={[
+                      styles.checkbox,
+                      selected && styles.checkboxSelected,
+                    ]}
+                  >
+                    <View
+                      style={[
+                        styles.box,
+                        {
+                          borderColor: selected
+                            ? Colors.mrDBlue
+                            : Colors.lightGrey,
+                        },
+                      ]}
                     >
-                      <View
-                        style={[
-                          styles.box,
-                          {
-                            borderWidth: selected ? 1.5 : 1,
-                            borderColor: selected
-                              ? Colors.mrDBlue
-                              : Colors.mediumGrey,
-                          },
-                        ]}
-                      >
-                        {selected ? (
-                          <AntDesign
-                            name="check"
-                            size={16}
-                            color={Colors.mrDBlue}
-                          />
-                        ) : null}
-                      </View>
-                      <Text style={{ color: Colors.darkCharcoalGrey }}>
-                        {item}
-                      </Text>
-                    </TouchableOpacity>
-                  );
-                }
+                      {selected && (
+                        <AntDesign
+                          name="check"
+                          size={14}
+                          color={Colors.mrDBlue}
+                        />
+                      )}
+                    </View>
+                    <Text
+                      style={[
+                        styles.checkboxText,
+                        { color: Colors.darkCharcoalGrey },
+                      ]}
+                    >
+                      {item}
+                    </Text>
+                  </TouchableOpacity>
+                );
               }}
             />
           </View>
 
-          {/* Price Range */}
-          <View style={{ marginVertical: 15, marginHorizontal: 16 }}>
+          <View style={styles.sectionDivider} />
+
+          <View style={styles.sliderContainer}>
             <Text style={styles.contentTitle}>Price Range</Text>
             <RangeSlider
               min={0}
@@ -250,20 +265,15 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               renderLabel={renderLabel}
               onValueChanged={onPriceChange}
             />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text>R{priceRange[0]}</Text>
-              <Text>R{priceRange[1]}</Text>
+            <View style={styles.sliderLabels}>
+              <Text style={styles.sliderLabelText}>R{priceRange[0]}</Text>
+              <Text style={styles.sliderLabelText}>R{priceRange[1]}</Text>
             </View>
           </View>
 
           <View style={styles.footer}>
             <TouchableOpacity onPress={onApply} style={styles.footerBtn}>
-              <Text style={styles.footerText}>Show results</Text>
+              <Text style={styles.footerText}>Apply Filters</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

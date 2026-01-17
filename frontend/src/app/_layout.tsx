@@ -146,6 +146,7 @@ const Layout = (props: LayoutProps) => {
           <Stack.Screen name="previewCard" options={{ headerShown: false }} />
           <Stack.Screen name="applicants" options={{ headerShown: false }} />
           <Stack.Screen name="comments" options={{ headerShown: false }} />
+          <Stack.Screen name="chooseVehicle" options={{ headerShown: false }} />
           <Stack.Screen
             name="vehicleDriverSearch"
             options={{ headerShown: false }}
