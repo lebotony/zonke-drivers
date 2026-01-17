@@ -60,7 +60,7 @@ export default function TabLayout() {
           title: "Manage",
           href: isDriver ? null : "/(tabs)/manage",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="layers-outline" size={24} color={color} />
+            <Ionicons name="grid-outline" size={24} color={color} />
           ),
         }}
       />

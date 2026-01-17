@@ -4,11 +4,11 @@ import { StyleSheet } from "react-native";
 export const styles = StyleSheet.create({
   container: {
     justifyContent: "center",
+    alignItems: "center",
   },
   logoWrapper: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 8,
   },
   iconContainer: {
     borderRadius: 12,
@@ -21,6 +21,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
+    backgroundColor: "red",
   },
   iconGradient: {
     width: "100%",

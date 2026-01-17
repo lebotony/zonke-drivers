@@ -1,9 +1,4 @@
-import {
-  View,
-  ViewStyle,
-  StyleSheet,
-  TouchableOpacity,
-} from "react-native";
+import { View, ViewStyle, StyleSheet, TouchableOpacity } from "react-native";
 
 import { router } from "expo-router";
 

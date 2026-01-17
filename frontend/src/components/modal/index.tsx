@@ -9,6 +9,7 @@ import {
   View,
   Keyboard,
   Platform,
+  StyleSheet,
 } from "react-native";
 import { BlurView } from "expo-blur";
 
@@ -25,15 +26,40 @@ type ModalProps = {
 export const Modal = (props: ModalProps) => {
   const { children, onDismiss } = props;
 
-  const pan = useRef(new Animated.ValueXY()).current;
+  const pan = useRef(new Animated.ValueXY({ x: 0, y: 800 })).current;
+  const backdropOpacity = useRef(new Animated.Value(0)).current;
   const [keyboardHeight, setKeyboardHeight] = useState(0);
 
+  useEffect(() => {
+    // Slide up animation on mount
+    Animated.parallel([
+      Animated.spring(pan, {
+        toValue: { x: 0, y: 0 },
+        useNativeDriver: false,
+        tension: 65,
+        friction: 11,
+      }),
+      Animated.timing(backdropOpacity, {
+        toValue: 1,
+        duration: 250,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  }, []);
+
   const dismissWithAnimation = () => {
-    Animated.timing(pan, {
-      toValue: { x: 0, y: 800 },
-      duration: 200,
-      useNativeDriver: false,
-    }).start(() => {
+    Animated.parallel([
+      Animated.timing(pan, {
+        toValue: { x: 0, y: 800 },
+        duration: 250,
+        useNativeDriver: false,
+      }),
+      Animated.timing(backdropOpacity, {
+        toValue: 0,
+        duration: 200,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
       if (onDismiss) onDismiss();
     });
   };
@@ -85,10 +111,12 @@ export const Modal = (props: ModalProps) => {
   }, []);
 
   return (
-    <BlurView intensity={60} tint="dark" style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor={Colors.grey} />
+    <Animated.View style={[styles.container, { opacity: backdropOpacity }]}>
+      <BlurView intensity={60} tint="dark" style={StyleSheet.absoluteFillObject}>
+        <StatusBar barStyle="light-content" backgroundColor="rgba(0,0,0,0.7)" />
 
-      <Pressable style={styles.backdrop} onPress={dismissWithAnimation} />
+        <Pressable style={styles.backdrop} onPress={dismissWithAnimation} />
+      </BlurView>
 
       <Animated.View
         style={[
@@ -101,7 +129,7 @@ export const Modal = (props: ModalProps) => {
         ]}
       >
         {/* draggable area */}
-        <View style={{ height: 20 }} {...panResponder.panHandlers}>
+        <View style={{ height: 24, paddingTop: 8 }} {...panResponder.panHandlers}>
           <BarLine />
         </View>
 
@@ -112,6 +140,6 @@ export const Modal = (props: ModalProps) => {
           {children}
         </ScrollView>
       </Animated.View>
-    </BlurView>
+    </Animated.View>
   );
 };

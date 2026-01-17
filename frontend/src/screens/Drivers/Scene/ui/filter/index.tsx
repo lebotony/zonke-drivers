@@ -4,7 +4,6 @@ import {
   TouchableOpacity,
   FlatList,
   ScrollView,
-  Dimensions,
 } from "react-native";
 import { Text } from "react-native-paper";
 
@@ -72,16 +71,14 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
   if (!visible) return null;
 
-  const screenHeight = Dimensions.get("window").height;
-
   return (
     <Modal onDismiss={onDismiss}>
-      <View style={{ maxHeight: screenHeight * 0.8 }}>
+      <View>
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Filter</Text>
+          <Text style={styles.headerTitle}>Filters</Text>
           {showReset && (
             <TouchableOpacity onPress={onReset} style={styles.resetBtn}>
-              <Text style={{ color: Colors.mrDBlue }}>Reset</Text>
+              <Text style={styles.resetBtnText}>Reset</Text>
               <MaterialIcons name="refresh" size={18} color={Colors.mrDBlue} />
             </TouchableOpacity>
           )}
@@ -100,7 +97,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               iconColor={Colors.mediumDarkGrey}
               before
             >
-              <Text style={{ color: Colors.mrDBlue }}>View all</Text>
+              <Text style={styles.viewAll}>View all</Text>
             </PopupMenu>
           </View>
 
@@ -117,19 +114,23 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                   onPress={() => onTogglePlatforms(item.value)}
                   style={[
                     styles.chipBtn,
+                    isSelected && styles.chipBtnSelected,
                     {
                       backgroundColor: isSelected
                         ? Colors.mrDBlue
-                        : Colors.softGrey,
+                        : Colors.white,
                     },
                   ]}
                 >
                   <Text
-                    style={{
-                      color: isSelected
-                        ? Colors.white
-                        : Colors.darkCharcoalGrey,
-                    }}
+                    style={[
+                      styles.chipText,
+                      {
+                        color: isSelected
+                          ? Colors.white
+                          : Colors.darkCharcoalGrey,
+                      },
+                    ]}
                   >
                     {item.slug}
                   </Text>
@@ -137,6 +138,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               );
             }}
           />
+
+          <View style={styles.sectionDivider} />
 
           <View style={styles.row}>
             <Text style={styles.contentTitle}>Licences</Text>
@@ -147,7 +150,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               iconColor={Colors.mediumDarkGrey}
               before
             >
-              <Text style={{ color: Colors.mrDBlue }}>View all</Text>
+              <Text style={styles.viewAll}>View all</Text>
             </PopupMenu>
           </View>
 
@@ -165,19 +168,23 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                   onPress={() => onToggleLicences(item.slug)}
                   style={[
                     styles.chipBtn,
+                    isSelected && styles.chipBtnSelected,
                     {
                       backgroundColor: isSelected
                         ? Colors.mrDBlue
-                        : Colors.softGrey,
+                        : Colors.white,
                     },
                   ]}
                 >
                   <Text
-                    style={{
-                      color: isSelected
-                        ? Colors.white
-                        : Colors.darkCharcoalGrey,
-                    }}
+                    style={[
+                      styles.chipText,
+                      {
+                        color: isSelected
+                          ? Colors.white
+                          : Colors.darkCharcoalGrey,
+                      },
+                    ]}
                   >
                     {item.name}
                   </Text>
@@ -186,8 +193,9 @@ export const FilterModal: React.FC<FilterModalProps> = ({
             }}
           />
 
-          {/* Age Range */}
-          <View style={{ marginVertical: 15, marginHorizontal: 16 }}>
+          <View style={styles.sectionDivider} />
+
+          <View style={styles.sliderContainer}>
             <Text style={styles.contentTitle}>Age Range</Text>
             <RangeSlider
               min={18}
@@ -201,19 +209,15 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               renderLabel={renderLabel}
               onValueChanged={onAgeChange}
             />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text>{ageRange[0]} yrs</Text>
-              <Text>{ageRange[1]} yrs</Text>
+            <View style={styles.sliderLabels}>
+              <Text style={styles.sliderLabelText}>{ageRange[0]} yrs</Text>
+              <Text style={styles.sliderLabelText}>{ageRange[1]} yrs</Text>
             </View>
           </View>
 
-          {/* Experience Range */}
-          <View style={{ marginVertical: 15, marginHorizontal: 16 }}>
+          <View style={styles.sectionDivider} />
+
+          <View style={styles.sliderContainer}>
             <Text style={styles.contentTitle}>Experience Range</Text>
             <RangeSlider
               min={0}
@@ -227,25 +231,24 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               renderLabel={renderLabel}
               onValueChanged={onExperienceChange}
             />
-            <View
-              style={{
-                flexDirection: "row",
-                justifyContent: "space-between",
-              }}
-            >
-              <Text>{experienceRange[0]}yrs </Text>
-              <Text>{experienceRange[1]}yrs </Text>
+            <View style={styles.sliderLabels}>
+              <Text style={styles.sliderLabelText}>{experienceRange[0]} yrs</Text>
+              <Text style={styles.sliderLabelText}>{experienceRange[1]} yrs</Text>
             </View>
           </View>
 
-          {/* Rating */}
+          <View style={styles.sectionDivider} />
+
           <View style={styles.reviewContainer}>
-            <Text style={styles.reviewText}>Customer Review</Text>
-            <View style={{ gap: 12 }}>
+            <Text style={styles.reviewText}>Customer Rating</Text>
+            <View style={styles.ratingOptions}>
               {[4, 3, 2].map((r) => (
                 <TouchableOpacity
                   key={r}
-                  style={styles.ratingBtn}
+                  style={[
+                    styles.ratingBtn,
+                    selectedRating === r && styles.ratingBtnSelected,
+                  ]}
                   onPress={() => onRatingSelect(r)}
                 >
                   <View style={styles.ratingText}>
@@ -257,19 +260,17 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                         color={Colors.yellow}
                       />
                     ))}
-                    <Text style={{ color: Colors.mediumGrey }}>& up</Text>
+                    <Text style={styles.ratingLabel}>& up</Text>
                   </View>
                   <View
                     style={[
                       styles.radio,
-                      selectedRating === r
-                        ? styles.activeRadio
-                        : styles.inactiveRadio,
+                      selectedRating === r && styles.activeRadio,
                     ]}
                   >
-                    {selectedRating === r ? (
+                    {selectedRating === r && (
                       <View style={styles.activeDot} />
-                    ) : null}
+                    )}
                   </View>
                 </TouchableOpacity>
               ))}
@@ -278,7 +279,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
           <View style={styles.footer}>
             <TouchableOpacity onPress={onApply} style={styles.footerBtn}>
-              <Text style={styles.footerText}>Show results</Text>
+              <Text style={styles.footerText}>Apply Filters</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

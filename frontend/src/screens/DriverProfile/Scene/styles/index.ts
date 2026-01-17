@@ -340,7 +340,7 @@ export const styles = StyleSheet.create({
     borderRadius: 12,
     borderWidth: 1.5,
     borderColor: Colors.mrDBlue,
-    marginBottom: IS_IOS ? 30 : 0,
+    marginBottom: 30,
     ...SHADOWS.soft,
   },
 
@@ -358,10 +358,32 @@ export const styles = StyleSheet.create({
     right: 0,
     backgroundColor: Colors.white,
     paddingHorizontal: SPACING.lg,
-    paddingVertical: SPACING.md,
+    paddingVertical: SPACING.sm,
     borderTopWidth: 1,
     borderTopColor: Colors.lightGrey + "50",
     ...SHADOWS.medium,
+  },
+
+  footerButtonContainer: {
+    flexDirection: "row",
+    gap: 12,
+  },
+
+  actionButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: SPACING.sm,
+    paddingVertical: SPACING.md,
+    borderRadius: 14,
+  },
+
+  hireButton: {
+    flex: 1,
+  },
+
+  messageButtonHalf: {
+    flex: 1,
   },
 
   messageButtonModern: {
@@ -369,8 +391,14 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: SPACING.sm,
-    paddingVertical: SPACING.lg,
+    paddingVertical: SPACING.md,
     borderRadius: 14,
+  },
+
+  actionButtonText: {
+    fontSize: 15,
+    fontWeight: 600,
+    color: Colors.white,
   },
 
   messageButtonText: {

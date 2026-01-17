@@ -16,6 +16,7 @@ import { Colors } from "@/constants/ui";
 import { CustomButton } from "@/src/components/elements/button";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
+import { useAuth } from "@/src/authContext";
 import { shadowStyles } from "@/src/components/shadowStyles";
 import { calculateAge } from "@/src/helpers/calculateAge";
 import { Spinner } from "@/src/components/elements/Spinner";
@@ -33,16 +34,19 @@ export const Scene = () => {
   const driverId = Array.isArray(id) ? id[0] : id;
 
   const { addItemToPaginatedList } = usePaginatedCache();
+  const { authState } = useAuth();
 
   const queryClient = useQueryClient();
   const { getCachedData } = useCustomQuery();
   const {
     drivers,
+    user,
     threads = [],
     driverProfile,
     applicationDrivers = [],
   } = getCachedData([
     "drivers",
+    "user",
     "threads",
     "driverProfile",
     "applicationDrivers",
@@ -53,6 +57,8 @@ export const Scene = () => {
 
   if (!driver) driver = find(applicationDrivers, { id: driverId });
 
+  const isVehicleOwner = user?.role === "owner";
+
   const handleCreateThread = () =>
     createThread({ participant_id: driver.user_id }).then((response) => {
       if (!find(threads, { id: response.id })) {
@@ -61,6 +67,16 @@ export const Scene = () => {
 
       router.push(`/chats/${response.id}`);
     });
+
+  const handleHireDriver = () => {
+    router.push({
+      pathname: "/chooseVehicle",
+      params: {
+        driverId: driver.id,
+        driverName: `${driver.first_name} ${driver.last_name}`,
+      },
+    });
+  };
 
   useEffect(() => {
     if (!driver) {
@@ -96,23 +112,27 @@ export const Scene = () => {
               </View>
 
               <LinearGradient
-                colors={['rgba(118, 203, 237, 0.08)', 'rgba(118, 203, 237, 0.02)']}
+                colors={[
+                  "rgba(118, 203, 237, 0.08)",
+                  "rgba(118, 203, 237, 0.02)",
+                ]}
                 style={styles.gradientBackground}
               />
 
               <View style={styles.avatarContainer}>
                 {driver?.asset_url ? (
                   <View style={styles.avatarWrapper}>
-                    <Avatar source={driver?.asset_url} round shadow width={140} />
+                    <Avatar
+                      source={driver?.asset_url}
+                      round
+                      shadow
+                      width={140}
+                    />
                     <View style={styles.avatarBorder} />
                   </View>
                 ) : (
                   <View style={styles.defaultPicModern}>
-                    <Ionicons
-                      name="person"
-                      size={70}
-                      color={Colors.mrDBlue}
-                    />
+                    <Ionicons name="person" size={70} color={Colors.mrDBlue} />
                   </View>
                 )}
               </View>
@@ -166,7 +186,9 @@ export const Scene = () => {
                 <View style={styles.quickStatIconWrapper}>
                   <AntDesign name="star" size={20} color={Colors.yellow} />
                 </View>
-                <Text style={styles.quickStatValue}>{driver?.rating || 'N/A'}</Text>
+                <Text style={styles.quickStatValue}>
+                  {driver?.rating || "N/A"}
+                </Text>
                 <Text style={styles.quickStatLabel}>Rating</Text>
               </View>
 
@@ -174,10 +196,14 @@ export const Scene = () => {
 
               <View style={styles.quickStatItem}>
                 <View style={styles.quickStatIconWrapper}>
-                  <MaterialIcons name="access-time" size={20} color={Colors.emeraldGreen} />
+                  <MaterialIcons
+                    name="access-time"
+                    size={20}
+                    color={Colors.emeraldGreen}
+                  />
                 </View>
                 <Text style={styles.quickStatValue}>
-                  {driver?.experience || '0'}y
+                  {driver?.experience || "0"}y
                 </Text>
                 <Text style={styles.quickStatLabel}>Experience</Text>
               </View>
@@ -189,7 +215,7 @@ export const Scene = () => {
                   <Ionicons name="car-sport" size={20} color={Colors.mrDBlue} />
                 </View>
                 <Text style={styles.quickStatValue}>
-                  {driver?.previous_vehicles || '0'}
+                  {driver?.previous_vehicles || "0"}
                 </Text>
                 <Text style={styles.quickStatLabel}>Vehicles</Text>
               </View>
@@ -214,12 +240,13 @@ export const Scene = () => {
               <Text style={styles.sectionTitle}>Professional Details</Text>
               <View style={styles.statsGrid}>
                 {detailsDef.map((detail, index) => (
-                  <View key={`${detail.slug}-${index}`} style={styles.statCardModern}>
-                    <View style={styles.statIconCircle}>
-                      {detail.icon}
-                    </View>
+                  <View
+                    key={`${detail.slug}-${index}`}
+                    style={styles.statCardModern}
+                  >
+                    <View style={styles.statIconCircle}>{detail.icon}</View>
                     <Text style={styles.statValueModern}>
-                      {driver?.[`${detail.slug}`] || 'N/A'}
+                      {driver?.[`${detail.slug}`] || "N/A"}
                     </Text>
                     <Text style={styles.statLabelModern}>{detail.label}</Text>
                   </View>
@@ -233,7 +260,11 @@ export const Scene = () => {
               color={Colors.white}
               customStyle={styles.commentsButton}
             >
-              <Ionicons name="chatbox-outline" size={20} color={Colors.mrDBlue} />
+              <Ionicons
+                name="chatbox-outline"
+                size={20}
+                color={Colors.mrDBlue}
+              />
               <Text style={styles.commentsButtonText}>
                 View Reviews & Comments
               </Text>
@@ -242,24 +273,36 @@ export const Scene = () => {
         </ScrollView>
       </SafeAreaView>
 
-      {/* Enhanced Message CTA */}
+      {/* Enhanced Footer with Message and Hire CTAs */}
       {!isUserProfile && (
         <View style={styles.floatingFooter}>
           <SafeAreaView edges={["bottom"]}>
-            <CustomButton
-              color={Colors.emeraldGreen}
-              onPress={handleCreateThread}
-              customStyle={styles.messageButtonModern}
-            >
-              <Ionicons
-                name="chatbubble"
-                size={22}
-                color={Colors.white}
-              />
-              <Text style={styles.messageButtonText}>
-                Send Message
-              </Text>
-            </CustomButton>
+            <View style={styles.footerButtonContainer}>
+              {isVehicleOwner && (
+                <CustomButton
+                  color={Colors.mrDBlue}
+                  onPress={handleHireDriver}
+                  customStyle={[styles.actionButton, styles.hireButton]}
+                >
+                  <Ionicons name="car" size={20} color={Colors.white} />
+                  <Text style={styles.actionButtonText}>Hire</Text>
+                </CustomButton>
+              )}
+
+              <CustomButton
+                color={Colors.emeraldGreen}
+                onPress={handleCreateThread}
+                customStyle={[
+                  styles.actionButton,
+                  isVehicleOwner
+                    ? styles.messageButtonHalf
+                    : styles.messageButtonModern,
+                ]}
+              >
+                <Ionicons name="chatbubble" size={20} color={Colors.white} />
+                <Text style={styles.actionButtonText}>Message</Text>
+              </CustomButton>
+            </View>
           </SafeAreaView>
         </View>
       )}

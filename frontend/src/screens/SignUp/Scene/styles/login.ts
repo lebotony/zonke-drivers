@@ -33,6 +33,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginBottom: 32,
     marginTop: 8,
+    transform: [{ translateX: -42 }],
   },
   headerSection: {
     marginBottom: 32,

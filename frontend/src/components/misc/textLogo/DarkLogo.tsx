@@ -93,7 +93,6 @@ const styles = StyleSheet.create({
   },
   textContainer: {
     gap: 2,
-    backgroundColor: "yellow",
   },
   brandText: {
     fontFamily: "Poppins_700Bold",
