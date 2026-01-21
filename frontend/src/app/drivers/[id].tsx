@@ -1,5 +1,8 @@
 import { DriverProfile } from "@/src/screens/DriverProfile";
+import { withAuth } from "@/src/components/withAuth";
 
-export default function Drivers() {
+function Drivers() {
   return <DriverProfile />;
 }
+
+export default withAuth(Drivers);

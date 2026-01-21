@@ -6,7 +6,6 @@ import {
   TouchableOpacity,
   Dimensions,
   StatusBar,
-  Animated,
 } from "react-native";
 import { Text } from "react-native-paper";
 import { Image } from "expo-image";
@@ -14,12 +13,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { find } from "lodash";
 import { LinearGradient } from "expo-linear-gradient";
 
-import {
-  Ionicons,
-  MaterialIcons,
-  FontAwesome5,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { capitalizeFirstLetter } from "@/src/utils";
 import { useCustomQuery } from "@/src/useQueryContext";
@@ -27,16 +21,30 @@ import { Colors } from "@/constants/ui";
 import { Avatar } from "@/src/components/visual/avatar";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { AppToast } from "@/src/components/CustomToast/customToast";
+import { useAuth } from "@/src/authContext";
+import { AuthRequiredModal } from "@/src/components/AuthRequiredModal";
 
 import { styles } from "./styles/index";
 import { createThread } from "../../DriverProfile/actions";
 import { applyForVehicle } from "../actions";
 import { NoProfileModal } from "./noProfileModal";
 
-const SpecCard = ({ icon, title, value }: { icon: string; title: string; value: string | number }) => (
+const SpecCard = ({
+  icon,
+  title,
+  value,
+}: {
+  icon: string;
+  title: string;
+  value: string | number;
+}) => (
   <View style={styles.specCard}>
     <View style={styles.specIconContainer}>
-      <MaterialCommunityIcons name={icon as any} size={22} color={Colors.mrDBlue} />
+      <MaterialCommunityIcons
+        name={icon as any}
+        size={22}
+        color={Colors.mrDBlue}
+      />
     </View>
     <Text style={styles.specTitle}>{title}</Text>
     <Text style={styles.specValue}>{value}</Text>
@@ -50,7 +58,10 @@ export const Scene = () => {
   const [expanded, setExpanded] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showNoProfileModal, setShowNoProfileModal] = useState(false);
+  const [showAuthModal, setShowAuthModal] = useState(false);
+  const [authAction, setAuthAction] = useState("");
 
+  const { authState } = useAuth();
   const { addItemToPaginatedList } = usePaginatedCache();
 
   const { getCachedData } = useCustomQuery();
@@ -61,6 +72,12 @@ export const Scene = () => {
   const modalRef = useRef<any>(null);
 
   const handleCreateThread = () => {
+    if (!authState?.authenticated) {
+      setAuthAction("message the owner");
+      setShowAuthModal(true);
+      return;
+    }
+
     createThread({ participant_id: vehicle.user.id })
       .then((response) => {
         if (!find(threads, { id: response.id })) {
@@ -71,7 +88,13 @@ export const Scene = () => {
       .catch((err) => err);
   };
 
-  const handleApply = () =>
+  const handleApply = () => {
+    if (!authState?.authenticated) {
+      setAuthAction("apply to drive this vehicle");
+      setShowAuthModal(true);
+      return;
+    }
+
     applyForVehicle({ vehicle_id: vehicleId })
       .then(() => {
         AppToast("Application sent successfully", true);
@@ -90,14 +113,22 @@ export const Scene = () => {
           throw new Error("Application error:", err);
         }
       });
+  };
 
-  const locationText = [vehicle?.user?.location?.city, vehicle?.user?.location?.country]
+  const locationText = [
+    vehicle?.user?.location?.city,
+    vehicle?.user?.location?.country,
+  ]
     .filter(Boolean)
     .join(", ");
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         bounces={false}
@@ -114,7 +145,7 @@ export const Scene = () => {
 
           {/* Sophisticated Gradient Overlay */}
           <LinearGradient
-            colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.3)', 'rgba(0,0,0,0.75)']}
+            colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.3)", "rgba(0,0,0,0.75)"]}
             locations={[0, 0.5, 1]}
             style={styles.heroGradient}
           />
@@ -148,11 +179,14 @@ export const Scene = () => {
             <View style={styles.titleRow}>
               <View style={styles.titleContent}>
                 <Text style={styles.vehicleTitle}>
-                  {capitalizeFirstLetter(vehicle?.brand)} {capitalizeFirstLetter(vehicle?.model)}
+                  {capitalizeFirstLetter(vehicle?.brand)}{" "}
+                  {capitalizeFirstLetter(vehicle?.model)}
                 </Text>
                 {vehicle?.model_year && (
                   <View style={styles.yearBadge}>
-                    <Text style={styles.yearBadgeText}>{vehicle.model_year}</Text>
+                    <Text style={styles.yearBadgeText}>
+                      {vehicle.model_year}
+                    </Text>
                   </View>
                 )}
               </View>
@@ -160,7 +194,9 @@ export const Scene = () => {
               {/* Premium Price Display */}
               {vehicle?.price_fixed?.value && (
                 <View style={styles.priceTag}>
-                  <Text style={styles.priceValue}>R{vehicle.price_fixed.value}</Text>
+                  <Text style={styles.priceValue}>
+                    R{vehicle.price_fixed.value}
+                  </Text>
                   <Text style={styles.priceLabel}>per day</Text>
                 </View>
               )}
@@ -171,18 +207,30 @@ export const Scene = () => {
               {locationText && (
                 <View style={styles.metadataItem}>
                   <View style={styles.metadataIconContainer}>
-                    <Ionicons name="location-sharp" size={14} color={Colors.mrDBlue} />
+                    <Ionicons
+                      name="location-sharp"
+                      size={14}
+                      color={Colors.mrDBlue}
+                    />
                   </View>
-                  <Text style={styles.metadataText} numberOfLines={1}>{locationText}</Text>
+                  <Text style={styles.metadataText} numberOfLines={1}>
+                    {locationText}
+                  </Text>
                 </View>
               )}
 
               {vehicle?.rating > 0 && (
                 <View style={styles.metadataItem}>
                   <View style={styles.metadataIconContainer}>
-                    <Ionicons name="star" size={14} color={Colors.lightYellow} />
+                    <Ionicons
+                      name="star"
+                      size={14}
+                      color={Colors.lightYellow}
+                    />
                   </View>
-                  <Text style={styles.metadataText}>{vehicle.rating.toFixed(1)} Rating</Text>
+                  <Text style={styles.metadataText}>
+                    {vehicle.rating.toFixed(1)} Rating
+                  </Text>
                 </View>
               )}
             </View>
@@ -200,7 +248,11 @@ export const Scene = () => {
                   {vehicle?.user?.first_name} {vehicle?.user?.last_name}
                 </Text>
               </View>
-              <Ionicons name="chevron-forward" size={20} color={Colors.mediumGrey} />
+              <Ionicons
+                name="chevron-forward"
+                size={20}
+                color={Colors.mediumGrey}
+              />
             </TouchableOpacity>
           </View>
 
@@ -216,7 +268,9 @@ export const Scene = () => {
               </Text>
               {vehicle.description.length > 120 && (
                 <TouchableOpacity
-                  onPress={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                  onPress={() =>
+                    setIsDescriptionExpanded(!isDescriptionExpanded)
+                  }
                   style={styles.readMoreButton}
                 >
                   <Text style={styles.readMoreText}>
@@ -259,7 +313,11 @@ export const Scene = () => {
               <SpecCard
                 icon="engine"
                 title="Engine"
-                value={vehicle?.engine_capacity ? `${vehicle.engine_capacity}L` : "N/A"}
+                value={
+                  vehicle?.engine_capacity
+                    ? `${vehicle.engine_capacity}L`
+                    : "N/A"
+                }
               />
               <SpecCard
                 icon="car-info"
@@ -279,7 +337,11 @@ export const Scene = () => {
           activeOpacity={0.85}
         >
           <View style={styles.buttonIconContainer}>
-            <Ionicons name="chatbubble-outline" size={20} color={Colors.mrDBlue} />
+            <Ionicons
+              name="chatbubble-outline"
+              size={20}
+              color={Colors.mrDBlue}
+            />
           </View>
           <Text style={styles.secondaryButtonText}>Message</Text>
         </TouchableOpacity>
@@ -325,6 +387,12 @@ export const Scene = () => {
       {showNoProfileModal && (
         <NoProfileModal setShowNoProfileModal={setShowNoProfileModal} />
       )}
+
+      <AuthRequiredModal
+        visible={showAuthModal}
+        onDismiss={() => setShowAuthModal(false)}
+        action={authAction}
+      />
     </View>
   );
 };

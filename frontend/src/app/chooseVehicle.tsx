@@ -1,5 +1,8 @@
 import { ChooseVehicleScreen } from "@/src/screens/ChooseVehicle";
+import { withAuth } from "@/src/components/withAuth";
 
-export default function ChooseVehicle() {
+function ChooseVehicle() {
   return <ChooseVehicleScreen />;
 }
+
+export default withAuth(ChooseVehicle);

@@ -53,15 +53,17 @@ defmodule Backend.Vehicles.Payments do
     |> format_payment()
   end
 
-  def get_payments(params) do
+  def get_payments(%{vehicle_driver_id: vehicle_driver_id} = params) do
     data =
       PaymentBy.base_query()
-      |> PaymentBy.by_vehicle_driver(params.vehicle_driver_id)
+      |> PaymentBy.by_vehicle_driver(vehicle_driver_id)
       |> order_by([payment: p], desc: p.inserted_at)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
   end
+
+  def get_payments(_params), do: {:error, :vehicle_driver_id_required}
 
   defp format_payment(%Payment{} = payment), do: {:ok, payment}
   defp format_payment(nil), do: {:error, :not_found}

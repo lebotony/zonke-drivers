@@ -5,8 +5,14 @@ defmodule BackendWeb.Reviews.CommentController do
   alias Backend.Reviews.{Comments, Comment}
 
   def index(conn, params, session) do
-    with {:ok, comments, paginate} <- Comments.get_driver_comments(params) do
-      render(conn, :index, %{comments: comments, paginate: paginate})
+    case Comments.get_driver_comments(params) do
+      {:ok, comments, paginate} ->
+        render(conn, :index, %{comments: comments, paginate: paginate})
+
+      {:error, :driver_id_required} ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: "driver_id is required"})
     end
   end
 

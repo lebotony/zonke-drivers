@@ -13,19 +13,41 @@ type HeaderProps = {
   setSearchTerm: (value: string) => void;
   setShowFilterModal: (value: boolean) => void;
   isVehicleList?: boolean;
+  onBack?: () => void;
+  showBackButton?: boolean;
 };
 
 export const Header = (props: HeaderProps) => {
-  const { setSearchTerm, setShowFilterModal, isVehicleList } = props;
+  const {
+    setSearchTerm,
+    setShowFilterModal,
+    isVehicleList,
+    onBack,
+    showBackButton,
+  } = props;
 
   return (
     <View style={styles.container}>
       <StatusBar style="dark" />
       <SafeAreaView edges={["top"]} style={{ backgroundColor: Colors.white }}>
         <View style={styles.items}>
-          <View style={styles.logoWrapper}>
-            <TextLogo size="small" />
-          </View>
+          {showBackButton && onBack ? (
+            <TouchableOpacity
+              style={styles.backButton}
+              activeOpacity={0.7}
+              onPress={onBack}
+            >
+              <Ionicons
+                name="arrow-back"
+                size={24}
+                color={Colors.darkCharcoalGrey}
+              />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.logoWrapper}>
+              <TextLogo size="small" />
+            </View>
+          )}
           <View style={styles.inputWrapper}>
             <View style={styles.searchIconWrapper}>
               <Ionicons
@@ -63,11 +85,7 @@ export const Header = (props: HeaderProps) => {
               end={{ x: 1, y: 1 }}
               style={styles.filterButtonGradient}
             >
-              <Ionicons
-                name="options-outline"
-                size={22}
-                color={Colors.white}
-              />
+              <Ionicons name="options-outline" size={22} color={Colors.white} />
             </LinearGradient>
           </TouchableOpacity>
         </View>

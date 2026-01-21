@@ -26,7 +26,11 @@ const VehicleTypeBadge = ({ type }: { type: string }) => {
       case "truck":
         return { icon: "truck", label: "Truck", color: Colors.lightRed };
       case "lorry":
-        return { icon: "truck-cargo-container", label: "Lorry", color: Colors.slateGray };
+        return {
+          icon: "truck-cargo-container",
+          label: "Lorry",
+          color: Colors.slateGray,
+        };
       default:
         return { icon: "car-side", label: "Car", color: Colors.emeraldGreen };
     }
@@ -36,14 +40,23 @@ const VehicleTypeBadge = ({ type }: { type: string }) => {
 
   return (
     <View style={styles.typeBadge}>
-      <MaterialCommunityIcons name={config.icon as any} size={14} color={config.color} />
-      <Text style={[styles.typeBadgeText, { color: config.color }]}>{config.label}</Text>
+      <MaterialCommunityIcons
+        name={config.icon as any}
+        size={14}
+        color={config.color}
+      />
+      <Text style={[styles.typeBadgeText, { color: config.color }]}>
+        {config.label}
+      </Text>
     </View>
   );
 };
 
 export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
-  const locationText = [vehicle?.user?.location?.city, vehicle?.user?.location?.country]
+  const locationText = [
+    vehicle?.user?.location?.city,
+    vehicle?.user?.location?.country,
+  ]
     .filter(Boolean)
     .join(", ");
 
@@ -79,7 +92,8 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
         <View style={styles.headerRow}>
           <View style={styles.titleContainer}>
             <Text style={styles.vehicleName} numberOfLines={1}>
-              {capitalizeFirstLetter(vehicle?.brand)} {capitalizeFirstLetter(vehicle?.model)}
+              {capitalizeFirstLetter(vehicle?.brand)}{" "}
+              {capitalizeFirstLetter(vehicle?.model)}
             </Text>
             <Text style={styles.yearText}>{vehicle?.model_year}</Text>
           </View>
@@ -88,14 +102,24 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
         <View style={styles.detailsRow}>
           {vehicle?.fuel_type && (
             <View style={styles.detailBadge}>
-              <MaterialCommunityIcons name="gas-station" size={14} color={Colors.mediumGrey} />
-              <Text style={styles.detailText}>{capitalizeFirstLetter(vehicle.fuel_type)}</Text>
+              <MaterialCommunityIcons
+                name="gas-station"
+                size={14}
+                color={Colors.mediumGrey}
+              />
+              <Text style={styles.detailText}>
+                {capitalizeFirstLetter(vehicle.fuel_type)}
+              </Text>
             </View>
           )}
 
           {vehicle?.passengers && (
             <View style={styles.detailBadge}>
-              <MaterialCommunityIcons name="seat-passenger" size={14} color={Colors.mediumGrey} />
+              <MaterialCommunityIcons
+                name="seat-passenger"
+                size={14}
+                color={Colors.mediumGrey}
+              />
               <Text style={styles.detailText}>{vehicle.passengers} seats</Text>
             </View>
           )}
@@ -107,21 +131,31 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
                 size={14}
                 color={Colors.mediumGrey}
               />
-              <Text style={styles.detailText}>{vehicle.manual ? "Manual" : "Auto"}</Text>
+              <Text style={styles.detailText}>
+                {vehicle.manual ? "Manual" : "Auto"}
+              </Text>
             </View>
           )}
         </View>
 
         {locationText && (
           <View style={styles.locationRow}>
-            <Ionicons name="location-outline" size={14} color={Colors.mediumGrey} />
-            <Text style={styles.locationText} numberOfLines={1}>{locationText}</Text>
+            <Ionicons
+              name="location-outline"
+              size={14}
+              color={Colors.mediumGrey}
+            />
+            <Text style={styles.locationText} numberOfLines={1}>
+              {locationText}
+            </Text>
           </View>
         )}
 
         <View style={styles.footer}>
           <View style={styles.priceContainer}>
-            <Text style={styles.priceValue}>R{vehicle?.price_fixed?.value}</Text>
+            <Text style={styles.priceValue}>
+              R{vehicle?.price_fixed?.value}
+            </Text>
             <Text style={styles.priceLabel}>per day</Text>
           </View>
 

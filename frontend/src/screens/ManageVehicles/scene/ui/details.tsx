@@ -96,21 +96,27 @@ export const DetailsScreen = () => {
   };
 
   useEffect(() => {
-    if (!fetchedVehicleDriverPayments?.includes(vehicleDriver?.id)) {
+    if (!vehicleDriver?.id) return;
+
+    if (!fetchedVehicleDriverPayments?.includes(vehicleDriver.id)) {
       handleFetchPayments();
-      handleSetFetchedVehicleDriverPayments(vehicleDriver?.id);
+      handleSetFetchedVehicleDriverPayments(vehicleDriver.id);
     }
-  }, [userVehicles]);
+  }, [userVehicles, vehicleDriver?.id]);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View style={styles.topBar}>
         <TouchableOpacity
           style={styles.backButton}
           onPress={() => router.back()}
           activeOpacity={0.7}
         >
-          <Ionicons name="arrow-back" size={22} color={Colors.darkCharcoalGrey} />
+          <Ionicons
+            name="arrow-back"
+            size={22}
+            color={Colors.darkCharcoalGrey}
+          />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Payment Details</Text>
       </View>
@@ -118,20 +124,38 @@ export const DetailsScreen = () => {
       <View style={styles.tabSwitcherContainer}>
         <View style={styles.tabSwitcher}>
           <TouchableOpacity
-            style={[styles.tab, switchSelection === "payments" && styles.tabActive]}
+            style={[
+              styles.tab,
+              switchSelection === "payments" && styles.tabActive,
+            ]}
             onPress={() => setSwitchSelection("payments")}
             activeOpacity={0.8}
           >
-            <Text style={switchSelection === "payments" ? styles.tabTextActive : styles.tabText}>
+            <Text
+              style={
+                switchSelection === "payments"
+                  ? styles.tabTextActive
+                  : styles.tabText
+              }
+            >
               Payments
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.tab, switchSelection === "comments" && styles.tabActive]}
+            style={[
+              styles.tab,
+              switchSelection === "comments" && styles.tabActive,
+            ]}
             onPress={() => setSwitchSelection("comments")}
             activeOpacity={0.8}
           >
-            <Text style={switchSelection === "comments" ? styles.tabTextActive : styles.tabText}>
+            <Text
+              style={
+                switchSelection === "comments"
+                  ? styles.tabTextActive
+                  : styles.tabText
+              }
+            >
               Comments
             </Text>
           </TouchableOpacity>
@@ -152,7 +176,11 @@ export const DetailsScreen = () => {
             onPress={() => setShowAddPayModal(true)}
             activeOpacity={0.8}
           >
-            <Ionicons name="add-circle-outline" size={22} color={Colors.white} />
+            <Ionicons
+              name="add-circle-outline"
+              size={22}
+              color={Colors.white}
+            />
             <Text style={styles.addText}>ADD PAYMENT</Text>
           </TouchableOpacity>
 
@@ -180,7 +208,11 @@ export const DetailsScreen = () => {
             ListEmptyComponent={
               <View style={styles.emptyState}>
                 <View style={styles.emptyStateIconContainer}>
-                  <Ionicons name="wallet-outline" size={40} color={Colors.mrDBlue} />
+                  <Ionicons
+                    name="wallet-outline"
+                    size={40}
+                    color={Colors.mrDBlue}
+                  />
                 </View>
                 <Text style={styles.emptyStateTitle}>No Payments Yet</Text>
                 <Text style={styles.emptyStateSubtitle}>
@@ -213,6 +245,6 @@ export const DetailsScreen = () => {
           vehicleDriver={vehicleDriver}
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };

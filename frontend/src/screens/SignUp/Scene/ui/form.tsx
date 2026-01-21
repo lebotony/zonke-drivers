@@ -70,52 +70,54 @@ export const Form = (props: FormProps) => {
         </Text>
       )}
 
-      <View
-        style={[
-          isSignUp && styles.loginFieldsContainer,
-          !isSignUp && { marginBottom: 20 },
-        ]}
-      >
-        <Fieldset
-          control={control}
-          name="username"
-          label="Username"
-          inputIcon="mail-outline"
-          placeholder="john_doe"
-          errors={customErrors}
-          required
-        />
+      <View>
+        <View
+          style={[
+            isSignUp && styles.loginFieldsContainer,
+            !isSignUp && { marginBottom: 20 },
+          ]}
+        >
+          <Fieldset
+            control={control}
+            name="username"
+            label="Username"
+            inputIcon="mail-outline"
+            placeholder="john_doe"
+            errors={customErrors}
+            required
+          />
 
-        <View>
-          {!isSignUp && (
-            <TouchableOpacity style={styles.forgotPasswordWrapper}>
-              <Text style={styles.forgotPassword}>Forgot password?</Text>
-            </TouchableOpacity>
+          <View>
+            {!isSignUp && (
+              <TouchableOpacity style={styles.forgotPasswordWrapper}>
+                <Text style={styles.forgotPassword}>Forgot password?</Text>
+              </TouchableOpacity>
+            )}
+            <Fieldset
+              control={control}
+              name="password"
+              label="Password"
+              inputIcon="lock-outline"
+              type="password"
+              placeholder="Enter your password"
+              errors={customErrors}
+              required
+            />
+          </View>
+
+          {isSignUp && (
+            <Fieldset
+              control={control}
+              name="confirm_password"
+              label="Confirm Password"
+              inputIcon="lock-outline"
+              type="password"
+              placeholder="Re-enter your password"
+              errors={customErrors}
+              required
+            />
           )}
-          <Fieldset
-            control={control}
-            name="password"
-            label="Password"
-            inputIcon="lock-outline"
-            type="password"
-            placeholder="Enter your password"
-            errors={customErrors}
-            required
-          />
         </View>
-
-        {isSignUp && (
-          <Fieldset
-            control={control}
-            name="confirm_password"
-            label="Confirm Password"
-            inputIcon="lock-outline"
-            type="password"
-            placeholder="Re-enter your password"
-            errors={customErrors}
-            required
-          />
-        )}
       </View>
     </View>
   );

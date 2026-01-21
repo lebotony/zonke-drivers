@@ -132,7 +132,6 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
       >
         <CustomButton
           onPress={() => setShowVehicleDriverModal(false)}
-          color={Colors.lightGreen}
           customStyle={{
             paddingHorizontal: 14,
             backgroundColor: Colors.lighterGrey,
@@ -148,7 +147,6 @@ export const VehicleDriverModal = (props: AddVehicleDriverModalProps) => {
         </CustomButton>
         <CustomButton
           onPress={accident ? handleAddAccident : handleAddVehicleDriver}
-          color={Colors.lightGreen}
           customStyle={{
             paddingHorizontal: 14,
             backgroundColor: Colors.mrDBlue,

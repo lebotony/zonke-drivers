@@ -231,6 +231,7 @@ defmodule Backend.Vehicles.Vehicles do
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()
+      |> distinct([vehicle: v], v.id)
       |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
       |> join(:inner, [user: u], a in assoc(u, :asset), as: :asset)
       |> join(:left, [v], vd in VehicleDriver,
@@ -243,6 +244,8 @@ defmodule Backend.Vehicles.Vehicles do
         v
         | user: %{
             id: u.id,
+            first_name: u.first_name,
+            last_name: u.last_name,
             asset: a,
             location: u.location
           }
@@ -254,6 +257,83 @@ defmodule Backend.Vehicles.Vehicles do
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
   end
+
+  def get_vehicle_on_sale(id) do
+    vehicle =
+      VehicleBy.base_query()
+      |> VehicleBy.by_id(id)
+      |> VehicleBy.by_active_status()
+      |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
+      |> join(:inner, [user: u], a in assoc(u, :asset), as: :asset)
+      |> select_merge([vehicle: v, user: u, asset: a], %{
+        v
+        | user: %{
+            id: u.id,
+            asset: a,
+            location: u.location,
+            first_name: u.first_name,
+            last_name: u.last_name
+          }
+      })
+      |> preload(:asset)
+      |> Repo.one()
+
+    case vehicle do
+      nil -> {:error, :not_found}
+      vehicle -> {:ok, vehicle}
+    end
+  end
+
+  def get_vehicles_on_sale(params) do
+    # driver_country = get_driver_country(user_id)
+
+    data =
+      VehicleBy.base_query()
+      |> where([vehicle: v], v.on_sale == true)
+      |> VehicleBy.by_active_status()
+      |> distinct([vehicle: v], v.id)
+      |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
+      |> join(:inner, [user: u], a in assoc(u, :asset), as: :asset)
+      # |> filter_by_country(driver_country)
+      |> select_merge([vehicle: v, user: u, asset: a], %{
+        v
+        | user: %{
+            id: u.id,
+            asset: a,
+            location: u.location,
+            first_name: u.first_name,
+            last_name: u.last_name
+          }
+      })
+      |> preload(:asset)
+      |> build_search(params)
+      |> build_sort(params)
+      |> Repo.paginate(PaginateHelper.prep_params(params))
+
+    {:ok, data, PaginateHelper.prep_paginate(data)}
+  end
+
+  # def get_vehicles_on_sale(params, %{user_id: user_id}) do
+  #   data =
+  #     VehicleBy.base_query()
+  #     |> where([vehicle: v], v.on_sale == true)
+  #     |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
+  #     |> select_merge([vehicle: v, user: u], %{
+  #       v
+  #       | user: %{
+  #           id: u.id,
+  #           location: u.location,
+  #           first_name: u.first_name,
+  #           last_name: u.last_name
+  #         }
+  #     })
+  #     |> preload(:asset)
+  #     |> build_search(params)
+  #     |> build_sort(params)
+  #     |> Repo.paginate(PaginateHelper.prep_params(params))
+
+  #   {:ok, data, PaginateHelper.prep_paginate(data)}
+  # end
 
   defp get_driver_country(user_id) when not is_nil(user_id) do
     from(d in Driver,
@@ -269,6 +349,13 @@ defmodule Backend.Vehicles.Vehicles do
         nil
     end
   end
+
+  defp parse_price_value(value) when is_integer(value), do: value
+
+  defp parse_price_value(value) when is_binary(value) and value != "" and value != "0",
+    do: String.to_integer(value)
+
+  defp parse_price_value(_), do: nil
 
   defp filter_by_country(query, nil), do: query
 
@@ -313,15 +400,44 @@ defmodule Backend.Vehicles.Vehicles do
         where(query, [vehicle: v], v.fuel_type in ^val)
 
       {:price_range, [min, max]}, query ->
-        min = String.to_integer(min)
-        max = String.to_integer(max)
+        min_val = parse_price_value(min)
+        max_val = parse_price_value(max)
 
-        where(
-          query,
-          [vehicle: v],
-          fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) >= ^min and
-            fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) <= ^max
-        )
+        case {min_val, max_val} do
+          {nil, nil} ->
+            query
+
+          {0, 0} ->
+            query
+
+          {min_int, nil} when min_int > 0 ->
+            where(
+              query,
+              [vehicle: v],
+              not is_nil(v.price_fixed) and
+                fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) >= ^min_int
+            )
+
+          {nil, max_int} when max_int > 0 ->
+            where(
+              query,
+              [vehicle: v],
+              not is_nil(v.price_fixed) and
+                fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) <= ^max_int
+            )
+
+          {min_int, max_int} when min_int > 0 and max_int > 0 ->
+            where(
+              query,
+              [vehicle: v],
+              not is_nil(v.price_fixed) and
+                fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) >= ^min_int and
+                fragment("CAST((?->>'value') AS DECIMAL)", v.price_fixed) <= ^max_int
+            )
+
+          _ ->
+            query
+        end
 
       _, query ->
         query
@@ -340,7 +456,7 @@ defmodule Backend.Vehicles.Vehicles do
         order_by(query, [s], [{^direction, fragment("rank_value")}, {:asc, s.id}])
 
       _ ->
-        query
+        order_by(query, [vehicle: v], asc: v.id)
     end
   end
 

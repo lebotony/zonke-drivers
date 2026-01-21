@@ -374,6 +374,7 @@ Check existing types before adding validations:
 - All new code must pass TypeScript type checking.
 - Avoid `any`; prefer existing types from `src/types/`.
 - No `console.log` in committed code.
+- **Use promises (`.then()/.catch()/.finally()`) instead of `async/await` with try-catch blocks** for asynchronous operations.
 
 ### 10.2 Form Handling
 

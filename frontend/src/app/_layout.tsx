@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import "react-native-reanimated";
 
 import Toast from "react-native-toast-message";
@@ -9,7 +9,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Stack } from "expo-router";
+import { Stack, router } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
@@ -25,6 +25,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useColorScheme } from "../components/useColorScheme";
 import { AuthProvider, useAuth } from "../authContext";
 import { AuthScreen } from "../screens/SignUp";
+import { VehicleSalesScreen } from "../screens/VehicleSales";
 import { UseCustomQueryProvider } from "../useQueryContext";
 import { PaginatedCacheProvider } from "../updateCacheProvider";
 import { MessagesProvider } from "../screens/Messages/MessagesProvider";
@@ -76,8 +77,6 @@ export default function RootLayout() {
   return <RootLayoutNav />;
 }
 
-type LayoutProps = {};
-
 function RootLayoutNav() {
   const queryClient = new QueryClient({
     defaultOptions: {
@@ -125,32 +124,53 @@ function RootLayoutNav() {
   );
 }
 
-const Layout = (props: LayoutProps) => {
+const Layout = () => {
   const colorScheme = useColorScheme();
-  const { authState } = useAuth();
+  const { authState, pendingVehicleId, setPendingVehicleId } = useAuth();
+  const [sales, setSales] = useState(false);
+
+  const toggleSales = () => setSales(!sales);
+
+  useEffect(() => {
+    if (authState?.authenticated && pendingVehicleId) {
+      router.replace("/(tabs)/purchase");
+    }
+  }, [authState?.authenticated, pendingVehicleId]);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      {!authState?.authenticated ? (
-        <AuthScreen />
+      {sales ? (
+        <VehicleSalesScreen
+          toggleSales={toggleSales}
+          targetVehicleId={null}
+          onVehicleViewed={() => {}}
+        />
+      ) : !authState?.authenticated ? (
+        <AuthScreen toggleSales={toggleSales} />
       ) : (
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="drivers" options={{ headerShown: false }} />
-          <Stack.Screen name="vehicles" options={{ headerShown: false }} />
           <Stack.Screen name="profileSetup" options={{ headerShown: false }} />
           <Stack.Screen name="posts" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />
           <Stack.Screen name="chats" options={{ headerShown: false }} />
-          <Stack.Screen name="details" options={{ headerShown: false }} />
           <Stack.Screen name="previewCard" options={{ headerShown: false }} />
           <Stack.Screen name="applicants" options={{ headerShown: false }} />
-          <Stack.Screen name="comments" options={{ headerShown: false }} />
           <Stack.Screen name="chooseVehicle" options={{ headerShown: false }} />
           <Stack.Screen
             name="vehicleDriverSearch"
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="interestedBuyers"
+            options={{ headerShown: false }}
+          />
+          {/* Protected routes with auth guards */}
+          <Stack.Screen name="drivers" options={{ headerShown: false }} />
+          <Stack.Screen name="vehicles" options={{ headerShown: false }} />
+          <Stack.Screen name="details" options={{ headerShown: false }} />
+          <Stack.Screen name="comments" options={{ headerShown: false }} />
+          <Stack.Screen name="vehicleSales" options={{ headerShown: false }} />
         </Stack>
       )}
     </ThemeProvider>

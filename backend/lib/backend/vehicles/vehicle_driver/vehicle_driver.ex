@@ -9,7 +9,7 @@ defmodule Backend.Vehicles.VehicleDriver do
   @all_params @optional_params ++ @required_params
 
   schema "vehicle_drivers" do
-    field(:accidents, :integer,  default: 0)
+    field(:accidents, :integer, default: 0)
     field(:active, :boolean, default: false)
 
     field(:total_payments, :decimal, virtual: true)

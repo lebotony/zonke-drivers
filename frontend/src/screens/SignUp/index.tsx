@@ -2,10 +2,12 @@ import React from "react";
 
 import { LoginScreen } from "./Scene/ui/login";
 
-type AuthScreenProps = {};
+type AuthScreenProps = {
+  toggleSales: () => void;
+};
 
 export const AuthScreen = (props: AuthScreenProps) => {
-  const {} = props;
+  const { toggleSales } = props;
 
-  return <LoginScreen />;
+  return <LoginScreen toggleSales={toggleSales} />;
 };

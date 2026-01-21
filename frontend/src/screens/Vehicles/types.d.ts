@@ -19,6 +19,8 @@ type Vehicle = {
   applications: Driver[];
   rating: number;
   unseen_applications_count?: number;
+  on_sale?: boolean;
+  sale_price?: PriceFixed;
 };
 
 type VehileType = "bike" | "passenger" | "taxi" | "truck" | "lorry";
