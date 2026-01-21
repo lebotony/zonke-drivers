@@ -73,6 +73,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 12,
     elevation: 2,
+    marginHorizontal: 2,
   },
   signupNote: {
     fontSize: 13,

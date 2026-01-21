@@ -57,6 +57,7 @@ export const styles = StyleSheet.create({
     borderTopColor: "rgba(0, 0, 0, 0.04)",
   },
   buttonRow: {
+    marginTop: 10,
     flexDirection: "row",
     gap: 12,
   },
@@ -85,13 +86,11 @@ export const styles = StyleSheet.create({
     flex: 1,
     paddingVertical: 12,
     paddingHorizontal: 20,
-    backgroundColor: Colors.white,
+    backgroundColor: Colors.lightGreen,
     borderRadius: 12,
-    borderWidth: 1.5,
-    borderColor: Colors.mrDBlue,
   },
   secondaryButtonText: {
-    color: Colors.mrDBlue,
+    color: Colors.white,
     fontSize: 15,
     fontWeight: 600,
     textAlign: "center",

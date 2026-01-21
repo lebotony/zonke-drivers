@@ -31,23 +31,23 @@ export const Details = (props: DetailsProps) => {
         </Text>
       </View>
 
-      {driver?.rating && (
+      {driver?.rating != null && driver?.rating !== undefined && (
         <View style={styles.ratingRow}>
           <View style={styles.ratingBadge}>
             <AntDesign name="star" size={13} color={Colors.yellow} />
-            <Text style={styles.ratingText}>{driver?.rating}</Text>
+            <Text style={styles.ratingText}>{String(driver?.rating)}</Text>
           </View>
           <Text style={styles.ratingLabel}>rating</Text>
         </View>
       )}
 
-      {driver?.experience && (
+      {driver?.experience != null && driver?.experience !== undefined && (
         <View style={styles.detailRow}>
           <View style={styles.iconWrapper}>
             <Feather name="clock" size={14} color={Colors.mrDBlue} />
           </View>
           <Text style={styles.detailText} numberOfLines={1}>
-            {driver?.experience} {driver?.experience === 1 ? "year" : "years"}{" "}
+            {String(driver?.experience)} {driver?.experience === 1 ? "year" : "years"}{" "}
             experience
           </Text>
         </View>

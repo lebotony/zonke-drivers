@@ -50,6 +50,7 @@ defmodule Backend.Application do
           if File.exists?(".env") do
             Dotenv.load!()
           end
+
         _ ->
           :ok
       end

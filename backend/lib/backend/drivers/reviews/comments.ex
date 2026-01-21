@@ -29,10 +29,10 @@ defmodule Backend.Reviews.Comments do
     Repo.delete(comment)
   end
 
-  def get_driver_comments(params) do
+  def get_driver_comments(%{driver_id: driver_id} = params) do
     data =
       CommentsBy.base_query()
-      |> CommentsBy.by_driver(params.driver_id)
+      |> CommentsBy.by_driver(driver_id)
       |> join(:inner, [c], a in assoc(c, :author), as: :author)
       |> select_merge([c, a], %{
         c
@@ -45,6 +45,8 @@ defmodule Backend.Reviews.Comments do
 
     {:ok, data, PaginateHelper.prep_paginate(data)}
   end
+
+  def get_driver_comments(_params), do: {:error, :driver_id_required}
 
   def get_my_comments(user_id) do
     CommentsBy.base_query()

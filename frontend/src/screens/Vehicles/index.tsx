@@ -30,7 +30,7 @@ export const VehiclesScreen = () => {
 
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [selectedRating, setSelectedRating] = useState<number | null>(null);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 235]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, 0]);
   const [selectedFuelTypes, setSelectedFuelTypes] = useState<string[]>([]);
   const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>(
     [],
@@ -143,7 +143,7 @@ export const VehiclesScreen = () => {
     selectedFuelTypes.length === 0 &&
     selectedRating === null &&
     priceRange[0] === 0 &&
-    priceRange[1] === 235;
+    priceRange[1] === 0;
 
   const toggleBrand = (id: string) => {
     setSelectedBrands((s) =>
@@ -158,7 +158,7 @@ export const VehiclesScreen = () => {
     setSelectedVehicleTypes([]);
     setApplyFilter(false);
     setSelectedRating(null);
-    setPriceRange([0, 235]);
+    setPriceRange([0, 0]);
     setSelectedFuelTypes([]);
     setReset((prev) => !prev);
 
@@ -276,7 +276,7 @@ export const VehiclesScreen = () => {
                 }
               }}
               onEndReachedThreshold={0.5}
-              keyExtractor={(i) => i?.id}
+              keyExtractor={(item, index) => item?.id || `vehicle-${index}`}
               renderItem={renderVehicle}
               contentContainerStyle={[
                 contentContainerStyle,

@@ -8,6 +8,14 @@ defmodule BackendWeb.Vehicles.VehicleController do
   alias BackendWeb.Vehicles.VehicleJSON
   alias Backend.Repo
 
+  # Override action/2 for public endpoints
+  def action(%{private: %{phoenix_action: :index_on_sale_public}} = conn, _opts) do
+    args = [conn, conn.params]
+    apply(__MODULE__, :index_on_sale_public, args)
+  end
+
+  def action(conn, opts), do: super(conn, opts)
+
   # TODO: add rate limiting
   def index_management_vehicle(conn, params, session) do
     with {:ok, vehicle_drivers, paginate} <-
@@ -21,6 +29,24 @@ defmodule BackendWeb.Vehicles.VehicleController do
 
   def index_public(conn, params, session) do
     with {:ok, vehicles, paginate} <- Vehicles.get_vehicles(params, session, :public) do
+      render(conn, :index, %{vehicles: vehicles, paginate: paginate})
+    end
+  end
+
+  def index_on_sale(conn, params, _session) do
+    with {:ok, vehicles, paginate} <- Vehicles.get_vehicles_on_sale(params) do
+      render(conn, :index, %{vehicles: vehicles, paginate: paginate})
+    end
+  end
+
+  def show_on_sale(conn, %{id: id}, _session) do
+    with {:ok, vehicle} <- Vehicles.get_vehicle_on_sale(id) do
+      render(conn, :show, %{vehicle: vehicle})
+    end
+  end
+
+  def index_on_sale_public(conn, params) do
+    with {:ok, vehicles, paginate} <- Vehicles.get_vehicles_on_sale(params) do
       render(conn, :index, %{vehicles: vehicles, paginate: paginate})
     end
   end

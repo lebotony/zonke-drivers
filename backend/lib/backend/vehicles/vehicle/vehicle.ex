@@ -23,9 +23,10 @@ defmodule Backend.Vehicles.Vehicle do
     :model,
     :fuel_type,
     :payments_per_month,
-    :manual
+    :manual,
+    :on_sale
   ]
-  @embeds [:price_fixed]
+  @embeds [:price_fixed, :sale_price]
   @all_fields @required_fields ++ @optional_fields ++ @embeds
 
   schema "vehicles" do
@@ -42,8 +43,10 @@ defmodule Backend.Vehicles.Vehicle do
     field(:model_year, :integer)
     field(:payments_per_month, :integer)
     field(:searchable_document, Backend.Ecto.EctoTypes.Tsvector)
+    field(:on_sale, :boolean, default: false)
 
     embeds_one(:price_fixed, PriceFixed, on_replace: :update)
+    embeds_one(:sale_price, PriceFixed, on_replace: :update)
 
     field(:rank_value, :decimal, virtual: true)
     field(:unseen_applications_count, :integer, virtual: true)
@@ -64,6 +67,7 @@ defmodule Backend.Vehicles.Vehicle do
     vehicle
     |> cast(attrs, @all_fields -- @embeds)
     |> cast_embed(:price_fixed, with: &PriceFixed.changeset/2)
+    |> cast_embed(:sale_price, with: &PriceFixed.changeset/2)
     |> validate_required(@required_fields)
   end
 end

@@ -1,5 +1,8 @@
 import { CreatePostScreen } from "../screens/Posts";
+import { withAuth } from "@/src/components/withAuth";
 
-export default function CreatePost() {
+function CreatePost() {
   return <CreatePostScreen />;
 }
+
+export default withAuth(CreatePost);

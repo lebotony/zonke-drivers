@@ -60,7 +60,7 @@ export default function TabLayout() {
           title: "Manage",
           href: isDriver ? null : "/(tabs)/manage",
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="grid-outline" size={24} color={color} />
+            <Ionicons name="grid-outline" size={23} color={color} />
           ),
         }}
       />
@@ -73,6 +73,18 @@ export default function TabLayout() {
           href: isDriver ? null : "/(tabs)/vehicle/new",
           tabBarIcon: ({ color, size }) => (
             <MaterialIcons name="commute" size={25} color={color} />
+          ),
+        }}
+      />
+
+      <Tabs.Screen
+        name="purchase"
+        options={{
+          headerShown: false,
+          title: "Purchase",
+          href: isDriver ? "/(tabs)/purchase" : null,
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="cart-outline" size={25} color={color} />
           ),
         }}
       />

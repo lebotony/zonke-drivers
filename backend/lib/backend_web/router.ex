@@ -19,6 +19,11 @@ defmodule BackendWeb.Router do
     resources("/users/register_user", UserController, only: [:create])
     get("/session/current_user", UserController, :get_current_user)
 
+    scope("/vehicles") do
+      get("/on_sale", Vehicles.VehicleController, :index_on_sale_public)
+      get("/on_sale_vehicle", Vehicles.VehicleController, :show_on_sale)
+    end
+
     # authenticated paths
     scope "/" do
       pipe_through([:authorization])
@@ -75,6 +80,14 @@ defmodule BackendWeb.Router do
       end
 
       resources("/vehicle_applications", Applications.VehicleApplicationController,
+        except: @except_path_actions
+      )
+
+      scope("/vehicle_purchase_interests") do
+        post("/interests_seen", Applications.VehiclePurchaseInterestController, :set_seen)
+      end
+
+      resources("/vehicle_purchase_interests", Applications.VehiclePurchaseInterestController,
         except: @except_path_actions
       )
 

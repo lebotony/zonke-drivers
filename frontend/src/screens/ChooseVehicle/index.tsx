@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from "react";
 import { FlatList, View } from "react-native";
 import { Text } from "react-native-paper";
-import { SafeAreaView } from "react-native-safe-area-context";
 import { isEmpty } from "lodash";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { router, useLocalSearchParams } from "expo-router";
@@ -9,7 +8,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { NoData } from "@/src/components/NoData";
 import { Spinner } from "@/src/components/elements/Spinner";
 import { BackArrow } from "@/src/components/BackArrow/header";
-import { Colors } from "@/constants/ui";
+import { usePaginatedCache } from "@/src/updateCacheProvider";
 
 import { VehicleSelectionCard } from "./ui/VehicleSelectionCard";
 import { ConfirmationModal } from "./ui/ConfirmationModal";
@@ -26,6 +25,7 @@ export const ChooseVehicleScreen = () => {
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  const { updatePaginatedObject } = usePaginatedCache();
   const queryKey = ["userVehicles"];
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
@@ -47,23 +47,27 @@ export const ChooseVehicleScreen = () => {
     setShowConfirmation(true);
   };
 
-  const handleConfirm = async () => {
+  const handleConfirm = () => {
     if (!selectedVehicle || !driverIdStr) return;
 
     setIsSubmitting(true);
-    try {
-      await createVehicleDriver({
-        driver_id: driverIdStr,
-        vehicle_id: selectedVehicle.id,
-      });
+    createVehicleDriver({
+      driver_id: driverIdStr,
+      vehicle_id: selectedVehicle.id,
+    })
+      .then((response) => {
+        const newVehicleDriver = response;
 
-      setShowConfirmation(false);
-      router.push("/(tabs)/manage");
-    } catch (error) {
-      console.error("Failed to assign driver:", error);
-    } finally {
-      setIsSubmitting(false);
-    }
+        updatePaginatedObject("userVehicles", selectedVehicle.id, {
+          vehicle_drivers: [newVehicleDriver],
+        });
+
+        setShowConfirmation(false);
+        router.push("/(tabs)/manage");
+      })
+      .finally(() => {
+        setIsSubmitting(false);
+      });
   };
 
   const handleCancel = () => {
@@ -87,37 +91,35 @@ export const ChooseVehicleScreen = () => {
 
   return (
     <View style={styles.container}>
-      <View>
-        <View style={styles.header}>
-          <View style={styles.headerTop}>
-            <BackArrow left={0} top={10} />
-            <Text style={styles.headerTitle}>Choose Vehicle</Text>
-          </View>
-          <Text style={styles.headerSubtitle}>
-            Select a vehicle to assign {driverNameStr || "this driver"}
-          </Text>
+      <View style={styles.header}>
+        <View style={styles.headerTop}>
+          <BackArrow left={0} top={10} />
+          <Text style={styles.headerTitle}>Choose Vehicle</Text>
         </View>
-
-        {isEmpty(vehicles) && !isLoading ? (
-          <NoData />
-        ) : isLoading ? (
-          <Spinner />
-        ) : (
-          <FlatList
-            data={vehicles}
-            onEndReached={() => {
-              if (hasNextPage && !isFetchingNextPage) {
-                fetchNextPage();
-              }
-            }}
-            onEndReachedThreshold={0.5}
-            keyExtractor={(i) => i?.id}
-            renderItem={renderVehicle}
-            contentContainerStyle={styles.listContent}
-            showsVerticalScrollIndicator={false}
-          />
-        )}
+        <Text style={styles.headerSubtitle}>
+          Select a vehicle to assign {driverNameStr || "this driver"}
+        </Text>
       </View>
+
+      {isEmpty(vehicles) && !isLoading ? (
+        <NoData />
+      ) : isLoading ? (
+        <Spinner />
+      ) : (
+        <FlatList
+          data={vehicles}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) {
+              fetchNextPage();
+            }
+          }}
+          onEndReachedThreshold={0.5}
+          keyExtractor={(item, index) => item?.id || `vehicle-${index}`}
+          renderItem={renderVehicle}
+          contentContainerStyle={styles.listContent}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
 
       {showConfirmation && selectedVehicle && (
         <ConfirmationModal

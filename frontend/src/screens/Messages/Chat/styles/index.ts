@@ -1,5 +1,6 @@
 import { StyleSheet } from "react-native";
 import { Colors } from "@/constants/ui";
+import { topOffset } from "@/src/components/appStyles";
 
 export const styles = StyleSheet.create({
   container: {
@@ -12,6 +13,7 @@ export const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
     elevation: 3,
+    // ...topOffset,
   },
   header: {
     flexDirection: "row",

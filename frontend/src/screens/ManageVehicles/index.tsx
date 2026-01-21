@@ -1,6 +1,7 @@
 import React, { useState } from "react";
-import { FlatList, SafeAreaView } from "react-native";
+import { FlatList, SafeAreaView, View, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
+import { router } from "expo-router";
 
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { isEmpty } from "lodash";
@@ -44,8 +45,25 @@ export const ManageVehicles = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>My Vehicles</Text>
-      <Text style={styles.subtitle}>Manage and track your fleet</Text>
+      <Text style={styles.header}>Manage Vehicles</Text>
+      <Text style={styles.subtitle}>Track your fleet and explore sales</Text>
+
+      <View style={styles.switchContainer}>
+        <TouchableOpacity
+          style={[styles.switchButton, styles.switchButtonActive]}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.switchButtonTextActive}>My Vehicles</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.switchButton}
+          onPress={() => router.push("/vehicleSales")}
+          activeOpacity={0.7}
+        >
+          <Text style={styles.switchButtonText}>Vehicle Sales</Text>
+        </TouchableOpacity>
+      </View>
 
       {isEmpty(userVehicles) && !isLoading ? (
         <NoData />

@@ -8,8 +8,14 @@ defmodule BackendWeb.Vehicles.PaymentController do
   # TODO: add rate limiting
   def index(conn, params, session) do
     # with :ok <- Bodyguard.permit(Vehicles, :get_payments, %{id: profile_id}, session),
-    with {:ok, payments, paginate} <- Payments.get_payments(params) do
-      render(conn, :index, %{payments: payments, paginate: paginate})
+    case Payments.get_payments(params) do
+      {:ok, payments, paginate} ->
+        render(conn, :index, %{payments: payments, paginate: paginate})
+
+      {:error, :vehicle_driver_id_required} ->
+        conn
+        |> put_status(:bad_request)
+        |> json(%{error: "vehicle_driver_id is required"})
     end
   end
 

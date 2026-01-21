@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
   container: {
     backgroundColor: Colors.bg,
     flex: 1,
-    ...topOffset,
   },
   mainContainer: {
     paddingHorizontal: 14,
@@ -21,6 +20,7 @@ export const styles = StyleSheet.create({
     backgroundColor: Colors.white,
     borderBottomWidth: 1,
     borderBottomColor: "rgba(0, 0, 0, 0.05)",
+    ...topOffset,
   },
   backButton: {
     width: 40,

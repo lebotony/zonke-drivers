@@ -1,5 +1,8 @@
 import { ApplicantsScreen } from "@/src/screens/ManageVehicles/scene/ui/applicants";
+import { withAuth } from "@/src/components/withAuth";
 
-export default function Applicant() {
+function Applicant() {
   return <ApplicantsScreen />;
 }
+
+export default withAuth(Applicant);

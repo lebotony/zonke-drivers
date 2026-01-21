@@ -83,6 +83,15 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
   },
   logoWrapper: {
-    marginLeft: -30,
+    marginLeft: -23,
+  },
+  backButton: {
+    width: 44,
+    height: 44,
+    justifyContent: "center",
+    alignItems: "center",
+    marginLeft: 16,
+    borderRadius: 12,
+    backgroundColor: "rgba(118, 203, 237, 0.08)",
   },
 });

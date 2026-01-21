@@ -47,6 +47,8 @@ type AuthProps = {
   onRegister?: (params: SignUp) => Promise<any>;
   onLogin?: (params: SignIn) => Promise<any>;
   onLogout?: () => Promise<void>;
+  pendingVehicleId?: string | null;
+  setPendingVehicleId?: (vehicleId: string | null) => void;
 };
 
 const AuthContext = createContext<AuthProps>({});
@@ -67,6 +69,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     token: null,
     authenticated: null
   });
+
+  const [pendingVehicleId, setPendingVehicleId] = useState<string | null>(null);
 
   const queryClient = useQueryClient();
   const { getCachedData } = useCustomQuery();
@@ -154,7 +158,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const fetchUser = async () =>
     httpGet("/session/current_user")
       .then((response) => {
-        console.log("FECTH_USER FECTH_USER ", response);
         queryClient.setQueryData(["user"], response);
       })
       .catch((err) => {
@@ -188,8 +191,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setAuthState({ token: response.jwt, authenticated: true });
         await setItem(TOKEN_KEY, response.jwt);
 
-        console.log("LOGIN LOGIN LOGIN LOGIN", response.user);
-
         axios.defaults.headers.common["Authorization"] =
           `Bearer ${response.jwt}`;
 
@@ -217,7 +218,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     authState: authState,
     onRegister: register,
     onLogin: login,
-    onLogout: logout
+    onLogout: logout,
+    pendingVehicleId,
+    setPendingVehicleId
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

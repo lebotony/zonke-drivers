@@ -1,5 +1,8 @@
 import { ProfileSetUpScreen } from "../screens/ProfileSetUp";
+import { withAuth } from "@/src/components/withAuth";
 
-export default function ProfileSetUp() {
+function ProfileSetUp() {
   return <ProfileSetUpScreen />;
 }
+
+export default withAuth(ProfileSetUp);

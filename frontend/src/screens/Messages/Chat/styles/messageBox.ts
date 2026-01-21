@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
     shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
-    elevation: 4,
+    elevation: 2,
     minHeight: 48,
   },
   input: {

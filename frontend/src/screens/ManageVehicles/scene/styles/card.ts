@@ -120,6 +120,7 @@ export const styles = StyleSheet.create({
   actionsContainer: {
     paddingHorizontal: 20,
     paddingBottom: 20,
+    gap: 12,
   },
   applicantBtnWrapper: {
     position: "relative",
@@ -207,5 +208,24 @@ export const styles = StyleSheet.create({
     color: Colors.white,
     fontSize: 11,
     fontWeight: 600,
+  },
+  interestedBuyersBtn: {
+    paddingVertical: 14,
+    backgroundColor: Colors.mrDBlue,
+    borderRadius: 12,
+    shadowColor: Colors.mrDBlue,
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 2,
+  },
+  interestedBuyersBtnText: {
+    fontSize: 16,
+    fontWeight: 600,
+    color: Colors.white,
+    textAlign: "center",
   },
 });

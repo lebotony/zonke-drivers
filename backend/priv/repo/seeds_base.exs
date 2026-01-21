@@ -141,6 +141,9 @@ vehicles =
   Enum.flat_map(owners_users, fn user ->
     vehicles =
       Enum.map(1..3, fn v ->
+        on_sale = Enum.random([true, false])
+        sale_price = if on_sale, do: %{currency: "ZAR", value: Enum.random(5000..20000)}, else: nil
+
         {:ok, vehicle} =
           %Vehicle{
             type: Enum.random(vehicle_types),
@@ -153,6 +156,8 @@ vehicles =
             description: "Has suspension problems",
             payments_per_month: Enum.random(1..4),
             active: true,
+            on_sale: on_sale,
+            sale_price: sale_price,
             mileage: Enum.random(10000..100000),
             price_fixed: %{currency: "ZAR", value: Enum.random(20..60)},
             user_id: user.id,

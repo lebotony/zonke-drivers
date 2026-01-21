@@ -1,20 +1,16 @@
-import React, { useCallback } from "react";
+import React, { useState } from "react";
 import {
   View,
   TouchableOpacity,
   FlatList,
   ScrollView,
+  TextInput,
 } from "react-native";
 import { Text } from "react-native-paper";
 
-import RangeSlider from "rn-range-slider";
 import { AntDesign } from "@expo/vector-icons";
 
 import { PopupMenu } from "@/src/components/popup";
-import { Rail } from "@/src/components/slider/rail";
-import { Thumb } from "@/src/components/slider/thumb";
-import { RailSelected } from "@/src/components/slider/railSelected";
-import { Label } from "@/src/components/slider/label";
 import { Modal } from "@/src/components/modal";
 import { Colors } from "@/src/../constants/ui";
 
@@ -40,6 +36,39 @@ interface FilterModalProps {
   onToggleVehicleTypes: (value: string) => void;
 }
 
+const PriceInput: React.FC<{
+  label: string;
+  value: string;
+  onChangeText: (text: string) => void;
+  placeholder?: string;
+}> = ({ label, value, onChangeText, placeholder }) => {
+  const [isFocused, setIsFocused] = useState(false);
+
+  return (
+    <View style={styles.fieldsetWrapper}>
+      <View style={styles.fieldsetLabel}>
+        <Text style={styles.fieldsetLabelText}>{label}</Text>
+      </View>
+      <View
+        style={[
+          styles.fieldsetInputContainer,
+          isFocused && styles.fieldsetInputFocused,
+        ]}
+      >
+        <Text style={styles.currencyPrefix}>R</Text>
+        <TextInput
+          value={value}
+          onChangeText={onChangeText}
+          keyboardType="numeric"
+          placeholder={placeholder || "0"}
+          placeholderTextColor={Colors.mediumGrey}
+          style={styles.fieldsetInput}
+        />
+      </View>
+    </View>
+  );
+};
+
 export const FilterModal: React.FC<FilterModalProps> = ({
   showReset,
   visible,
@@ -58,13 +87,28 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   onApply,
   onToggleVehicleTypes,
 }) => {
-  const renderThumb = useCallback(() => <Thumb />, []);
-  const renderRail = useCallback(() => <Rail />, []);
-  const renderRailSelected = useCallback(() => <RailSelected />, []);
-  const renderLabel = useCallback(
-    (value: number) => <Label text={`R${value}`} />,
-    [],
+  const [localMinPrice, setLocalMinPrice] = useState(
+    priceRange[0]?.toString() || "",
   );
+  const [localMaxPrice, setLocalMaxPrice] = useState(
+    priceRange[1]?.toString() || "",
+  );
+
+  const handleMinChange = (text: string) => {
+    const numericText = text.replace(/[^0-9]/g, "");
+    setLocalMinPrice(numericText);
+    const minVal = numericText ? parseInt(numericText, 10) : 0;
+    const maxVal = localMaxPrice ? parseInt(localMaxPrice, 10) : 0;
+    onPriceChange(minVal, maxVal);
+  };
+
+  const handleMaxChange = (text: string) => {
+    const numericText = text.replace(/[^0-9]/g, "");
+    setLocalMaxPrice(numericText);
+    const minVal = localMinPrice ? parseInt(localMinPrice, 10) : 0;
+    const maxVal = numericText ? parseInt(numericText, 10) : 0;
+    onPriceChange(minVal, maxVal);
+  };
 
   if (!visible) return null;
 
@@ -251,23 +295,21 @@ export const FilterModal: React.FC<FilterModalProps> = ({
 
           <View style={styles.sectionDivider} />
 
-          <View style={styles.sliderContainer}>
+          <View style={styles.priceInputContainer}>
             <Text style={styles.contentTitle}>Price Range</Text>
-            <RangeSlider
-              min={0}
-              max={235}
-              step={5}
-              low={priceRange[0]}
-              high={priceRange[1]}
-              renderThumb={renderThumb}
-              renderRail={renderRail}
-              renderRailSelected={renderRailSelected}
-              renderLabel={renderLabel}
-              onValueChanged={onPriceChange}
-            />
-            <View style={styles.sliderLabels}>
-              <Text style={styles.sliderLabelText}>R{priceRange[0]}</Text>
-              <Text style={styles.sliderLabelText}>R{priceRange[1]}</Text>
+            <View style={styles.priceInputRow}>
+              <PriceInput
+                label="Min"
+                value={localMinPrice}
+                onChangeText={handleMinChange}
+                placeholder="0"
+              />
+              <PriceInput
+                label="Max"
+                value={localMaxPrice}
+                onChangeText={handleMaxChange}
+                placeholder="235"
+              />
             </View>
           </View>
 

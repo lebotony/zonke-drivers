@@ -1,6 +1,7 @@
 import { StyleSheet, Platform } from "react-native";
 
 import { Colors } from "@/constants/ui";
+import { IS_IOS } from "@/constants/srcConstants";
 
 export const styles = StyleSheet.create({
   container: {

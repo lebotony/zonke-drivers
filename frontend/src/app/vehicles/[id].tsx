@@ -1,5 +1,8 @@
 import { VehicleProfile } from "@/src/screens/VehicleProfile";
+import { withAuth } from "@/src/components/withAuth";
 
-export default function Vehicles() {
+function Vehicles() {
   return <VehicleProfile />;
 }
+
+export default withAuth(Vehicles);

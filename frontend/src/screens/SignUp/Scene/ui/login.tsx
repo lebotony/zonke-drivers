@@ -13,7 +13,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Image } from "expo-image";
 import Checkbox from "expo-checkbox";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import { router } from "expo-router";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -30,13 +31,15 @@ import { styles } from "../styles/login";
 import { Form } from "./form";
 import { SignInSchema, SignUpSchema } from "../schema";
 
-type LoginScreenProps = {};
+type LoginScreenProps = {
+  toggleSales: () => void;
+};
 
 export type SignUpFormValues = z.infer<typeof SignUpSchema>;
 export type SignInFormValues = z.infer<typeof SignInSchema>;
 
 export const LoginScreen = (props: LoginScreenProps) => {
-  const {} = props;
+  const { toggleSales } = props;
 
   const [isSignUp, setIsSignUp] = useState(false);
   const [authError, setAuthError] = useState<string | null>(null);
@@ -245,6 +248,19 @@ export const LoginScreen = (props: LoginScreenProps) => {
               {isSignUp ? "Create Account" : "Sign In"}
             </Text>
           </CustomButton>
+
+          {!isSignUp && (
+            <TouchableOpacity
+              style={styles.vehicleSalesButton}
+              onPress={() => toggleSales()}
+              activeOpacity={0.85}
+            >
+              <Ionicons name="car-sport" size={24} color={Colors.white} />
+              <Text style={styles.vehicleSalesButtonText}>
+                Browse Vehicle Sales
+              </Text>
+            </TouchableOpacity>
+          )}
 
           <View style={{ flex: 1 }} />
 
