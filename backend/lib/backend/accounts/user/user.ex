@@ -7,7 +7,7 @@ defmodule Backend.Accounts.User do
   alias Backend.Assets.Asset
 
   @required_fields [:first_name, :last_name, :username, :role]
-  @optional_fields [:location, :email]
+  @optional_fields [:location, :email, :onboarding_complete]
   @all_fields @required_fields ++ @optional_fields
 
   schema "users" do
@@ -18,6 +18,7 @@ defmodule Backend.Accounts.User do
     field(:location, :map)
     field(:password_hash, :string)
     field(:role, RoleEnum)
+    field(:onboarding_complete, :boolean, default: false)
 
     field(:password, :string, virtual: true)
     field(:asset_url, :string, virtual: true)

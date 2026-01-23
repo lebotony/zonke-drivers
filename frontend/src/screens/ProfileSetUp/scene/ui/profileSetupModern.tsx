@@ -155,7 +155,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
   const handleAddLicence = (item: string) => {
     const licence = (find(LICENCES, { name: item }) as Licence).slug;
 
-    if (!selectedLicences?.includes(item)) {
+    if (!selectedLicences?.includes(licence)) {
       setValue("licences", [...(selectedLicences || []), licence]);
     }
   };
@@ -362,6 +362,7 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
                 placeholder="2001-10-20"
                 errors={errors}
                 required
+                editable={false}
               />
 
               <ModalDatePicker setValue={setValue} />

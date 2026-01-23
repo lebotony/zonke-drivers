@@ -9,7 +9,7 @@ import {
   DefaultTheme,
   ThemeProvider,
 } from "@react-navigation/native";
-import { Stack, router } from "expo-router";
+import { Stack, router, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import {
   useFonts,
@@ -26,7 +26,7 @@ import { useColorScheme } from "../components/useColorScheme";
 import { AuthProvider, useAuth } from "../authContext";
 import { AuthScreen } from "../screens/SignUp";
 import { VehicleSalesScreen } from "../screens/VehicleSales";
-import { UseCustomQueryProvider } from "../useQueryContext";
+import { UseCustomQueryProvider, useCustomQuery } from "../useQueryContext";
 import { PaginatedCacheProvider } from "../updateCacheProvider";
 import { MessagesProvider } from "../screens/Messages/MessagesProvider";
 import { CustomToast } from "../components/CustomToast";
@@ -126,16 +126,25 @@ function RootLayoutNav() {
 
 const Layout = () => {
   const colorScheme = useColorScheme();
+  const segments = useSegments();
   const { authState, pendingVehicleId, setPendingVehicleId } = useAuth();
+  const { getCachedData } = useCustomQuery();
+  const { user } = getCachedData(["user"]);
   const [sales, setSales] = useState(false);
 
   const toggleSales = () => setSales(!sales);
 
   useEffect(() => {
-    if (authState?.authenticated && pendingVehicleId) {
-      router.replace("/(tabs)/purchase");
+    const isOnOnboardingScreen = segments[0] === "onboarding";
+
+    if (authState?.authenticated && pendingVehicleId && user && !isOnOnboardingScreen) {
+      const needsOnboarding = user.role === "driver" && user.onboarding_complete === false;
+
+      if (!needsOnboarding) {
+        router.replace("/(tabs)/purchase");
+      }
     }
-  }, [authState?.authenticated, pendingVehicleId]);
+  }, [authState?.authenticated, pendingVehicleId, user, segments]);
 
   return (
     <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
@@ -150,6 +159,7 @@ const Layout = () => {
       ) : (
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="onboarding" options={{ headerShown: false }} />
           <Stack.Screen name="profileSetup" options={{ headerShown: false }} />
           <Stack.Screen name="posts" options={{ headerShown: false }} />
           <Stack.Screen name="modal" options={{ presentation: "modal" }} />

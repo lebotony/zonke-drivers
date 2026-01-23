@@ -17,7 +17,7 @@ export const pickImage = async (
   }
 
   const result = await ImagePicker.launchImageLibraryAsync({
-    mediaTypes: ImagePicker.MediaTypeOptions.Images,
+    mediaTypes: ['images'],
     allowsEditing: true,
     aspect: aspect,
     quality: 1,
@@ -44,10 +44,12 @@ export const pickImage = async (
         filename: compressedFilename,
       });
 
-      // Upload to backend
-      await fn({ file_path: compressed.uri, filename: compressedFilename }, id).then(
-        (res: Asset) => updatePaginatedObject(res),
-      );
+      // Upload to backend if upload function is provided
+      if (fn && typeof fn === "function") {
+        await fn({ file_path: compressed.uri, filename: compressedFilename }, id).then(
+          (res: Asset) => updatePaginatedObject?.(res),
+        );
+      }
     } catch (error) {
       console.error("Error processing image:", error);
       throw error;

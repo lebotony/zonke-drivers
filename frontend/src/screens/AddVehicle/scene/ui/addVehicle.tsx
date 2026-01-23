@@ -28,6 +28,9 @@ import { useCustomQuery } from "@/src/useQueryContext";
 import { AppToast } from "@/src/components/CustomToast/customToast";
 import { activateVehicle } from "@/src/screens/ManageVehicles/actions";
 import { ImageLoadingOverlay } from "@/src/components/elements/ImageLoadingOverlay";
+import { getCountryByName } from "@/constants/countries";
+import { validateVehicleActivation } from "@/src/helpers/validateVehicleActivation";
+import { VehicleActivationModal } from "@/src/components/modal/VehicleActivationModal";
 
 import { styles } from "../styles/addVehicle";
 import { CardFormDef } from "../utils/cardFormDef";
@@ -43,13 +46,13 @@ import {
 export type AddVehicleFormValues = z.infer<typeof FormSchema>;
 
 export const AddVehicle = () => {
-  const { id } = useLocalSearchParams();
+  const { id, showActivationModal: showModalParam } = useLocalSearchParams();
   const vehicleId = Array.isArray(id) ? id[0] : id;
 
   const { updatePaginatedObject, addItemToPaginatedList } = usePaginatedCache();
 
   const { getCachedData } = useCustomQuery();
-  const { userVehicles } = getCachedData(["userVehicles"]);
+  const { userVehicles, user } = getCachedData(["userVehicles", "user"]);
 
   const isNewVehicle = vehicleId === "new" || vehicleId == undefined;
   const vehicle = !isNewVehicle
@@ -113,6 +116,10 @@ export const AddVehicle = () => {
   const [keyboardVisible, setKeyboardVisible] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [showActivationModal, setShowActivationModal] = useState(false);
+  const [missingFields, setMissingFields] = useState<
+    ("model" | "image" | "price")[]
+  >([]);
 
   useEffect(() => {
     const showSubscription = Keyboard.addListener("keyboardDidShow", (e) => {
@@ -129,6 +136,16 @@ export const AddVehicle = () => {
       hideSubscription.remove();
     };
   }, []);
+
+  useEffect(() => {
+    if (showModalParam === "true" && vehicle) {
+      const validation = validateVehicleActivation(vehicle);
+      if (!validation.isValid) {
+        setMissingFields(validation.missingFields);
+        setShowActivationModal(true);
+      }
+    }
+  }, [showModalParam, vehicle]);
 
   const upsertVehicle = (params: AddVehicleFormValues) => {
     if (vehicle) {
@@ -171,10 +188,15 @@ export const AddVehicle = () => {
   };
 
   const create = (data: AddVehicleFormValues) => {
+    // Get user's country and derive currency from it
+    const userCountry = user?.location?.country;
+    const countryInfo = userCountry ? getCountryByName(userCountry) : undefined;
+    const currency = countryInfo?.currencySymbol || "$"; // Fallback to "$" if not found
+
     const params = {
       ...data,
       price_fixed: data.price_fixed
-        ? { value: Number(data.price_fixed), currency: "Rand" }
+        ? { value: Number(data.price_fixed), currency }
         : undefined,
     };
 
@@ -203,12 +225,23 @@ export const AddVehicle = () => {
       setIsUploadingImage,
     );
 
-  const handleSetActive = () =>
+  const handleSetActive = () => {
+    // If trying to activate (not deactivate), validate first
+    if (!vehicle?.active) {
+      const validation = validateVehicleActivation(vehicle);
+      if (!validation.isValid) {
+        setMissingFields(validation.missingFields);
+        setShowActivationModal(true);
+        return;
+      }
+    }
+
+    // Proceed with activation/deactivation
     activateVehicle({
       active: !vehicle?.active,
       vehicle_id: vehicleId,
     })
-      .then((res) => {
+      .then(() => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
           true,
@@ -219,17 +252,10 @@ export const AddVehicle = () => {
         });
       })
       .catch((err) => {
-        const errorKey = err.response?.data?.error;
-
-        if (errorKey === "missing_fields") {
-          return AppToast(
-            `'Model', 'Vehicle image' or 'Rent' fields are empty`,
-          );
-        } else {
-          AppToast();
-          throw new Error("Set vehicle active error:", err);
-        }
+        AppToast();
+        throw new Error("Set vehicle active error:", err);
       });
+  };
 
   const driver = !isNewVehicle && vehicle?.vehicle_drivers[0]?.driver;
 
@@ -287,9 +313,15 @@ export const AddVehicle = () => {
               ) : (
                 <View style={styles.emptyImageState}>
                   <View style={styles.uploadIconContainer}>
-                    <AntDesign name="camerao" size={32} color={Colors.mrDBlue} />
+                    <AntDesign
+                      name="camerao"
+                      size={32}
+                      color={Colors.mrDBlue}
+                    />
                   </View>
-                  <Text style={styles.uploadPromptText}>Tap to upload photo</Text>
+                  <Text style={styles.uploadPromptText}>
+                    Tap to upload photo
+                  </Text>
                   <Text style={styles.uploadHintText}>
                     Show off your vehicle's best angle
                   </Text>
@@ -320,7 +352,12 @@ export const AddVehicle = () => {
                     )}
                   </View>
                   <View style={styles.driverTextContainer}>
-                    <Text style={[styles.driverName, !driver && { color: Colors.mediumGrey }]}>
+                    <Text
+                      style={[
+                        styles.driverName,
+                        !driver && { color: Colors.mediumGrey },
+                      ]}
+                    >
                       {driver
                         ? `${driver.first_name} ${driver.last_name}`
                         : "No driver assigned"}
@@ -332,7 +369,9 @@ export const AddVehicle = () => {
                 </View>
                 <TouchableOpacity
                   style={styles.assignButton}
-                  onPress={() => router.push(`/vehicleDriverSearch/${vehicle?.id}`)}
+                  onPress={() =>
+                    router.push(`/vehicleDriverSearch/${vehicle?.id}`)
+                  }
                   activeOpacity={0.7}
                 >
                   <Text style={styles.assignButtonText}>
@@ -391,7 +430,9 @@ export const AddVehicle = () => {
                   ]}
                 >
                   <Text style={styles.activationButtonText}>
-                    {vehicle?.active ? "Deactivate Vehicle" : "Activate Vehicle"}
+                    {vehicle?.active
+                      ? "Deactivate Vehicle"
+                      : "Activate Vehicle"}
                   </Text>
                 </CustomButton>
               </View>
@@ -411,7 +452,7 @@ export const AddVehicle = () => {
                       : Colors.mrDBlue,
                 },
               ]}
-              disabled={(isSameForm && vehicle) || isSubmitting}
+              disabled={!!((isSameForm && vehicle) || isSubmitting)}
             >
               <Text style={styles.primaryButtonText}>
                 {isSubmitting
@@ -424,6 +465,13 @@ export const AddVehicle = () => {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
+
+      {showActivationModal && (
+        <VehicleActivationModal
+          missingFields={missingFields}
+          onDismiss={() => setShowActivationModal(false)}
+        />
+      )}
     </SafeAreaView>
   );
 };

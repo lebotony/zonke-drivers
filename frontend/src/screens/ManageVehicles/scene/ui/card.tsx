@@ -7,7 +7,6 @@ import { router } from "expo-router";
 import { Feather, MaterialIcons } from "@expo/vector-icons";
 
 import { isEmpty } from "lodash";
-import { useQueryClient } from "@tanstack/react-query";
 
 import { Colors } from "@/constants/ui";
 import { PopupMenu } from "@/src/components/popup";
@@ -16,6 +15,7 @@ import { capitalizeFirstLetter } from "@/src/utils";
 import { AppToast } from "@/src/components/CustomToast/customToast";
 import { usePaginatedCache } from "@/src/updateCacheProvider";
 import { formatDateShort } from "@/src/helpers/calculateAge";
+import { validateVehicleActivation } from "@/src/helpers/validateVehicleActivation";
 
 import { styles } from "../styles/card";
 import { MANAGEMENT_OPTIONS } from "../constants";
@@ -30,7 +30,6 @@ type CardProps = {
 export const Card = (props: CardProps) => {
   const { vehicle, setVehicleId, setShowVehicleDriverModal } = props;
 
-  const queryClient = useQueryClient();
   const { updatePaginatedObject, removeItemFromPaginatedList } =
     usePaginatedCache();
 
@@ -59,12 +58,25 @@ export const Card = (props: CardProps) => {
     }).start();
   };
 
-  const handleSetActive = () =>
+  const handleSetActive = () => {
+    // If trying to activate (not deactivate), validate first
+    if (!vehicle?.active) {
+      const validation = validateVehicleActivation(vehicle);
+      if (!validation.isValid) {
+        // Redirect to vehicle page with showActivationModal flag
+        router.push(
+          `/(tabs)/vehicle/${vehicle?.id}?showActivationModal=true`
+        );
+        return;
+      }
+    }
+
+    // Proceed with activation/deactivation
     activateVehicle({
       active: !vehicle?.active,
       vehicle_id: vehicle?.id,
     })
-      .then((res) => {
+      .then(() => {
         AppToast(
           `Successfully ${vehicle?.active ? "de-activated" : "activated"} vehicle`,
           true,
@@ -75,21 +87,14 @@ export const Card = (props: CardProps) => {
         });
       })
       .catch((err) => {
-        const errorKey = err.response?.data?.error;
-
-        if (errorKey === "missing_fields") {
-          return AppToast(
-            `'Model', 'Vehicle image' or 'Rent' fields are empty`,
-          );
-        } else {
-          AppToast();
-          throw new Error("Set vehicle active error:", err);
-        }
+        AppToast();
+        throw new Error("Set vehicle active error:", err);
       });
+  };
 
   const handleDelete = () =>
     deleteVehicle(vehicle?.id)
-      .then((res) => {
+      .then(() => {
         AppToast(`Successfully deleted vehicle`, true);
 
         removeItemFromPaginatedList("userVehicles", vehicle?.id);

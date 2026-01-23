@@ -1,5 +1,5 @@
-import React from "react";
-import { Tabs } from "expo-router";
+import React, { useEffect } from "react";
+import { Tabs, router } from "expo-router";
 
 import { Ionicons } from "@expo/vector-icons";
 import MaterialIcons from "@expo/vector-icons/build/MaterialIcons";
@@ -16,6 +16,12 @@ export default function TabLayout() {
 
   const { getCachedData } = useCustomQuery();
   const { user, threads } = getCachedData(["user", "threads"]);
+
+  useEffect(() => {
+    if (user && user.role === "driver" && user.onboarding_complete === false) {
+      router.replace("/onboarding");
+    }
+  }, [user]);
 
   if (!user) {
     return <Spinner />;
