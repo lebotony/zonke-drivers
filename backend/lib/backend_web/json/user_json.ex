@@ -18,6 +18,7 @@ defmodule BackendWeb.UserJSON do
       email: Map.get(user, :email),
       role: Map.get(user, :role),
       location: Map.get(user, :location),
+      onboarding_complete: Map.get(user, :onboarding_complete),
       asset_url: Map.get(user, :asset_filename) |> Assets.prepare_url(),
       asset: asset
     }

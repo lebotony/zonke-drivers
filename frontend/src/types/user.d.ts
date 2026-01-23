@@ -11,4 +11,6 @@ type User = {
   email: string;
   location: LocationType;
   asset: Asset;
+  role?: "driver" | "owner" | "member";
+  onboarding_complete?: boolean;
 };

@@ -36,14 +36,27 @@ alias Backend.Ecto.EctoEnums
 
 Logger.info("Creating users with profiles")
 
-locations_zimbabwe = %{place: "Nketa, Bulawayo, Zimbabwe", country: "Zimbabwe", city: "Bulawayo", lat: -20.1457, lon: 28.5873}
+locations_zimbabwe = [
+  %{place: "Nketa, Bulawayo, Zimbabwe", country: "Zimbabwe", city: "Bulawayo", lat: -20.1457, lon: 28.5873},
+  %{place: "Harare CBD, Harare, Zimbabwe", country: "Zimbabwe", city: "Harare", lat: -17.8252, lon: 31.0335},
+  %{place: "Borrowdale, Harare, Zimbabwe", country: "Zimbabwe", city: "Harare", lat: -17.7956, lon: 31.0677},
+  %{place: "Victoria Falls, Matabeleland North, Zimbabwe", country: "Zimbabwe", city: "Victoria Falls", lat: -17.9243, lon: 25.8567},
+  %{place: "Mutare, Manicaland, Zimbabwe", country: "Zimbabwe", city: "Mutare", lat: -18.9707, lon: 32.6700}
+]
 
-locations_south_africa = %{place: "Nkuluekweni, Eastern Cape, South Africa", country: "South Africa", city: "Eastern Cape", lat: -26.2678, lon: 27.8585}
+locations_south_africa = [
+  %{place: "Nkuluekweni, Eastern Cape, South Africa", country: "South Africa", city: "Eastern Cape", lat: -26.2678, lon: 27.8585},
+  %{place: "Sandton, Johannesburg, South Africa", country: "South Africa", city: "Johannesburg", lat: -26.1076, lon: 28.0567},
+  %{place: "Cape Town CBD, Western Cape, South Africa", country: "South Africa", city: "Cape Town", lat: -33.9249, lon: 18.4241},
+  %{place: "Durban Beachfront, KwaZulu-Natal, South Africa", country: "South Africa", city: "Durban", lat: -29.8587, lon: 31.0218},
+  %{place: "Pretoria Central, Gauteng, South Africa", country: "South Africa", city: "Pretoria", lat: -25.7479, lon: 28.2293}
+]
 
 users =
   Enum.map(1..40, fn number ->
     role = if number < 21, do: "driver", else: "owner"
-    location = if rem(number, 2) == 0, do: locations_zimbabwe, else: locations_south_africa
+    location_list = if rem(number, 2) == 0, do: locations_south_africa, else: locations_zimbabwe
+    location = Enum.random(location_list)
 
     params = %{
       first_name: Person.first_name(),
@@ -142,7 +155,8 @@ vehicles =
     vehicles =
       Enum.map(1..3, fn v ->
         on_sale = Enum.random([true, false])
-        sale_price = if on_sale, do: %{currency: "ZAR", value: Enum.random(5000..20000)}, else: nil
+        currency = if user.location.country == "Zimbabwe", do: "$", else: "R"
+        sale_price = if on_sale, do: %{currency: currency, value: Enum.random(5000..20000)}, else: nil
 
         {:ok, vehicle} =
           %Vehicle{
@@ -159,7 +173,7 @@ vehicles =
             on_sale: on_sale,
             sale_price: sale_price,
             mileage: Enum.random(10000..100000),
-            price_fixed: %{currency: "ZAR", value: Enum.random(20..60)},
+            price_fixed: %{currency: currency, value: Enum.random(20..60)},
             user_id: user.id,
           }
           |> Repo.insert()

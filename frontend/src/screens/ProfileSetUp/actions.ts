@@ -3,8 +3,10 @@ import axios from "axios";
 import { httpGet, httpPost, httpPut } from "@/src/requests";
 import { API_URL } from "@/constants/srcConstants";
 import { compressImage } from "@/src/helpers/compressImage";
-
-import { DriverFormValues, OwnerFormValues } from "./scene/ui/profileSetup";
+import {
+  DriverFormValues,
+  OwnerFormValues,
+} from "./scene/ui/profileSetupModern";
 
 export const updateDriver = async (params: Partial<DriverFormValues>) =>
   httpPost("/drivers/upsert", params);

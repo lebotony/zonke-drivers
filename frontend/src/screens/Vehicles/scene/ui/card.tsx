@@ -154,7 +154,8 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
         <View style={styles.footer}>
           <View style={styles.priceContainer}>
             <Text style={styles.priceValue}>
-              R{vehicle?.price_fixed?.value}
+              {vehicle?.price_fixed?.currency}
+              {vehicle?.price_fixed?.value}
             </Text>
             <Text style={styles.priceLabel}>per day</Text>
           </View>

@@ -172,6 +172,11 @@ export const SelectPlatformArea = (props: SelectAreaProps) => {
 export const SelectLicenceArea = (props: SelectAreaProps) => {
   const { options, onAddItem, selectedItems, onRemoveItem, label } = props;
 
+  const handleAddLicenceWrapper = (value: string) => {
+    console.log("WRAPPER CALLED WITH:", value);
+    onAddItem(value);
+  };
+
   return (
     <View style={{ marginBottom: 8 }}>
       <View
@@ -187,7 +192,7 @@ export const SelectLicenceArea = (props: SelectAreaProps) => {
             (optional)
           </Text>
         </Text>
-        <PopupMenu onSelect={onAddItem} options={options}>
+        <PopupMenu onSelect={handleAddLicenceWrapper} options={options}>
           <Text style={styles.selectText}>Add</Text>
         </PopupMenu>
       </View>

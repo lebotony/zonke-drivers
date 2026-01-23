@@ -86,6 +86,7 @@ type FieldsetProps<T extends FieldValues> = {
   showMediaIcons?: boolean;
   decimalPad?: boolean;
   customStyles?: any;
+  editable?: boolean;
 };
 
 export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
@@ -105,6 +106,7 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
     required,
     decimalPad = false,
     customStyles,
+    editable = true,
   } = props;
   const [showPassword, setShowPassword] = useState(false);
   const [displayDropdown, setDisplayDropdown] = useState(false);
@@ -186,6 +188,7 @@ export const Fieldset = <T extends FieldValues>(props: FieldsetProps<T>) => {
               spellCheck={false}
               textContentType="none"
               importantForAutofill="no"
+              editable={editable}
               {...(decimalPad && { keyboardType: "decimal-pad" })}
               {...(showPassword && { secureTextEntry: true })}
               {...(type === "text" && {
