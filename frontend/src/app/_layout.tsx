@@ -132,13 +132,21 @@ const Layout = () => {
   const { user } = getCachedData(["user"]);
   const [sales, setSales] = useState(false);
 
+  console.log("LLLLLLLLLLLLLL", user?.location);
+
   const toggleSales = () => setSales(!sales);
 
   useEffect(() => {
     const isOnOnboardingScreen = segments[0] === "onboarding";
 
-    if (authState?.authenticated && pendingVehicleId && user && !isOnOnboardingScreen) {
-      const needsOnboarding = user.role === "driver" && user.onboarding_complete === false;
+    if (
+      authState?.authenticated &&
+      pendingVehicleId &&
+      user &&
+      !isOnOnboardingScreen
+    ) {
+      const needsOnboarding =
+        user.role === "driver" && user.onboarding_complete === false;
 
       if (!needsOnboarding) {
         router.replace("/(tabs)/purchase");

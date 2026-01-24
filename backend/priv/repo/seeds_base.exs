@@ -200,7 +200,16 @@ vehicles =
 
 Logger.info("Creating drivers")
 
-driver_platforms = ["bike", "passenger", "taxi", "truck", "lorry", "uber", "bolt", "uber_eats", "checkers", "mr_d_food"]
+driver_platforms = [
+  # Vehicle Types
+  "bike", "passenger", "taxi", "truck", "lorry",
+  # Global Ride-Hailing Platforms
+  "uber", "lyft", "bolt", "didi", "grab", "gojek", "ola", "careem", "indriver",
+  # Food Delivery Platforms
+  "uber_eats", "doordash", "grubhub", "deliveroo", "glovo", "rappi", "zomato", "swiggy", "postmates", "mr_d_food",
+  # Grocery & Package Delivery
+  "checkers", "instacart"
+]
 
 descriptions = [
   "I drive trucks all over the city",
@@ -212,10 +221,33 @@ descriptions = [
   "Fast and reliable deliveries"
 ]
 
-licences = ["class_1", "class_2", "class_3", "class_4", "class_5", "psv", "code_A1", "code_A", "code_B", "code_EB", "code_C1", "code_C", "code_EC1", "code_EC"]
+licences = [
+  # Light Motor Vehicles
+  "lmv", "class_b", "class_be",
+  # Motorcycles
+  "a1", "a2", "a", "m",
+  # Minibus / Vans
+  "class_c1", "class_d1",
+  # Passenger Transport
+  "class_d", "psv",
+  # Heavy Goods Vehicles
+  "class_c", "class_ce", "class_ec",
+  # Commercial / Freight
+  "code_c1", "code_c", "code_ec1",
+  # Agricultural / Industrial
+  "tractor", "forklift",
+  # Special / Professional
+  "taxi", "chauffeur", "hazmat",
+  # Emergency & Government
+  "emergency", "government",
+  # Learner / Provisional
+  "learner", "restricted",
+  # Generic / Other
+  "international"
+]
 
 random_platforms = fn platforms ->
-  rand_num_of_items = Enum.random(1..length(platforms))
+  rand_num_of_items = Enum.random(1..7)
 
   platforms
   |> Enum.shuffle()

@@ -20,8 +20,8 @@ if System.get_env("PHX_SERVER") do
   config :backend, BackendWeb.Endpoint, server: true
 end
 
-# Configure Mapbox token for all environments
-config :backend, :mapbox_token, System.get_env("MAPBOX_TOKEN")
+# Configure Geoapify API key for all environments
+config :backend, :geoapify_api_key, System.get_env("GEOAPIFY_API_KEY")
 
 if config_env() == :prod do
   database_url =

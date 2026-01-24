@@ -4,55 +4,55 @@ defmodule BackendWeb.LocationController do
 
   require Logger
 
-  @mapbox_base_url "https://api.mapbox.com/geocoding/v5/mapbox.places"
+  @geoapify_base_url "https://api.geoapify.com/v1/geocode/autocomplete"
 
   def search(conn, %{query: query}, _session) when byte_size(query) >= 3 do
-    mapbox_token = System.get_env("MAPBOX_TOKEN")
+    geoapify_api_key = System.get_env("GEOAPIFY_API_KEY")
 
-    if is_nil(mapbox_token) or mapbox_token == "" do
-      Logger.error("Mapbox token not configured or empty")
+    if is_nil(geoapify_api_key) or geoapify_api_key == "" do
+      Logger.error("Geoapify API key not configured or empty")
 
       conn
       |> put_status(:internal_server_error)
-      |> json(%{error: "Mapbox token not configured"})
+      |> json(%{error: "Location service not configured"})
     else
       url =
-        "#{@mapbox_base_url}/#{URI.encode(query)}.json?access_token=#{mapbox_token}&autocomplete=true&limit=5"
+        "#{@geoapify_base_url}?text=#{URI.encode(query)}&apiKey=#{geoapify_api_key}&limit=5"
 
-      Logger.info("Making request to URL: #{url}")
+      Logger.info("Making request to Geoapify API")
 
       case HTTPoison.get(url) do
         {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
           case Jason.decode(body) do
             {:ok, %{"features" => features}} ->
-              locations = parse_mapbox_features(features)
-              Logger.info("Parsed #{length(locations)} locations from Mapbox response")
+              locations = parse_geoapify_features(features)
+              Logger.info("Parsed #{length(locations)} locations from Geoapify response")
               json(conn, %{locations: locations})
 
             {:ok, response} ->
-              Logger.error("Unexpected Mapbox response structure: #{inspect(response)}")
+              Logger.error("Unexpected Geoapify response structure: #{inspect(response)}")
 
               conn
               |> put_status(:internal_server_error)
-              |> json(%{error: "Failed to parse Mapbox response"})
+              |> json(%{error: "Failed to parse location response"})
 
             {:error, reason} ->
               Logger.error("Failed to decode JSON: #{inspect(reason)}")
 
               conn
               |> put_status(:internal_server_error)
-              |> json(%{error: "Failed to parse Mapbox response"})
+              |> json(%{error: "Failed to parse location response"})
           end
 
         {:ok, %HTTPoison.Response{status_code: status_code, body: body}} ->
-          Logger.error("Mapbox API returned status #{status_code}, body: #{body}")
+          Logger.error("Geoapify API returned status #{status_code}, body: #{body}")
 
           conn
           |> put_status(:bad_gateway)
           |> json(%{error: "Location service unavailable"})
 
         {:error, %HTTPoison.Error{reason: reason}} ->
-          Logger.error("Mapbox API request failed: #{inspect(reason)}")
+          Logger.error("Geoapify API request failed: #{inspect(reason)}")
 
           conn
           |> put_status(:bad_gateway)
@@ -71,14 +71,16 @@ defmodule BackendWeb.LocationController do
     |> json(%{error: "Query parameter required"})
   end
 
-  defp parse_mapbox_features(features) do
+  defp parse_geoapify_features(features) do
     Enum.map(features, fn feature ->
-      place_name = Map.get(feature, "place_name", "")
-      [lon, lat] = Map.get(feature, "center", [0, 0])
-      context = Map.get(feature, "context", [])
+      properties = Map.get(feature, "properties", %{})
+      geometry = Map.get(feature, "geometry", %{})
+      coordinates = Map.get(geometry, "coordinates", [0, 0])
 
-      country = extract_country(context)
-      city = extract_city(context)
+      place_name = Map.get(properties, "formatted", "")
+      [lon, lat] = coordinates
+      country = Map.get(properties, "country", "")
+      city = extract_city_from_properties(properties)
 
       %{
         country: country,
@@ -90,32 +92,14 @@ defmodule BackendWeb.LocationController do
     end)
   end
 
-  defp extract_country(context) when is_list(context) do
-    context
-    |> Enum.find(fn item -> String.starts_with?(item["id"], "country.") end)
-    |> case do
-      %{"text" => country} -> country
-      _ -> ""
-    end
+  defp extract_city_from_properties(properties) do
+    # Geoapify provides city in multiple possible fields
+    # Try city first, then town, then village, then suburb
+    Map.get(properties, "city") ||
+      Map.get(properties, "town") ||
+      Map.get(properties, "village") ||
+      Map.get(properties, "suburb") ||
+      Map.get(properties, "state") ||
+      ""
   end
-
-  defp extract_country(_), do: ""
-
-  defp extract_city(context) when is_list(context) do
-    # Try to find place (city) first, fallback to region
-    city =
-      Enum.find(context, fn item ->
-        String.starts_with?(item["id"], "place.") or String.starts_with?(item["id"], "locality.")
-      end)
-
-    region =
-      Enum.find(context, fn item -> String.starts_with?(item["id"], "region.") end)
-
-    case city || region do
-      %{"text" => name} -> name
-      _ -> ""
-    end
-  end
-
-  defp extract_city(_), do: ""
 end

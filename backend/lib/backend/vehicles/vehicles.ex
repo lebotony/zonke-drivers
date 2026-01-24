@@ -228,6 +228,8 @@ defmodule Backend.Vehicles.Vehicles do
   def get_vehicles(params, %{user_id: user_id}, :public) do
     driver_country = get_driver_country(user_id)
 
+    IO.inspect(driver_country, label: "Driver Country")
+
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_active_status()
@@ -285,7 +287,8 @@ defmodule Backend.Vehicles.Vehicles do
   end
 
   def get_vehicles_on_sale(params) do
-    # driver_country = get_driver_country(user_id)
+    filters = Map.get(params, :filters, %{})
+    country = Map.get(filters, :country)
 
     data =
       VehicleBy.base_query()
@@ -294,7 +297,7 @@ defmodule Backend.Vehicles.Vehicles do
       |> distinct([vehicle: v], v.id)
       |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
       |> join(:inner, [user: u], a in assoc(u, :asset), as: :asset)
-      # |> filter_by_country(driver_country)
+      |> filter_by_country(country)
       |> select_merge([vehicle: v, user: u, asset: a], %{
         v
         | user: %{

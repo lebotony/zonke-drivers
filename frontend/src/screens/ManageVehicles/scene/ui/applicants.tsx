@@ -166,14 +166,13 @@ export const ApplicantsScreen = () => {
             <View style={styles.emptyState}>
               <Ionicons name="people-outline" size={64} color="#ddd" />
               <Text style={styles.emptyStateTitle}>No applicants found</Text>
-              {selectedVehicle.brand ||
-                (selectedVehicle.model && (
-                  <Text style={styles.emptyStateText}>
-                    {selectedVehicle
-                      ? `No applicants found yet for ${capitalizeFirstLetter(`${selectedVehicle.brand ?? ""} ${selectedVehicle.model ?? ""}`)}`
-                      : "Select a vehicle to view applicants"}
-                  </Text>
-                ))}
+              {(selectedVehicle.brand || selectedVehicle.model) && (
+                <Text style={styles.emptyStateText}>
+                  {selectedVehicle
+                    ? `No applicants found yet for ${capitalizeFirstLetter(`${selectedVehicle.brand ?? ""} ${selectedVehicle.model ?? ""}`)}`
+                    : "Select a vehicle to view applicants"}
+                </Text>
+              )}
             </View>
           )}
         </View>

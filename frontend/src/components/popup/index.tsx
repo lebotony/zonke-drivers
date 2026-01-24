@@ -100,7 +100,7 @@ export const PopupMenu = ({
     if (popupBtnRef.current) {
       const handle = findNodeHandle(popupBtnRef.current);
       if (handle) {
-        UIManager.measure(handle, (x, y, width, height, pageX, pageY) => {
+        UIManager.measure(handle, (_x, _y, width, height, pageX, pageY) => {
           const screenHeight = Dimensions.get("window").height;
           const screenWidth = Dimensions.get("window").width;
           setLayout((prev) => ({

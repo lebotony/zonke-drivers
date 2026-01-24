@@ -1,5 +1,6 @@
 export const Colors = {
   tintColorLight: "#2f95dc",
+  tintColorDark: "#4a9eff",
   blueTicksColor: "#34B7F1",
   black: "#000",
   darkCharcoalGrey: "#1C1B1F",
@@ -50,6 +51,22 @@ export const Colors = {
   navyBlue: "#0B0C10",
   whatsAppGreen: "#006644",
   tealGreen: "#48C9B0",
+  lyftPink: "#FF00BF",
+  doordashRed: "#FF3008",
+  grubhubOrange: "#F63440",
+  deliverooTeal: "#00CCBC",
+  glovoYellow: "#FFC244",
+  inDriverBlue: "#1E88E5",
+  didiOrange: "#FF7E00",
+  grabGreen: "#00B14F",
+  gojekGreen: "#00880D",
+  olaGreen: "#C0E218",
+  careemGreen: "#28AE61",
+  rappiOrange: "#FF4B3A",
+  zomatoRed: "#E23744",
+  swiggyOrange: "#FC8019",
+  postmatesBlack: "#000000",
+  instacartGreen: "#43B02A",
 };
 
 // 120161

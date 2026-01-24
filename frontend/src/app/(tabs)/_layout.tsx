@@ -29,10 +29,9 @@ export default function TabLayout() {
 
   const isDriver = user?.role === "driver";
 
-  const unseen_msg_count = threads?.reduce(
-    (sum: number, thread: Thread) => sum + thread?.unseen_msg_count,
-    0,
-  );
+  const unseen_msg_count = threads?.filter(
+    (thread: Thread) => (thread?.unseen_msg_count ?? 0) > 0
+  ).length ?? 0;
 
   return (
     <Tabs
