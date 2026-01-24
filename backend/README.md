@@ -24,7 +24,7 @@ mix setup
 If you prefer to set environment variables manually:
 
 ```bash
-export MAPBOX_TOKEN="your_mapbox_token_here"
+export GEOAPIFY_API_KEY="your_geoapify_api_key_here"
 mix phx.server
 ```
 
@@ -32,7 +32,7 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 ## Environment Variables
 
-- `MAPBOX_TOKEN`: Required for location search functionality (get from https://www.mapbox.com/)
+- `GEOAPIFY_API_KEY`: Required for location search functionality (get from https://www.geoapify.com/)
 
 ## Troubleshooting
 
@@ -40,7 +40,7 @@ Now you can visit [`localhost:4000`](http://localhost:4000) from your browser.
 
 If you see "Request failed with status code 400" when searching locations:
 
-1. Check if `MAPBOX_TOKEN` is set:
+1. Check if `GEOAPIFY_API_KEY` is set:
    ```bash
    ./test_env.sh
    ```
@@ -50,19 +50,19 @@ If you see "Request failed with status code 400" when searching locations:
    ./run.sh
    ```
 
-3. Verify your token is valid at https://account.mapbox.com/access-tokens/
+3. Verify your API key is valid at https://myprojects.geoapify.com/
 
-### Manual token verification
+### Manual API key verification
 
 ```bash
 # Check if token is in environment
-echo $MAPBOX_TOKEN
+echo $GEOAPIFY_API_KEY
 
 # If empty, load it:
-export MAPBOX_TOKEN="your_token_here"
+export GEOAPIFY_API_KEY="your_token_here"
 
 # Or source from .env:
-source .env && echo $MAPBOX_TOKEN
+source .env && echo $GEOAPIFY_API_KEY
 ```
 
 Ready to run in production? Please [check our deployment guides](https://hexdocs.pm/phoenix/deployment.html).

@@ -9,7 +9,7 @@ defmodule Backend.Drivers.Drivers do
 
   defdelegate authorize(action, params, session), to: Policy
 
-  @user_fields [:asset, :first_name, :last_name, :email]
+  @user_fields [:asset, :first_name, :last_name, :email, :location]
   @user_preloads [user: :asset]
 
   def create(params, %{user_id: user_id}) do
@@ -26,7 +26,8 @@ defmodule Backend.Drivers.Drivers do
     {user_params, driver_params} = Map.split(params, @user_fields)
 
     with {:ok, _user} <- maybe_update_user(user_id, user_params),
-         {:ok, driver} <- maybe_update_driver(user_id, driver_params) do
+         {:ok, driver} <-
+           maybe_update_driver(user_id, Map.put(driver_params, :location, params.location)) do
       {:ok, Repo.preload(driver, @user_preloads)}
     else
       {:error, reason} -> {:error, reason}

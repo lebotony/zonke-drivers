@@ -27,6 +27,6 @@ export const SignUpSchema = z
   });
 
 export const SignInSchema = z.object({
-  username: fieldValidators.username,
-  password: fieldValidators.password
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required")
 });

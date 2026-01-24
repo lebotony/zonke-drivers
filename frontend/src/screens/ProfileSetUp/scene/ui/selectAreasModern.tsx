@@ -1,11 +1,12 @@
 import { View, TouchableOpacity, Animated } from "react-native";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 import { find, isEmpty } from "lodash";
 
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-import { PopupMenu } from "@/src/components/popup";
+import { SearchableLicenceModal } from "@/src/components/SearchableLicenceModal";
+import { SearchablePlatformModal } from "@/src/components/SearchablePlatformModal";
 import { Colors } from "@/constants/ui";
 import { styles } from "../styles/selectedAreaModern";
 import {
@@ -121,7 +122,12 @@ const AnimatedLicenceChip = ({
 };
 
 export const SelectPlatformArea = (props: SelectAreaProps) => {
-  const { options, onAddItem, selectedItems, onRemoveItem, label } = props;
+  const { onAddItem, selectedItems, onRemoveItem, label } = props;
+  const [modalVisible, setModalVisible] = useState(false);
+
+  const handleAddPlatform = (platformValue: string) => {
+    onAddItem(platformValue);
+  };
 
   return (
     <View style={{ marginBottom: 8 }}>
@@ -138,9 +144,9 @@ export const SelectPlatformArea = (props: SelectAreaProps) => {
             (optional)
           </Text>
         </Text>
-        <PopupMenu onSelect={onAddItem} options={options}>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Text style={styles.selectText}>Add</Text>
-        </PopupMenu>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.selected}>
@@ -165,16 +171,23 @@ export const SelectPlatformArea = (props: SelectAreaProps) => {
           })
         )}
       </View>
+
+      <SearchablePlatformModal
+        visible={modalVisible}
+        onDismiss={() => setModalVisible(false)}
+        onSelect={handleAddPlatform}
+        selectedItems={selectedItems}
+      />
     </View>
   );
 };
 
 export const SelectLicenceArea = (props: SelectAreaProps) => {
   const { options, onAddItem, selectedItems, onRemoveItem, label } = props;
+  const [modalVisible, setModalVisible] = useState(false);
 
-  const handleAddLicenceWrapper = (value: string) => {
-    console.log("WRAPPER CALLED WITH:", value);
-    onAddItem(value);
+  const handleAddLicence = (licenceName: string) => {
+    onAddItem(licenceName);
   };
 
   return (
@@ -192,9 +205,9 @@ export const SelectLicenceArea = (props: SelectAreaProps) => {
             (optional)
           </Text>
         </Text>
-        <PopupMenu onSelect={handleAddLicenceWrapper} options={options}>
+        <TouchableOpacity onPress={() => setModalVisible(true)}>
           <Text style={styles.selectText}>Add</Text>
-        </PopupMenu>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.selected}>
@@ -219,6 +232,13 @@ export const SelectLicenceArea = (props: SelectAreaProps) => {
           })
         )}
       </View>
+
+      <SearchableLicenceModal
+        visible={modalVisible}
+        onDismiss={() => setModalVisible(false)}
+        onSelect={handleAddLicence}
+        selectedItems={selectedItems}
+      />
     </View>
   );
 };

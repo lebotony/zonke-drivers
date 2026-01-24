@@ -63,6 +63,9 @@ export const ProfileSetup = (props: ProfileSetupProps) => {
 
   const isDriver = user?.role === "driver";
 
+  console.log("rrrrrrrrrrrrrrrrrr", driverProfile?.location);
+  console.log("wwwwwwwwwwwwwwwwww", user?.location);
+
   const initialLocation = isDriver
     ? driverProfile?.location || {}
     : user?.location || {};
