@@ -88,11 +88,11 @@ export const Form = (props: FormProps) => {
           />
 
           <View>
-            {!isSignUp && (
+            {/* {!isSignUp && (
               <TouchableOpacity style={styles.forgotPasswordWrapper}>
                 <Text style={styles.forgotPassword}>Forgot password?</Text>
               </TouchableOpacity>
-            )}
+            )} */}
             <Fieldset
               control={control}
               name="password"

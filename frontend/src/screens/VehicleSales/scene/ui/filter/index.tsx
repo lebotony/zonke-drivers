@@ -12,6 +12,7 @@ import { AntDesign } from "@expo/vector-icons";
 
 import { PopupMenu } from "@/src/components/popup";
 import { Modal } from "@/src/components/modal";
+import { SearchableCountryModal } from "@/src/components/SearchableCountryModal";
 import { Colors } from "@/constants/ui";
 
 import { styles } from "./styles";
@@ -62,9 +63,11 @@ interface FilterModalProps {
   selectedBrands: string[];
   selectedFuelTypes: string[];
   selectedVehicleTypes: string[];
+  selectedCountry: string | null;
   priceRange: [number, number];
   onToggleBrand: (b: string) => void;
   onFuelToggle: (fuel: string) => void;
+  onCountryChange: (country: string | null) => void;
   onPriceChange: (low: number, high: number) => void;
   onApply: () => void;
   onToggleVehicleTypes: (value: string) => void;
@@ -79,9 +82,11 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   selectedBrands,
   selectedFuelTypes,
   selectedVehicleTypes,
+  selectedCountry,
   priceRange,
   onToggleBrand,
   onFuelToggle,
+  onCountryChange,
   onPriceChange,
   onApply,
   onToggleVehicleTypes,
@@ -92,6 +97,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
   const [localMaxPrice, setLocalMaxPrice] = useState(
     priceRange[1]?.toString() || ""
   );
+  const [showCountryModal, setShowCountryModal] = useState(false);
 
   const handleMinChange = (text: string) => {
     const numericText = text.replace(/[^0-9]/g, "");
@@ -181,6 +187,54 @@ export const FilterModal: React.FC<FilterModalProps> = ({
               </TouchableOpacity>
             )}
           />
+
+          <View style={styles.sectionDivider} />
+
+          <View style={styles.row}>
+            <Text style={styles.contentTitle}>Country</Text>
+            <TouchableOpacity onPress={() => setShowCountryModal(true)}>
+              <Text style={styles.viewAll}>
+                {selectedCountry || "Select"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {selectedCountry && (
+            <View
+              style={{
+                paddingHorizontal: 8,
+                paddingTop: 8,
+              }}
+            >
+              <TouchableOpacity
+                onPress={() => onCountryChange(null)}
+                style={[
+                  styles.chipBtn,
+                  {
+                    backgroundColor: Colors.mrDBlue,
+                    alignSelf: "flex-start",
+                  },
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.chipText,
+                    {
+                      color: Colors.white,
+                    },
+                  ]}
+                >
+                  {selectedCountry}
+                </Text>
+                <AntDesign
+                  name="close"
+                  size={14}
+                  color={Colors.white}
+                  style={{ marginLeft: 4 }}
+                />
+              </TouchableOpacity>
+            </View>
+          )}
 
           <View style={styles.sectionDivider} />
 
@@ -319,6 +373,16 @@ export const FilterModal: React.FC<FilterModalProps> = ({
           </View>
         </ScrollView>
       </View>
+
+      <SearchableCountryModal
+        visible={showCountryModal}
+        onDismiss={() => setShowCountryModal(false)}
+        onSelect={(country) => {
+          onCountryChange(country);
+          setShowCountryModal(false);
+        }}
+        selectedCountry={selectedCountry}
+      />
     </Modal>
   );
 };

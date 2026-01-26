@@ -7,17 +7,18 @@ import { compressImage } from "@/src/helpers/compressImage";
 
 import { AddVehicleFormValues } from "./scene/ui/addVehicle";
 
-export const createVehicle = async (params: AddVehicleFormValues) =>
+export const createVehicle = async (params: any) =>
   httpPost("/vehicles", params);
 
 export const updateVehicle = async (
   id: string,
-  params: Partial<AddVehicleFormValues>,
+  params: any,
 ) => httpPut("/vehicles", id, params);
 
 export const updateVehicleAsset = async (
   params: AddVehicleFormValues["asset"],
   id?: string,
+  on_sale?: boolean,
 ) => {
   const form = new FormData();
 
@@ -37,6 +38,11 @@ export const updateVehicleAsset = async (
       } as any);
 
       !isEmpty(id) && id !== "new" && form.append("vehicle_id", id as string);
+
+      // Pass on_sale field when creating new vehicle
+      if (isEmpty(id) || id === "new") {
+        form.append("on_sale", String(on_sale ?? false));
+      }
     }
 
     const response = await axios.post(

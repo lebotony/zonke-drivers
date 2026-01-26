@@ -12,6 +12,7 @@ export const fieldValidators = {
   engine_capacity: numbersZodValidation("Engine Capacity"),
   passengers: numbersZodValidation("Passengers"),
   price_fixed: numbersZodValidation("Rent per week"),
+  sale_price: numbersZodValidation("Vehicle price"),
   asset: z
     .object({
       file_path: z.string().optional(),
@@ -20,7 +21,24 @@ export const fieldValidators = {
     .optional(),
 };
 
+// Combined schema with all fields, conditional validation applied at runtime
 export const FormSchema = z.object({
+  model: fieldValidators.model,
+  mileage: fieldValidators.mileage,
+  payments_per_month: fieldValidators.payments_per_month.optional(),
+  type: fieldValidators.type,
+  brand: fieldValidators.brand,
+  manual: fieldValidators.manual,
+  fuel_type: fieldValidators.fuel_type,
+  engine_capacity: fieldValidators.engine_capacity,
+  passengers: fieldValidators.passengers,
+  asset: fieldValidators.asset,
+  price_fixed: fieldValidators.price_fixed.optional(),
+  sale_price: fieldValidators.sale_price.optional(),
+});
+
+// Schema for vehicle rental
+export const FormSchemaRent = z.object({
   model: fieldValidators.model,
   mileage: fieldValidators.mileage,
   payments_per_month: fieldValidators.payments_per_month,
@@ -32,4 +50,21 @@ export const FormSchema = z.object({
   passengers: fieldValidators.passengers,
   asset: fieldValidators.asset,
   price_fixed: fieldValidators.price_fixed,
+  sale_price: z.string().optional(),
+});
+
+// Schema for vehicle sale
+export const FormSchemaSale = z.object({
+  model: fieldValidators.model,
+  mileage: fieldValidators.mileage,
+  type: fieldValidators.type,
+  brand: fieldValidators.brand,
+  manual: fieldValidators.manual,
+  fuel_type: fieldValidators.fuel_type,
+  engine_capacity: fieldValidators.engine_capacity,
+  passengers: fieldValidators.passengers,
+  asset: fieldValidators.asset,
+  sale_price: fieldValidators.sale_price,
+  payments_per_month: z.string().optional(),
+  price_fixed: z.string().optional(),
 });

@@ -64,9 +64,7 @@ export const Card = (props: CardProps) => {
       const validation = validateVehicleActivation(vehicle);
       if (!validation.isValid) {
         // Redirect to vehicle page with showActivationModal flag
-        router.push(
-          `/(tabs)/vehicle/${vehicle?.id}?showActivationModal=true`
-        );
+        router.push(`/(tabs)/vehicle/${vehicle?.id}?showActivationModal=true`);
         return;
       }
     }
@@ -209,51 +207,81 @@ export const Card = (props: CardProps) => {
             </View>
           </View>
         </TouchableOpacity>
-        <View style={styles.payments}>
-          <View style={styles.paymentCard}>
-            <Text style={styles.paymentText}>Recent Payment</Text>
-            {!isEmpty(vehicleDriver?.last_payment?.date) && (
-              <Text style={styles.dateText}>
-                {formatDateShort(vehicleDriver?.last_payment?.date)}
-              </Text>
-            )}
-            <Text style={styles.amountText}>
-              R{vehicleDriver?.last_payment?.amount ?? 0}
-            </Text>
-          </View>
-          <View style={styles.paymentCard}>
-            <Text style={styles.paymentText}>Total Paid</Text>
-            <Text style={styles.amountText}>
-              R{vehicleDriver?.total_payments ?? 0}
-            </Text>
-          </View>
-        </View>
-        <View style={styles.actionsContainer}>
-          {!noVehicleDrivers && (
-            <>
-              <CustomButton
-                onPress={() => router.push(`/details/${vehicle?.id}`)}
-                customStyle={styles.viewDetailsBtn}
-              >
-                <Text style={styles.btnText}>View Details</Text>
-              </CustomButton>
 
-              {vehicle?.on_sale && (
-                <CustomButton
-                  onPress={() =>
-                    router.push(`/interestedBuyers/${vehicle.id}` as any)
-                  }
-                  customStyle={styles.interestedBuyersBtn}
-                >
-                  <Text style={styles.interestedBuyersBtnText}>
-                    Interested Buyers
-                  </Text>
-                </CustomButton>
+        {/* Inactive vehicle notice */}
+        {!isActive && (
+          <TouchableOpacity
+            onPress={handleSetActive}
+            style={styles.inactiveNotice}
+            activeOpacity={0.7}
+          >
+            <Text style={styles.inactiveNoticeText}>
+              Vehicles must be activated to appear in searches, want to{" "}
+              <Text style={styles.activateText}>activate</Text>?
+            </Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Payment boxes - Only show for rental vehicles */}
+        {!vehicle?.on_sale && (
+          <View style={styles.payments}>
+            <View style={styles.paymentCard}>
+              <Text style={styles.paymentText}>Recent Payment</Text>
+              {!isEmpty(vehicleDriver?.last_payment?.date) && (
+                <Text style={styles.dateText}>
+                  {formatDateShort(vehicleDriver?.last_payment?.date)}
+                </Text>
               )}
-            </>
+              <Text style={styles.amountText}>
+                R{vehicleDriver?.last_payment?.amount ?? 0}
+              </Text>
+            </View>
+            <View style={styles.paymentCard}>
+              <Text style={styles.paymentText}>Total Paid</Text>
+              <Text style={styles.amountText}>
+                R{vehicleDriver?.total_payments ?? 0}
+              </Text>
+            </View>
+          </View>
+        )}
+        <View style={styles.actionsContainer}>
+          {/* For vehicles with drivers */}
+          {!noVehicleDrivers && !vehicle?.on_sale && (
+            <CustomButton
+              onPress={() => router.push(`/details/${vehicle?.id}`)}
+              customStyle={styles.viewDetailsBtn}
+            >
+              <Text style={styles.btnText}>View Details</Text>
+            </CustomButton>
           )}
 
-          {noVehicleDrivers && (
+          {/* For vehicles on sale - show Interested Buyers */}
+          {vehicle?.on_sale && (
+            <View style={styles.applicantBtnWrapper}>
+              <CustomButton
+                onPress={() =>
+                  router.push(`/interestedBuyers/${vehicle.id}` as any)
+                }
+                customStyle={styles.interestedBuyersBtn}
+              >
+                <Text style={styles.interestedBuyersBtnText}>
+                  Interested Buyers
+                </Text>
+              </CustomButton>
+              {(vehicle?.buyers_count ?? 0) > 0 && (
+                <View style={styles.unreadBadge}>
+                  <Text style={styles.unreadBadgeText}>
+                    {(vehicle?.buyers_count ?? 0) > 99
+                      ? "99+"
+                      : vehicle?.buyers_count}
+                  </Text>
+                </View>
+              )}
+            </View>
+          )}
+
+          {/* For rental vehicles with no drivers - show View Applicants */}
+          {noVehicleDrivers && !vehicle?.on_sale && (
             <View style={styles.applicantBtnWrapper}>
               <CustomButton
                 onPress={() => router.push(`/applicants/${vehicle.id}`)}

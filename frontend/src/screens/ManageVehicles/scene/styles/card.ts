@@ -228,4 +228,22 @@ export const styles = StyleSheet.create({
     color: Colors.white,
     textAlign: "center",
   },
+  inactiveNotice: {
+    marginHorizontal: 20,
+    marginBottom: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+    backgroundColor: "rgba(235, 99, 75, 0.1)",
+    borderRadius: 10,
+  },
+  inactiveNoticeText: {
+    fontSize: 13,
+    fontWeight: 500,
+    color: Colors.lightRed,
+    lineHeight: 18,
+  },
+  activateText: {
+    fontWeight: 600,
+    color: Colors.lightGreen,
+  },
 });

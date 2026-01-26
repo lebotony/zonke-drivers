@@ -4,6 +4,7 @@ defmodule Backend.Applications.VehicleApplications do
   alias Backend.Notifications.Notifications
   alias Backend.Applications.Queries.VehicleApplicationBy
   alias Backend.Drivers.{Drivers, Driver}
+  alias Backend.Vehicles.VehicleDriver
   alias Backend.{Repo, PaginateHelper}
 
   import Ecto.Query
@@ -69,19 +70,49 @@ defmodule Backend.Applications.VehicleApplications do
   end
 
   def get_vehicle_applications(params) do
+    driver_query = build_driver_preload_query()
+
     data =
       VehicleApplicationBy.base_query()
       |> VehicleApplicationBy.by_vehicle(params.vehicle_id)
       |> order_by([va], desc: va.inserted_at)
+      |> preload(driver: ^driver_query)
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
-    applications_with_drivers =
-      Enum.map(data.entries, fn vehicle_application ->
-        {:ok, driver} = Drivers.get_driver(vehicle_application.driver_id, :public)
-        Map.put(vehicle_application, :driver, driver)
-      end)
+    {:ok, data.entries, PaginateHelper.prep_paginate(data)}
+  end
 
-    {:ok, applications_with_drivers, PaginateHelper.prep_paginate(data)}
+  defp build_driver_preload_query do
+    subquery =
+      from(vd in VehicleDriver,
+        where: vd.driver_id == parent_as(:driver).id,
+        select: %{
+          previous_vehicles: count(vd.id),
+          total_accidents: coalesce(sum(vd.accidents), 0)
+        }
+      )
+
+    from(d in Driver,
+      as: :driver,
+      join: u in assoc(d, :user),
+      as: :user,
+      join: a in assoc(u, :asset),
+      as: :asset,
+      left_lateral_join: vd_stats in subquery(subquery),
+      as: :vd_stats,
+      on: true,
+      select_merge: %{
+        d
+        | email: u.email,
+          first_name: u.first_name,
+          last_name: u.last_name,
+          username: u.username,
+          user_id: u.id,
+          previous_vehicles: vd_stats.previous_vehicles,
+          total_accidents: vd_stats.total_accidents,
+          asset_filename: a.filename
+      }
+    )
   end
 
   def set_va_seen_true(va_id) do

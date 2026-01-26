@@ -12,10 +12,7 @@ import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import Toast from "react-native-toast-message";
 
-import {
-  Ionicons,
-  MaterialCommunityIcons,
-} from "@expo/vector-icons";
+import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { capitalizeFirstLetter } from "@/src/utils";
 import { Colors } from "@/constants/ui";
@@ -27,11 +24,24 @@ import { useAuth } from "@/src/authContext";
 import { styles } from "./styles/vehicleProfileView";
 import { expressPurchaseInterest } from "../../actions";
 import { SimpleAuthModal } from "./SimpleAuthModal";
+import { useCustomQuery } from "@/src/useQueryContext";
 
-const SpecCard = ({ icon, title, value }: { icon: string; title: string; value: string | number }) => (
+const SpecCard = ({
+  icon,
+  title,
+  value,
+}: {
+  icon: string;
+  title: string;
+  value: string | number;
+}) => (
   <View style={styles.specCard}>
     <View style={styles.specIconContainer}>
-      <MaterialCommunityIcons name={icon as any} size={22} color={Colors.mrDBlue} />
+      <MaterialCommunityIcons
+        name={icon as any}
+        size={22}
+        color={Colors.mrDBlue}
+      />
     </View>
     <Text style={styles.specTitle}>{title}</Text>
     <Text style={styles.specValue}>{value}</Text>
@@ -44,15 +54,27 @@ type VehicleProfileViewProps = {
   onNavigateToAuth: () => void;
 };
 
-export const VehicleProfileView = ({ vehicle, onClose, onNavigateToAuth }: VehicleProfileViewProps) => {
+export const VehicleProfileView = ({
+  vehicle,
+  onClose,
+  onNavigateToAuth,
+}: VehicleProfileViewProps) => {
   const [expanded, setExpanded] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
+
+  const { getCachedData } = useCustomQuery();
+  const { user } = getCachedData(["user"]);
 
   const { authState, setPendingVehicleId } = useAuth();
   const width = Dimensions.get("window").width;
 
   const handleExpressInterest = () => {
+    if (vehicle.user.id === user?.id) {
+      AppToast("You cannot express interest in your own vehicle");
+      return;
+    }
+
     if (!authState?.authenticated) {
       setPendingVehicleId?.(vehicle.id);
       setShowAuthModal(true);
@@ -70,13 +92,20 @@ export const VehicleProfileView = ({ vehicle, onClose, onNavigateToAuth }: Vehic
       });
   };
 
-  const locationText = [vehicle?.user?.location?.city, vehicle?.user?.location?.country]
+  const locationText = [
+    vehicle?.user?.location?.city,
+    vehicle?.user?.location?.country,
+  ]
     .filter(Boolean)
     .join(", ");
 
   return (
     <View style={styles.container}>
-      <StatusBar barStyle="light-content" backgroundColor="transparent" translucent />
+      <StatusBar
+        barStyle="light-content"
+        backgroundColor="transparent"
+        translucent
+      />
       <ScrollView
         showsVerticalScrollIndicator={false}
         bounces={false}
@@ -93,7 +122,7 @@ export const VehicleProfileView = ({ vehicle, onClose, onNavigateToAuth }: Vehic
 
           {/* Sophisticated Gradient Overlay */}
           <LinearGradient
-            colors={['rgba(0,0,0,0)', 'rgba(0,0,0,0.3)', 'rgba(0,0,0,0.75)']}
+            colors={["rgba(0,0,0,0)", "rgba(0,0,0,0.3)", "rgba(0,0,0,0.75)"]}
             locations={[0, 0.5, 1]}
             style={styles.heroGradient}
           />
@@ -127,11 +156,14 @@ export const VehicleProfileView = ({ vehicle, onClose, onNavigateToAuth }: Vehic
             <View style={styles.titleRow}>
               <View style={styles.titleContent}>
                 <Text style={styles.vehicleTitle}>
-                  {capitalizeFirstLetter(vehicle?.brand)} {capitalizeFirstLetter(vehicle?.model)}
+                  {capitalizeFirstLetter(vehicle?.brand)}{" "}
+                  {capitalizeFirstLetter(vehicle?.model)}
                 </Text>
                 {vehicle?.model_year && (
                   <View style={styles.yearBadge}>
-                    <Text style={styles.yearBadgeText}>{vehicle.model_year}</Text>
+                    <Text style={styles.yearBadgeText}>
+                      {vehicle.model_year}
+                    </Text>
                   </View>
                 )}
               </View>
@@ -139,7 +171,9 @@ export const VehicleProfileView = ({ vehicle, onClose, onNavigateToAuth }: Vehic
               {/* Premium Price Display - Sale Price */}
               {vehicle?.sale_price?.value && (
                 <View style={styles.priceTag}>
-                  <Text style={styles.priceValue}>R{vehicle.sale_price.value}</Text>
+                  <Text style={styles.priceValue}>
+                    R{vehicle.sale_price.value}
+                  </Text>
                   <Text style={styles.priceLabel}>sale price</Text>
                 </View>
               )}
@@ -150,18 +184,30 @@ export const VehicleProfileView = ({ vehicle, onClose, onNavigateToAuth }: Vehic
               {locationText && (
                 <View style={styles.metadataItem}>
                   <View style={styles.metadataIconContainer}>
-                    <Ionicons name="location-sharp" size={14} color={Colors.mrDBlue} />
+                    <Ionicons
+                      name="location-sharp"
+                      size={14}
+                      color={Colors.mrDBlue}
+                    />
                   </View>
-                  <Text style={styles.metadataText} numberOfLines={1}>{locationText}</Text>
+                  <Text style={styles.metadataText} numberOfLines={1}>
+                    {locationText}
+                  </Text>
                 </View>
               )}
 
               {vehicle?.rating > 0 && (
                 <View style={styles.metadataItem}>
                   <View style={styles.metadataIconContainer}>
-                    <Ionicons name="star" size={14} color={Colors.lightYellow} />
+                    <Ionicons
+                      name="star"
+                      size={14}
+                      color={Colors.lightYellow}
+                    />
                   </View>
-                  <Text style={styles.metadataText}>{vehicle.rating.toFixed(1)} Rating</Text>
+                  <Text style={styles.metadataText}>
+                    {vehicle.rating.toFixed(1)} Rating
+                  </Text>
                 </View>
               )}
             </View>
@@ -190,7 +236,9 @@ export const VehicleProfileView = ({ vehicle, onClose, onNavigateToAuth }: Vehic
               </Text>
               {vehicle.description.length > 120 && (
                 <TouchableOpacity
-                  onPress={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                  onPress={() =>
+                    setIsDescriptionExpanded(!isDescriptionExpanded)
+                  }
                   style={styles.readMoreButton}
                 >
                   <Text style={styles.readMoreText}>
@@ -233,7 +281,11 @@ export const VehicleProfileView = ({ vehicle, onClose, onNavigateToAuth }: Vehic
               <SpecCard
                 icon="engine"
                 title="Engine"
-                value={vehicle?.engine_capacity ? `${vehicle.engine_capacity}L` : "N/A"}
+                value={
+                  vehicle?.engine_capacity
+                    ? `${vehicle.engine_capacity}L`
+                    : "N/A"
+                }
               />
               <SpecCard
                 icon="car-info"
@@ -252,7 +304,11 @@ export const VehicleProfileView = ({ vehicle, onClose, onNavigateToAuth }: Vehic
           style={styles.primaryButton}
           activeOpacity={0.85}
         >
-          <MaterialCommunityIcons name="tag-heart" size={18} color={Colors.white} />
+          <MaterialCommunityIcons
+            name="tag-heart"
+            size={18}
+            color={Colors.white}
+          />
           <Text style={styles.primaryButtonText}>Express Interest</Text>
         </TouchableOpacity>
       </View>

@@ -25,7 +25,6 @@ import { ResetFAB } from "../Vehicles/scene/ui/ResetFAB";
 import { FilterModal } from "./scene/ui/filter";
 import { useAuth } from "@/src/authContext";
 import { useCustomQuery } from "@/src/useQueryContext";
-import { getCountryFromIP } from "@/src/helpers/getCountryFromIP";
 
 type VehicleSalesScreenProps = {
   toggleSales: () => void;
@@ -52,6 +51,7 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
   const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>(
     [],
   );
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
 
   const [applyFilter, setApplyFilter] = useState<boolean>(false);
   const [reset, setReset] = useState<boolean>(false);
@@ -68,8 +68,6 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
   const [isLoadingTargetVehicle, setIsLoadingTargetVehicle] = useState(false);
   const targetVehicleFetchedRef = useRef<string | null>(null);
 
-  const [userCountry, setUserCountry] = useState<string | null>(null);
-
   const queryClient = useQueryClient();
 
   const filterParams = {
@@ -77,6 +75,7 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
     fuel_types: selectedFuelTypes,
     price_range: priceRange,
     types: selectedVehicleTypes,
+    country: selectedCountry,
   };
 
   const getFilters = () => {
@@ -92,7 +91,6 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
   const queryFn = ({ pageParam = 1 }) => {
     const filters = {
       search_term: debouncedSearchTerm,
-      country: userCountry,
       ...getFilters(),
     };
 
@@ -132,22 +130,6 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
         ...paginatedVehicles.filter((v) => v?.id !== targetVehicle.id),
       ]
     : paginatedVehicles;
-
-  useEffect(() => {
-    if (authState?.authenticated && user?.location?.country) {
-      setUserCountry(user.location.country);
-    } else if (!authState?.authenticated) {
-      getCountryFromIP()
-        .then((country) => {
-          if (country) {
-            setUserCountry(country);
-          }
-        })
-        .catch(() => {
-          setUserCountry(null);
-        });
-    }
-  }, [authState?.authenticated, user?.location?.country]);
 
   useEffect(() => {
     if (
@@ -210,19 +192,13 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
     }
   }, [reset]);
 
-  useEffect(() => {
-    if (userCountry !== null) {
-      queryClient.removeQueries({ queryKey });
-      refetch();
-    }
-  }, [userCountry]);
-
   const isDefaultState =
     selectedBrands.length === 0 &&
     selectedVehicleTypes.length === 0 &&
     selectedFuelTypes.length === 0 &&
     priceRange[0] === 0 &&
-    priceRange[1] === 0;
+    priceRange[1] === 0 &&
+    selectedCountry === null;
 
   const toggleBrand = (id: string) => {
     setSelectedBrands((s) =>
@@ -238,6 +214,7 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
     setApplyFilter(false);
     setPriceRange([0, 0]);
     setSelectedFuelTypes([]);
+    setSelectedCountry(null);
     setReset((prev) => !prev);
 
     dynamicHeaderRef.current?.showHeader();
@@ -401,6 +378,7 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
         selectedBrands={selectedBrands}
         selectedFuelTypes={selectedFuelTypes}
         selectedVehicleTypes={selectedVehicleTypes}
+        selectedCountry={selectedCountry}
         priceRange={priceRange}
         onToggleVehicleTypes={handleSetSelectedVehicleType}
         onToggleBrand={toggleBrand}
@@ -409,6 +387,7 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
             s.includes(f) ? s.filter((x) => x !== f) : [...s, f],
           )
         }
+        onCountryChange={(country) => setSelectedCountry(country)}
         onPriceChange={handleValueChange}
         onApply={handleApplyFilter}
       />

@@ -6,7 +6,7 @@ defmodule Backend.Vehicles.Vehicle do
   alias Backend.Drivers.Driver
   alias Backend.Ecto.Embeds.PriceFixed
   alias Backend.Assets.Asset
-  alias Backend.Applications.VehicleApplication
+  alias Backend.Applications.{VehicleApplication, VehiclePurchaseInterest}
   alias Backend.Reviews.Review
   alias Backend.Ecto.EctoEnums.{VehicleTypeEnum, FuelTypeEnum}
 
@@ -50,11 +50,13 @@ defmodule Backend.Vehicles.Vehicle do
 
     field(:rank_value, :decimal, virtual: true)
     field(:unseen_applications_count, :integer, virtual: true)
+    field(:buyers_count, :integer, virtual: true)
 
     belongs_to(:user, User)
 
     has_one(:asset, Asset)
     has_many(:vehicle_applications, VehicleApplication)
+    has_many(:vehicle_purchase_interests, VehiclePurchaseInterest)
     has_many(:vehicle_drivers, VehicleDriver)
     has_many(:reviews, Review)
 
