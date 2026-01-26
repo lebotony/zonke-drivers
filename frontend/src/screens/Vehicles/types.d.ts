@@ -19,6 +19,7 @@ type Vehicle = {
   applications: Driver[];
   rating: number;
   unseen_applications_count?: number;
+  buyers_count?: number;
   on_sale?: boolean;
   sale_price?: PriceFixed;
 };

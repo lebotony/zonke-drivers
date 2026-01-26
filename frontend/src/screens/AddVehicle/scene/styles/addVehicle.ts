@@ -36,6 +36,40 @@ export const styles = StyleSheet.create({
     lineHeight: 22,
   },
 
+  // Toggle Section
+  toggleSection: {
+    flexDirection: "row",
+    marginHorizontal: 16,
+    marginBottom: 24,
+    backgroundColor: Colors.lighterGrey,
+    borderRadius: 12,
+    padding: 4,
+    gap: 4,
+  },
+  toggleButton: {
+    flex: 1,
+    paddingVertical: 12,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  toggleButtonActive: {
+    backgroundColor: Colors.white,
+    ...shadowStyles,
+    shadowOpacity: 0.1,
+    elevation: 2,
+  },
+  toggleButtonText: {
+    fontSize: 15,
+    fontWeight: 500,
+    color: Colors.mediumGrey,
+  },
+  toggleButtonTextActive: {
+    fontSize: 15,
+    fontWeight: 600,
+    color: Colors.mrDBlue,
+  },
+
   // Section Layout
   section: {
     marginBottom: 24,

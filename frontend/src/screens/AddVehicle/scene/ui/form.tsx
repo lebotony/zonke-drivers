@@ -9,11 +9,12 @@ import { styles } from "../styles/form";
 type AddVehicleFormProps = {
   control: Control<AddVehicleFormValues, any, AddVehicleFormValues>;
   errors: FieldErrors<AddVehicleFormValues>;
+  isForSale: boolean;
 };
 
-const addFormDef = [
+const rentFormDef = [
   {
-    name: "price_fixed",
+    name: "price_fixed" as const,
     placeholder: "36",
     label: "Rent per week",
     icon: "monetization-on",
@@ -21,7 +22,7 @@ const addFormDef = [
     decimalPad: true,
   },
   {
-    name: "payments_per_month",
+    name: "payments_per_month" as const,
     placeholder: "4",
     label: "No. of Payments per month",
     icon: "monetization-on",
@@ -29,14 +30,14 @@ const addFormDef = [
     decimalPad: true,
   },
   {
-    name: "model",
+    name: "model" as const,
     placeholder: "Corolla",
     label: "Car Model",
     icon: "directions-car",
     iconSize: 22,
   },
   {
-    name: "mileage",
+    name: "mileage" as const,
     placeholder: "10 000",
     label: "Car Mileage (km)",
     icon: "place",
@@ -44,7 +45,7 @@ const addFormDef = [
     decimalPad: true,
   },
   {
-    name: "engine_capacity",
+    name: "engine_capacity" as const,
     placeholder: "1.5",
     label: "Engine Capacity",
     icon: "local-gas-station",
@@ -52,7 +53,49 @@ const addFormDef = [
     decimalPad: true,
   },
   {
-    name: "passengers",
+    name: "passengers" as const,
+    placeholder: "3",
+    label: "Passengers",
+    icon: "people",
+    iconSize: 22,
+    decimalPad: true,
+  },
+];
+
+const saleFormDef = [
+  {
+    name: "sale_price" as const,
+    placeholder: "15000",
+    label: "Vehicle Price",
+    icon: "monetization-on",
+    iconSize: 22,
+    decimalPad: true,
+  },
+  {
+    name: "model" as const,
+    placeholder: "Corolla",
+    label: "Car Model",
+    icon: "directions-car",
+    iconSize: 22,
+  },
+  {
+    name: "mileage" as const,
+    placeholder: "10 000",
+    label: "Car Mileage (km)",
+    icon: "place",
+    iconSize: 22,
+    decimalPad: true,
+  },
+  {
+    name: "engine_capacity" as const,
+    placeholder: "1.5",
+    label: "Engine Capacity",
+    icon: "local-gas-station",
+    iconSize: 22,
+    decimalPad: true,
+  },
+  {
+    name: "passengers" as const,
     placeholder: "3",
     label: "Passengers",
     icon: "people",
@@ -62,11 +105,12 @@ const addFormDef = [
 ];
 
 export const AddVehicleForm = (props: AddVehicleFormProps) => {
-  const { control, errors } = props;
+  const { control, errors, isForSale } = props;
+  const formDef = isForSale ? saleFormDef : rentFormDef;
 
   return (
     <View style={styles.container}>
-      {addFormDef.map((item, index) => (
+      {formDef.map((item, index) => (
         <Fieldset
           key={`${index}-${item.name}`}
           control={control}
@@ -77,7 +121,6 @@ export const AddVehicleForm = (props: AddVehicleFormProps) => {
           inputIconSize={item.iconSize}
           errors={errors}
           customStyles={{ flex: 1 }}
-          required={item.required}
           decimalPad={item.decimalPad}
         />
       ))}

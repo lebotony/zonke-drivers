@@ -9,7 +9,7 @@ type ValidationResult = {
 
 /**
  * Validates if a vehicle has all required fields for activation
- * Required fields: model, vehicle image (asset), rent per week (price_fixed)
+ * Required fields: model, vehicle image (asset), price (price_fixed for rent or sale_price for sale)
  */
 export const validateVehicleActivation = (
   vehicle: Partial<Vehicle>
@@ -26,9 +26,17 @@ export const validateVehicleActivation = (
     missingFields.push("image");
   }
 
-  // Check rent per week (price_fixed)
-  if (!vehicle?.price_fixed?.value || vehicle.price_fixed.value <= 0) {
-    missingFields.push("price");
+  // Check price based on vehicle type
+  if (vehicle?.on_sale) {
+    // For sale vehicles, check sale_price
+    if (!vehicle?.sale_price?.value || vehicle.sale_price.value <= 0) {
+      missingFields.push("price");
+    }
+  } else {
+    // For rental vehicles, check price_fixed
+    if (!vehicle?.price_fixed?.value || vehicle.price_fixed.value <= 0) {
+      missingFields.push("price");
+    }
   }
 
   return {

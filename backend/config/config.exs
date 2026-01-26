@@ -72,4 +72,4 @@ config :backend, Oban,
        {"0 0 * * *", Backend.Workers.DriverRatingWorker}
      ]}
   ],
-  queues: [default: 10]
+  queues: [default: 5]

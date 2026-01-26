@@ -35,7 +35,7 @@ import { VehicleActivationModal } from "@/src/components/modal/VehicleActivation
 import { styles } from "../styles/addVehicle";
 import { CardFormDef } from "../utils/cardFormDef";
 import { Card } from "./card";
-import { FormSchema } from "../../schema";
+import { FormSchema, FormSchemaRent, FormSchemaSale } from "../../schema";
 import { AddVehicleForm } from "./form";
 import {
   createVehicle,
@@ -59,12 +59,14 @@ export const AddVehicle = () => {
     ? find(userVehicles, { id: vehicleId })
     : undefined;
 
+  // Determine initial mode based on vehicle data
+  const [isForSale, setIsForSale] = useState(vehicle?.on_sale ?? false);
+
   const formValues = {
     model: vehicle?.model || "",
     mileage: (vehicle?.mileage && String(vehicle?.mileage)) || "",
     payments_per_month:
-      (vehicle?.payments_per_month && String(vehicle?.payments_per_month)) ||
-      "",
+      (vehicle?.payments_per_month && String(vehicle?.payments_per_month)) || "",
     type: vehicle?.type || "",
     brand: vehicle?.brand || "",
     manual: vehicle?.manual ?? false,
@@ -78,7 +80,8 @@ export const AddVehicle = () => {
           filename: vehicle.asset.filename || undefined,
         }
       : undefined,
-    price_fixed: vehicle?.price_fixed?.value || "",
+    price_fixed: (vehicle?.price_fixed?.value && String(vehicle.price_fixed.value)) || "",
+    sale_price: (vehicle?.sale_price?.value && String(vehicle.sale_price.value)) || "",
   };
 
   const {
@@ -89,7 +92,7 @@ export const AddVehicle = () => {
     reset,
     formState: { errors, isSubmitting },
   } = useForm<AddVehicleFormValues>({
-    resolver: zodResolver(FormSchema),
+    resolver: zodResolver(isForSale ? FormSchemaSale : FormSchemaRent),
     defaultValues: formValues,
     mode: "onChange",
   });
@@ -97,8 +100,20 @@ export const AddVehicle = () => {
   useEffect(() => {
     if (vehicle) {
       reset(formValues);
+      setIsForSale(vehicle.on_sale ?? false);
     }
-  }, [vehicle]);
+  }, [vehicle?.id, vehicle?.on_sale]);
+
+  // Handle mode change
+  const handleModeChange = (saleMode: boolean) => {
+    setIsForSale(saleMode);
+    reset({
+      ...watch(),
+      price_fixed: "",
+      sale_price: "",
+      payments_per_month: "",
+    });
+  };
 
   const { asset: initialAsset, ...initialValues } = formValues;
   const { asset: currentAsset, ...currentValues } = watch();
@@ -193,11 +208,50 @@ export const AddVehicle = () => {
     const countryInfo = userCountry ? getCountryByName(userCountry) : undefined;
     const currency = countryInfo?.currencySymbol || "$"; // Fallback to "$" if not found
 
-    const params = {
+    const priceFixed = !isForSale && data.price_fixed
+      ? { value: Number(data.price_fixed), currency }
+      : undefined;
+    const salePrice = isForSale && data.sale_price
+      ? { value: Number(data.sale_price), currency }
+      : undefined;
+
+    // Automatically set active to true only when completing vehicle for the first time
+    // Check if vehicle was incomplete before, and is now complete after form submission
+    let active: boolean | undefined = undefined;
+
+    // Build the updated vehicle object with new form data
+    const updatedVehicle: Partial<Vehicle> = {
+      model: data.model,
+      asset: vehicle?.asset || data.asset,
+      on_sale: isForSale,
+      price_fixed: priceFixed,
+      sale_price: salePrice,
+    };
+
+    const newValidation = validateVehicleActivation(updatedVehicle);
+
+    if (isNewVehicle) {
+      // For new vehicles, auto-activate if all fields are complete
+      if (newValidation.isValid) {
+        active = true;
+      }
+    } else if (vehicle) {
+      // For existing vehicles, only auto-activate if it was previously incomplete
+      const previousValidation = validateVehicleActivation(vehicle);
+      const wasIncomplete = !previousValidation.isValid;
+      const isNowComplete = newValidation.isValid;
+
+      if (wasIncomplete && isNowComplete) {
+        active = true;
+      }
+    }
+
+    const params: any = {
       ...data,
-      price_fixed: data.price_fixed
-        ? { value: Number(data.price_fixed), currency }
-        : undefined,
+      on_sale: isForSale,
+      price_fixed: priceFixed,
+      sale_price: salePrice,
+      ...(active !== undefined && { active }),
     };
 
     upsertVehicle(params);
@@ -215,15 +269,20 @@ export const AddVehicle = () => {
       : router.push("/(tabs)/manage");
   };
 
-  const handleSelectImage = () =>
-    pickImage(
+  const handleSelectImage = () => {
+    // Wrap updateVehicleAsset to pass the on_sale state
+    const uploadAssetWithSaleStatus = (asset: any, id?: string) =>
+      updateVehicleAsset(asset, id, isForSale);
+
+    return pickImage(
       setValue,
       undefined,
-      updateVehicleAsset,
+      uploadAssetWithSaleStatus,
       vehicleId,
       updatePaginatedAsset,
       setIsUploadingImage,
     );
+  };
 
   const handleSetActive = () => {
     // If trying to activate (not deactivate), validate first
@@ -290,6 +349,44 @@ export const AddVehicle = () => {
             </View>
           </View>
 
+          {/* Rent/Sale Toggle Switch */}
+          <View style={styles.toggleSection}>
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                !isForSale && styles.toggleButtonActive,
+              ]}
+              onPress={() => handleModeChange(false)}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  styles.toggleButtonText,
+                  !isForSale && styles.toggleButtonTextActive,
+                ]}
+              >
+                For Rent
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.toggleButton,
+                isForSale && styles.toggleButtonActive,
+              ]}
+              onPress={() => handleModeChange(true)}
+              activeOpacity={0.7}
+            >
+              <Text
+                style={[
+                  styles.toggleButtonText,
+                  isForSale && styles.toggleButtonTextActive,
+                ]}
+              >
+                For Sale
+              </Text>
+            </TouchableOpacity>
+          </View>
+
           {/* Premium Image Upload Card */}
           <View style={styles.imageCard}>
             <Text style={styles.sectionLabel}>Vehicle Photo</Text>
@@ -331,8 +428,8 @@ export const AddVehicle = () => {
             </TouchableOpacity>
           </View>
 
-          {/* Driver Assignment Section */}
-          {!isNewVehicle && (
+          {/* Driver Assignment Section - Only for rental vehicles */}
+          {!isNewVehicle && !isForSale && (
             <View style={styles.section}>
               <Text style={styles.sectionLabel}>Current Driver</Text>
               <View style={styles.driverCard}>
@@ -400,7 +497,7 @@ export const AddVehicle = () => {
           {/* Specifications Section */}
           <View style={styles.section}>
             <Text style={styles.sectionLabel}>Specifications & Pricing</Text>
-            <AddVehicleForm control={control} errors={errors} />
+            <AddVehicleForm control={control} errors={errors} isForSale={isForSale} />
           </View>
 
           {/* Action Buttons */}

@@ -3,7 +3,7 @@ defmodule Backend.Vehicles.Vehicles do
   alias Backend.{Repo, PaginateHelper}
   alias Backend.Vehicles.{Vehicle, Payment, VehicleDriver}
   alias Backend.Vehicles.Queries.{VehicleDriverBy, VehicleBy}
-  alias Backend.Applications.VehicleApplication
+  alias Backend.Applications.{VehicleApplication, VehiclePurchaseInterest}
   alias Backend.Reviews.Review
   alias Backend.Assets.{Assets, Asset}
   alias Backend.Drivers.{Driver, Drivers}
@@ -40,7 +40,10 @@ defmodule Backend.Vehicles.Vehicles do
   end
 
   def create_vehicle_and_asset(params, session) do
-    case create(%{}, session) do
+    on_sale = Map.get(params, :on_sale, false)
+    IO.inspect(on_sale, label: "on_sale value")
+
+    case create(%{on_sale: on_sale}, session) do
       {:ok, vehicle} ->
         Map.put(params, :vehicle_id, vehicle.id)
         |> Assets.upload_and_save()
@@ -77,10 +80,16 @@ defmodule Backend.Vehicles.Vehicles do
       %Vehicle{model: nil} ->
         {:error, :missing_fields}
 
-      %Vehicle{price_fixed: nil} ->
+      %Vehicle{asset: nil} ->
         {:error, :missing_fields}
 
-      %Vehicle{asset: nil} = vehicle ->
+      %Vehicle{on_sale: true, sale_price: nil} ->
+        {:error, :missing_fields}
+
+      %Vehicle{on_sale: false, price_fixed: nil} ->
+        {:error, :missing_fields}
+
+      %Vehicle{on_sale: nil, price_fixed: nil} ->
         {:error, :missing_fields}
 
       %Vehicle{} = vehicle ->
@@ -165,6 +174,14 @@ defmodule Backend.Vehicles.Vehicles do
         select: %{count: count(va.id)}
       )
 
+    unseen_buyers_count_subquery =
+      from(vpi in VehiclePurchaseInterest,
+        where:
+          vpi.seen == false and
+            vpi.vehicle_id == parent_as(:vehicle).id,
+        select: %{count: count(vpi.id)}
+      )
+
     data =
       VehicleBy.base_query()
       |> VehicleBy.by_user(user_id)
@@ -174,9 +191,14 @@ defmodule Backend.Vehicles.Vehicles do
         as: :unseen_count,
         on: true
       )
-      |> select_merge([vehicle: v, unseen_count: uc], %{
+      |> join(:left_lateral, [v], bc in subquery(unseen_buyers_count_subquery),
+        as: :buyers_count,
+        on: true
+      )
+      |> select_merge([vehicle: v, unseen_count: uc, buyers_count: bc], %{
         v
-        | unseen_applications_count: coalesce(uc.count, 0)
+        | unseen_applications_count: coalesce(uc.count, 0),
+          buyers_count: coalesce(bc.count, 0)
       })
       |> order_by([vehicle: v], asc: v.inserted_at)
       |> preload([

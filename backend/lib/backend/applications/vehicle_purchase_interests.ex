@@ -27,26 +27,17 @@ defmodule Backend.Applications.VehiclePurchaseInterests do
   end
 
   def get_vehicle_purchase_interests(params) do
+    user_query = from(u in User, preload: [:asset])
+
     data =
       from(vpi in VehiclePurchaseInterest,
         where: vpi.vehicle_id == ^params.vehicle_id,
-        order_by: [desc: vpi.inserted_at]
+        order_by: [desc: vpi.inserted_at],
+        preload: [user: ^user_query]
       )
       |> Repo.paginate(PaginateHelper.prep_params(params))
 
-    interests_with_users =
-      Enum.map(data.entries, fn interest ->
-        user =
-          from(u in User,
-            where: u.id == ^interest.user_id,
-            preload: [:asset]
-          )
-          |> Repo.one()
-
-        Map.put(interest, :user, user)
-      end)
-
-    {:ok, interests_with_users, PaginateHelper.prep_paginate(data)}
+    {:ok, data.entries, PaginateHelper.prep_paginate(data)}
   end
 
   def set_interests_seen(vehicle_id) do

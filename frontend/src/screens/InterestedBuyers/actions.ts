@@ -14,3 +14,14 @@ export const fetchInterestedBuyers = async (
       console.error("fetchInterestedBuyers error:", err);
       throw err;
     });
+
+export const markInterestsAsSeen = async (vehicleId: string) =>
+  axios
+    .post(`${API_URL}/vehicle_purchase_interests/interests_seen`, {
+      vehicle_id: vehicleId,
+    })
+    .then((response) => response.data)
+    .catch((err) => {
+      console.error("markInterestsAsSeen error:", err);
+      throw err;
+    });

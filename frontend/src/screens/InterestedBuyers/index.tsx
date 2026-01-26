@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { FlatList, SafeAreaView, View, TouchableOpacity, Pressable } from "react-native";
 import { Text } from "react-native-paper";
 import { useLocalSearchParams, router } from "expo-router";
@@ -13,7 +13,7 @@ import { Avatar } from "@/src/components/visual/avatar";
 import { Colors } from "@/constants/ui";
 import { Ionicons, MaterialIcons } from "@expo/vector-icons";
 
-import { fetchInterestedBuyers } from "./actions";
+import { fetchInterestedBuyers, markInterestsAsSeen } from "./actions";
 import { styles } from "./styles";
 import { createThread } from "../DriverProfile/actions";
 import { AppToast } from "@/src/components/CustomToast/customToast";
@@ -31,11 +31,7 @@ const BuyerCard = ({ interest, onMessage }: BuyerCardProps) => {
 
   return (
     <View style={styles.card}>
-      <TouchableOpacity
-        style={styles.userSection}
-        onPress={() => router.push(`/drivers/${user.id}`)}
-        activeOpacity={0.7}
-      >
+      <View style={styles.userSection}>
         <Avatar round width={50} source={user?.asset?.url} />
         <View style={styles.userInfo}>
           <Text style={styles.userName}>
@@ -50,7 +46,7 @@ const BuyerCard = ({ interest, onMessage }: BuyerCardProps) => {
             </View>
           )}
         </View>
-      </TouchableOpacity>
+      </View>
 
       <TouchableOpacity
         style={styles.messageButton}
@@ -69,7 +65,7 @@ export const InterestedBuyers = () => {
   const vehicleId = Array.isArray(id) ? id[0] : id;
   const navigation = useNavigation();
 
-  const { addItemToPaginatedList } = usePaginatedCache();
+  const { addItemToPaginatedList, updatePaginatedObject } = usePaginatedCache();
   const { getCachedData } = useCustomQuery();
   const { threads = [] } = getCachedData(["threads"]);
 
@@ -88,6 +84,20 @@ export const InterestedBuyers = () => {
     });
 
   const interests = data?.pages?.flatMap((page) => page?.data) ?? [];
+
+  useEffect(() => {
+    if (vehicleId) {
+      markInterestsAsSeen(vehicleId)
+        .then(() => {
+          updatePaginatedObject("userVehicles", vehicleId, {
+            buyers_count: 0,
+          });
+        })
+        .catch((err) => {
+          console.error("Failed to mark interests as seen:", err);
+        });
+    }
+  }, [vehicleId]);
 
   const handleMessage = (userId: string) => {
     createThread({ participant_id: userId })
