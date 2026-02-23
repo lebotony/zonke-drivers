@@ -67,6 +67,7 @@ defmodule BackendWeb.Vehicles.VehicleJSON do
       unseen_applications_count: Map.get(vehicle, :unseen_applications_count),
       buyers_count: Map.get(vehicle, :buyers_count),
       on_sale: vehicle.on_sale,
+      price_fixed: vehicle.price_fixed,
       sale_price: vehicle.sale_price,
       user: user,
       inserted_at: vehicle.inserted_at,

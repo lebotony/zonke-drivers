@@ -118,6 +118,7 @@ export const Step5Platforms = (props: Step5Props) => {
       })
       .then((updatedUser) => {
         queryClient.setQueryData(["user"], updatedUser);
+        queryClient.removeQueries({ queryKey: ["vehicles"] });
         AppToast("Profile setup complete!", true);
 
         if (pendingVehicleId) {

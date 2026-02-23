@@ -14,3 +14,6 @@ export const SOCKET_URL = !IS_IOS
   : Platform.OS === "ios"
     ? "ws://localhost:4000/socket"
     : "ws://localhost:4000/socket";
+
+// export const API_URL = "http://zonkedrivers.com/api";
+// export const SOCKET_URL = "ws://zonkedrivers.com/socket";

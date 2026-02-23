@@ -154,9 +154,10 @@ vehicles =
   Enum.flat_map(owners_users, fn user ->
     vehicles =
       Enum.map(1..3, fn v ->
-        on_sale = Enum.random([true, false])
         currency = if user.location.country == "Zimbabwe", do: "$", else: "R"
+        on_sale = Enum.random([true, false])
         sale_price = if on_sale, do: %{currency: currency, value: Enum.random(5000..20000)}, else: nil
+        price_fixed = if on_sale == false, do: %{currency: currency, value: Enum.random(200..2000)}, else: nil
 
         {:ok, vehicle} =
           %Vehicle{
@@ -170,10 +171,10 @@ vehicles =
             description: "Has suspension problems",
             payments_per_month: Enum.random(1..4),
             active: true,
-            # on_sale: on_sale,
-            # sale_price: sale_price,
+            on_sale: on_sale,
+            sale_price: sale_price,
             mileage: Enum.random(10000..100000),
-            price_fixed: %{currency: currency, value: Enum.random(20..60)},
+            price_fixed: price_fixed,
             user_id: user.id,
           }
           |> Repo.insert()

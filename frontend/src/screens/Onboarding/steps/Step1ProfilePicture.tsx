@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Text } from "react-native-paper";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -68,6 +69,14 @@ export const Step1ProfilePicture = (props: Step1Props) => {
   };
 
   const handleNext = handleSubmit((formData) => {
+    if (!isProfilePicPresent) {
+      Alert.alert(
+        "Profile Picture Required",
+        "Please add a profile picture to continue.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
     updateData(formData);
     onNext();
   });
@@ -160,7 +169,11 @@ export const Step1ProfilePicture = (props: Step1Props) => {
         <CustomButton
           onPress={handleNext}
           haptics="light"
-          customStyle={stepStyles.nextButton}
+          disabled={isUploadingImage}
+          customStyle={{
+            ...stepStyles.nextButton,
+            ...(isUploadingImage && { opacity: 0.5 }),
+          }}
         >
           <Text style={stepStyles.buttonText}>Continue</Text>
         </CustomButton>

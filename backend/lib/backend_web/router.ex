@@ -58,6 +58,7 @@ defmodule BackendWeb.Router do
       scope("/vehicles") do
         get("/vehicle_drivers", Vehicles.VehicleController, :index_management_vehicle)
         get("/public", Vehicles.VehicleController, :index_public)
+        get("/owner_vehicles", Vehicles.VehicleController, :index_owner_vehicles)
         post("/update", Vehicles.VehicleController, :update_vehicle)
         post("/update_asset", Vehicles.VehicleController, :update_asset)
         post("/activate_vehicle", Vehicles.VehicleController, :activate_vehicle)

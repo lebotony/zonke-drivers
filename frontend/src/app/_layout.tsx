@@ -186,6 +186,7 @@ const Layout = () => {
           {/* Protected routes with auth guards */}
           <Stack.Screen name="drivers" options={{ headerShown: false }} />
           <Stack.Screen name="vehicles" options={{ headerShown: false }} />
+          <Stack.Screen name="owners" options={{ headerShown: false }} />
           <Stack.Screen name="details" options={{ headerShown: false }} />
           <Stack.Screen name="comments" options={{ headerShown: false }} />
           <Stack.Screen name="vehicleSales" options={{ headerShown: false }} />
