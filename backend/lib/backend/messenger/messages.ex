@@ -6,15 +6,55 @@ defmodule Backend.Messenger.Messages do
   alias Backend.Messenger.Threads
   alias Backend.Messenger.Schemas.Message
   alias Backend.Messenger.Queries.MessageBy
+  alias Backend.Accounts.User
+  alias Backend.Notifications.PushNotification
 
   require Logger
 
   def create(params, user_id) do
     new_params = Map.put(params, :author_id, user_id)
 
-    %Message{}
-    |> Message.changeset(new_params)
-    |> Repo.insert()
+    Multi.new()
+    |> Multi.insert(:message, Message.changeset(%Message{}, new_params))
+    |> Multi.run(:push_notification, fn _repo, %{message: message} ->
+      with {:ok, thread} <- Threads.get_thread(message.thread_id, :plain),
+           other_participant <- find_other_participant(thread, user_id),
+           author when not is_nil(author) <- Repo.get(User, user_id) do
+        PushNotification.enqueue_push(%{
+          recipient_id: other_participant.id,
+          notifier_id: user_id,
+          title: "New message from #{author.first_name} #{author.last_name}",
+          body: String.slice(message.content, 0..100),
+          data: %{
+            type: "message",
+            thread_id: message.thread_id,
+            deep_link: "zonkedrivers://chats/#{message.thread_id}"
+          }
+        })
+
+        {:ok, message}
+      else
+        _ -> {:ok, message}
+      end
+    end)
+    |> Repo.transaction()
+    |> case do
+      {:ok, %{message: message}} -> {:ok, message}
+      {:error, :message, changeset, _} -> {:error, changeset}
+      {:error, _step, reason, _} -> {:error, reason}
+    end
+  end
+
+  defp find_other_participant(thread, current_user_id) do
+    thread = Repo.preload(thread, thread_participants: :participant)
+
+    Enum.find(thread.thread_participants, fn tp ->
+      tp.participant.id != current_user_id
+    end)
+    |> case do
+      nil -> nil
+      tp -> tp.participant
+    end
   end
 
   def get_message(id) do

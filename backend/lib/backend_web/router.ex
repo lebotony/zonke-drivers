@@ -110,6 +110,11 @@ defmodule BackendWeb.Router do
       end
 
       resources("/messages", Messenger.MessageController, except: @except_path_actions)
+
+      scope("/push_tokens") do
+        post("/", PushTokenController, :create)
+        delete("/", PushTokenController, :delete)
+      end
     end
   end
 
