@@ -16,7 +16,7 @@ type Props = {
   isLast?: boolean;
 };
 
-const VehicleTypeBadge = ({ type }: { type: string }) => {
+function VehicleTypeBadgeBase({ type }: { type: string }) {
   const getTypeConfig = () => {
     switch (type) {
       case "bike":
@@ -50,9 +50,11 @@ const VehicleTypeBadge = ({ type }: { type: string }) => {
       </Text>
     </View>
   );
-};
+}
 
-export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
+const VehicleTypeBadge = React.memo(VehicleTypeBadgeBase);
+
+function VehicleCardBase({ vehicle, isLast = false }: Props) {
   const locationText = [
     vehicle?.user?.location?.city,
     vehicle?.user?.location?.country,
@@ -172,4 +174,6 @@ export const VehicleCard = ({ vehicle, isLast = false }: Props) => {
       </View>
     </TouchableOpacity>
   );
-};
+}
+
+export const VehicleCard = React.memo(VehicleCardBase);

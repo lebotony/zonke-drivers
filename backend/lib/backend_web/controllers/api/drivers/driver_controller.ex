@@ -27,6 +27,11 @@ defmodule BackendWeb.Drivers.DriverController do
   def show_public(conn, %{id: id}, _session) do
     with {:ok, driver} <- Drivers.get_driver(id, :public) do
       render(conn, :show, driver: driver)
+    else
+      {:error, :not_found} ->
+        conn
+        |> put_status(:not_found)
+        |> json(%{error: "Profile not found"})
     end
   end
 

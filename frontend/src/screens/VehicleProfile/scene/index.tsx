@@ -238,7 +238,7 @@ export const Scene = () => {
             {/* Owner Card - Elevated Design */}
             <TouchableOpacity
               style={styles.ownerCard}
-              onPress={() => router.push(`/drivers/${vehicle?.user?.id}`)}
+              onPress={() => router.push(`/owners/${vehicle?.user?.id}`)}
               activeOpacity={0.8}
             >
               <Avatar round width={44} source={vehicle?.user?.asset?.url} />

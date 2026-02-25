@@ -41,6 +41,10 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
   const { user } = getCachedData(["user"]);
 
   const isOwner = user?.role === "owner";
+  const userCountry = authState?.authenticated
+    ? (user?.location?.country || null)
+    : null;
+
   const [showFilterModal, setShowFilterModal] = useState(false);
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [showVehicleProfile, setShowVehicleProfile] = useState(false);
@@ -51,7 +55,7 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
   const [selectedVehicleTypes, setSelectedVehicleTypes] = useState<string[]>(
     [],
   );
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(userCountry);
 
   const [applyFilter, setApplyFilter] = useState<boolean>(false);
   const [reset, setReset] = useState<boolean>(false);
@@ -73,9 +77,9 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
   const filterParams = {
     brands: selectedBrands,
     fuel_types: selectedFuelTypes,
-    price_range: priceRange,
+    price_range: priceRange[0] === 0 && priceRange[1] === 0 ? undefined : priceRange,
     types: selectedVehicleTypes,
-    country: selectedCountry,
+    country: selectedCountry ?? undefined,
   };
 
   const getFilters = () => {
@@ -198,7 +202,7 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
     selectedFuelTypes.length === 0 &&
     priceRange[0] === 0 &&
     priceRange[1] === 0 &&
-    selectedCountry === null;
+    selectedCountry === userCountry;
 
   const toggleBrand = (id: string) => {
     setSelectedBrands((s) =>
@@ -214,7 +218,7 @@ export const VehicleSalesScreen = (props: VehicleSalesScreenProps) => {
     setApplyFilter(false);
     setPriceRange([0, 0]);
     setSelectedFuelTypes([]);
-    setSelectedCountry(null);
+    setSelectedCountry(userCountry);
     setReset((prev) => !prev);
 
     dynamicHeaderRef.current?.showHeader();

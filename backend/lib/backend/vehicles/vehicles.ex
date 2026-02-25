@@ -250,10 +250,9 @@ defmodule Backend.Vehicles.Vehicles do
   def get_vehicles(params, %{user_id: user_id}, :public) do
     driver_country = get_driver_country(user_id)
 
-    IO.inspect(driver_country, label: "Driver Country")
-
     data =
       VehicleBy.base_query()
+      |> where([vehicle: v], v.on_sale == false)
       |> VehicleBy.by_active_status()
       |> distinct([vehicle: v], v.id)
       |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
@@ -483,6 +482,55 @@ defmodule Backend.Vehicles.Vehicles do
       _ ->
         order_by(query, [vehicle: v], asc: v.id)
     end
+  end
+
+  def get_owner_vehicles(params, user_id) do
+    on_sale =
+      case Map.get(params, :on_sale) do
+        v when v in ["true", true] -> true
+        v when v in ["false", false] -> false
+        _ -> nil
+      end
+
+    query =
+      VehicleBy.base_query()
+      |> VehicleBy.by_user(user_id)
+      |> VehicleBy.by_active_status()
+      |> distinct([vehicle: v], v.id)
+      |> join(:inner, [vehicle: v], u in assoc(v, :user), as: :user)
+      |> join(:left, [user: u], a in assoc(u, :asset), as: :asset)
+      |> select_merge([vehicle: v, user: u, asset: a], %{
+        v
+        | user: %{
+            id: u.id,
+            asset: a,
+            location: u.location,
+            first_name: u.first_name,
+            last_name: u.last_name
+          }
+      })
+      |> preload(:asset)
+
+    query =
+      case on_sale do
+        nil ->
+          query
+
+        false ->
+          query
+          |> where([vehicle: v], v.on_sale == false)
+          |> join(:left, [vehicle: v], vd in VehicleDriver,
+            on: v.id == vd.vehicle_id and vd.active == true,
+            as: :vehicle_driver
+          )
+          |> where([vehicle_driver: vd], is_nil(vd.id))
+
+        true ->
+          where(query, [vehicle: v], v.on_sale == true)
+      end
+
+    data = query |> Repo.paginate(PaginateHelper.prep_params(params))
+    {:ok, data, PaginateHelper.prep_paginate(data)}
   end
 
   defp format_vehicle(%Vehicle{} = vehicle), do: {:ok, vehicle}

@@ -39,6 +39,12 @@ defmodule BackendWeb.Vehicles.VehicleController do
     end
   end
 
+  def index_owner_vehicles(conn, %{user_id: user_id} = params, _session) do
+    with {:ok, vehicles, paginate} <- Vehicles.get_owner_vehicles(params, user_id) do
+      render(conn, :index, %{vehicles: vehicles, paginate: paginate})
+    end
+  end
+
   def show_on_sale(conn, %{id: id}, _session) do
     with {:ok, vehicle} <- Vehicles.get_vehicle_on_sale(id) do
       render(conn, :show, %{vehicle: vehicle})

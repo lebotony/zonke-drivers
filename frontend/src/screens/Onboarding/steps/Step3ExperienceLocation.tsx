@@ -4,13 +4,13 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Text } from "react-native-paper";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 
-import { Colors } from "@/constants/ui";
 import { CustomButton } from "@/src/components/elements/button";
 import { Fieldset } from "@/src/components/form/fieldset/input";
 import { DropdownInput } from "@/src/components/dropdown";
@@ -45,6 +45,7 @@ export const Step3ExperienceLocation = (props: Step3Props) => {
   const {
     control,
     setValue,
+    watch,
     handleSubmit,
     formState: { errors },
   } = useForm<FormValues>({
@@ -55,7 +56,18 @@ export const Step3ExperienceLocation = (props: Step3Props) => {
     },
   });
 
+  const location = watch("location");
+  const isLocationSet = !!(location?.place || location?.city || location?.country);
+
   const handleNext = handleSubmit((formData) => {
+    if (!isLocationSet) {
+      Alert.alert(
+        "Location Required",
+        "Please select a location to continue.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
     updateData(formData);
     onNext();
   });
@@ -114,14 +126,14 @@ export const Step3ExperienceLocation = (props: Step3Props) => {
           <CustomButton
             onPress={onBack}
             haptics="light"
-            customStyle={[stepStyles.backButton, stepStyles.buttonHalf]}
+            customStyle={{ ...stepStyles.backButton, ...stepStyles.buttonHalf }}
           >
             <Text style={stepStyles.backButtonText}>Back</Text>
           </CustomButton>
           <CustomButton
             onPress={handleNext}
             haptics="light"
-            customStyle={[stepStyles.nextButton, stepStyles.buttonHalf]}
+            customStyle={{ ...stepStyles.nextButton, ...stepStyles.buttonHalf }}
           >
             <Text style={stepStyles.buttonText}>Continue</Text>
           </CustomButton>
