@@ -122,7 +122,7 @@ defmodule Backend.Drivers.Drivers do
 
     data =
       DriverBy.base_query()
-      # |> DriverBy.by_active_status()
+      |> DriverBy.by_active_status()
       |> add_extra_fields()
       |> filter_by_country(owner_country)
       |> build_search(params)

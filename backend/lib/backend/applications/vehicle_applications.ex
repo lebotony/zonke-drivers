@@ -4,7 +4,9 @@ defmodule Backend.Applications.VehicleApplications do
   alias Backend.Notifications.Notifications
   alias Backend.Applications.Queries.VehicleApplicationBy
   alias Backend.Drivers.{Drivers, Driver}
-  alias Backend.Vehicles.VehicleDriver
+  alias Backend.Vehicles.{Vehicle, VehicleDriver}
+  alias Backend.Accounts.User
+  alias Backend.Notifications.PushNotification
   alias Backend.{Repo, PaginateHelper}
 
   import Ecto.Query
@@ -16,9 +18,35 @@ defmodule Backend.Applications.VehicleApplications do
           false ->
             updated_params = Map.put(params, :driver_id, driver.id)
 
-            %VehicleApplication{}
-            |> VehicleApplication.changeset(updated_params)
-            |> Repo.insert()
+            Multi.new()
+            |> Multi.insert(:application, VehicleApplication.changeset(%VehicleApplication{}, updated_params))
+            |> Multi.run(:push_notification, fn _repo, %{application: application} ->
+              application = Repo.preload(application, vehicle: :user)
+              vehicle = application.vehicle
+              vehicle_owner = vehicle.user
+              driver_user = Repo.get(User, user_id)
+
+              PushNotification.enqueue_push(%{
+                recipient_id: vehicle_owner.id,
+                notifier_id: user_id,
+                title: "New Driver Application",
+                body: "#{driver_user.first_name} #{driver_user.last_name} applied to drive your #{vehicle.brand} #{vehicle.model}",
+                data: %{
+                  type: "vehicle_application",
+                  vehicle_id: application.vehicle_id,
+                  application_id: application.id,
+                  deep_link: "zonkedrivers://(tabs)/manage?tab=applications&vehicle_id=#{application.vehicle_id}"
+                }
+              })
+
+              {:ok, application}
+            end)
+            |> Repo.transaction()
+            |> case do
+              {:ok, %{application: application}} -> {:ok, application}
+              {:error, :application, changeset, _} -> {:error, changeset}
+              {:error, _step, reason, _} -> {:error, reason}
+            end
 
           true ->
             {:ok, :application_exists}

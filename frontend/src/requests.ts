@@ -19,8 +19,16 @@ export const httpPut = (path: string, id: string, params: object | string) =>
     .then((response) => response.data)
     .catch((err) => Promise.reject(err));
 
-export const httpDelete = (path: string, id: string) =>
-  axios
-    .delete(`${API_URL}${path}/${id}`)
-    .then((response) => response.data)
-    .catch((err) => Promise.reject(err));
+export const httpDelete = (path: string, idOrData?: string | object) => {
+  if (typeof idOrData === 'string') {
+    return axios
+      .delete(`${API_URL}${path}/${idOrData}`)
+      .then((response) => response.data)
+      .catch((err) => Promise.reject(err));
+  } else {
+    return axios
+      .delete(`${API_URL}${path}`, { data: idOrData })
+      .then((response) => response.data)
+      .catch((err) => Promise.reject(err));
+  }
+};

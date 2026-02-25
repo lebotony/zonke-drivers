@@ -65,7 +65,8 @@ defmodule Backend.MixProject do
       {:sweet_xml, "~> 0.7"},
       {:briefly, "~> 0.5", only: :test},
       {:oban, "~> 2.17"},
-      {:dotenv, "~> 3.0.0", only: [:dev, :test]}
+      {:dotenv, "~> 3.0.0", only: [:dev, :test]},
+      {:confex, "~> 3.5"}
     ]
   end
 

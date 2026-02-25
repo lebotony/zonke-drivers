@@ -1,6 +1,9 @@
 defmodule Backend.Applications.VehiclePurchaseInterests do
+  alias Ecto.Multi
   alias Backend.Applications.VehiclePurchaseInterest
   alias Backend.Accounts.User
+  alias Backend.Vehicles.Vehicle
+  alias Backend.Notifications.PushNotification
   alias Backend.{Repo, PaginateHelper}
 
   import Ecto.Query
@@ -10,9 +13,35 @@ defmodule Backend.Applications.VehiclePurchaseInterests do
       false ->
         updated_params = Map.put(params, :user_id, user_id)
 
-        %VehiclePurchaseInterest{}
-        |> VehiclePurchaseInterest.changeset(updated_params)
-        |> Repo.insert()
+        Multi.new()
+        |> Multi.insert(:interest, VehiclePurchaseInterest.changeset(%VehiclePurchaseInterest{}, updated_params))
+        |> Multi.run(:push_notification, fn _repo, %{interest: interest} ->
+          interest = Repo.preload(interest, [:vehicle, :user])
+          vehicle = interest.vehicle
+          vehicle_owner_id = vehicle.user_id
+          buyer = interest.user
+
+          PushNotification.enqueue_push(%{
+            recipient_id: vehicle_owner_id,
+            notifier_id: user_id,
+            title: "New Purchase Interest",
+            body: "#{buyer.first_name} #{buyer.last_name} is interested in buying your #{vehicle.brand} #{vehicle.model}",
+            data: %{
+              type: "purchase_interest",
+              vehicle_id: interest.vehicle_id,
+              interest_id: interest.id,
+              deep_link: "zonkedrivers://interestedBuyers?vehicle_id=#{interest.vehicle_id}"
+            }
+          })
+
+          {:ok, interest}
+        end)
+        |> Repo.transaction()
+        |> case do
+          {:ok, %{interest: interest}} -> {:ok, interest}
+          {:error, :interest, changeset, _} -> {:error, changeset}
+          {:error, _step, reason, _} -> {:error, reason}
+        end
 
       true ->
         {:ok, :interest_exists}

@@ -7,6 +7,7 @@ import {
 } from "react";
 
 import * as SecureStore from "expo-secure-store";
+import * as Notifications from "expo-notifications";
 
 import axios from "axios";
 import { useQueryClient } from "@tanstack/react-query";
@@ -15,6 +16,12 @@ import { AppState, AppStateStatus, Platform } from "react-native";
 import { disconnectSocket, initializeSocket } from "./socket";
 import { httpGet, httpPost } from "./requests";
 import { useCustomQuery } from "./useQueryContext";
+import {
+  registerForPushNotifications,
+  registerTokenWithBackend,
+  handleNotificationReceived,
+  handleNotificationResponse,
+} from "./helpers/notificationManager";
 
 export const TOKEN_KEY = "my_jwt";
 
@@ -141,6 +148,59 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       userChannel?.leave();
     };
   }, [socket, user?.id]);
+
+  // Register push notifications on login
+  useEffect(() => {
+    if (authState?.authenticated && user) {
+      registerForPushNotifications()
+        .then((token) => {
+          if (token) {
+            return registerTokenWithBackend(token);
+          }
+        })
+        .catch((error) => {
+          console.error('Push notification setup failed:', error);
+        });
+
+      const receivedSubscription = Notifications.addNotificationReceivedListener(
+        handleNotificationReceived
+      );
+
+      const responseSubscription = Notifications.addNotificationResponseReceivedListener(
+        handleNotificationResponse
+      );
+
+      return () => {
+        receivedSubscription.remove();
+        responseSubscription.remove();
+      };
+    }
+  }, [authState?.authenticated, user]);
+
+  // Refresh push token when app comes to foreground
+  useEffect(() => {
+    if (!authState?.authenticated) return;
+
+    const handleAppStateChange = (nextAppState: AppStateStatus) => {
+      if (nextAppState === 'active') {
+        registerForPushNotifications()
+          .then((token) => {
+            if (token) {
+              return registerTokenWithBackend(token);
+            }
+          })
+          .catch((error) => {
+            console.error('Token refresh failed:', error);
+          });
+      }
+    };
+
+    const subscription = AppState.addEventListener('change', handleAppStateChange);
+
+    return () => {
+      subscription.remove();
+    };
+  }, [authState?.authenticated]);
 
   useEffect(() => {
     const loadToken = async () => {
