@@ -4,8 +4,8 @@ import {
   Pressable,
   FlatList,
   KeyboardAvoidingView,
-  SafeAreaView,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text } from "react-native-paper";
 
 import { useLocalSearchParams } from "expo-router";
@@ -28,6 +28,7 @@ import { fetchThreadMessages, setSeenTrue } from "../actions";
 import { useMessages } from "../MessagesProvider";
 
 export const ChatScreen = () => {
+  const insets = useSafeAreaInsets();
   const { id } = useLocalSearchParams();
   const threadId = Array.isArray(id) ? id[0] : id;
 
@@ -167,7 +168,7 @@ export const ChatScreen = () => {
 
   return (
     <View style={styles.container}>
-      <SafeAreaView style={styles.headerContainer}>
+      <View style={[styles.headerContainer, { paddingTop: insets.top }]}>
         <View style={styles.header}>
           <Pressable
             style={({ pressed }) => [
@@ -193,7 +194,7 @@ export const ChatScreen = () => {
             </Text>
           </View>
         </View>
-      </SafeAreaView>
+      </View>
 
       <KeyboardAvoidingView
         style={styles.container}

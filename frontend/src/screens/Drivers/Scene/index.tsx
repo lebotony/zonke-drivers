@@ -92,7 +92,7 @@ export const Scene = () => {
 
   // useEffects responsible for triggering refetch
   useEffect(() => {
-    if (debouncedSearchTerm !== undefined) {
+    if (debouncedSearchTerm !== null && debouncedSearchTerm !== undefined) {
       queryClient.removeQueries({ queryKey });
       refetch();
     }
@@ -229,7 +229,7 @@ export const Scene = () => {
               renderItem={({ item }) => <DriverCard driver={item} />}
               contentContainerStyle={[
                 contentContainerStyle,
-                { gap: 15, paddingVertical: 15 },
+                { gap: 15, paddingBottom: 15 },
               ]}
             />
           )

@@ -1,6 +1,8 @@
 import { API_URL } from "@/constants/srcConstants";
 import axios from "axios";
 
+axios.defaults.timeout = 15000;
+
 export const httpGet = (path: string, params?: unknown) =>
   axios
     .get(`${API_URL}${path}`, { params: params })

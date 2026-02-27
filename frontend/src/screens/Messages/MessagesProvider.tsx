@@ -31,6 +31,7 @@ const MessagesContext = createContext<
   | {
       hasNextPage: boolean;
       isFetchingNextPage: boolean;
+      isLoading: boolean;
       currentThreadId: string | undefined;
       onSetCurrentThread: (threadId: string | undefined) => void;
       initiateChannels: (threads: Thread[]) => void;
@@ -83,7 +84,7 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
     return fetchUserThreads({ pageParam }, filters);
   };
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, refetch } =
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading, refetch } =
     useInfiniteQuery({
       queryKey: ["threads"],
       queryFn: queryFn,
@@ -260,6 +261,7 @@ export const MessagesProvider: FC<MessagesProviderProps> = (props) => {
   const value = {
     fetchNextPage,
     isFetchingNextPage,
+    isLoading,
     hasNextPage,
     onSetCurrentThread: setCurrentThread,
     currentThreadId: currentThreadRef.current,

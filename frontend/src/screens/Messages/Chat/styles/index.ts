@@ -9,10 +9,12 @@ export const styles = StyleSheet.create({
   headerContainer: {
     backgroundColor: Colors.white,
     shadowColor: Colors.black,
-    shadowOpacity: 0.05,
+    shadowOpacity: 0.08,
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 8,
-    elevation: 3,
+    elevation: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0,0,0,0.08)",
     // ...topOffset,
   },
   header: {

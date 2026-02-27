@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { FlatList, SafeAreaView, View, TouchableOpacity } from "react-native";
+import { FlatList, View, TouchableOpacity } from "react-native";
 import { Text } from "react-native-paper";
 import { router } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { isEmpty } from "lodash";
@@ -16,6 +17,7 @@ import { fetchUserVehicles } from "./actions";
 import { VehicleDriverModal } from "./scene/ui/vehicleDriverModal";
 
 export const ManageVehicles = () => {
+  const { top } = useSafeAreaInsets();
   const [showVehicleDriverModal, setShowVehicleDriverModal] = useState(false);
   const [vehicleId, setVehicleId] = useState<string | undefined>(undefined);
 
@@ -44,7 +46,7 @@ export const ManageVehicles = () => {
     return queryClient.setQueryData(["fetchedOnMount"], true);
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={[styles.container, { paddingTop: top }]}>
       <Text style={styles.header}>Manage Vehicles</Text>
       <Text style={styles.subtitle}>Track your fleet and explore sales</Text>
 
@@ -96,6 +98,6 @@ export const ManageVehicles = () => {
           accident
         />
       )}
-    </SafeAreaView>
+    </View>
   );
 };

@@ -93,7 +93,7 @@ export const Comments = (props: CommentsProps) => {
   };
 
   useEffect(() => {
-    if (!vehicleDriverKey) return;
+    if (!driverId || !vehicleId) return;
 
     const alreadyFetched = fetchedDriverComments?.includes(vehicleDriverKey);
 

@@ -2,10 +2,10 @@ import React, { useEffect, useState } from "react";
 import { Text } from "react-native-paper";
 
 import { useQueryClient } from "@tanstack/react-query";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import { View } from "@/src/components/Themed";
 import { Colors } from "@/constants/ui";
-import { topOffset } from "@/src/components/appStyles";
 import { Spinner } from "@/src/components/elements/Spinner";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { BackArrow } from "@/src/components/BackArrow/header";
@@ -14,6 +14,7 @@ import { fetchDriverProfile } from "../ProfileSetUp/actions";
 import { DriverCard } from "../Drivers/Scene/ui/driverCard";
 
 export const PreviewCard = () => {
+  const { top } = useSafeAreaInsets();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<Record<string, any> | null>(null);
 
@@ -75,7 +76,7 @@ export const PreviewCard = () => {
       style={{
         backgroundColor: Colors.bg,
         flex: 1,
-        ...topOffset,
+        paddingTop: top + 8,
       }}
     >
       <View style={{ alignItems: "center", backgroundColor: Colors.bg }}>

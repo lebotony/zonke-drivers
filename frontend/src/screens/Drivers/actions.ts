@@ -10,9 +10,6 @@ export const fetchDrivers = ({ pageParam = 1 }, filters: Filters) => {
       paramsSerializer: (params) =>
         qs.stringify(params, { arrayFormat: "brackets" }),
     })
-    .then((response) => {
-      console.log("DRIVERS DRIVERS DRIVERS", response.data.paginate);
-      return response.data;
-    })
-    .catch((err) => err);
+    .then((response) => response.data)
+    .catch((err) => { throw err; });
 };

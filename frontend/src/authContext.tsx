@@ -221,10 +221,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         queryClient.setQueryData(["user"], response);
       })
       .catch((err) => {
-        if (
-          err?.response?.statusText == "Not Found" ||
-          err?.response?.status == 404
-        ) {
+        const status = err?.response?.status;
+        if (!status || status === 401 || status === 403 || status === 404) {
           logout();
         }
       });
