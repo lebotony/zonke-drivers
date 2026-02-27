@@ -130,12 +130,12 @@ defmodule Backend.Assets.Assets do
 
     params = query_params(t: dt_to_timestamp(dt))
 
-    if Mix.env() == :dev do
-      # LocalStack URL
-      "#{config[:scheme]}#{config[:host]}#{port}/#{@bucket}/#{filename}?#{params}"
+    if Application.get_env(:backend, :use_localstack, false) do
+       # LocalStack URL
+       "#{config[:scheme]}#{config[:host]}#{port}/#{@bucket}/#{filename}?#{params}"
     else
-      # Real AWS
-      "https://#{@bucket}.s3.amazonaws.com/#{filename}?#{params}"
+       # Real AWS
+       "https://#{@bucket}.s3.amazonaws.com/#{filename}?#{params}"
     end
   end
 
@@ -159,10 +159,10 @@ defmodule Backend.Assets.Assets do
   end
 
   def s3_config() do
-    if Mix.env() == :dev do
+    if Application.get_env(:backend, :use_localstack, false) do
       ExAws.Config.new(:s3,
         scheme: "http://",
-        host: "192.168.1.39",
+        host: "102.207.63.87",
         port: 4566,
         region: "us-east-1"
       )

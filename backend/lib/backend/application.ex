@@ -44,7 +44,7 @@ defmodule Backend.Application do
   end
 
   defp load_dotenv do
-    if Mix.env() in [:dev, :test] do
+    if Code.ensure_loaded?(Mix) and Mix.env() in [:dev, :test] do
       case Code.ensure_loaded(Dotenv) do
         {:module, Dotenv} ->
           if File.exists?(".env") do
