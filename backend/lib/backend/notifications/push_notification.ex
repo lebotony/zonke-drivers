@@ -19,14 +19,20 @@ defmodule Backend.Notifications.PushNotification do
   """
   def enqueue_push(notification_data) do
     if notification_data.recipient_id != notification_data.notifier_id do
-      %{
-        recipient_id: notification_data.recipient_id,
-        title: notification_data.title,
-        body: notification_data.body,
-        data: notification_data.data
-      }
-      |> PushNotificationWorker.new()
-      |> Oban.insert()
+      try do
+        %{
+          recipient_id: notification_data.recipient_id,
+          title: notification_data.title,
+          body: notification_data.body,
+          data: notification_data.data
+        }
+        |> PushNotificationWorker.new()
+        |> Oban.insert()
+      rescue
+        e ->
+          Logger.error("Failed to enqueue push notification: #{inspect(e)}")
+          {:ok, :enqueue_failed}
+      end
     else
       {:ok, :skipped_self_notification}
     end

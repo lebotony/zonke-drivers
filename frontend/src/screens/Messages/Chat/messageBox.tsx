@@ -254,7 +254,7 @@ export const MessageBox = (props: MessageBoxProps) => {
     <View
       style={[
         styles.container,
-        IS_IOS && insets.bottom > 0 && { marginBottom: insets.bottom + 5 },
+        IS_IOS && { marginBottom: (insets.bottom > 0 ? insets.bottom : 0) + 20 },
       ]}
     >
       <Controller

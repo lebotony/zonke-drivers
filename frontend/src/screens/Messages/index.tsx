@@ -20,13 +20,14 @@ export const MessagesScreen = () => {
   const {
     fetchNextPage,
     isFetchingNextPage,
+    isLoading,
     hasNextPage,
     currentThreadId,
     onSetCurrentThread,
     onSetSearchTerm,
   } = useMessages();
 
-  if (!threads) return <Spinner />;
+  if (isLoading) return <Spinner />;
 
   return (
     <View style={styles.container}>

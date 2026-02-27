@@ -20,6 +20,9 @@ export const styles = StyleSheet.create({
       },
       android: {
         elevation: 2,
+        // Prevents grey corner artifacts caused by elevation + borderRadius on Android
+        borderWidth: 1,
+        borderColor: Colors.white,
       },
       web: {
         boxShadow: "0px 2px 8px rgba(0, 0, 0, 0.06)",

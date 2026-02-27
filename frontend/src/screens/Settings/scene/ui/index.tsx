@@ -8,6 +8,7 @@ import { router } from "expo-router";
 import { Avatar } from "@/src/components/visual/avatar";
 import { useCustomQuery } from "@/src/useQueryContext";
 import { useAuth } from "@/src/authContext";
+import { Spinner } from "@/src/components/elements/Spinner";
 
 import { styles } from "../styles";
 import { SettingsSection } from "./SettingsSection";
@@ -19,13 +20,15 @@ export const Settings = () => {
   const { user } = getCachedData(["user"]);
   const { onLogout } = useAuth();
 
+  const scaleAnim = useRef(new Animated.Value(1)).current;
+
+  if (!user) return <Spinner />;
+
   const isProfilePicPresent = user?.asset?.url;
   const settings =
     user.role === "driver"
       ? settingsItemsDef.slice(0, 2)
       : settingsItemsDef.slice(1, 2);
-
-  const scaleAnim = useRef(new Animated.Value(1)).current;
 
   const handlePressIn = () => {
     Animated.spring(scaleAnim, {

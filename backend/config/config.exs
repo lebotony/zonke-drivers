@@ -65,7 +65,6 @@ config :backend, :broadcast_module, Backend.Utils.BroadcastImpl
 
 config :backend, Oban,
   repo: Backend.Repo,
-  name: Backend.Oban,
   plugins: [
     {Oban.Plugins.Cron,
      crontab: [

@@ -78,16 +78,16 @@ export default function RootLayout() {
 }
 
 function RootLayoutNav() {
-  const queryClient = new QueryClient({
+  const [queryClient] = useState(() => new QueryClient({
     defaultOptions: {
       queries: {
         staleTime: 1000 * 60 * 5, // data fresh for 5 min
-        cacheTime: 1000 * 60 * 10, // keep cache 10 min after unused
+        gcTime: 1000 * 60 * 10, // keep cache 10 min after unused
         refetchOnWindowFocus: false, // don't refetch when tab regains focus
         refetchOnReconnect: false, // optional: don't refetch on network reconnect
       },
     },
-  });
+  }));
 
   const theme = {
     ...MD3LightTheme,
