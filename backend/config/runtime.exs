@@ -36,17 +36,34 @@ if config_env() == :prod do
       """
 
   # --- Endpoint config ---
-  host = System.get_env("PHX_HOST", "example.com")
+  host = System.get_env("PHX_HOST", "zonkedrivers.com")
   port = String.to_integer(System.get_env("PORT", "4000"))
 
   config :backend, BackendWeb.Endpoint,
     url: [host: host, port: 443, scheme: "https"],
-    http: [
-      ip: {0, 0, 0, 0, 0, 0, 0, 0},
-      port: port
-    ],
+    force_ssl: [rewrite_on: [:x_forwarded_proto]],
+    http: [port: port],
     secret_key_base: secret_key_base
 
   # Optional: DNS cluster query
   config :backend, :dns_cluster_query, System.get_env("DNS_CLUSTER_QUERY")
+  
+  # --- AWS / LocalStack Configuration ---
+
+  use_localstack = System.get_env("USE_LOCALSTACK") == "true"
+  
+  config :backend, :use_localstack, use_localstack
+
+  config :ex_aws,
+    access_key_id: System.get_env("AWS_ACCESS_KEY_ID") || "test",
+    secret_access_key: System.get_env("AWS_SECRET_ACCESS_KEY") || "test",
+    region: "us-east-1"
+
+  # Add this to prevent it from hitting real Amazon servers, but should remove it in p>
+  if use_localstack do
+    config :ex_aws, :s3,
+      scheme: "http://",
+      host: System.get_env("LOCALSTACK_HOST") || "102.207.63.87",
+      port: String.to_integer(System.get_env("LOCALSTACK_PORT") || "4566")
+  end
 end
